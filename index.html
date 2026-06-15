@@ -3,262 +3,55 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>外掛司機候選識別 — 執行摘要</title>
+  <title>HTML Reports — Jin</title>
   <style>
     :root {
       --bg: #f6f8fb; --card: #fff; --border: #e2e8f0; --text: #0f172a;
-      --muted: #475569; --blue: #1d4ed8; --blue-soft: #eff6ff;
-      --green-soft: #dcfce7; --green: #166534; --orange-soft: #fff7ed;
-      --orange: #9a3412; --red: #b91c1c; --shadow: 0 10px 30px rgba(15,23,42,.08);
-      --radius: 20px; --max: 1100px;
+      --muted: #475569; --blue: #1d4ed8; --max: 720px;
     }
     * { box-sizing: border-box; }
     body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", sans-serif;
       background: var(--bg); color: var(--text); line-height: 1.6;
     }
-    .page { max-width: var(--max); margin: 0 auto; padding: 32px 20px 64px; }
-    .hero { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; margin-bottom: 24px; }
-    .hero h1 { margin: 0 0 8px; font-size: clamp(2rem, 4vw, 3rem); }
-    .hero p { margin: 0; color: var(--muted); }
-    .badge, .pill { display: inline-block; border-radius: 999px; font-weight: 700; }
-    .badge { background: #eaf2ff; color: #1f5fbf; padding: 10px 16px; }
+    .page { max-width: var(--max); margin: 0 auto; padding: 32px 20px 48px; }
+    h1 { margin: 0 0 8px; font-size: 1.75rem; }
+    .lead { color: var(--muted); margin: 0 0 24px; }
+    ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 16px; }
     .card {
-      background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
-      box-shadow: var(--shadow); padding: 24px 28px; margin-bottom: 20px;
+      background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+      padding: 20px 22px;
     }
-    .section-title { display: flex; align-items: center; gap: 14px; margin: 0 0 16px; font-size: 1.45rem; }
-    .sub-title { margin: 20px 0 10px; font-size: 1.15rem; }
-    .num {
-      width: 36px; height: 36px; border-radius: 50%; background: #1f5fbf; color: #fff;
-      display: inline-flex; align-items: center; justify-content: center; font-weight: 800; flex: 0 0 auto;
-    }
-    .highlight {
-      background: #eef6ff; border: 1px solid #bfdbfe; border-radius: 16px;
-      padding: 18px 20px; color: #1e3a8a; font-weight: 600; margin: 12px 0;
-    }
-    .pill { background: #f1f5f9; color: #334155; padding: 8px 14px; font-size: .95rem; }
-    .pill.green { background: var(--green-soft); color: var(--green); }
-    .callout {
-      border-radius: 16px; padding: 14px 18px; margin-top: 14px; font-weight: 600;
-    }
-    .callout.warn { background: var(--orange-soft); border: 1px solid #fdba74; color: var(--orange); }
-    .callout.danger { background: #fef2f2; border: 1px solid #fca5a5; color: var(--red); }
-    .callout.info { background: var(--blue-soft); border: 1px solid #bfdbfe; color: var(--blue); }
-    .callout.neutral { background: #f8fafc; border: 1px solid #cbd5e1; color: var(--muted); font-weight: 500; }
-    .flow { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 16px 0; }
-    .flow-step {
-      background: var(--blue-soft); border: 1px solid #93c5fd; color: var(--blue);
-      border-radius: 12px; padding: 12px 18px; font-weight: 800; min-width: 150px; text-align: center;
-    }
-    .flow-arrow { color: #94a3b8; font-weight: 800; }
-    .flow-code {
-      background: #0f172a; color: #e2e8f0; border-radius: 12px; padding: 12px 16px;
-      font-family: ui-monospace, Menlo, monospace; margin: 10px 0 16px;
-    }
-    table { width: 100%; border-collapse: collapse; font-size: .92rem; margin-top: 12px; }
-    th, td { border-bottom: 1px solid #e5e7eb; padding: 12px 10px; text-align: left; vertical-align: top; }
-    th { background: #f1f5f9; font-weight: 800; }
-    tr:nth-child(even) td { background: #f8fafc; }
-    .mono { font-family: ui-monospace, Menlo, monospace; font-size: .86rem; }
-    .score {
-      display: inline-flex; align-items: center; justify-content: center;
-      width: 42px; height: 42px; border-radius: 50%; background: #dbeafe; color: var(--blue); font-weight: 900;
-    }
-    ul { margin: 10px 0 14px; padding-left: 1.25rem; }
-    li { margin: 6px 0; }
-    a { color: var(--blue); }
-    .toolbar {
-      position: sticky; top: 0; z-index: 10; background: rgba(246,248,251,.92);
-      backdrop-filter: blur(8px); border-bottom: 1px solid var(--border);
-      margin: -32px -20px 20px; padding: 10px 20px; display: flex; justify-content: flex-end;
-    }
-    button { border: 1px solid #cbd5e1; background: #fff; border-radius: 10px; padding: 8px 14px; cursor: pointer; font-weight: 700; }
-    .final {
-      margin-top: 18px; background: #0f172a; color: #fff; border-radius: 18px; padding: 18px 22px; font-weight: 700;
-    }
-    @media (max-width: 900px) { .hero { flex-direction: column; } }
-    @media print {
-      .toolbar { display: none; }
-      html, body {
-        height: auto !important;
-        overflow: visible !important;
-        background: #fff;
-        -webkit-print-color-adjust: exact;
-        print-color-adjust: exact;
-      }
-      .page { max-width: none; padding: 16px 20px 32px; }
-      .card, table, tr, .callout, .highlight, .flow, .final {
-        break-inside: auto !important;
-        page-break-inside: auto !important;
-        break-before: auto !important;
-        page-break-before: auto !important;
-        break-after: auto !important;
-        page-break-after: auto !important;
-      }
-      .card { box-shadow: none; }
-      a { text-decoration: none; }
-    }
+    .card h2 { margin: 0 0 8px; font-size: 1.15rem; }
+    .card h2 a { color: var(--text); text-decoration: none; }
+    .card h2 a:hover { color: var(--blue); }
+    .meta { margin: 0 0 12px; color: var(--muted); font-size: 0.9rem; }
+    .links a { margin-right: 16px; color: var(--blue); font-weight: 600; }
+    code { font-size: 0.85em; }
   </style>
 </head>
 <body>
   <div class="page">
-    <div class="toolbar">
-      <button type="button" onclick="printLongPage()">存 PDF（單頁長圖）</button>
-    </div>
-
-    <header class="hero">
-      <div>
-        <h1>執行摘要</h1>
-        <p>外掛司機候選識別與平台影響分析</p>
-      </div>
-      <span class="badge">BQ / Ops / T&amp;S</span>
-    </header>
-
-    <section class="card" id="driver-motivation">
-      <h2 class="section-title"><span class="num">1</span>Driver 動機</h2>
-      <p>數據反映的 driver 行為很清楚：他們不是單純想接更快，而是想少接低價、低效率、低確定性的單，把時間留給高加成、高單價的單。</p>
-      <p>其核心優化目標不是「接單速度」，而是 <strong>每小時收入</strong>。</p>
-    </section>
-
-    <section class="card" id="core-conclusion">
-      <h2 class="section-title"><span class="num">2</span>核心結論</h2>
-      <div class="highlight">
-        BQ 分析顯示，外掛司機與正常司機的差異不在於「搶單有多快」，而在於是否持續利用 Release 推高加成、重搶同一筆訂單，並把短期加價收益建立在<strong>平台完成率下降、用戶等待變長與後續流失</strong>之上。
-      </div>
-      <p>
-        <a href="plugin-driver-executive-workflow.md#plugin-driver-definition">定義</a>
-        <a href="plugin-driver-executive-workflow.md#formula-c">公式 C</a>
-      </p>
-    </section>
-
-    <section class="card" id="platform-impact">
-      <h2 class="section-title"><span class="num">3</span>這件事對平台的影響</h2>
-      <p>這不是單純的接單效率問題，而是收益結構被扭曲。<a href="plugin-driver-executive-workflow.md#net-impact-note">net_impact_hkd 說明</a></p>
-      <ul>
-        <li><strong>短期</strong>：單筆訂單附加費與平台佣金可能上升</li>
-        <li><strong>中期</strong>：完成率下降，重下單與等待時間上升</li>
-        <li><strong>長期</strong>：用戶流失增加，最後讓 <code>net_impact_hkd</code> 轉負</li>
-      </ul>
-      <div class="callout warn">
-        簡單說，平台表面上可能看到「單筆多賺一點」，但整體上承受的是「品質下降、補償變多、客戶後續不再回來」。
-      </div>
-    </section>
-
-    <section class="card" id="framework">
-      <h2 class="section-title"><span class="num">4</span>外掛候選判斷框架</h2>
-      <p>
-        外掛候選不是看單一指標，而是依序看四件事：
-        <strong>是否進池、證據分數是否足夠、是否已對平台造成實際傷害、以及是否通過人工覆核。</strong>
-      </p>
-      <p>本框架與下方的 <a href="plugin-driver-executive-workflow.md#四decision-flow判斷流程">Decision Flow</a> 完全對應，順序一致：</p>
-      <div class="flow-code">Entry gate → Evidence score → Action gate → Level 判斷</div>
-      <div class='flow'><div class='flow-step'>Entry gate</div><div class='flow-arrow' aria-hidden='true'>→</div><div class='flow-step'>Evidence score</div><div class='flow-arrow' aria-hidden='true'>→</div><div class='flow-step'>Action gate</div><div class='flow-arrow' aria-hidden='true'>→</div><div class='flow-step'>Level 判斷</div></div>
-      <p class="callout neutral">
-        完整打分表、公式與欄位口徑見後文的 <a href="plugin-driver-executive-workflow.md#scorecard-full">外掛信心分數打分表</a>。
-      </p>
-
-      <h3 class="sub-title">1. 進池條件</h3>
-      <table><thead><tr><th>檢核項目</th><th>商業意涵</th><th>通過條件</th></tr></thead><tbody><tr><td>這是不是我們要看的司機？</td><td>只看 HK TRANSPORT、三種車型、活躍帳號</td><td>TRANSPORT、hk、van/mudou/mudou9、帳號有效</td></tr><tr><td>樣本夠不夠？</td><td>單太少就不要判斷</td><td>OD 接觸 ≥ 30 或 Booking 接觸 ≥ 5</td></tr><tr><td>最近 30 天有沒有先異常？</td><td>如果連基本異常都沒有，就不要往下看</td><td>至少一條軌 release_rate_30 &gt; 同組 p90（方法）</td></tr><tr><td>有沒有明顯合法例外？</td><td>先排除 OA 豁免、配額、純接單快</td><td>有例外就不進打分</td></tr></tbody></table>
-      <div class="callout danger">未通過進池條件者，不打分，也不列入候選。</div>
-
-      <h3 class="sub-title">2. 證據分數（evidence score，0–10）</h3>
-      <table class='evidence'><thead><tr><th>信號</th><th>商業意涵</th><th>時間窗 / 命中門檻</th><th>依據來源</th><th>分數</th></tr></thead><tbody><tr><td><strong>放棄後又接回同一張單</strong></td><td>最像刻意放單等時機再接</td><td class='mono'>近 30 天；同一 driver_id + order_request_id 先 release、後重接；MVP 簡表先以至少 1 宗命中計分</td><td class='mono'>公式 C；BQ 30 天實查（2026-06-11，HK TRANSPORT）</td><td><span class='score'>+3</span></td></tr><tr><td><strong>接回來時價格變高了</strong></td><td>不只是重接，而是等加價後才接</td><td class='mono'>近 30 天；在同單重接事件中 surcharge_delta_hkd &gt; 0；MVP 簡表先以至少 1 宗命中計分；完整強信號門檻見公式 C</td><td class='mono'>公式 C；BQ 30 天實查；強信號版需再看 escalation_count / avg_surcharge_lift</td><td><span class='score'>+2</span></td></tr><tr><td><strong>90 天都反覆異常</strong></td><td>不是單日失常，是持續行為</td><td class='mono'>已通過 30 天 Entry gate 後，再看 90 天同一軌是否仍高於同組 p90；OD + Booking 兩軌同時超標亦只計一次</td><td class='mono'>同組 p90 比較；30 天 + 90 天雙窗口驗證</td><td><span class='score'>+2</span></td></tr><tr><td><strong>cancel 後又接回同一張單</strong></td><td>可疑，但比正式 release 弱</td><td class='mono'>近 30 天事件窗建議比照同單重接；同一 driver_id + order_request_id 先 cancel、後重接；MVP 先以至少 1 宗命中計分</td><td class='mono'>2026 H1 BQ 實查確認存在；規模約為 release 重搶的 1/6.7</td><td><span class='score'>+1</span></td></tr><tr><td><strong>明顯棄低搶高</strong></td><td>低價單常放、高價單常留</td><td class='mono'>近 30 天司機行為窗口；任一條成立即可：cherry_pick_score &gt; 0.30 或 region_cherry_pick &gt; 0.25；公式 A 另有樣本要求 low ≥ 5、high ≥ 3</td><td class='mono'>公式 A / 公式 B；Shadow Mode 待校準</td><td><span class='score'>+1</span></td></tr><tr><td><strong>Grace Drop / cancel 特別高，且集中低價單</strong></td><td>可能是在繞開正式 release 偵測</td><td class='mono'>近 30 天；grace_drop_rate 或 driver_cancel_rate_30d 高於同組 p90，且低 GTV / 低加成桶高於同司機高 GTV / 高加成桶</td><td class='mono'>同組 p90 比較；30 天行為窗口</td><td><span class='score'>+1</span></td></tr></tbody></table>
-      <div class="callout info">
-        <strong>閱讀說明：</strong>
-        <ul>
-          <li>除特別標明 <strong>90 天</strong> 的持續異常外，證據分數信號預設以 <strong>近 30 天窗口</strong>計算。</li>
-          <li>本表屬 <strong>MVP 簡表</strong>，用於 Management / Ops 快速判讀；完整 SQL、樣本要求與強信號門檻見後文 <a href="plugin-driver-executive-workflow.md#scorecard-full">外掛信心分數打分表</a> 與 <a href="plugin-driver-executive-workflow.md#formula-a">公式 A</a> / <a href="plugin-driver-executive-workflow.md#formula-b">公式 B</a> / <a href="plugin-driver-executive-workflow.md#formula-c">公式 C</a>。</li>
-          <li>其中公式 C 在簡表版採用「<strong>至少 1 宗命中即可加分</strong>」作候選識別；若進入強信號判定，仍需再看 <code>escalation_count</code>、<code>avg_surcharge_lift</code> 等較嚴格條件。</li>
-        </ul>
-      </div>
-      <div class="callout neutral">
-        <strong>Anchor（錨定信號）係咩？</strong>
-        Anchor 指兩條<strong>最直接的操縱鏈證據</strong>，用嚟「錨定」證據分數唔只係高棄單率等統計異常，而係真有「放棄 → 等加價 → 再接」行為：
-        <ul>
-          <li><strong>Anchor 1</strong>：放棄後重搶同一張單</li>
-          <li><strong>Anchor 2</strong>：重搶後附加費上升</li>
-        </ul>
-        總分 6–10 但兩條 Anchor 都未命中 → 只可人工覆核，<strong>唔直接進 Phase 2 制裁候選</strong>。
-      </div>
-      <p><strong>核心 Anchor signal 如下：</strong></p>
-      <ul>
-        <li>放棄後重搶同單（Anchor 1）</li>
-        <li>重搶後價格上升（Anchor 2）</li>
-      </ul>
-      <p>兩者最接近「故意放棄 → 等加價 → 再接」的操縱鏈。</p>
-
-      <h3 class="sub-title">3. 分數分級</h3>
-      <table><thead><tr><th>分數區間</th><th>證據強度</th><th>處理方式</th></tr></thead><tbody><tr><td>0–2</td><td>證據較弱</td><td>KEEP，持續監控</td></tr><tr><td>3–5</td><td>存在可疑行為，但證據鏈未完整</td><td>Shadow 觀察，不執行即時處置</td></tr><tr><td>6–10 但沒有 Anchor</td><td>證據分數高，但缺乏核心操縱證據</td><td>僅進行人工覆核，不直接處置</td></tr><tr><td>6–10 且有 Anchor</td><td>證據鏈完整</td><td>進入下一步 Phase 2 候選檢核</td></tr></tbody></table>
-
-      <h3 class="sub-title">4. 行動條件</h3>
-      <table><thead><tr><th>檢核項目</th><th>判斷原因</th></tr></thead><tbody><tr><td>net_impact_hkd &lt; 0 或 UX harm 明顯惡化</td><td>平台要處理的是「有害外掛」，不是純統計異常（net_impact_hkd 說明）</td></tr><tr><td>Ops + T&amp;S 人工覆核</td><td>避免誤傷 OA、訂閱、自動接單、配額情境</td></tr></tbody></table>
-      <div class="callout info">制裁流程僅適用於已完成進池、分數評估、平台傷害確認與人工覆核的候選司機。</div>
-    </section>
-
-    <section class="card" id="signals">
-      <h2 class="section-title">外掛識別信號</h2>
-      <p>
-        BQ 已經顯示，接單速度本身無法區分外掛。近 30 天實查中，最快接單的一批司機完全沒有 <code>Release</code> 記錄。
-        <a href="plugin-driver-executive-workflow.md#bq-數據支持">BQ 證據</a>
-      </p>
-      <p><strong>具有區分度的連續行為包括：</strong></p>
-      <ul><li>release_rate 異常偏高</li><li>放棄後重搶同一筆單</li><li>重搶後附加費高於第一次</li><li>Grace Drop / Driver cancel 異常偏高且集中低價單</li><li>高價單保留、低價單放棄</li></ul>
-      <p>
-        其中 <strong>Grace Drop</strong> 並非只出現在單一訂單類型，而是 <strong>OD + Booking 都會發生</strong>；
-        近 30 天實查顯示，量體以 <strong>OD 為主</strong>，但 <code>Same Day</code> 與 <code>Next Day</code> 亦可見同類事件，
-        因此不能把它當成只屬於某一軌的現象。
-      </p>
-      <div class="callout neutral">
-        判斷重點不在接單速度，而在接單後是否出現反覆放棄、等待加價、再接回訂單的操縱循環。
-      </div>
-    </section>
-
-    <section class="card" id="priority-scenes">
-      <h2 class="section-title">優先關注場景</h2>
-      <p>優先覆核對象並非所有高棄單率司機，而是同時落在以下組合的場景：</p>
-      <ul><li>高加成貨物</li><li>稀疏競爭池</li><li>傍晚 / 深夜供給缺口</li></ul>
-      <p>
-        尤其是機場趕班、搬遷等高壓、高附加費場景，最容易出現「棄單 → 等加價 → 再接」。
-        <a href="plugin-driver-executive-workflow.md#高風險訂單組合什麼最難派最容易被外掛操縱">高風險場景</a>
-      </p>
-    </section>
-
-    <section class="card" id="non-plugin-scenes">
-      <h2 class="section-title">非外掛優先解讀場景</h2>
-      <p>以下兩類場景即使出現高棄單率，也不應直接解讀為外掛：</p>
-      <ul><li>早晨高加成自然搶單</li><li>午間低加成、供給本來就不足</li></ul>
-      <p>前者較接近正常市場搶單行為，後者主要反映供給不足。</p>
-    </section>
-
-    <section class="card" id="goal">
-      <h2 class="section-title">分析目標</h2>
-      <div class="final">
-        本分析的目標不是識別接單速度快的司機，而是識別反覆利用 Release 推高加成、重搶同單，並最終對平台造成淨傷害的司機。
-      </div>
-    </section>
+    <h1>HTML Reports</h1>
+    <p class="lead">可分享嘅靜態報告頁（手機 / PDF）。由 <code>projects/html-pages/</code> 統一發布。</p>
+    <ul>
+      <li class="card">
+        <h2><a href="da-driver-ux-impact/driver_plugin_detection_executive_summary.html">外掛司機候選識別 — 執行摘要</a></h2>
+        <p class="meta">Management / Ops / T&amp;S · 來源 <code>da-driver-ux-impact</code></p>
+        <p class="links">
+          <a href="da-driver-ux-impact/driver_plugin_detection_executive_summary.html">開啟</a>
+          <a href="https://jinwong-prog.github.io/html-pages/da-driver-ux-impact/driver_plugin_detection_executive_summary.html" rel="noopener">GitHub Pages</a>
+        </p>
+      </li>
+      <li class="card">
+        <h2><a href="da-driver-ux-impact/driver_plugin_detection_core_findings.html">外掛司機 — 核心發現與 BQ 證據</a></h2>
+        <p class="meta">Product / Ops / DS · 來源 <code>da-driver-ux-impact</code></p>
+        <p class="links">
+          <a href="da-driver-ux-impact/driver_plugin_detection_core_findings.html">開啟</a>
+          <a href="https://jinwong-prog.github.io/html-pages/da-driver-ux-impact/driver_plugin_detection_core_findings.html" rel="noopener">GitHub Pages</a>
+        </p>
+      </li>
+    </ul>
   </div>
-  <script>
-    function printLongPage() {
-      const old = document.getElementById("print-long-page");
-      if (old) old.remove();
-
-      const pad = 48;
-      const width = Math.max(document.documentElement.scrollWidth, 1100);
-      const height = document.documentElement.scrollHeight + pad;
-      const style = document.createElement("style");
-      style.id = "print-long-page";
-      style.textContent = `@page { size: ${width}px ${height}px; margin: 0; }`;
-      document.head.appendChild(style);
-
-      const cleanup = () => {
-        style.remove();
-        window.removeEventListener("afterprint", cleanup);
-      };
-      window.addEventListener("afterprint", cleanup);
-      window.print();
-    }
-  </script>
 </body>
 </html>

@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>外掛司機識別 — 核心發現與 BQ 證據</title>
+  <style>
+    :root {
+      --bg: #f6f8fb; --card: #fff; --border: #e2e8f0; --text: #0f172a;
+      --muted: #475569; --blue: #1d4ed8; --blue-soft: #eff6ff;
+      --green-soft: #dcfce7; --green: #166534; --orange-soft: #fff7ed;
+      --orange: #9a3412; --red: #b91c1c; --shadow: 0 10px 30px rgba(15,23,42,.08);
+      --radius: 20px; --max: 1100px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      background: var(--bg); color: var(--text); line-height: 1.6;
+    }
+    .page { max-width: var(--max); margin: 0 auto; padding: 32px 20px 64px; }
+    .hero { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; margin-bottom: 24px; }
+    .hero h1 { margin: 0 0 8px; font-size: clamp(2rem, 4vw, 3rem); }
+    .hero p { margin: 0; color: var(--muted); }
+    .badge { display: inline-block; border-radius: 999px; font-weight: 700; background: #eaf2ff; color: #1f5fbf; padding: 10px 16px; }
+    .card {
+      background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+      box-shadow: var(--shadow); padding: 24px 28px; margin-bottom: 20px;
+    }
+    .section-title { margin: 0 0 16px; font-size: 1.45rem; }
+    .sub-title { margin: 22px 0 10px; font-size: 1.12rem; font-weight: 800; }
+    .highlight {
+      background: #eef6ff; border: 1px solid #bfdbfe; border-radius: 16px;
+      padding: 18px 20px; color: #1e3a8a; font-weight: 600; margin: 12px 0;
+    }
+    .callout { border-radius: 16px; padding: 14px 18px; margin-top: 14px; font-weight: 600; }
+    .callout.warn { background: var(--orange-soft); border: 1px solid #fdba74; color: var(--orange); }
+    .callout.danger { background: #fef2f2; border: 1px solid #fca5a5; color: var(--red); }
+    .callout.info { background: var(--blue-soft); border: 1px solid #bfdbfe; color: var(--blue); }
+    .callout.neutral { background: #f8fafc; border: 1px solid #cbd5e1; color: var(--muted); font-weight: 500; }
+    .callout.success { background: var(--green-soft); border: 1px solid #86efac; color: var(--green); }
+    .combo-box {
+      background: #0f172a; color: #e2e8f0; border-radius: 12px; padding: 14px 18px;
+      font-family: ui-monospace, Menlo, monospace; margin: 12px 0; font-weight: 700;
+    }
+    .cycle-box {
+      background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 12px; padding: 14px 18px;
+      font-family: ui-monospace, Menlo, monospace; margin: 12px 0; line-height: 1.8;
+    }
+    pre.code-block {
+      background: #0f172a; color: #e2e8f0; border-radius: 12px; padding: 16px 18px;
+      overflow-x: auto; font-size: .86rem; line-height: 1.5; margin: 12px 0;
+    }
+    table { width: 100%; border-collapse: collapse; font-size: .92rem; margin-top: 12px; }
+    th, td { border-bottom: 1px solid #e5e7eb; padding: 12px 10px; text-align: left; vertical-align: top; }
+    th { background: #f1f5f9; font-weight: 800; }
+    tr:nth-child(even) td { background: #f8fafc; }
+    .mono { font-family: ui-monospace, Menlo, monospace; font-size: .86rem; }
+    ul, ol { margin: 10px 0 14px; padding-left: 1.25rem; }
+    li { margin: 6px 0; }
+    a { color: var(--blue); }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 14px 0; }
+    .type-card { border: 1px solid var(--border); border-radius: 14px; padding: 14px 16px; background: #f8fafc; }
+    .type-card h4 { margin: 0 0 8px; }
+    .type-card p { margin: 0; }
+    .toolbar {
+      position: sticky; top: 0; z-index: 10; background: rgba(246,248,251,.92);
+      backdrop-filter: blur(8px); border-bottom: 1px solid var(--border);
+      margin: -32px -20px 20px; padding: 10px 20px; display: flex; justify-content: flex-end;
+    }
+    button { border: 1px solid #cbd5e1; background: #fff; border-radius: 10px; padding: 8px 14px; cursor: pointer; font-weight: 700; }
+    .final {
+      margin-top: 18px; background: #0f172a; color: #fff; border-radius: 18px; padding: 18px 22px; font-weight: 700;
+    }
+    hr.section-divider { border: none; border-top: 1px dashed #cbd5e1; margin: 24px 0; }
+    @media (max-width: 900px) { .hero, .two-col { grid-template-columns: 1fr; flex-direction: column; } }
+    @media print {
+      .toolbar { display: none; }
+      html, body { height: auto !important; overflow: visible !important; background: #fff;
+        -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .page { max-width: none; padding: 16px 20px 32px; }
+      .card, table, tr, .callout, .highlight, .final, pre, .combo-box {
+        break-inside: auto !important; page-break-inside: auto !important;
+        break-before: auto !important; page-break-before: auto !important;
+        break-after: auto !important; page-break-after: auto !important;
+      }
+      .card { box-shadow: none; }
+      a { text-decoration: none; }
+    }
+</style>
+</head>
+<body>
+  <div class="page">
+    <div class="toolbar">
+      <button type="button" onclick="printLongPage()">存 PDF（單頁長圖）</button>
+    </div>
+    
+    <header class="hero">
+      <div>
+        <h1>核心發現與 BQ 證據</h1>
+        <p>外掛司機識別 — 行為信號、高風險場景、數據支持、定義</p>
+      </div>
+      <span class="badge">BQ / Ops / T&amp;S</span>
+    </header>
+
+    <section class="card" id="core-findings">
+      <h2 class="section-title">核心發現</h2>
+      <div class="highlight">
+        接單速度無法有效識別外掛。真正有區分度的是一整組可量化的訂單操縱行為。
+      </div>
+      <p>可分為兩類：</p>
+      <div class="two-col">
+        <div class="type-card">
+          <h4>1. 直接操縱證據</h4>
+          <p>放棄後重搶同單、重搶後附加費上升</p>
+        </div>
+        <div class="type-card">
+          <h4>2. 輔助行為輪廓</h4>
+          <p>高 <code>release_rate</code>、Grace Drop / Driver cancel 異常、棄低搶高、最終 <code>net_impact_hkd &lt; 0</code></p>
+        </div>
+      </div>
+      <p><strong>可量化信號如下：</strong></p>
+      <ul><li>Release rate 異常高（超出同等級 × 同車種司機 p90）</li><li>Release 後重搶<strong>同一筆</strong>訂單</li><li>重搶後成交加成明顯高於首次</li><li>Grace Drop / 司機主動取消偏高，且集中於低價單</li><li>高價單接受率高、低價單選擇性放棄</li><li>最終對平台造成實際虧損（<code>net_impact_hkd &lt; 0</code>）</li><li>到達時間 / 距離只可作<strong>訂單難度控制變數</strong>，不可直接當作外掛證據</li></ul>
+      <table><thead><tr><th>外掛司機的異常行為</th><th>為什麼是問題</th><th>怎麼在 BQ 看</th></tr></thead><tbody><tr><td><strong>Release 偏高</strong></td><td>搶到單後不是要完成，而是先放掉來推高加成</td><td><code>release_rate</code> 高於同等級 × 同車種的 p90</td></tr><tr><td><strong>Release 後重搶同一筆單</strong></td><td>最像「搶單 → 放單 → 再搶單」的套利循環</td><td>同一 <code>driver_id</code> 放棄後，再次接觸同一 <code>order_request_id</code>（最強信號）</td></tr><tr><td><strong>加成升高後才成交</strong></td><td>Release 讓車資變高，司機再回頭吃高價</td><td><code>surcharge_delta &gt; 0</code>；1 次約 +8%，2 次以上約 +15%</td></tr><tr><td><strong>Grace Drop / 司機取消偏高</strong></td><td>可能是在避開正式 <code>release_rate</code>，或選擇性放掉低價單</td><td><code>cd=21</code> = 接單後極短時間內放棄（快接快甩）；<code>cd=3 AND actor_type='Driver'</code> = 由司機主動發起取消</td></tr><tr><td><strong>高價單 / 機場單占比偏高，低價單放棄偏多</strong></td><td>有外掛輔助時，更容易挑高報酬的單來接</td><td>機場單接受率 vs 低 GTV 訂單的 <code>release / cancel rate</code></td></tr><tr><td><strong>造成用戶重下單 / 等待更久 / 流失</strong></td><td>這才是平台真正要處理的商業傷害</td><td><code>is_reordered</code>、UX harm、<code>net_impact_hkd</code></td></tr></tbody></table>
+      <div class="callout info">
+        <strong>事件碼白話翻譯：</strong>
+        <ul>
+          <li><code>cd=21</code>（Grace Drop）= 司機接單後在極短時間內放棄，較接近「接咗即刻甩手」的特殊棄單；在 OD 單近 30 天實查中，接觸到 Grace Drop 的時間差 p50 = <strong>3 秒</strong>、p90 = <strong>6 秒</strong></li>
+          <li><code>cd=3 AND actor_type='Driver'</code> = 這宗取消是由<strong>司機主動發起</strong>，不是乘客取消，也不是系統自動取消</li>
+          <li>以上兩者都屬<strong>事件層級（event-level）</strong>記錄，可細到單張訂單、單一司機、單次事件時間點；不是只到日彙總</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="card" id="high-risk-scenes">
+      <h2 class="section-title">高風險訂單組合：難派且易受外掛操縱的場景</h2>
+      <div class="callout neutral">BQ 已確認。以下分類幫助 Ops 決定在哪裡重點監控、哪裡可以暫緩。</div>
+      <p>本節按三類場景分類：</p>
+      <ol><li><strong>優先監控場景</strong></li><li><strong>自然市場行為場景</strong></li><li><strong>供給不足場景</strong></li></ol>
+      <p>用途是排序覆核優先順序，避免把人工覆核資源放在錯的場景。</p>
+
+      <h3 class="sub-title">① 高風險組合</h3>
+      <p>以下三個條件同時出現時，最容易出現「放棄 → 等加價 → 再接」：</p>
+      <table><thead><tr><th>條件</th><th>說明</th><th>BQ 信號</th></tr></thead><tbody><tr><td><strong>高加成貨物</strong></td><td>機場趕班 avg HKD 45 / 搬遷 avg HKD 17；放棄率最高</td><td><code>request_remarks</code> 關鍵字分類；機場單 <code>destination_location_region</code></td></tr><tr><td><strong>稀疏競爭池</strong></td><td>同一筆單曾被分配 ≥ 4 次（<code>count_assignations ≥ 4</code>）；bot 知道訂單難找人，放棄可有效推高加成</td><td><code>order_master_table_hk.count_assignations</code></td></tr><tr><td><strong>傍晚 / 深夜時段</strong></td><td>供給緊張，放棄後加成升幅更大</td><td><code>EXTRACT(HOUR FROM created_at)</code></td></tr></tbody></table>
+      <p>加上 bot 本身的確認信號：<strong><code>release_rate</code> 高 AND 同單重接率高</strong></p>
+      <p>共同特徵為：訂單附加費高、競爭池稀疏、時段位於供給最緊區間。司機放棄一輪後，更有機會等到平台調高加價，再接回同一張單。</p>
+      <div class="callout warn">
+        ⚠️ <strong>寵物 / 急件醫療 已移出高風險清單</strong>：BQ 確認加成極低（HKD 5–11），放棄率低於平均，bot 無經濟誘因針對——Ops 無需對這兩類貨物特別加強監控。
+      </div>
+
+      <hr class="section-divider" />
+      <h3 class="sub-title">② 最容易被推價的區間</h3>
+      <div class="combo-box">加成 $31–60  ×  中距離 GTV $200–350  ×  傍晚 18:00–20:00</div>
+      <p>此組合最容易出現「棄單 → 等加成升 → 重搶」：</p>
+      <ul><li>加成已夠高，值得操縱；但未到 $61+，平台動態加成規則仍有上升空間</li><li>中距離 GTV 代表用戶議價能力低，容易被迫接受更高車費</li><li>傍晚是供需缺口最大的時段</li></ul>
+      <p>在這個區間內，若同時看到 <code>release_rate</code> 高 + 同單重接，覆核優先級應提高。</p>
+      <p>該區間同時具備高收益、可操作性高，以及對用戶傷害較大的三項特徵。</p>
+
+      <hr class="section-divider" />
+      <h3 class="sub-title">③ 自然搶單場景</h3>
+      <div class="combo-box">加成 $61–100  ×  早晨 06:00–08:00</div>
+      <p>此區間司機自然搶單意欲高，<strong>不屬於外掛信號</strong>。若偵測到高 release rate，需先排除「早晨高加成單被合法搶走後放棄」的正常行為。</p>
+      <p>高加成與高搶單意願本身不代表外掛。若缺乏重搶同單、加價後再接或其他操縱證據，不應僅因訂單熱門而提高制裁優先級。</p>
+
+      <hr class="section-divider" />
+      <h3 class="sub-title">④ 供給不足場景</h3>
+      <div class="combo-box">加成 $1–15  ×  午間 13:00–15:00  ×  中距離 GTV $200–350</div>
+      <p>此類訂單的高棄單率主要由<strong>供給不足</strong>造成，並非 bot 操縱。誤把這類訂單的高棄單率歸因於外掛，會污染 Baseline Detection Model 的 p90 門檻。</p>
+      <div class="callout info">Ops 覆核時若發現候選司機主要棄的是這類訂單，應降低信心分數，不建議制裁。</div>
+      <p>若主要問題來自供給而非操縱，對應措施應為供給修復、加成規則優化或派單策略調整，而非優先處理司機名單；否則會把供給問題誤判為紀律問題。</p>
+    </section>
+
+    <section class="card" id="bq-evidence">
+      <h2 class="section-title">BQ 數據支持</h2>
+
+      <h3 class="sub-title">① 接單速度無法區分外掛（反直覺關鍵發現）</h3>
+      <p>30 天實查（2026-06-11，HK TRANSPORT 非 OA 公海單）：</p>
+      <table><thead><tr><th>接單類型</th><th>≤5 秒筆數</th><th>Release = 0？</th></tr></thead><tbody><tr><td>非 OA 公海搶單</td><td>521 筆</td><td>✅ 全部</td></tr></tbody></table>
+      <div class="callout success">接得最快的一批，棄單率為零。速度不是外掛信號。</div>
+
+      <hr class="section-divider" />
+      <h3 class="sub-title">② 重搶同單：最強操縱信號</h3>
+      <p>30 天內（HK TRANSPORT）：</p>
+      <ul><li><strong>3,555 次</strong>同司機 Release → 重搶同一筆訂單事件</li><li>涉及 <strong>1,243 宗</strong>訂單、<strong>1,146 位</strong>司機</li><li>重搶後平均加成 <strong>HKD 14.6</strong>，正常完成單僅 <strong>HKD 13.1</strong></li></ul>
+      <div class="callout danger">同一司機放棄後再重搶同單，幾乎無合法解釋。</div>
+
+      <hr class="section-divider" />
+      <h3 class="sub-title">③ Release 次數與加成升幅直接掛鉤</h3>
+      <table><thead><tr><th>Release 次數</th><th>訂單數</th><th>平均加成</th><th>升幅</th></tr></thead><tbody><tr><td>0 次</td><td>358,584（87.3%）</td><td>$13.0</td><td>—</td></tr><tr><td>1 次</td><td>43,769（10.7%）</td><td>$14.1</td><td><strong>+8%</strong></td></tr><tr><td>2+ 次</td><td>8,465（2.1%）</td><td>$14.9</td><td><strong>+15%</strong></td></tr></tbody></table>
+      <p>訂單被反覆放棄後，平台動態加成機制提高車資，令 Release → 重搶具備明顯經濟誘因。</p>
+
+      <hr class="section-divider" />
+      <h3 class="sub-title">④ Release 對平台的短中長期影響（BQ 實查，2026-06-12，全 HK TRANSPORT，30 天）</h3>
+      <div class="callout warn">⚠️ 以下三組與上方③的 release 次數表口徑不同：③ 只含 Booking 單；以下含全 TRANSPORT（OD + Booking）。</div>
+      <table><thead><tr><th>訂單群組</th><th>訂單數</th><th>平均加成</th><th>平均 GTV</th><th>平均平台佣金</th><th>完成率</th></tr></thead><tbody><tr><td><code>no_release</code>（無放棄）</td><td>402,600</td><td>HKD 13.0</td><td>HKD 156.6</td><td>HKD 15.8</td><td>92.1%</td></tr><tr><td><code>released_not_reordered</code>（放棄、用戶未重下單）</td><td>67,813</td><td><strong>HKD 14.8</strong></td><td><strong>HKD 163.4</strong></td><td><strong>HKD 16.8</strong></td><td><strong>79.7%</strong></td></tr><tr><td><code>reordered</code>（放棄後用戶被迫重新下單，原單本身）</td><td>28,184</td><td>HKD 14.6</td><td>HKD 152.5</td><td>HKD 15.3</td><td>0%（原單已棄）</td></tr></tbody></table>
+      <p><strong>解讀：</strong></p>
+      <ul><li><strong>短期</strong>：被 release 的單平均加成更高（+$1.8）、佣金更高——單從單筆角度，平台可能多賺一點</li><li><strong>中期</strong>：完成率明顯下降（92.1% → 79.7%）；被迫重下單的用戶有 <strong>35.8%</strong> 下一張單仍然取消，加成只升 +$0.7</li><li><strong>長期</strong>：被放棄但沒有重下單的用戶（released_not_reordered），30 天消失率比正常用戶高 2.5pp（51.7% vs 49.2%），90 天高 3.8pp（38.8% vs 35.0%）</li></ul>
+      <div class="callout info">
+        結論：<strong>客人加錢，平台短期未必吃虧；但只要放棄行為讓完成率下降、補償變多、客人之後不再回來，整體平台淨影響會由「短期多賺」變成「中長期少賺甚至貼錢」。</strong>
+      </div>
+
+      <hr class="section-divider" />
+      <h3 class="sub-title">⑤ Grace Drop 低估問題：實際棄單行為可能被嚴重低估</h3>
+      <p>30 天實查（2026-06-15，HK TRANSPORT，raw <code>source_ts</code>，Driver）：</p>
+      <table><thead><tr><th>棄單類型</th><th>說明</th><th>事件數</th><th>涉及司機數</th><th>目前計入棄單率？</th></tr></thead><tbody><tr><td>正式 Release（<code>cd=4</code>）</td><td>司機<strong>主動放棄</strong>已接訂單</td><td><strong>91,356 宗</strong></td><td>—</td><td>✅</td></tr><tr><td>Grace Drop（<code>cd=21</code>）</td><td>司機在<strong>接單後極短時間內</strong>放棄，系統視作特殊取消</td><td><strong>436,366 宗</strong></td><td><strong>5,376 位</strong></td><td>❌</td></tr></tbody></table>
+      <p>Grace Drop 在近 30 天的事件量約為正式 Release 的 <strong>4.8 倍</strong>，而且目前<strong>完全不計入棄單率</strong>；若只看正式 Release，實際棄單行為會被明顯低估。</p>
+      <div class="callout info">
+        <strong>計法要分開看：</strong>
+        <ul>
+          <li><strong>事件量計法</strong>：看近 30 / 90 / 180 天累積有多少宗 <code>cd=21</code>，用來判斷 Grace Drop 是否屬高量體事件</li>
+          <li><strong>每單時間差計法</strong>：看單一訂單從接單到 Grace Drop 相隔幾多秒 / 分鐘，用來判斷它是否屬「快接快甩」</li>
+        </ul>
+        <p><strong>OD 單每單時間差（近 30 天，raw <code>source_ts</code>，On Demand，Driver）：</strong></p>
+        <ul>
+          <li>接觸 → Grace Drop：p50 = <strong>3 秒</strong>、p90 = <strong>6 秒</strong>、p95 = <strong>7 秒</strong></li>
+          <li>接觸 → 正式 Release：p50 = <strong>37 秒</strong>、p90 = <strong>204 秒</strong>（約 <strong>3.4 分鐘</strong>）、p95 = <strong>446 秒</strong>（約 <strong>7.4 分鐘</strong>）</li>
+        </ul>
+        <p>白話理解：<code>Grace Drop</code> 更接近「<strong>接咗即刻甩手</strong>」；正式 <code>Release</code> 則較多發生在接單後數十秒至數分鐘。</p>
+      </div>
+      <div class="callout warn">Product 需決定是否將 Grace Drop 納入計算，偵測門檻才能被正確校準。</div>
+
+      <hr class="section-divider" />
+      <h3 class="sub-title">⑤ 到達時間與距離：只適合做控制變數，不適合直接做外掛信號</h3>
+      <p>BQ 實查（2026-06-12，HK TRANSPORT 預約單，近 30 天）：</p>
+      <ul><li><code>gogox-analytics-prod.hk_db.orders.driver_arrived_at</code> 可透過 <code>order_request_id + driver_id</code> join 回訂單</li><li>已完成訂單中，<code>driver_arrived_at</code> 覆蓋率 <strong>100%</strong></li><li><code>order_master_table_hk.waypoint_straight_distance_km</code> 覆蓋率 <strong>98.3%</strong></li><li>但 <code>request_pickup_time → driver_arrived_at</code> 分佈很廣：<strong>p05 = −24 分鐘、p50 = 9 分鐘、p95 = 95 分鐘</strong></li></ul>
+      <p>上述分佈反映的是<strong>訂單本身的難度</strong>，例如預約單提早接單、特定區域供應不足、中長途訂單本來就較難派，<strong>不是外掛操縱的直接證據</strong>。</p>
+      <p>高棄單司機（top 10% release）與低棄單司機（bottom 50% release）比較：</p>
+      <table><thead><tr><th>群組</th><th>request_pickup_time → driver_arrived_at 中位數</th><th>waypoint_straight_distance_km 中位數</th></tr></thead><tbody><tr><td>bottom 50% release</td><td>6 分鐘</td><td>10.5 km</td></tr><tr><td>top 10% release</td><td>20 分鐘</td><td>17.1 km</td></tr></tbody></table>
+      <p>判讀：高棄單司機接到的訂單，平均距離更長、難度更高、到達更慢。<strong>可以用來解釋「這張單本身比較難派」，但不能單獨作為外掛證據。</strong></p>
+      <p><strong>BQ 欄位與計算公式（控制變數用途，不作制裁依據）：</strong></p>
+      <pre class="code-block">-- 預約時間到司機到達的時間差（訂單難度 proxy）
+-- ⚠️ 起點是 request_pickup_time（預約時間），不是接單時間
+pickup_to_arrive_min
+= DATETIME_DIFF(
+    DATETIME(orders.driver_arrived_at, 'Asia/Hong_Kong'),
+    order_master_table_hk.request_pickup_time,
+    MINUTE
+  )
+
+-- 直線距離 proxy（非實際行駛公里）
+distance_proxy_km
+= order_master_table_hk.waypoint_straight_distance_km</pre>
+      <div class="callout warn">
+        ⚠️ <strong>限制：</strong>
+        <ol>
+          <li><code>driver_arrived_at</code> 適合觀察履約節奏，<strong>不適合直接識別外掛</strong></li>
+          <li><code>waypoint_straight_distance_km</code> 只是直線距離估算，<strong>不是實際行駛公里數</strong></li>
+          <li>若要使用，應放在 <code>booking_type × hour × pickup_region × distance_bucket</code> 的分層比較中</li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="card" id="plugin-driver-definition">
+      <h2 class="section-title">外掛司機定義</h2>
+      <p>本專案所指的「外掛司機」，不是接單速度快的司機，而是疑似透過第三方 bot 反覆執行以下操縱循環的司機：</p>
+      <div class="cycle-box">搶單 → 故意 Release → 等待平台提高動態加成 → 重搶同一筆單 → 以更高費用成交</div>
+      <p>識別依據是<strong>訂單操縱行為</strong>，而非接單速度。</p>
+      <p>進入制裁候選須<strong>三個主條件同時成立</strong>：</p>
+      <ol><li>Release rate 超出同等級 × 同車種司機 <strong>p90</strong></li><li>至少一項惡意信號：重搶同單，或 Release 後加成升高且 Grace Drop 異常</li><li><code>net_impact_hkd &lt; 0</code>（即 <strong>平台從這位司機身上賺到的佣金，少過他造成的用戶損失</strong>；講人話即 <strong>平台實際蝕錢</strong>）— <strong>BA 衍生計算值</strong>，非 BQ 原生欄位；由 BQ 兩項數據合併計算：平台佣金收入（平台從完成單實收的佣金）− 用戶傷害估算（例如加成多付、流失、客服補償）</li></ol>
+      <p>詳見 <a href="plugin-driver-executive-workflow.md#一問題是什麼">一、net_impact_hkd 說明</a></p>
+      <p><strong>評分算法（管理層說明版）：</strong></p>
+      <ul><li><strong>主要信號</strong>：<code>release_rate</code>、<code>reaccept_same_order_flag</code>、<code>surcharge_delta</code>、<code>net_impact_hkd</code></li><li><strong>輔助標記</strong>：<code>grace_drop_ratio</code>、<code>driver_cancel_rate_30d</code>、高價單接受率偏高 / 低價單棄單偏高</li><li><strong>控制變數</strong>：<code>booking_type</code>、<code>pickup_region</code>、<code>hour_of_day</code>、<code>waypoint_straight_distance_km</code>、<code>driver_arrived_at</code></li></ul>
+      <div class="final">
+        先確認是否存在訂單操縱行為，再用時段、區域、距離、到達時間判斷訂單本身是否較難派。
+        履約速度慢或距離長，只能作為難度控制變數，不能直接推論外掛。
+      </div>
+    </section>
+
+  </div>
+  <script>
+    function printLongPage() {
+      const old = document.getElementById("print-long-page");
+      if (old) old.remove();
+      const pad = 48;
+      const width = Math.max(document.documentElement.scrollWidth, 1100);
+      const height = document.documentElement.scrollHeight + pad;
+      const style = document.createElement("style");
+      style.id = "print-long-page";
+      style.textContent = `@page { size: ${width}px ${height}px; margin: 0; }`;
+      document.head.appendChild(style);
+      const cleanup = () => { style.remove(); window.removeEventListener("afterprint", cleanup); };
+      window.addEventListener("afterprint", cleanup);
+      window.print();
+    }
+</script>
+</body>
+</html>
