@@ -49,15 +49,29 @@
     .callout.danger { background: #fef2f2; border: 1px solid #fca5a5; color: var(--red); }
     .callout.info { background: var(--blue-soft); border: 1px solid #bfdbfe; color: var(--blue); }
     .callout.neutral { background: #f8fafc; border: 1px solid #cbd5e1; color: var(--muted); font-weight: 500; }
-    .flow { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 16px 0; }
-    .flow-step {
-      background: var(--blue-soft); border: 1px solid #93c5fd; color: var(--blue);
-      border-radius: 12px; padding: 12px 18px; font-weight: 800; min-width: 150px; text-align: center;
+    .flow {
+      display: flex; flex-wrap: nowrap; align-items: center; justify-content: space-between;
+      gap: 6px; margin: 16px 0; padding: 4px 0;
     }
-    .flow-arrow { color: #94a3b8; font-weight: 800; }
+    .flow-step {
+      flex: 1 1 0; min-width: 0;
+      display: flex; align-items: center; gap: 10px;
+      background: var(--blue-soft); border: 1px solid #93c5fd; color: var(--blue);
+      border-radius: 12px; padding: 12px 14px; font-weight: 800;
+    }
+    .flow-idx {
+      flex: 0 0 auto; width: 26px; height: 26px; border-radius: 50%;
+      background: var(--blue); color: #fff; font-size: .82rem;
+      display: inline-flex; align-items: center; justify-content: center;
+    }
+    .flow-label { line-height: 1.3; font-size: .92rem; }
+    .flow-sep {
+      flex: 0 0 auto; color: #94a3b8; font-weight: 800; font-size: 1.1rem;
+      display: flex; align-items: center; justify-content: center; width: 1.25rem;
+    }
+    .flow-sep .sep-v { display: none; }
     .flow-code {
-      background: #0f172a; color: #e2e8f0; border-radius: 12px; padding: 12px 16px;
-      font-family: ui-monospace, Menlo, monospace; margin: 10px 0 16px;
+      display: none;
     }
     .table-wrap {
       overflow-x: auto; -webkit-overflow-scrolling: touch;
@@ -95,39 +109,57 @@
     .final {
       margin-top: 18px; background: #0f172a; color: #fff; border-radius: 18px; padding: 18px 22px; font-weight: 700;
     }
+    @media (max-width: 1024px) and (min-width: 769px) {
+      .flow {
+        overflow-x: auto; -webkit-overflow-scrolling: touch;
+        justify-content: flex-start; padding-bottom: 4px;
+      }
+      .flow-step { flex: 0 0 auto; min-width: 132px; }
+    }
     @media (max-width: 900px) {
       .hero { flex-direction: column; align-items: flex-start; }
       .badge { align-self: flex-start; }
     }
-    @media (max-width: 640px) {
-      .page { padding: 18px 14px 40px; }
+    @media (max-width: 768px) {
+      .page { padding: 14px 12px 36px; }
       .toolbar {
-        margin: -18px -14px 14px; padding: 8px 14px;
+        margin: -14px -12px 12px; padding: 8px 12px;
         justify-content: stretch;
       }
       .toolbar button { width: 100%; min-height: 44px; font-size: .95rem; }
-      .hero h1 { font-size: 1.6rem; line-height: 1.2; }
-      .hero p { font-size: .95rem; }
-      .card { padding: 16px 14px; margin-bottom: 14px; border-radius: 14px; }
+      .hero h1 { font-size: 1.55rem; line-height: 1.2; }
+      .hero p { font-size: .92rem; }
+      .card {
+        padding: 14px 12px; margin-bottom: 12px; border-radius: 12px;
+        box-shadow: 0 4px 16px rgba(15,23,42,.06);
+      }
       .section-title {
-        font-size: 1.1rem; gap: 10px; align-items: flex-start; line-height: 1.35;
+        font-size: 1.05rem; gap: 8px; align-items: flex-start; line-height: 1.35;
       }
-      .sub-title { font-size: 1.02rem; margin-top: 16px; }
-      .num { width: 30px; height: 30px; font-size: .9rem; }
-      .highlight, .callout { padding: 12px 14px; font-size: .95rem; }
-      .flow { flex-direction: column; align-items: stretch; gap: 8px; }
-      .flow-arrow { display: none; }
-      .flow-step { min-width: 0; width: 100%; padding: 10px 14px; font-size: .92rem; }
-      .flow-code {
-        font-size: .78rem; overflow-x: auto; white-space: nowrap; padding: 10px 12px;
+      .sub-title { font-size: 1rem; margin-top: 14px; }
+      .num { width: 28px; height: 28px; font-size: .85rem; }
+      .highlight, .callout { padding: 11px 12px; font-size: .92rem; }
+      .flow {
+        flex-direction: column; align-items: stretch; gap: 0; padding: 0;
       }
+      .flow-step { width: 100%; flex: none; padding: 11px 12px; }
+      .flow-label { font-size: .9rem; }
+      .flow-sep {
+        width: 100%; height: 28px; margin: 2px 0;
+      }
+      .flow-sep .sep-h { display: none; }
+      .flow-sep .sep-v { display: inline; font-size: 1.15rem; }
       .table-wrap::after { display: block; }
       th, td { padding: 9px 8px; font-size: .82rem; }
       .mono { font-size: .76rem; }
       .score { width: 36px; height: 36px; font-size: .85rem; }
-      ul { padding-left: 1.1rem; }
-      .final { padding: 14px 16px; font-size: .95rem; }
+      ul { padding-left: 1.05rem; }
+      .final { padding: 14px 14px; font-size: .92rem; }
       a + a { margin-left: 0; display: inline-block; margin-top: 6px; }
+    }
+    @media (max-width: 480px) {
+      .flow-step { flex-direction: column; align-items: flex-start; gap: 6px; }
+      .flow-idx { width: 24px; height: 24px; font-size: .78rem; }
     }
     @media print {
       .toolbar { display: none; }
@@ -203,8 +235,7 @@
         <strong>是否進池、證據分數是否足夠、是否已對平台造成實際傷害、以及是否通過人工覆核。</strong>
       </p>
       <p>本框架與下方的 <a href="plugin-driver-executive-workflow.md#四decision-flow判斷流程">Decision Flow</a> 完全對應，順序一致：</p>
-      <div class="flow-code">Entry gate → Evidence score → Action gate → Level 判斷</div>
-      <div class='flow'><div class='flow-step'>Entry gate</div><div class='flow-arrow' aria-hidden='true'>→</div><div class='flow-step'>Evidence score</div><div class='flow-arrow' aria-hidden='true'>→</div><div class='flow-step'>Action gate</div><div class='flow-arrow' aria-hidden='true'>→</div><div class='flow-step'>Level 判斷</div></div>
+      <div class='flow'><div class='flow-step'><span class='flow-idx'>1</span><span class='flow-label'>Entry gate</span></div><div class='flow-sep' aria-hidden='true'><span class='sep-h'>→</span><span class='sep-v'>↓</span></div><div class='flow-step'><span class='flow-idx'>2</span><span class='flow-label'>Evidence score</span></div><div class='flow-sep' aria-hidden='true'><span class='sep-h'>→</span><span class='sep-v'>↓</span></div><div class='flow-step'><span class='flow-idx'>3</span><span class='flow-label'>Action gate</span></div><div class='flow-sep' aria-hidden='true'><span class='sep-h'>→</span><span class='sep-v'>↓</span></div><div class='flow-step'><span class='flow-idx'>4</span><span class='flow-label'>Level 判斷</span></div></div>
       <p class="callout neutral">
         完整打分表、公式與欄位口徑見後文的 <a href="plugin-driver-executive-workflow.md#scorecard-full">外掛信心分數打分表</a>。
       </p>
