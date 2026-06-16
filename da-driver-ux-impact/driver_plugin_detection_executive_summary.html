@@ -13,10 +13,12 @@
       --radius: 20px; --max: 1100px;
     }
     * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
     body {
       margin: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
       background: var(--bg); color: var(--text); line-height: 1.6;
+      overflow-x: clip;
     }
     .page { max-width: var(--max); margin: 0 auto; padding: 32px 20px 64px; }
     .hero { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; margin-bottom: 24px; }
@@ -57,10 +59,25 @@
       background: #0f172a; color: #e2e8f0; border-radius: 12px; padding: 12px 16px;
       font-family: ui-monospace, Menlo, monospace; margin: 10px 0 16px;
     }
-    table { width: 100%; border-collapse: collapse; font-size: .92rem; margin-top: 12px; }
-    th, td { border-bottom: 1px solid #e5e7eb; padding: 12px 10px; text-align: left; vertical-align: top; }
+    .table-wrap {
+      overflow-x: auto; -webkit-overflow-scrolling: touch;
+      margin: 12px 0; border: 1px solid var(--border); border-radius: 12px;
+      background: #fff;
+    }
+    .table-wrap::after {
+      content: "← 左右滑動查看更多 →"; display: none;
+      padding: 6px 10px; font-size: .75rem; color: var(--muted); text-align: center;
+      border-top: 1px solid var(--border); background: #f8fafc;
+    }
+    table { width: 100%; border-collapse: collapse; font-size: .92rem; margin: 0; }
+    th, td {
+      border-bottom: 1px solid #e5e7eb; padding: 12px 10px; text-align: left; vertical-align: top;
+      word-break: break-word; overflow-wrap: anywhere;
+    }
     th { background: #f1f5f9; font-weight: 800; }
     tr:nth-child(even) td { background: #f8fafc; }
+    .table-wrap table { min-width: 520px; }
+    .evidence-wrap table { min-width: 680px; }
     .mono { font-family: ui-monospace, Menlo, monospace; font-size: .86rem; }
     .score {
       display: inline-flex; align-items: center; justify-content: center;
@@ -78,7 +95,40 @@
     .final {
       margin-top: 18px; background: #0f172a; color: #fff; border-radius: 18px; padding: 18px 22px; font-weight: 700;
     }
-    @media (max-width: 900px) { .hero { flex-direction: column; } }
+    @media (max-width: 900px) {
+      .hero { flex-direction: column; align-items: flex-start; }
+      .badge { align-self: flex-start; }
+    }
+    @media (max-width: 640px) {
+      .page { padding: 18px 14px 40px; }
+      .toolbar {
+        margin: -18px -14px 14px; padding: 8px 14px;
+        justify-content: stretch;
+      }
+      .toolbar button { width: 100%; min-height: 44px; font-size: .95rem; }
+      .hero h1 { font-size: 1.6rem; line-height: 1.2; }
+      .hero p { font-size: .95rem; }
+      .card { padding: 16px 14px; margin-bottom: 14px; border-radius: 14px; }
+      .section-title {
+        font-size: 1.1rem; gap: 10px; align-items: flex-start; line-height: 1.35;
+      }
+      .sub-title { font-size: 1.02rem; margin-top: 16px; }
+      .num { width: 30px; height: 30px; font-size: .9rem; }
+      .highlight, .callout { padding: 12px 14px; font-size: .95rem; }
+      .flow { flex-direction: column; align-items: stretch; gap: 8px; }
+      .flow-arrow { display: none; }
+      .flow-step { min-width: 0; width: 100%; padding: 10px 14px; font-size: .92rem; }
+      .flow-code {
+        font-size: .78rem; overflow-x: auto; white-space: nowrap; padding: 10px 12px;
+      }
+      .table-wrap::after { display: block; }
+      th, td { padding: 9px 8px; font-size: .82rem; }
+      .mono { font-size: .76rem; }
+      .score { width: 36px; height: 36px; font-size: .85rem; }
+      ul { padding-left: 1.1rem; }
+      .final { padding: 14px 16px; font-size: .95rem; }
+      a + a { margin-left: 0; display: inline-block; margin-top: 6px; }
+    }
     @media print {
       .toolbar { display: none; }
       html, body {
@@ -160,11 +210,11 @@
       </p>
 
       <h3 class="sub-title">1. 進池條件</h3>
-      <table><thead><tr><th>檢核項目</th><th>商業意涵</th><th>通過條件</th></tr></thead><tbody><tr><td>這是不是我們要看的司機？</td><td>只看 HK TRANSPORT、三種車型、活躍帳號</td><td>TRANSPORT、hk、van/mudou/mudou9、帳號有效</td></tr><tr><td>樣本夠不夠？</td><td>單太少就不要判斷</td><td>OD 接觸 ≥ 30 或 Booking 接觸 ≥ 5</td></tr><tr><td>最近 30 天有沒有先異常？</td><td>如果連基本異常都沒有，就不要往下看</td><td>至少一條軌 release_rate_30 &gt; 同組 p90（方法）</td></tr><tr><td>有沒有明顯合法例外？</td><td>先排除 OA 豁免、配額、純接單快</td><td>有例外就不進打分</td></tr></tbody></table>
+      <div class="table-wrap"><table><thead><tr><th>檢核項目</th><th>商業意涵</th><th>通過條件</th></tr></thead><tbody><tr><td>這是不是我們要看的司機？</td><td>只看 HK TRANSPORT、三種車型、活躍帳號</td><td>TRANSPORT、hk、van/mudou/mudou9、帳號有效</td></tr><tr><td>樣本夠不夠？</td><td>單太少就不要判斷</td><td>OD 接觸 ≥ 30 或 Booking 接觸 ≥ 5</td></tr><tr><td>最近 30 天有沒有先異常？</td><td>如果連基本異常都沒有，就不要往下看</td><td>至少一條軌 release_rate_30 &gt; 同組 p90（方法）</td></tr><tr><td>有沒有明顯合法例外？</td><td>先排除 OA 豁免、配額、純接單快</td><td>有例外就不進打分</td></tr></tbody></table></div>
       <div class="callout danger">未通過進池條件者，不打分，也不列入候選。</div>
 
       <h3 class="sub-title">2. 證據分數（evidence score，0–10）</h3>
-      <table class='evidence'><thead><tr><th>信號</th><th>商業意涵</th><th>時間窗 / 命中門檻</th><th>依據來源</th><th>分數</th></tr></thead><tbody><tr><td><strong>放棄後又接回同一張單</strong></td><td>最像刻意放單等時機再接</td><td class='mono'>近 30 天；同一 driver_id + order_request_id 先 release、後重接；MVP 簡表先以至少 1 宗命中計分</td><td class='mono'>公式 C；BQ 30 天實查（2026-06-11，HK TRANSPORT）</td><td><span class='score'>+3</span></td></tr><tr><td><strong>接回來時價格變高了</strong></td><td>不只是重接，而是等加價後才接</td><td class='mono'>近 30 天；在同單重接事件中 surcharge_delta_hkd &gt; 0；MVP 簡表先以至少 1 宗命中計分；完整強信號門檻見公式 C</td><td class='mono'>公式 C；BQ 30 天實查；強信號版需再看 escalation_count / avg_surcharge_lift</td><td><span class='score'>+2</span></td></tr><tr><td><strong>90 天都反覆異常</strong></td><td>不是單日失常，是持續行為</td><td class='mono'>已通過 30 天 Entry gate 後，再看 90 天同一軌是否仍高於同組 p90；OD + Booking 兩軌同時超標亦只計一次</td><td class='mono'>同組 p90 比較；30 天 + 90 天雙窗口驗證</td><td><span class='score'>+2</span></td></tr><tr><td><strong>cancel 後又接回同一張單</strong></td><td>可疑，但比正式 release 弱</td><td class='mono'>近 30 天事件窗建議比照同單重接；同一 driver_id + order_request_id 先 cancel、後重接；MVP 先以至少 1 宗命中計分</td><td class='mono'>2026 H1 BQ 實查確認存在；規模約為 release 重搶的 1/6.7</td><td><span class='score'>+1</span></td></tr><tr><td><strong>明顯棄低搶高</strong></td><td>低價單常放、高價單常留</td><td class='mono'>近 30 天司機行為窗口；任一條成立即可：cherry_pick_score &gt; 0.30 或 region_cherry_pick &gt; 0.25；公式 A 另有樣本要求 low ≥ 5、high ≥ 3</td><td class='mono'>公式 A / 公式 B；Shadow Mode 待校準</td><td><span class='score'>+1</span></td></tr><tr><td><strong>Grace Drop / cancel 特別高，且集中低價單</strong></td><td>可能是在繞開正式 release 偵測</td><td class='mono'>近 30 天；grace_drop_rate 或 driver_cancel_rate_30d 高於同組 p90，且低 GTV / 低加成桶高於同司機高 GTV / 高加成桶</td><td class='mono'>同組 p90 比較；30 天行為窗口</td><td><span class='score'>+1</span></td></tr></tbody></table>
+      <div class="table-wrap evidence-wrap"><table class='evidence'><thead><tr><th>信號</th><th>商業意涵</th><th>時間窗 / 命中門檻</th><th>依據來源</th><th>分數</th></tr></thead><tbody><tr><td><strong>放棄後又接回同一張單</strong></td><td>最像刻意放單等時機再接</td><td class='mono'>近 30 天；同一 driver_id + order_request_id 先 release、後重接；MVP 簡表先以至少 1 宗命中計分</td><td class='mono'>公式 C；BQ 30 天實查（2026-06-11，HK TRANSPORT）</td><td><span class='score'>+3</span></td></tr><tr><td><strong>接回來時價格變高了</strong></td><td>不只是重接，而是等加價後才接</td><td class='mono'>近 30 天；在同單重接事件中 surcharge_delta_hkd &gt; 0；MVP 簡表先以至少 1 宗命中計分；完整強信號門檻見公式 C</td><td class='mono'>公式 C；BQ 30 天實查；強信號版需再看 escalation_count / avg_surcharge_lift</td><td><span class='score'>+2</span></td></tr><tr><td><strong>90 天都反覆異常</strong></td><td>不是單日失常，是持續行為</td><td class='mono'>已通過 30 天 Entry gate 後，再看 90 天同一軌是否仍高於同組 p90；OD + Booking 兩軌同時超標亦只計一次</td><td class='mono'>同組 p90 比較；30 天 + 90 天雙窗口驗證</td><td><span class='score'>+2</span></td></tr><tr><td><strong>cancel 後又接回同一張單</strong></td><td>可疑，但比正式 release 弱</td><td class='mono'>近 30 天事件窗建議比照同單重接；同一 driver_id + order_request_id 先 cancel、後重接；MVP 先以至少 1 宗命中計分</td><td class='mono'>2026 H1 BQ 實查確認存在；規模約為 release 重搶的 1/6.7</td><td><span class='score'>+1</span></td></tr><tr><td><strong>明顯棄低搶高</strong></td><td>低價單常放、高價單常留</td><td class='mono'>近 30 天司機行為窗口；任一條成立即可：cherry_pick_score &gt; 0.30 或 region_cherry_pick &gt; 0.25；公式 A 另有樣本要求 low ≥ 5、high ≥ 3</td><td class='mono'>公式 A / 公式 B；Shadow Mode 待校準</td><td><span class='score'>+1</span></td></tr><tr><td><strong>Grace Drop / cancel 特別高，且集中低價單</strong></td><td>可能是在繞開正式 release 偵測</td><td class='mono'>近 30 天；grace_drop_rate 或 driver_cancel_rate_30d 高於同組 p90，且低 GTV / 低加成桶高於同司機高 GTV / 高加成桶</td><td class='mono'>同組 p90 比較；30 天行為窗口</td><td><span class='score'>+1</span></td></tr></tbody></table></div>
       <div class="callout info">
         <strong>閱讀說明：</strong>
         <ul>
@@ -190,10 +240,10 @@
       <p>兩者最接近「故意放棄 → 等加價 → 再接」的操縱鏈。</p>
 
       <h3 class="sub-title">3. 分數分級</h3>
-      <table><thead><tr><th>分數區間</th><th>證據強度</th><th>處理方式</th></tr></thead><tbody><tr><td>0–2</td><td>證據較弱</td><td>KEEP，持續監控</td></tr><tr><td>3–5</td><td>存在可疑行為，但證據鏈未完整</td><td>Shadow 觀察，不執行即時處置</td></tr><tr><td>6–10 但沒有 Anchor</td><td>證據分數高，但缺乏核心操縱證據</td><td>僅進行人工覆核，不直接處置</td></tr><tr><td>6–10 且有 Anchor</td><td>證據鏈完整</td><td>進入下一步 Phase 2 候選檢核</td></tr></tbody></table>
+      <div class="table-wrap"><table><thead><tr><th>分數區間</th><th>證據強度</th><th>處理方式</th></tr></thead><tbody><tr><td>0–2</td><td>證據較弱</td><td>KEEP，持續監控</td></tr><tr><td>3–5</td><td>存在可疑行為，但證據鏈未完整</td><td>Shadow 觀察，不執行即時處置</td></tr><tr><td>6–10 但沒有 Anchor</td><td>證據分數高，但缺乏核心操縱證據</td><td>僅進行人工覆核，不直接處置</td></tr><tr><td>6–10 且有 Anchor</td><td>證據鏈完整</td><td>進入下一步 Phase 2 候選檢核</td></tr></tbody></table></div>
 
       <h3 class="sub-title">4. 行動條件</h3>
-      <table><thead><tr><th>檢核項目</th><th>判斷原因</th></tr></thead><tbody><tr><td>net_impact_hkd &lt; 0 或 UX harm 明顯惡化</td><td>平台要處理的是「有害外掛」，不是純統計異常（net_impact_hkd 說明）</td></tr><tr><td>Ops + T&amp;S 人工覆核</td><td>避免誤傷 OA、訂閱、自動接單、配額情境</td></tr></tbody></table>
+      <div class="table-wrap"><table><thead><tr><th>檢核項目</th><th>判斷原因</th></tr></thead><tbody><tr><td>net_impact_hkd &lt; 0 或 UX harm 明顯惡化</td><td>平台要處理的是「有害外掛」，不是純統計異常（net_impact_hkd 說明）</td></tr><tr><td>Ops + T&amp;S 人工覆核</td><td>避免誤傷 OA、訂閱、自動接單、配額情境</td></tr></tbody></table></div>
       <div class="callout info">制裁流程僅適用於已完成進池、分數評估、平台傷害確認與人工覆核的候選司機。</div>
     </section>
 
