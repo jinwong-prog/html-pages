@@ -241,7 +241,11 @@
       </p>
 
       <h3 class="sub-title">1. 進池條件</h3>
-      <div class="table-wrap"><table><thead><tr><th>檢核項目</th><th>商業意涵</th><th>通過條件</th></tr></thead><tbody><tr><td>這是不是我們要看的司機？</td><td>只看 HK TRANSPORT、三種車型、活躍帳號</td><td>TRANSPORT、hk、van/mudou/mudou9、帳號有效</td></tr><tr><td>樣本夠不夠？</td><td>單太少就不要判斷</td><td>OD 接觸 ≥ 30 或 Booking 接觸 ≥ 5</td></tr><tr><td>最近 30 天有沒有先異常？</td><td>如果連基本異常都沒有，就不要往下看</td><td>至少一條軌 release_rate_30 &gt; 同組 p90（方法）</td></tr><tr><td>有沒有明顯合法例外？</td><td>先排除 OA 豁免、配額、純接單快</td><td>有例外就不進打分</td></tr></tbody></table></div>
+      <div class="table-wrap"><table><thead><tr><th>檢核項目</th><th>商業意涵</th><th>通過條件</th></tr></thead><tbody><tr><td>這是不是我們要看的司機？</td><td>HK TRANSPORT、三種車型、公海搶單司機</td><td>TRANSPORT、hk、van/mudou/mudou9；帳號有效；非 /II、/III、非 OA</td></tr><tr><td>已派閘</td><td>樣本夠、且確實有棄單行為</td><td>近 30 天 OD cd=2 已派單 ≥ 30 且 cd=4 release ≥ 1</td></tr><tr><td>完成閘</td><td>確認司機有做生意、有外掛動機</td><td>近 30 天 cd=6 月完成 ≥ 30（OD+Booking）</td></tr><tr><td>合法例外</td><td>排除特殊接單機制</td><td>OA、/II 訂閱自動接單等 → 不評分</td></tr></tbody></table></div>
+      <p class="callout neutral">
+        <strong>已派單</strong> = <code>cd=2</code> accept（正式派單）；唔計 pick（20/22/26）、唔係完成單。
+        口徑見 <code>term-definitions.md</code>、<code>booking-and-events.md</code>。
+      </p>
       <div class="callout danger">未通過進池條件者，不打分，也不列入候選。</div>
 
       <h3 class="sub-title">2. 證據分數（evidence score，0–10）</h3>
@@ -274,7 +278,7 @@
       <div class="table-wrap"><table><thead><tr><th>分數區間</th><th>證據強度</th><th>處理方式</th></tr></thead><tbody><tr><td>0–2</td><td>證據較弱</td><td>KEEP，持續監控</td></tr><tr><td>3–5</td><td>存在可疑行為，但證據鏈未完整</td><td>Shadow 觀察，不執行即時處置</td></tr><tr><td>6–10 但沒有 Anchor</td><td>證據分數高，但缺乏核心操縱證據</td><td>僅進行人工覆核，不直接處置</td></tr><tr><td>6–10 且有 Anchor</td><td>證據鏈完整</td><td>進入下一步 Phase 2 候選檢核</td></tr></tbody></table></div>
 
       <h3 class="sub-title">4. 行動條件</h3>
-      <div class="table-wrap"><table><thead><tr><th>檢核項目</th><th>判斷原因</th></tr></thead><tbody><tr><td>net_impact_hkd &lt; 0 或 UX harm 明顯惡化</td><td>平台要處理的是「有害外掛」，不是純統計異常（net_impact_hkd 說明）</td></tr><tr><td>Ops + T&amp;S 人工覆核</td><td>避免誤傷 OA、訂閱、自動接單、配額情境</td></tr></tbody></table></div>
+      <div class="table-wrap"><table><thead><tr><th>檢核項目</th><th>判斷原因</th></tr></thead><tbody><tr><td>棄單率超同組 p90</td><td>入池後才對比；判斷是否統計異常（同等級×車種）</td></tr><tr><td>至少一個惡意信號</td><td>Anchor、cherry pick、Grace Drop 集中低價等（見證據分）</td></tr><tr><td>net_impact_hkd &lt; 0 或 UX harm 明顯惡化</td><td>平台要處理的是「有害外掛」，不是純統計異常（net_impact_hkd 說明）</td></tr><tr><td>Ops + T&amp;S 人工覆核</td><td>避免誤傷 OA、訂閱、自動接單、配額情境</td></tr></tbody></table></div>
       <div class="callout info">制裁流程僅適用於已完成進池、分數評估、平台傷害確認與人工覆核的候選司機。</div>
     </section>
 
