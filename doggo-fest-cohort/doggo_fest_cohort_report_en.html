@@ -72,7 +72,7 @@ body {
 .card h2 { margin:0 0 14px; font-size:1.15rem; color:var(--text); }
 .card h3 { margin:18px 0 8px; font-size:1rem; color:var(--text); font-weight:700; }
 .card h3:first-of-type { margin-top:16px; }
-.card ul { color:var(--text); }
+.card ul:not(.tt-ul) { color:var(--text); }
 .card li { margin:6px 0; }
 .card code {
   font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
@@ -132,6 +132,14 @@ body {
   font-weight:400; text-align:left; line-height:1.5; font-size:.78rem;
   overflow-wrap:anywhere; word-break:break-word; white-space:normal;
 }
+.tt-box .tt-h { font-size:.85rem; font-weight:700; margin-bottom:8px; color:#fff; line-height:1.45; }
+.tt-box .tt-tbl { width:100%; border-collapse:collapse; font-size:.75rem; margin:6px 0; }
+.tt-box .tt-tbl th { color:var(--tt-muted); font-weight:600; text-align:left; padding:4px 8px 4px 0; vertical-align:top; white-space:nowrap; }
+.tt-box .tt-tbl td { padding:4px 0; text-align:right; font-weight:600; color:var(--tt-text); vertical-align:top; }
+.tt-box .tt-ul { margin:6px 0 0; padding-left:1.1rem; color:var(--tt-text); font-size:.75rem; list-style:disc; }
+.tt-box .tt-ul li { margin:4px 0; color:var(--tt-text); }
+.tt-box .tt-note { margin-top:8px; padding-top:8px; border-top:1px solid #475569; font-size:.72rem; color:var(--tt-muted); line-height:1.55; }
+.tt-box .tt-cite { display:block; margin-top:6px; font-size:.68rem; color:var(--tt-muted); }
 .tt-box--wide { width:min(92vw,420px); max-width:min(92vw,420px); }
 .tt-box--kpi { width:min(92vw,380px); max-width:min(92vw,380px); }
 .tt-h { font-size:.85rem; font-weight:700; margin-bottom:8px; color:#fff; line-height:1.45; }

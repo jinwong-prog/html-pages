@@ -72,7 +72,7 @@ body {
 .card h2 { margin:0 0 14px; font-size:1.15rem; color:var(--text); }
 .card h3 { margin:18px 0 8px; font-size:1rem; color:var(--text); font-weight:700; }
 .card h3:first-of-type { margin-top:16px; }
-.card ul { color:var(--text); }
+.card ul:not(.tt-ul) { color:var(--text); }
 .card li { margin:6px 0; }
 .card code {
   font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
@@ -132,6 +132,14 @@ body {
   font-weight:400; text-align:left; line-height:1.5; font-size:.78rem;
   overflow-wrap:anywhere; word-break:break-word; white-space:normal;
 }
+.tt-box .tt-h { font-size:.85rem; font-weight:700; margin-bottom:8px; color:#fff; line-height:1.45; }
+.tt-box .tt-tbl { width:100%; border-collapse:collapse; font-size:.75rem; margin:6px 0; }
+.tt-box .tt-tbl th { color:var(--tt-muted); font-weight:600; text-align:left; padding:4px 8px 4px 0; vertical-align:top; white-space:nowrap; }
+.tt-box .tt-tbl td { padding:4px 0; text-align:right; font-weight:600; color:var(--tt-text); vertical-align:top; }
+.tt-box .tt-ul { margin:6px 0 0; padding-left:1.1rem; color:var(--tt-text); font-size:.75rem; list-style:disc; }
+.tt-box .tt-ul li { margin:4px 0; color:var(--tt-text); }
+.tt-box .tt-note { margin-top:8px; padding-top:8px; border-top:1px solid #475569; font-size:.72rem; color:var(--tt-muted); line-height:1.55; }
+.tt-box .tt-cite { display:block; margin-top:6px; font-size:.68rem; color:var(--tt-muted); }
 .tt-box--wide { width:min(92vw,420px); max-width:min(92vw,420px); }
 .tt-box--kpi { width:min(92vw,380px); max-width:min(92vw,380px); }
 .tt-h { font-size:.85rem; font-weight:700; margin-bottom:8px; color:#fff; line-height:1.45; }
@@ -296,8 +304,8 @@ footer p { margin:0 0 10px; color:var(--text); opacity:.9; }
     </table></div>
 
     <div class="chart-wrap" style="display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))">
-      <svg viewBox="0 0 480 120" width="480" height="120" role="img" aria-label="混合 140 對 · platform_take Post−Pre 人均"><text x="8" y="14" fill="var(--muted)" font-size="11">混合 140 對 · platform_take Post−Pre 人均</text><line x1="270.0" y1="20" x2="270.0" y2="110" stroke="var(--muted)" stroke-width="1"/><text x="8" y="40" fill="var(--text)" font-size="10">有 Doggo Fest（實驗組）</text><rect x="270.0" y="26" width="136.0" height="16" rx="3" fill="#2563eb" opacity=".88"/><text x="412.0" y="39" text-anchor="start" fill="#2563eb" font-size="10" font-weight="700">HK$23.88</text><text x="8" y="76" fill="var(--text)" font-size="10">若無活動代理（配對對照）</text><rect x="261.5" y="62" width="8.5" height="16" rx="3" fill="#ea580c" opacity=".88"/><text x="255.5" y="75" text-anchor="end" fill="#ea580c" font-size="10" font-weight="700">HK$-1.49</text></svg>
-      <svg viewBox="0 0 480 120" width="480" height="120" role="img" aria-label="既有活躍客 136 對 · platform_take Post−Pre 人均"><text x="8" y="14" fill="var(--muted)" font-size="11">既有活躍客 136 對 · platform_take Post−Pre 人均</text><line x1="270.0" y1="20" x2="270.0" y2="110" stroke="var(--muted)" stroke-width="1"/><text x="8" y="40" fill="var(--text)" font-size="10">有 Doggo Fest（實驗組）</text><rect x="270.0" y="26" width="51.7" height="16" rx="3" fill="#2563eb" opacity=".88"/><text x="327.7" y="39" text-anchor="start" fill="#2563eb" font-size="10" font-weight="700">HK$23.44</text><text x="8" y="76" fill="var(--text)" font-size="10">若無活動代理（配對對照）</text><rect x="134.0" y="62" width="136.0" height="16" rx="3" fill="#ea580c" opacity=".88"/><text x="128.0" y="75" text-anchor="end" fill="#ea580c" font-size="10" font-weight="700">HK$-61.68</text></svg>
+      <svg viewBox="0 0 520 136" width="520" height="136" role="img" aria-label="混合 140 對 · platform_take Post−Pre 人均"><text x="8" y="16" fill="#445567" font-size="11" font-weight="600">混合 140 對 · platform_take Post−Pre 人均</text><line x1="321.0" y1="24" x2="321.0" y2="128" stroke="#94a3b8" stroke-width="1"/><text x="168" y="44" text-anchor="end" fill="#1a2332" font-size="10" font-weight="600">實驗組（有券）</text><rect x="321.0" y="30" width="114.4" height="16" rx="3" fill="#2563eb" opacity=".92"/><text x="443.4" y="44" text-anchor="start" fill="#2563eb" font-size="10" font-weight="700">HK$23.88</text><text x="168" y="88" text-anchor="end" fill="#1a2332" font-size="10" font-weight="600">配對對照（無券）</text><rect x="313.9" y="74" width="7.1" height="16" rx="3" fill="#c2410c" opacity=".92"/><text x="305.9" y="88" text-anchor="end" fill="#c2410c" font-size="10" font-weight="700">HK$-1.49</text></svg>
+      <svg viewBox="0 0 520 136" width="520" height="136" role="img" aria-label="既有活躍客 136 對 · platform_take Post−Pre 人均"><text x="8" y="16" fill="#445567" font-size="11" font-weight="600">既有活躍客 136 對 · platform_take Post−Pre 人均</text><line x1="321.0" y1="24" x2="321.0" y2="128" stroke="#94a3b8" stroke-width="1"/><text x="168" y="44" text-anchor="end" fill="#1a2332" font-size="10" font-weight="600">實驗組（有券）</text><rect x="321.0" y="30" width="43.5" height="16" rx="3" fill="#2563eb" opacity=".92"/><text x="372.5" y="44" text-anchor="start" fill="#2563eb" font-size="10" font-weight="700">HK$23.44</text><text x="168" y="88" text-anchor="end" fill="#1a2332" font-size="10" font-weight="600">配對對照（無券）</text><rect x="206.6" y="74" width="114.4" height="16" rx="3" fill="#c2410c" opacity=".92"/><text x="198.6" y="88" text-anchor="end" fill="#c2410c" font-size="10" font-weight="700">HK$-61.68</text></svg>
     </div>
     <p class="note">
       <strong>解讀：</strong>若只看實驗組 Post−Pre（例 platform_take HK$23.88），
