@@ -164,7 +164,7 @@ footer p { margin:0 0 10px; }
   </header>
 
   <div class="card">
-    <div class="lead">值得再做品牌／回流活動，但不應以「純拉新寵物客」為成功標準。既有活躍客（136 對）<span class="tip" tabindex="0">platform_take<span class="tt-box"><div class="tt-h">platform_take</div><ul class="tt-ul"><li>平台收入（platform_take）：平台從每張完成訂單實際賺取的金額，是本報告的主要成效指標。</li></ul></span></span> 增量 HK$85.11/人；新客留存率 39/102（38.2%）（低於 Sheet 62%）；ROI proxy 5.7%。</div>
+    <div class="lead">值得再做品牌／回流活動，但不應以「純拉新寵物客」為成功標準。既有活躍客（136 對）<span class="tip" tabindex="0">platform_take<span class="tt-box"><div class="tt-h">platform_take</div><ul class="tt-ul"><li>平台收入（platform_take）：平台從每張完成訂單實際賺取的金額，是本報告的主要成效指標。</li></ul></span></span> 增量 HK$85.11/人；新客第 2 單率 24/102（23.5%），低於同期 organic 28198/75103（37.5%）（見方法論附錄）；ROI proxy 5.7%。</div>
   </div>
 
   
@@ -343,6 +343,50 @@ footer p { margin:0 0 10px; }
   </div>
 
 
+  
+  <div class="card">
+    <h2>方法論修正與可比口徑（必讀）<span class="tip" tabindex="0">為何要讀<span class="tt-box"><div class="tt-h">為何要讀</div><ul class="tt-ul"><li>以下修正影響拉新結論是否有效；未讀此節勿引用 organic benchmark 對比。</li></ul></span></span></h2>
+    <p class="lead" style="margin-bottom:14px"><span class='answer-warn'>拉新質量低於同期 organic 自然新客</span>：第 2 單率 Doggo 24/102（23.5%） vs organic 28198/75103（37.5%）（2026-07-07 實查，HK TRANSPORT PlatformOD van/mudou/mudou9，post 2025-11-17 to 2026-05-16）。</p>
+
+    <h3 style="margin:16px 0 8px;font-size:1rem">拉新質量主結論（第 2 單率，非留存率）</h3>
+    <div class="table-wrap"><table class="biz-subtable">
+      <thead><tr><th>群體</th><th>人數</th><th>留存（≥1 完成單）</th><th>第 2 單率（可比）</th></tr></thead>
+      <tbody>
+        <tr><td>Doggo Fest 新客</td><td>102</td>
+          <td>39/102（38.2%）</td>
+          <td><strong>24/102（23.5%）</strong></td></tr>
+        <tr><td>同期 organic 新客</td><td>75,103</td>
+          <td class="answer-muted">—（首單已在 post 窗，定義上 100%，不可比）</td>
+          <td><strong>28198/75103（37.5%）</strong></td></tr>
+      </tbody>
+    </table></div>
+    <p class="note"><strong>勿用</strong> Doggo 留存 39/102（38.2%） 對比 organic「≥1 單留存」——後者恒為 100%（蘋果比橙）。</p>
+
+    <h3 style="margin:18px 0 8px;font-size:1rem">Organic benchmark SQL 修正（2026-07-07）</h3>
+    <ul>
+      <li><strong>移除 <code>is_retained_post &gt;= 1</code></strong>：organic 首單已在 post 窗，該欄恒 TRUE；改 <code>is_second_order_plus</code> / <code>is_third_order_plus</code>。</li>
+      <li><strong><code>platform_take</code> 口徑</strong>：post 指標讀 <code>foundation.hk_transport_doggo_fest_orders_*</code>（<code>driver_commission + premium_platform_support</code>），與 Doggo Fest 分析一致。</li>
+      <li><strong><code>vehicle_type</code></strong>：兩邊均 <code>van / mudou / mudou9</code>。</li>
+      <li><strong><code>first_ever</code></strong>：全歷史 prod master 判定首單日期；post 訂單指標仍讀 foundation VIEW（避免 2024-11-18 窗起點誤判新客）。</li>
+    </ul>
+
+    <h3 style="margin:18px 0 8px;font-size:1rem">Panel SQL 修正（DiD 配對）</h3>
+    <ul>
+      <li><code>days_since_last_order_pre_event</code> 統一錨點 <code>2025-11-14</code>（與 <code>bq_customer_segment</code> 一致）。</li>
+      <li><code>NTILE(4) OVER (ORDER BY pre_gtv)</code>：treatment + control 混排，兩組共用分位邊界（配對必須）。</li>
+      <li>新增 <code>sheet_direction</code>、<code>is_matched_pair</code>；direction DiD 從全局 140 對篩選（互斥，配對數 58+39+26+17=140）。</li>
+    </ul>
+
+    <h3 style="margin:18px 0 8px;font-size:1rem">仍須知悉的限制</h3>
+    <ul>
+      <li>Organic benchmark 為<strong>描述性對照</strong>，非因果實驗；不可用於 claim「活動令拉新變差」。</li>
+      <li>Direction 分層 <code>NO_DIRECTION</code> 僅 17 對，對照組 Post−Pre 異常升，勿單獨作主結論。</li>
+      <li>混合 DiD（140 對）不可 × 372 人外推；管理層 headline 以既有活躍客 136 對 DiD 為準。</li>
+      <li>所有數字附快照日；滾動窗每日移動。（2026-07-07 實查，HK TRANSPORT PlatformOD van/mudou/mudou9，post 2025-11-17 to 2026-05-16）</li>
+    </ul>
+  </div>
+
+
   <div class="card">
     <h2>活動前後軌跡（既有活躍客 136 對 · platform_take 人均變化）<span class="tip" tabindex="0">圖表說明<span class="tt-box"><div class="tt-h">圖表說明</div><ul class="tt-ul"><li>滑鼠移到圖表可看黑卡片明細</li></ul></span></span></h2>
     <div class="chart-wrap chart-tip tip" tabindex="0"><svg viewBox="0 0 520 260" width="520" height="260" role="img" aria-label="活動前後 platform_take 變化軌跡">
@@ -423,14 +467,15 @@ footer p { margin:0 0 10px; }
     <h2>若 2026 再贊助</h2>
     <ul>
       <li>優惠券優先發給新客與長期沉睡客，避免浪費在高頻老客。</li>
-      <li>成功指標改看 90 天內第 2、第 3 單率與回流客數，不以活動日單量為核心 KPI。</li>
-      <li>新客首單後 30 天跟進券（目前留存率 38.2%，低於 Sheet 62%）。</li>
+      <li>成功指標改看<strong>第 2、第 3 單率</strong>（目前 Doggo 第 2 單率 24/102（23.5%） vs organic 28198/75103（37.5%）），不以活動日單量或「≥1 單留存」為核心 KPI。</li>
+      <li>新客首單後 30 天跟進券（留存 39/102（38.2%） 低於 Sheet 62%，但拉新質量應看第 2 單率）。</li>
       <li>對外數字附快照日期；混合 DiD 不可 × 372 人。</li>
     </ul>
   </div>
 
   <footer>
     <p><strong>【必讀限制】</strong> 【必讀限制】（1）結論僅適用 140 對可配對用戶（372 人中 232 人未配對；主因活動前無完成單，recency_bucket=unknown，同桶 control 供應不足）。（2）DiD HK$25.37 = 參加者人均 +HK$23.88 減 對照組人均 HK$-1.49（對照組 post 窗低於 pre）；並非參加者單邊上升。全池 3,470 名 control 候選人均 platform_take 變化約 −HK$39.67。（3）總增量 HK$3,552.1 = 人均 DiD × 140 人，不可直接 × 372。（2026-07-07 實查，HK TRANSPORT PlatformOD，pre 2025-05-18 to 2025-11-13，post 2025-11-17 to 2026-05-16）</p>
+    <p><strong>【方法論】</strong> Organic benchmark 勿用 ≥1 單留存對比；拉新質量以第 2 單率為準（見「方法論修正與可比口徑」一節）。platform_take = driver_commission + premium_platform_support；vehicle_type = van/mudou/mudou9。</p>
     <p>數字來源：凍結 JSON（did_summary / segment_analysis / sheet_comparison / bootstrap_ci / direction_did / event_study / new_user_benchmark / unmatched_descriptive）。</p>
   </footer>
 </div>
