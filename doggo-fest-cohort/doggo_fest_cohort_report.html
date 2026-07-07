@@ -112,6 +112,13 @@ tr:nth-child(even) td { background:var(--row-alt); }
 ul { margin:8px 0; padding-left:1.2rem; }
 footer { font-size:.84rem; color:var(--muted); margin-top:24px; border-top:1px solid var(--border); padding-top:16px; }
 footer p { margin:0 0 10px; }
+.biz-table { min-width:720px; }
+.biz-table td:nth-child(5) { min-width:220px; }
+.answer-yes { color:var(--green); font-weight:700; }
+.answer-warn { color:var(--amber); font-weight:700; }
+.answer-muted { color:var(--muted); }
+.biz-subtable { width:100%; margin-top:10px; font-size:.84rem; }
+.biz-subtable th, .biz-subtable td { padding:6px 8px; }
 @media print { .hero-banner { print-color-adjust:exact; -webkit-print-color-adjust:exact; } .card { break-inside:avoid; } }
 </style>
 </head>
@@ -135,6 +142,65 @@ footer p { margin:0 0 10px; }
 
   <div class="card">
     <div class="lead">值得再做品牌／回流活動，但不應以「純拉新寵物客」為成功標準。既有活躍客（136 對）<span class="tip" tabindex="0">platform_take<span class="tip-box">平台收入（platform_take）：平台從每張完成訂單實際賺取的金額，是本報告的主要成效指標。</span></span> 增量 HK$86.96/人；新客留存率 38.2%（低於 Sheet 62%）；ROI proxy 5.8%。</div>
+  </div>
+
+  
+  <div class="card">
+    <h2>2. 商業問題拆解（Business Question Framework）</h2>
+    <p class="note">方法：第一層 Post-minus-Pre Change（Post − Pre，描述性）＋第二層 <span class="tip" tabindex="0">Difference-in-Differences（DiD）<span class="tip-box">雙差法（Difference-in-Differences）：比較實驗組與對照組在活動前後的變化差額，用來估計活動的增量效果。</span></span>（配對後組間比較，主結論）。（2026-07-07 實查，HK TRANSPORT PlatformOD，混合 140 對可配對子集，pre 2025-05-18 to 2025-11-13，post 2025-11-17 to 2026-05-16）</p>
+    <div class="chart-wrap"><svg viewBox="0 0 520 168" width="520" height="168" role="img" aria-label="三項主 KPI DiD"><line x1="278.0" y1="12" x2="278.0" y2="156" stroke="var(--muted)" stroke-width="1"/><text x="8" y="32" fill="var(--text)" font-size="11">Δorders DiD</text><rect x="278.0" y="18" width="2.0" height="18" rx="4" fill="#2563eb" opacity=".85"/><text x="285.2" y="32" text-anchor="start" fill="#2563eb" font-size="11" font-weight="700">+1.76 單</text><text x="8" y="76" fill="var(--text)" font-size="11">ΔGTV DiD</text><rect x="278.0" y="62" width="141.7" height="18" rx="4" fill="#7c3aed" opacity=".85"/><text x="425.7" y="76" text-anchor="start" fill="#7c3aed" font-size="11" font-weight="700">HK$211.39</text><text x="8" y="120" fill="var(--text)" font-size="11">Δplatform_take DiD</text><rect x="278.0" y="106" width="18.0" height="18" rx="4" fill="#15803d" opacity=".85"/><text x="302.0" y="120" text-anchor="start" fill="#15803d" font-size="11" font-weight="700">HK$26.93</text></svg></div>
+    <p class="note">輔助敏感度：寵物單 Δorders <span class="tip" tabindex="0">DiD<span class="tip-box">雙差法（Difference-in-Differences）：比較實驗組與對照組在活動前後的變化差額，用來估計活動的增量效果。</span></span> +0.63 單/人（全單增量為主，pet 單為輔助）。</p>
+    <div class="table-wrap"><table class="biz-table">
+      <thead>
+        <tr><th>#</th><th>商業問題</th><th>建議 KPI</th><th>方法（中英）</th><th>BQ 答案</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>參加者活動後有沒有多落單？</td>
+          <td>Post − Pre（Δorders）</td>
+          <td>Post-minus-Pre Change 描述 + Difference-in-Differences（DiD）</td>
+          <td><span class="answer-yes">有增量。</span> 實驗組 Post−Pre 人均 <strong>+1.39 單</strong>；對照組 <strong>-0.38 單</strong>；<span class="tip" tabindex="0">DiD<span class="tip-box">雙差法（Difference-in-Differences）：比較實驗組與對照組在活動前後的變化差額，用來估計活動的增量效果。</span></span> <strong>+1.76 單/人</strong>（總計 +247 單）</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>客戶消費（GTV）有沒有拉高？</td>
+          <td>Post − Pre（ΔGTV）</td>
+          <td>同上</td>
+          <td><span class="answer-yes">有拉高。</span> 實驗組 Post−Pre 人均 <strong>HK$195.94</strong>；對照組 <strong>HK$-15.44</strong>；<span class="tip" tabindex="0">DiD<span class="tip-box">雙差法（Difference-in-Differences）：比較實驗組與對照組在活動前後的變化差額，用來估計活動的增量效果。</span></span> <strong>HK$211.39/人</strong>（總計 HK$29,594.00）</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>平台有沒有多賺？</td>
+          <td>Post − Pre（Δplatform_take）</td>
+          <td>同上 — <strong>建議 headline</strong></td>
+          <td><span class="answer-yes">有多賺（建議 headline）。</span> 實驗組 Post−Pre 人均 <strong>HK$25.18</strong>；對照組 <strong>HK$-1.75</strong>；<span class="tip" tabindex="0">DiD<span class="tip-box">雙差法（Difference-in-Differences）：比較實驗組與對照組在活動前後的變化差額，用來估計活動的增量效果。</span></span> <strong>HK$26.93/人</strong>（總計 HK$3,770.60）；既有活躍客 136 對 <span class="tip" tabindex="0">DiD<span class="tip-box">雙差法（Difference-in-Differences）：比較實驗組與對照組在活動前後的變化差額，用來估計活動的增量效果。</span></span> <strong>HK$86.96/人</strong>。</td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>活動是「留住本來會用的人」還是「帶來增量」？</td>
+          <td>DiD ≈ 0 vs &gt; 0</td>
+          <td>DiD ≈ 0 → 留存為主；&gt; 0 → 有 Incremental Effect</td>
+          <td><span class="answer-yes">有 Incremental Effect（增量），不是純留存。</span> 三項主 KPI 的 <span class="tip" tabindex="0">DiD<span class="tip-box">雙差法（Difference-in-Differences）：比較實驗組與對照組在活動前後的變化差額，用來估計活動的增量效果。</span></span> 均 &gt; 0（單量 +1.76 單、GTV HK$211.39、platform_take HK$26.93）。若 DiD ≈ 0 才解讀為「留住本來會用的人」；現況為相對對照組的額外貢獻。輔助：活動後留存率 實驗組 90.0% vs 對照 73.6%（+16.4 pp），留存與增量並存。</td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td>哪類 attendee 貢獻大？</td>
+          <td>按 direction 分層</td>
+          <td>分層後重複 §6.1～6.2</td>
+          <td><span class="answer-yes">既有活躍客（Existing active）貢獻最大。</span> 136 對 platform_take <span class="tip" tabindex="0">DiD<span class="tip-box">雙差法（Difference-in-Differences）：比較實驗組與對照組在活動前後的變化差額，用來估計活動的增量效果。</span></span> HK$86.96/人，總增量 HK$11,826.80。新客 102 人無 pre 窗，活動後總 platform_take HK$2,856.50（拉新信號，非 DiD）。回流客僅 2 對，勿引用 DiD。<br><span class="answer-muted">按 <code>direction</code>（去會場／離會場／雙向）分層：⚠️ BQ pipeline 尚未落地，目前僅 Sheet <code>tst_496</code> ref；待補後重複 §6.1～6.2。</span>
+    <div class="table-wrap"><table class="biz-subtable">
+      <thead><tr><th>分層（attendee）</th><th>人數</th><th>platform_take 貢獻</th><th>方法</th></tr></thead>
+      <tbody>
+        <tr><td>既有活躍客</td><td>168（136 對）</td><td>HK$86.96/人 · 總計 HK$11,826.80</td><td>配對 <span class="tip" tabindex="0">DiD<span class="tip-box">雙差法（Difference-in-Differences）：比較實驗組與對照組在活動前後的變化差額，用來估計活動的增量效果。</span></span></td></tr>
+        <tr><td>平台新客</td><td>102</td><td>活動後總計 HK$2,856.50</td><td>Post 窗 only（無 DiD）</td></tr>
+        <tr><td>回流客</td><td>102（2 對）</td><td class="answer-muted">樣本不足</td><td>勿引用 DiD</td></tr>
+        <tr><td><code>direction</code>（TST）</td><td>—</td><td class="answer-muted">待 BQ 分層</td><td>Sheet ref · TODO</td></tr>
+      </tbody>
+    </table></div></td>
+        </tr>
+      </tbody>
+    </table></div>
   </div>
 
   <div class="card">
