@@ -291,6 +291,16 @@
       background: #fafcff;
     }
 
+    .section table a {
+      color: var(--blue);
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .section table a:hover {
+      text-decoration: underline;
+    }
+
     .answer-yes { color: var(--green); font-weight: 800; }
     .answer-warn { color: #92400e; font-weight: 800; }
     .answer-no { color: var(--red); font-weight: 800; }
@@ -498,9 +508,11 @@
 
     <div class="sticky">
       <nav>
+        <a href="#tldr">速讀</a>
         <a href="#decision">決策</a>
         <a href="#snapshot">KPI</a>
         <a href="#roi">ROI</a>
+        <a href="#question-map">問題地圖</a>
         <a href="#questions">管理層問答</a>
         <a href="#evidence">視覺證據</a>
         <a href="#counterfactual">無活動代理</a>
@@ -510,6 +522,28 @@
         <a href="#appendix">Appendix</a>
       </nav>
     </div>
+
+    <section id="tldr" class="section" style="border-left:4px solid var(--blue);">
+      <details open>
+        <summary>一分鐘速讀：呢批人邊嚟、點解得 140、賺嘅係咩</summary>
+        <div class="details-body">
+          <div class="term-grid" style="margin-top:14px;">
+            <div class="term">
+              <strong>① 基數 372 人（納入條件）</strong>
+              活動期 2025-11-14 至 11-16 使用 Doggo Fest voucher 完成單，且 HK · TRANSPORT · PlatformOD · van/mudou/mudou9 · completed 的去重用戶。用 voucher（非尖沙咀 TST 地點）識別，noise 最低。<br>詳見 <a href="#cohort-base">§9 基數與配對</a>。
+            </div>
+            <div class="term">
+              <strong>② 為何只看 140 對（不可外推 372）</strong>
+              配對需要「活動前 180 天行為」；204 名新客／回流客活動前無 baseline，結構上無法配對，只餘 140 對可做因果。主結論以既有活躍客 136 對（Bootstrap CI 排除 0，統計顯著）為準。<br>詳見 <a href="#cohort-base">§9</a>。
+            </div>
+            <div class="term">
+              <strong>③ platform_take ＝ 平台實收（主 KPI）</strong>
+              公式 <code>driver_commission + premium_platform_support</code>（平台抽佣 ＋ 平台支援費；null 當 0，已對 BQ 驗證）。非 GTV、亦非 Finance 官方淨利。<br>詳見 <a href="#glossary">§8 術語</a>。
+            </div>
+          </div>
+        </div>
+      </details>
+    </section>
 
     <section id="decision" class="section">
       <h2>1. Executive Decision</h2>
@@ -674,8 +708,85 @@
       </div>
     </section>
 
+    <section id="question-map" class="section">
+      <h2>4. 本報告問題地圖</h2>
+      <p class="lead">
+        上層係 <code>analysis-framework.md</code> §2 成效五問（analyst 主幹）；
+        下層係管理層決策加題。兩層合埋，就係本報告要答嘅全部 business questions。
+      </p>
+      <div class="callout blue">
+        讀法：先睇<strong>決策層</strong>（做唔做、點定位、ROI）→ 再睇<strong>成效層</strong>（紅框五問）→ 最後用各章圖表驗證。
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>層級</th>
+              <th>商業問題</th>
+              <th>管理層決策含義</th>
+              <th>本報告章節</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td rowspan="5"><strong>成效層</strong><br><span style="color:var(--muted);font-size:0.85rem">framework §2</span></td>
+              <td>參加者活動後有沒有多落單？</td>
+              <td>活動有沒有帶來額外訂單量</td>
+              <td><a href="#questions">§5 問答</a> · <a href="#evidence">§6 DiD 圖</a></td>
+            </tr>
+            <tr>
+              <td>客戶消費（GTV）有沒有拉高？</td>
+              <td>客戶有沒有花更多錢</td>
+              <td><a href="#questions">§5 問答</a> · <a href="#evidence">§6 DiD 圖</a></td>
+            </tr>
+            <tr>
+              <td>平台有沒有多賺？</td>
+              <td>值不值得做（核心成效）</td>
+              <td><a href="#snapshot">§2 KPI</a> · <a href="#questions">§5 問答</a> · <a href="#evidence">§6 DiD 圖</a></td>
+            </tr>
+            <tr>
+              <td>活動是「留住本來會用的人」還是「帶來增量」？</td>
+              <td>不是自嗨；要比無活動預期更好</td>
+              <td><a href="#questions">§5 問答</a> · <a href="#counterfactual">§7 無活動代理</a></td>
+            </tr>
+            <tr>
+              <td>哪類 attendee 貢獻大？</td>
+              <td>2026 應 target 邊類客</td>
+              <td><a href="#evidence">§6 Segment 圖</a> · <a href="#appendix">§11 Direction split</a></td>
+            </tr>
+            <tr>
+              <td rowspan="4"><strong>決策層</strong><br><span style="color:var(--muted);font-size:0.85rem">管理層加題</span></td>
+              <td>短期 ROI 是否足夠 justify？</td>
+              <td>Finance 會唔會批預算</td>
+              <td><a href="#roi">§3 ROI Reality Check</a></td>
+            </tr>
+            <tr>
+              <td>是否適合用作純拉新活動？</td>
+              <td>可否用拉新 headline 對外講</td>
+              <td><a href="#snapshot">§2 KPI</a> · <a href="#questions">§5 問答</a> · <a href="#evidence">§6 Benchmark</a></td>
+            </tr>
+            <tr>
+              <td>372 人全體可否當因果結論？</td>
+              <td>數字可否外推至全體 treatment</td>
+              <td><a href="#evidence">§6 Funnel</a> · <a href="#cohort-base">§10 基數與配對</a></td>
+            </tr>
+            <tr>
+              <td>2026 要不要續做？點改 campaign？</td>
+              <td>最終拍板與執行方向</td>
+              <td><a href="#decision">§1 Executive Decision</a> · <a href="#playbook">§8 Playbook</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="chart-note" style="margin-top:12px">
+        <strong>本報告刻意不作主結論：</strong>新客 102 人的 DiD 增量（無 pre window，只做 benchmark）；
+        ROI proxy 不等於 Finance 官方 ROI；direction 子集 DiD 不可加總為混合 140 對 DiD。
+      </p>
+      <p class="cite">成效五問真源：<code>projects/doggo-fest-cohort/docs/analysis-framework.md</code> §2（2026-07-07 版）</p>
+    </section>
+
     <section id="questions" class="section">
-      <h2>4. Business Question → Answer</h2>
+      <h2>5. Business Question → Answer</h2>
       <p class="lead">管理層真正會問的不是方法論，而是「活動有沒有幫平台多賺、值不值得再做」。</p>
       <div class="table-wrap">
         <table>
@@ -739,7 +850,7 @@
     </section>
 
     <section id="evidence" class="section">
-      <h2>5. Visual Evidence</h2>
+      <h2>6. Visual Evidence</h2>
       <p class="lead">每個圖只回答一個 business question，避免圖多但沒有 decision logic。</p>
 
       <div class="chart-card">
@@ -914,7 +1025,7 @@
     </section>
 
     <section id="counterfactual" class="section">
-      <h2>6. 如果無做 Doggo Fest，結果會點？</h2>
+      <h2>7. 如果無做 Doggo Fest，結果會點？</h2>
       <p class="lead">用 matched control 作為「無活動代理」；將實際 post 180 日結果與 no-event counterfactual 比較。<strong>不是 forecast model。</strong></p>
       <div class="callout green">
         Doggo Fest 的價值不是「post 有收入」，而是「實際 post 比無活動預期多了多少」——人均活動增量 <strong>+HK$25.37</strong>（140 對 matched users）。
@@ -1003,7 +1114,7 @@
     </section>
 
     <section id="playbook" class="section">
-      <h2>7. 2026 Campaign Playbook</h2>
+      <h2>8. 2026 Campaign Playbook</h2>
       <p class="lead">如果要續做，關鍵不是「再辦一次」，而是換成更像精準 activation 的 campaign design。</p>
       <div class="table-wrap">
         <table>
@@ -1065,7 +1176,7 @@
     </section>
 
     <section id="glossary" class="section">
-      <h2>8. 術語白話說明</h2>
+      <h2>9. 術語白話說明</h2>
       <p class="lead">讓 CEO / GM / Marketing / Finance 看同一份報告時，不會因術語誤解而講不同故事。</p>
       <details open>
         <summary>展開術語說明</summary>
@@ -1089,7 +1200,7 @@
     </section>
 
     <section id="cohort-base" class="section">
-      <h2>9. 人群基數與配對覆蓋（Cohort Base &amp; Matching）</h2>
+      <h2>10. 人群基數與配對覆蓋（Cohort Base &amp; Matching）</h2>
       <p class="lead">先講清楚 372 從何而來、為何只有 140 對可做因果，以及這對結論的影響——避免誤讀成「人數少＝結論不可信」。</p>
 
       <div class="callout blue">
@@ -1189,7 +1300,7 @@
     </section>
 
     <section id="appendix" class="section">
-      <h2>10. Method Appendix</h2>
+      <h2>11. Method Appendix</h2>
       <p class="lead">主報告先解決決策問題；這一節才放方法論，方便 Data / Finance / PM 補看。</p>
 
       <div class="callout blue">
