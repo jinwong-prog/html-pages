@@ -23,7 +23,12 @@
       --slate-soft: #e2e8f0;
       --shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
       --radius: 18px;
-      --hero: linear-gradient(135deg, #0f172a 0%, #1d4ed8 55%, #3b82f6 100%);
+      --hero: linear-gradient(135deg, #18181b 0%, #1c2e28 42%, #166534 78%, #15803d 100%);
+      --hero-accent: #86efac;
+      --tip-trigger: #1d4ed8;
+      --tt-bg: #0f172a;
+      --tt-text: #e2e8f0;
+      --tt-muted: #94a3b8;
     }
 
     * { box-sizing: border-box; }
@@ -81,14 +86,32 @@
 
     .badge {
       display: inline-flex;
-      align-items: center;
-      padding: 7px 12px;
-      border-radius: 999px;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 3px;
+      padding: 9px 14px;
+      border-radius: 14px;
       font-size: 0.8rem;
       font-weight: 800;
       letter-spacing: 0.02em;
-      border: 1px solid rgba(255, 255, 255, 0.24);
-      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      background: rgba(255, 255, 255, 0.1);
+      max-width: 280px;
+    }
+
+    .badge-en {
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.03em;
+      color: var(--hero-accent);
+    }
+
+    .badge-zh {
+      font-size: 0.74rem;
+      font-weight: 500;
+      line-height: 1.4;
+      opacity: 0.94;
+      color: rgba(255, 255, 255, 0.95);
     }
 
     .decision-strip {
@@ -112,6 +135,53 @@
       display: block;
       margin-bottom: 6px;
       font-size: 0.94rem;
+    }
+
+    .decision-box ul,
+    .risk-box ul,
+    .decision-box ol,
+    .risk-box ol {
+      margin: 8px 0 0;
+      padding-left: 1.2rem;
+      font-size: 0.9rem;
+      line-height: 1.55;
+    }
+
+    .decision-box li,
+    .risk-box li {
+      margin: 5px 0;
+    }
+
+    .hero-preview {
+      margin-top: 14px;
+      padding: 14px 18px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      font-size: 0.92rem;
+      line-height: 1.55;
+    }
+
+    .hero-preview strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 0.94rem;
+    }
+
+    .hero .tip {
+      border-bottom-color: rgba(255, 255, 255, 0.75);
+      color: #fff;
+    }
+
+    .hero .tt-box {
+      color: var(--tt-text);
+    }
+
+    .hero code {
+      background: rgba(255, 255, 255, 0.15);
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-size: 0.85em;
     }
 
     .sticky {
@@ -469,13 +539,91 @@
 
     @media (max-width: 520px) {
       table { min-width: 620px; }
-      .badge { font-size: 0.72rem; }
+      .badge { max-width: 100%; }
+      .badge-en { font-size: 0.74rem; }
+      .badge-zh { font-size: 0.7rem; }
     }
 
     @media print {
       .sticky { display: none; }
       .section { break-inside: avoid; box-shadow: none; }
+      .tt-box { display: none !important; }
     }
+
+    .subhead {
+      margin: 18px 0 8px;
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--ink);
+    }
+
+    .tip {
+      position: relative;
+      border-bottom: 1px dashed var(--tip-trigger);
+      cursor: help;
+      color: var(--tip-trigger);
+      font-weight: 700;
+    }
+
+    .tt-box {
+      position: fixed;
+      z-index: 9999;
+      width: min(92vw, 360px);
+      max-width: min(92vw, 360px);
+      background: var(--tt-bg);
+      color: var(--tt-text);
+      border-radius: 10px;
+      border: 1px solid #334155;
+      padding: 14px 16px;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.55);
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      font-weight: 400;
+      text-align: left;
+      line-height: 1.5;
+      font-size: 0.78rem;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+      white-space: normal;
+      top: -9999px;
+      left: -9999px;
+    }
+
+    .tt-box .tt-h {
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #fff;
+      line-height: 1.45;
+    }
+
+    .tt-box .tt-ul {
+      margin: 6px 0 0;
+      padding-left: 1.1rem;
+      color: var(--tt-text);
+      font-size: 0.75rem;
+      list-style: disc;
+    }
+
+    .tt-box .tt-ul li { margin: 4px 0; }
+
+    .tt-box .tt-note {
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid #475569;
+      font-size: 0.72rem;
+      color: var(--tt-muted);
+      line-height: 1.55;
+    }
+
+    .tt-box--wide {
+      width: min(92vw, 420px);
+      max-width: min(92vw, 420px);
+    }
+
+    .match-ok td { background: #f0fdf4 !important; }
+    .match-no td { background: #fef2f2 !important; }
   </style>
 </head>
 <body>
@@ -483,26 +631,51 @@
     <header class="hero">
       <h1>Doggo Fest 2026 可以續做，但不要用純拉新 ROI justify</h1>
       <p class="sub">
-        這份報告不是重述分析流程，而是直接回答管理層決策問題：
-        2026 應否續做、為何可做、哪些客戶值得做、以及要怎樣改 campaign design。
+        本報告用 <span class="tip" tabindex="0">Matched DiD（配對差異中的差異）<span class="tt-box tt-box--wide"><div class="tt-h">Matched DiD 是什麼？</div><ul class="tt-ul"><li><strong>Step 1 配對</strong>：為每位參加者找一位活動前 180 日行為相似的未參加者（1 對 = 2 人）。</li><li><strong>對照者（Control）</strong>：未用 Doggo Fest 券、但 pre 180 日行為與參加者同桶的 Typical Pet 用戶；當「無活動代理」，不是隨機路人或全體平均。</li><li><strong>Step 2 DiD</strong>：比較「參加者（Post−Pre）− 對照者（Post−Pre）」——兩邊各自算活動後相對活動前的變化，再相減。</li><li>差距才可解讀為「若無做活動，本來不會有」的增量。</li></ul><div class="tt-note">不是 A/B test 隨機分組；是事後觀察數據上的因果近似。</div></span></span>
+        回答管理層核心問題：<strong>Doggo Fest 有沒有帶來真增量？增量來自哪類客？2026 應如何定位與續做？</strong>
       </p>
       <div class="badge-row">
-        <span class="badge">Conditional Go</span>
-        <span class="badge">Brand / Win-back</span>
-        <span class="badge">Existing Active Pet User Activation</span>
-        <span class="badge">Not Pure Acquisition ROI Campaign</span>
+        <span class="badge">
+          <span class="badge-en">Conditional Go</span>
+          <span class="badge-zh">有條件續做：活動有效益，但要控成本、收窄目標客群</span>
+        </span>
+        <span class="badge">
+          <span class="badge-en">Brand / Win-back</span>
+          <span class="badge-zh">品牌曝光／喚回客：重點做知名度與喚醒曾用但近期少用的人</span>
+        </span>
+        <span class="badge">
+          <span class="badge-en">Existing Active Pet User Activation</span>
+          <span class="badge-zh">激活既有活躍寵物客：主戰場是已在平台用車的寵物客，不是大規模拉新</span>
+        </span>
+        <span class="badge">
+          <span class="badge-en">Not Pure Acquisition ROI Campaign</span>
+          <span class="badge-zh">非純拉新 ROI 活動：勿單用新客回本數 justify 整場活動成效</span>
+        </span>
       </div>
       <p class="meta">報告版本：2026-07-08 建檔；分析數字凍結自既有報告 JSON。</p>
       <p class="cite">核心數字引用：（2026-07-07 實查，HK TRANSPORT PlatformOD，pre 2025-05-18 to 2025-11-13；post 2025-11-17 to 2026-05-16）</p>
       <div class="decision-strip">
         <div class="decision-box">
-          <strong>一句話結論</strong>
-          Doggo Fest 有增量，但增量主要來自既有活躍客，不是大規模新客回本；因此 2026 可續做，但要收窄 target、控制成本、加強首單後 retention flow。
+          <strong>我們要解決的 Business Problem</strong>
+          <ol>
+            <li><strong>活動有沒有增量？</strong> 參加者活動後 180 日，平台收入（<code>platform_take</code>）是否比「未參加但<span class="tip" tabindex="0">行為相似<span class="tt-box"><div class="tt-h">相似行為</div><ul class="tt-ul"><li>活動前 180 日落單次數、消費（GTV）、最近活躍時間接近。</li><li>不看年齡、性別、地區；只看用車習慣是否夠接近可公平比較。</li></ul><div class="tt-note">詳見下方「開始前必讀 §②」。</div></span></span>」的人更多？</li>
+            <li><strong>增量來自哪類客？</strong> 既有活躍客、新客、回流客——誰真正被激活？</li>
+            <li><strong>2026 如何定位？</strong> 續做應當品牌／喚回既有寵物客，還是當純拉新 ROI campaign？</li>
+          </ol>
         </div>
         <div class="risk-box">
-          <strong>先講最大限制</strong>
-          因果主結論只適用 140 對 matched DiD；新客 102 人只能看質量 benchmark，不能當作因果增量。
+          <strong>分析方法與為何用這個 Model</strong>
+          <ul>
+            <li><strong>方法：</strong>Matched DiD — 先配對找<span class="tip" tabindex="0">無活動代理<span class="tt-box"><div class="tt-h">無活動代理</div><ul class="tt-ul"><li>一位行為相似、但未參加 Doggo Fest 的對照用戶。</li><li>模擬「若無做活動，本來預期會如何」——不是 forecast model。</li></ul></span></span>，再算 DiD 差距。</li>
+            <li><strong>為何不用簡單 before/after？</strong> 參加者本身已活躍，只看活動後會高估效果。</li>
+            <li><strong>為何不用 LTV／BTYD？</strong> 那是預測模型，不是活動因果驗證工具。</li>
+            <li><strong>限制：</strong> 因果主結論只適用 <strong>140 對</strong>（280 人）；新客 102 人只做質量 benchmark。</li>
+          </ul>
         </div>
+      </div>
+      <div class="hero-preview">
+        <strong>決策結論（預覽）</strong>
+        Doggo Fest 有增量，但主要來自<strong>既有活躍寵物客</strong>（136 對，+HK$89.72／人，統計顯著）——2026 可續做，但要收窄 target、控制成本、加強首單後 retention；<strong>勿用新客拉新 ROI justify 整場活動</strong>。
       </div>
     </header>
 
@@ -523,28 +696,30 @@
     </div>
 
     <section id="cohort-base" class="section" style="border-left:4px solid var(--blue);">
-      <h2>開始前必讀 · 人群基數與配對覆蓋（Cohort Base &amp; Matching）</h2>
-      <p class="lead">睇下面決策同數字之前，先知道 372 從何而來、為何只有 140 對可做因果，以及這對結論的影響——避免誤讀成「人數少＝結論不可信」。細節可點擊各項展開。</p>
+      <h2>開始前必讀 · 分析框架、人群基數與配對覆蓋</h2>
+      <p class="lead">閱讀下方決策與 KPI 之前，先理解：<strong>我們用什麼方法、回答什麼商業問題、372 人與 140 對分別代表什麼</strong>——避免誤讀成「人數少＝結論不可信」。細節可點擊各項展開。</p>
 
       <div class="callout blue">
-        這份報告的重點不是「有多少人」，而是「相對無活動代理，參加者是否真有增量」。主結論（既有活躍客 +HK$89.72／人）建立在可配對且統計顯著的子集上，人數規模不影響決策方向。
+        <strong>這份分析做什麼？</strong> 372 人活動期使用 Doggo Fest 券完成單（Treatment）。其中 <strong>140 對</strong>（280 人）找到<span class="tip" tabindex="0">行為相似<span class="tt-box"><div class="tt-h">相似行為（配對條件）</div><ul class="tt-ul"><li>活動前 180 日：落單次數、GTV 消費、最近活躍時間接近。</li><li>唯一主要差異：有無參加 Doggo Fest。</li></ul><div class="tt-note">完整定義與正反例子見 §②。</div></span></span>對照，進入 <strong>Matched DiD</strong>。<br>
+        <strong>回答什麼 business problem？</strong> 相對<span class="tip" tabindex="0">無活動代理<span class="tt-box"><div class="tt-h">無活動代理</div><ul class="tt-ul"><li>未參加、但活動前用車習慣與參加者接近的對照用戶。</li><li>用來模擬「若無做活動」的預期走勢。</li></ul></span></span>，參加者活動後 180 日平台收入是否有增量？主結論：<strong>既有活躍客 +HK$89.72／人</strong>（136 對，Bootstrap 95% CI 排除 0）。<br>
+        <strong>管理層如何用？</strong> 有增量 → 2026 可續做，但收窄至既有活躍寵物客；新客 102 人<strong>不納入因果主結論</strong>，只看第 2／3 單率 benchmark。
       </div>
 
       <div class="grid-3" style="margin-bottom:16px;">
         <div class="kpi">
-          <div class="label">Treatment 基數</div>
+          <div class="label">參加者（Treatment）</div>
           <div class="value">372 人</div>
           <div class="sub">活動期領券完成單（去重）</div>
         </div>
         <div class="kpi">
-          <div class="label">可配對 DiD</div>
+          <div class="label">可做因果分析（Matched DiD）</div>
           <div class="value">140 對</div>
-          <div class="sub">37.6%；其餘 232 人結構上無法配對</div>
+          <div class="sub">37.6%；= 140 參加者 + 140 對照者</div>
         </div>
         <div class="kpi">
-          <div class="label">主結論母體</div>
-          <div class="value">既有活躍客 136 對</div>
-          <div class="sub">Bootstrap CI 排除 0，統計顯著</div>
+          <div class="label">主決策依據（既有活躍客）</div>
+          <div class="value">136 對</div>
+          <div class="sub">+HK$89.72／人；Bootstrap CI 排除 0</div>
         </div>
       </div>
 
@@ -559,15 +734,94 @@
             <li>status = completed</li>
             <li>voucher 命中：<code>voucher_title LIKE '%Doggo Fest%'</code> 或指定 voucher code</li>
           </ul>
-          <p class="chart-note">用 voucher（而非尖沙咀 TST 地點）識別參加者：活動期 TST 叫車 2,214 人多為普通訂單，noise 太大；voucher 才是最乾淨的參與訊號。</p>
+          <p class="chart-note">用 voucher（而非尖沙咀 TST 地點）識別參加者：活動期 TST 叫車 2,214 人多為普通訂單，雜訊過高；voucher 才是最乾淨的參與訊號。</p>
           <p class="chart-note">Control 候選：Typical Pet 池 3,470 名「活動前已活躍」的 PlatformOD 寵物客（未領 Doggo Fest 券）。</p>
         </div>
       </details>
 
-      <details style="margin-top:12px;">
-        <summary>② 為何只配到 140 對（37.6%）</summary>
+      <details open style="margin-top:12px;">
+        <summary>② 「對」是什麼？相似行為如何定義？為何只得 140 對？</summary>
         <div class="details-body">
-          <p class="chart-conclusion" style="margin-top:12px;">配對用「活動前 180 天行為」分桶（pre 完成單桶 × pre GTV 四分位 × recency 桶）做 exact / bucket match；沒有活動前行為的人，結構上就無同桶對照可配。</p>
+
+          <h4 class="subhead">A. 「對」不是訂單——是配對實驗（Matched DiD）</h4>
+          <div class="callout green">
+            <strong>1 對 = 1 個參加 Doggo Fest 的人 + 1 個相似但未參加的人。</strong><br>
+            140 對 = 140 個參加者 + 140 個對照者（共 280 人入分析），<strong>不是</strong> 372 人全部配到對。
+          </div>
+          <p class="chart-note">
+            這是一種<span class="tip" tabindex="0">差異中的差異（DiD）<span class="tt-box tt-box--wide"><div class="tt-h">Matched DiD 是什麼？</div><ul class="tt-ul"><li>先找「影子對象」：活動前用車習慣差不多的未參加者（即<strong>對照者</strong>）。</li><li><strong>對照者</strong> = 未領 Doggo Fest 券、但 pre 180 日行為與參加者配成同桶的 Typical Pet 用戶；每人配 1 位，當無活動代理。</li><li>再比活動後：參加者（Post−Pre）提升了多少 − 對照者（Post−Pre）提升了多少。</li><li>差距才可解讀為「若無做活動，本來會如何」以外的增量。</li></ul><div class="tt-note">不是 A/B test 隨機分組；是事後用行為相似的人做對照。</div></span></span>分析：
+            回答「如果這批參加者沒有做 Doggo Fest，結果會不會一樣？」
+          </p>
+
+          <h4 class="subhead">B. 「相似行為」如何定義？（點擊藍字查看說明）</h4>
+          <p class="chart-conclusion">
+            相似行為 = 活動前 180 日用 GoGoX 的方式差不多——不是一模一樣，而是夠接近，可以公平比較。
+          </p>
+          <p class="chart-note" style="margin-bottom:12px;">
+            一句話：A 有參加、B 無參加；但活動前落單頻率、消費、最近活躍時間差不多，所以 B 可以做 A 的「<span class="tip" tabindex="0">無活動代理<span class="tt-box"><div class="tt-h">無活動代理</div><ul class="tt-ul"><li>用 matched control 模擬：若無做 Doggo Fest，本來預期會如何。</li><li>不是 forecast model；是找一個行為相似、但未參加的人做基準。</li></ul></span></span>」。
+          </p>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>配對維度（活動前 180 天）</th><th>白話意思</th><th>例子</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="tip" tabindex="0">Pre completed orders<span class="tt-box"><div class="tt-h">活動前完成單數</div><ul class="tt-ul"><li>活動前 180 天內完成多少張 TRANSPORT 單。</li><li>配對時用「桶」分組（exact / bucket match），不是要求完全一樣。</li></ul><div class="tt-note">例：A 活動前 6 單，B 活動前 5 單 → 可視為相近。</div></span></span></td>
+                  <td>活動前落單次數</td>
+                  <td>A 活動前 180 日落 5 單；B 落 4–6 單</td>
+                </tr>
+                <tr>
+                  <td><span class="tip" tabindex="0">Pre GTV<span class="tt-box"><div class="tt-h">活動前客戶消費（GTV）</div><ul class="tt-ul"><li>活動前 180 天客戶支付總額（未扣司機分成）。</li><li>用四分位「桶」配對，不看年齡、性別、地區。</li></ul><div class="tt-note">例：A 約 HK$1,200；B 落在相近 GTV 區間。</div></span></span></td>
+                  <td>活動前消費強度</td>
+                  <td>A 活動前 GTV 約 HK$1,200；B 也在相近區間</td>
+                </tr>
+                <tr>
+                  <td><span class="tip" tabindex="0">Recency<span class="tt-box"><div class="tt-h">最近活躍時間（Recency）</div><ul class="tt-ul"><li>最近一次完成單距離活動日多久。</li><li>新客無活動前單 → recency 桶 = unknown → 結構上難配對。</li></ul><div class="tt-note">例：A 活動前 20 日叫過車；B 活動前 25 日叫過車。</div></span></span></td>
+                  <td>最近一次落單距離活動日幾耐</td>
+                  <td>A 最近 30 日內叫過車；B 也最近 30 日內叫過車</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="chart-note"><strong>不看</strong>年齡、性別、地區；<strong>只看</strong>之前是否同樣常用、同樣肯花錢、同樣近期有用。</p>
+
+          <h4 class="subhead">C. 例子：哪些可以配成「一對」？</h4>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th></th><th>參加者 A</th><th>對照者 B</th><th>結論</th></tr>
+              </thead>
+              <tbody>
+                <tr class="match-ok">
+                  <td>有無用 Doggo Fest 券</td><td>有</td><td>無</td><td rowspan="5">行為相似，<strong>可以配對</strong>；之後比 A 活動後變化 − B 活動後變化</td>
+                </tr>
+                <tr class="match-ok"><td>活動前 180 日落單</td><td>6 單</td><td>5 單</td></tr>
+                <tr class="match-ok"><td>活動前 GTV</td><td>HK$1,300</td><td>HK$1,180</td></tr>
+                <tr class="match-ok"><td>最近一次落單</td><td>活動前 20 日</td><td>活動前 25 日</td></tr>
+                <tr class="match-ok"><td>配對後比較</td><td colspan="2">A（參加者）Post−Pre − B（<span class="tip" tabindex="0">對照者<span class="tt-box"><div class="tt-h">對照者 B 是誰？</div><ul class="tt-ul"><li>未用 Doggo Fest 券，但活動前落單、消費、活躍時間與 A 接近。</li><li>代表「若 A 沒參加活動，本來可能走的路」。</li></ul></span></span>）Post−Pre = 可能活動增量</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="table-wrap" style="margin-top:12px;">
+            <table>
+              <thead>
+                <tr><th></th><th>參加者 C</th><th>對照者 D</th><th>結論</th></tr>
+              </thead>
+              <tbody>
+                <tr class="match-no">
+                  <td>有無用 Doggo Fest 券</td><td>有</td><td>無</td><td rowspan="5">行為差太遠，<strong>不應配對</strong>（會高估活動效果）</td>
+                </tr>
+                <tr class="match-no"><td>活動前 180 日落單</td><td>12 單</td><td>0 單</td></tr>
+                <tr class="match-no"><td>活動前 GTV</td><td>HK$3,000</td><td>HK$0</td></tr>
+                <tr class="match-no"><td>最近一次落單</td><td>活動前 10 日</td><td>1 年前</td></tr>
+                <tr class="match-no"><td>為何</td><td colspan="2">C 是高活躍客，D 幾乎休眠——不公平</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4 class="subhead">D. 為何 372 人最後只得 140 對？</h4>
+          <p class="chart-conclusion" style="margin-top:8px;">配對用上述三維度分桶做 exact / bucket match；沒有活動前行為的人，結構上就無同桶對照可配。</p>
           <div class="table-wrap">
             <table>
               <thead>
@@ -575,7 +829,7 @@
               </thead>
               <tbody>
                 <tr><td>既有活躍客</td><td>168</td><td>136 對</td><td>32</td><td>個別桶組合在 control 池找不到同桶對象</td></tr>
-                <tr><td>真・新客</td><td>102</td><td>2 對</td><td>~100</td><td>活動前無任何完成單 → recency 桶 = unknown，無得配</td></tr>
+                <tr><td>真・新客</td><td>102</td><td>2 對</td><td>~100</td><td>活動前無任何完成單 → recency 桶 = unknown，無法配對</td></tr>
                 <tr><td>回流客</td><td>102</td><td>2 對</td><td>~100</td><td>長期休眠，活動前行為近乎空白</td></tr>
                 <tr><td><strong>合計</strong></td><td><strong>372</strong></td><td><strong>140 對</strong></td><td><strong>232</strong></td><td>—</td></tr>
               </tbody>
@@ -591,16 +845,17 @@
           <div class="table-wrap">
             <table>
               <thead>
-                <tr><th>分段</th><th>活動前 180 天有冇單</th><th>配唔到嘅原因</th><th>拉長窗會唔會救到</th></tr>
+                <tr><th>分段</th><th>活動前 180 天有無單</th><th>配不到的原因</th><th>拉長時間範圍能否改善</th></tr>
               </thead>
               <tbody>
-                <tr><td>既有活躍客<br>168（配 136，剩 32）</td><td class="answer-yes">有</td><td>個別桶組合在 control 池找不到同桶對象（不關窗事）</td><td>不關窗；要擴大 control 池</td></tr>
-                <tr><td>真・新客<br>102（配 2）</td><td class="answer-no">無</td><td>生涯首單就在活動期，根本無任何歷史 → 結構上無 baseline</td><td class="answer-no">拉幾長都無用，佢哋真係新</td></tr>
-                <tr><td>回流客<br>102（配 2）</td><td class="answer-warn">180 天內近乎無</td><td>上次落單在 180 天之前，pre 窗看起來是空白</td><td class="answer-warn">會救到部分——歷史上有單，只是在 180 天窗外</td></tr>
+                <tr><td>既有活躍客<br>168（配 136，剩 32）</td><td class="answer-yes">有</td><td>個別桶組合在 control 池找不到同桶對象（與時間範圍無關）</td><td>與時間範圍無關；要擴大 control 池</td></tr>
+                <tr><td>真・新客<br>102（配 2）</td><td class="answer-no">無</td><td>生涯首單就在活動期，根本無任何歷史 → 結構上無 baseline</td><td class="answer-no">拉再長也無用，他們確實是新客</td></tr>
+                <tr><td>回流客<br>102（配 2）</td><td class="answer-warn">180 天內近乎無</td><td>上次落單在 180 天之前，pre 窗看起來是空白</td><td class="answer-warn">可改善部分覆蓋——歷史上有訂單，只是在 180 天窗外</td></tr>
               </tbody>
             </table>
           </div>
           <p class="chart-note">所以 140 不是「只有 140 人落單」，而是「只有 140 人在活動前 180 天有可比 baseline 去配對」。新客是真新（拉窗無用）；回流客才是被 180 天切窗影響的那批；既有客的 32 人只差 control 池對象。為與 post 180 天對稱、保持 DiD 基線乾淨，pre 窗維持 180 天——這是「配對覆蓋 vs 方法嚴謹」的取捨。</p>
+          <p class="chart-note">最短版：<strong>相似行為 = 活動前一樣活躍、一樣消費水平、一樣近期有用，只差在有無參加活動。</strong></p>
         </div>
       </details>
 
@@ -639,16 +894,16 @@
       </details>
 
       <details style="margin-top:12px;">
-        <summary>⑤ 為何唔把 Pre window 拉長到 365 日？</summary>
+        <summary>⑤ 為何不把 Pre window 拉長到 365 日？</summary>
         <div class="details-body">
           <div class="callout blue" style="margin-top:12px;">
-            <strong>結論：</strong>不建議把活動前觀察窗由 180 日拉長到 365 日。拉長 Pre window <strong>不會增加實驗組人數</strong>——Doggo Fest 實驗組由 voucher 使用定義，仍是 372 人；改窗只影響「多少人能找到相似對照組」，不改變誰是參加者。而且 365 日只救到部分回流客，救不到真新客，還會破壞 Pre／Post 對稱，令 DiD 較難解讀。
+            <strong>結論：</strong>不建議把活動前觀察窗由 180 日拉長到 365 日。拉長 Pre window <strong>不會增加實驗組人數</strong>——Doggo Fest 實驗組由 voucher 使用定義，仍是 372 人；改窗只影響「多少人能找到相似對照組」，不改變誰是參加者。而且 365 日只能改善部分回流客的配對覆蓋，無法解決真新客沒有活動前歷史行為的問題，還會破壞 Pre／Post 對稱，令 DiD 較難解讀。
           </div>
 
           <p class="chart-conclusion" style="margin-top:6px;">會影響哪些人？</p>
           <div class="table-wrap">
             <table>
-              <thead><tr><th>分段</th><th>拉到 365 日有冇幫助</th><th>原因</th></tr></thead>
+              <thead><tr><th>分段</th><th>拉到 365 日是否有幫助</th><th>原因</th></tr></thead>
               <tbody>
                 <tr><td>真新客 102 人</td><td class="answer-no">無幫助</td><td>生涯首單就在活動期；即使 Pre 拉到 365 日，活動前仍沒有歷史訂單，不能用活動前行為配對。</td></tr>
                 <tr><td>回流客約 100 人</td><td class="answer-warn">部分有幫助</td><td>若上次下單在活動前 180–365 日之間，365 日窗可重新看到舊紀錄；但只代表他曾用過，不代表近期活躍。</td></tr>
@@ -690,7 +945,7 @@
           </div>
 
           <div class="callout amber" style="margin-top:14px;">
-            <strong>對外解讀：</strong>拉長 Pre window 到 365 日不能解決全部配對問題——只幫到部分回流客，幫不到真新客；且若 Post 仍是 180 日，Pre／Post 長度不一致會令 DiD 有偏差。因此本報告保留 180／180 對稱時間窗，重點放在可乾淨配對的 matched sample；未來要提高覆蓋率，正確方向是改進配對方法與擴大 control pool，而非單純加長 baseline window。
+            <strong>對外解讀：</strong>拉長 Pre window 到 365 日不能解決全部配對問題——只能改善部分回流客的配對覆蓋，無法解決真新客沒有活動前歷史行為的問題；且若 Post 仍是 180 日，Pre／Post 長度不一致會令 DiD 有偏差。因此本報告保留 180／180 對稱時間窗，重點放在可乾淨配對的 matched sample；未來要提高覆蓋率，正確方向是改進配對方法與擴大 control pool，而非單純加長 baseline window。
           </div>
         </div>
       </details>
@@ -731,14 +986,15 @@
 
     <section id="snapshot" class="section">
       <h2>2. KPI Snapshot</h2>
-      <p class="lead">讓 CEO / GM / Marketing / Finance 一眼先知道好壞，再決定是否往下看完整證據。</p>
+      <p class="lead">讓 CEO / GM / Marketing / Finance 快速判斷成效強弱，再決定是否往下閱讀完整證據。</p>
 
       <details>
         <summary>術語白話說明（展開）</summary>
         <div class="details-body">
           <div class="term-grid">
             <div class="term"><strong>ROI proxy</strong> 粗略回本率，不是 Finance 官方 ROI。</div>
-            <div class="term"><strong>DiD</strong> 差異中的差異：實驗組變化減對照組變化。</div>
+            <div class="term"><strong>DiD</strong> 差異中的差異：參加者（Post−Pre）減去對照者（Post−Pre）。</div>
+            <div class="term"><strong>對照者（Control）</strong> 未用 Doggo Fest 券、但活動前 180 日用車習慣與某位參加者配成同桶的 Typical Pet 用戶；1 參加者配 1 對照者，用來模擬「若無做活動」本來會怎樣。不是隨機路人或全體平均。</div>
             <div class="term"><strong>platform_take</strong> 平台實際收入，本報告主 KPI。公式：<code>driver_commission + premium_platform_support</code>（平台向司機抽佣 ＋ 平台支援費；null 當 0）。</div>
             <div class="term"><strong>無活動代理</strong> matched control 模擬「若無做活動」的預期走勢，不是 forecast model。</div>
           </div>
@@ -769,14 +1025,14 @@
           <div class="value">第 2 單 38.2% · 第 3 單 23.5%</div>
           <div class="sub">
             Doggo 新客 102 人 vs 同期 organic 自然新客 75,103 人：<br>
-            organic 第 2 單 <strong>37.5%</strong>、第 3 單 <strong>19.4%</strong> → 打和／略好。
+            organic 第 2 單 <strong>37.5%</strong>、第 3 單 <strong>19.4%</strong> → 大致持平／略好。
           </div>
           <span class="mini-tag amber">benchmark · 非 DiD</span>
         </div>
         <div class="kpi">
           <div class="label">是否適合純拉新</div>
           <div class="value">不適合</div>
-          <div class="sub">ROI proxy 5.97%；第 2 單打和、第 3 單略好，仍不足回本</div>
+          <div class="sub">ROI proxy 5.97%；第 2 單率大致持平、第 3 單率略好，仍不足回本</div>
           <span class="mini-tag red">勿作拉新 headline</span>
         </div>
         <div class="kpi">
@@ -864,11 +1120,11 @@
     <section id="question-map" class="section">
       <h2>4. 本報告問題地圖</h2>
       <p class="lead">
-        上層係 <code>analysis-framework.md</code> §2 成效五問（analyst 主幹）；
-        下層係管理層決策加題。兩層合埋，就係本報告要答嘅全部 business questions。
+        上層是 <code>analysis-framework.md</code> §2 成效五問（analyst 主幹）；
+        下層是管理層決策加題。兩層合併後，就是本報告要回答的全部 business questions。
       </p>
       <div class="callout blue">
-        讀法：先睇<strong>決策層</strong>（做唔做、點定位、ROI）→ 再睇<strong>成效層</strong>（紅框五問）→ 最後用各章圖表驗證。
+        閱讀方式：先看<strong>決策層</strong>（是否續做、如何定位、ROI）→ 再看<strong>成效層</strong>（紅框五問）→ 最後用各章圖表驗證。
       </div>
       <div class="table-wrap">
         <table>
@@ -899,18 +1155,18 @@
             </tr>
             <tr>
               <td>活動是「留住本來會用的人」還是「帶來增量」？</td>
-              <td>不是自嗨；要比無活動預期更好</td>
+              <td>不是單方面自我合理化；結果需要優於未舉辦活動的預期</td>
               <td><a href="#questions">§5 問答</a> · <a href="#counterfactual">§7 無活動代理</a></td>
             </tr>
             <tr>
               <td>哪類 attendee 貢獻大？</td>
-              <td>2026 應 target 邊類客</td>
+              <td>2026 應 target 哪類客戶</td>
               <td><a href="#evidence">§6 Segment 圖</a> · <a href="#appendix">§10 Direction split</a></td>
             </tr>
             <tr>
               <td rowspan="4"><strong>決策層</strong><br><span style="color:var(--muted);font-size:0.85rem">管理層加題</span></td>
               <td>短期 ROI 是否足夠 justify？</td>
-              <td>Finance 會唔會批預算</td>
+              <td>Finance 是否會批預算</td>
               <td><a href="#roi">§3 ROI Reality Check</a></td>
             </tr>
             <tr>
@@ -924,7 +1180,7 @@
               <td><a href="#evidence">§6 Funnel</a> · <a href="#cohort-base">開始前必讀 · 基數與配對</a></td>
             </tr>
             <tr>
-              <td>2026 要不要續做？點改 campaign？</td>
+              <td>2026 是否續做？如何調整 campaign？</td>
               <td>最終拍板與執行方向</td>
               <td><a href="#decision">§1 Executive Decision</a> · <a href="#playbook">§8 Playbook</a></td>
             </tr>
@@ -986,7 +1242,7 @@
               <td>是否適合用作純拉新活動？</td>
               <td class="answer-no">不適合</td>
               <td>ROI proxy 5.97%；第 2 單率 Doggo 39/102（38.2%）vs organic 28,198/75,103（37.5%）；第 3 單率 Doggo 24/102（23.5%）vs organic 14,571/75,103（19.4%）</td>
-              <td>第 2 單打和、第 3 單略好，但不足以支持高成本拉新 headline。</td>
+              <td>第 2 單率大致持平、第 3 單率略好，但不足以支持高成本拉新 headline。</td>
             </tr>
             <tr>
               <td>2026 要不要續做？</td>
@@ -1120,7 +1376,7 @@
         </div>
 
         <div class="chart-card">
-          <h3>Doggo 新客第 2 單打和、第 3 單略好，但仍不足以 justify 純拉新</h3>
+          <h3>Doggo 新客第 2 單率大致持平、第 3 單率略好，但仍不足以 justify 純拉新</h3>
           <p class="chart-conclusion">可比第 2 單率 Doggo 39/102（38.2%）vs organic 28,198/75,103（37.5%）；第 3 單率 Doggo 24/102（23.5%）vs organic 14,571/75,103（19.4%）。質量不是差，但高成本活動仍難回本。</p>
           <div class="svg-wrap">
             <svg viewBox="0 0 520 270" aria-label="New customer benchmark">
@@ -1178,7 +1434,7 @@
     </section>
 
     <section id="counterfactual" class="section">
-      <h2>7. 如果無做 Doggo Fest，結果會點？</h2>
+      <h2>7. 如果沒有舉辦 Doggo Fest，結果會如何？</h2>
       <p class="lead">用 matched control 作為「無活動代理」；將實際 post 180 日結果與 no-event counterfactual 比較。<strong>不是 forecast model。</strong></p>
       <div class="callout green">
         Doggo Fest 的價值不是「post 有收入」，而是「實際 post 比無活動預期多了多少」——人均活動增量 <strong>+HK$25.37</strong>（140 對 matched users）。
@@ -1489,6 +1745,64 @@
         target.scrollIntoView({ behavior: 'smooth', block: 'start' });
       });
     });
+  </script>
+  <script>
+    (function () {
+      var PAD = 8;
+      var ARROW = 10;
+      function findBox(tip) { return tip.querySelector('.tt-box'); }
+      function hideTip(tip) {
+        var box = findBox(tip);
+        if (!box) return;
+        box.style.opacity = '0';
+        box.style.visibility = 'hidden';
+        box.style.pointerEvents = 'none';
+        tip.classList.remove('tip-open');
+      }
+      function showTip(tip) {
+        var box = findBox(tip);
+        if (!box) return;
+        tip.classList.add('tip-open');
+        box.style.position = 'fixed';
+        box.style.top = '-9999px';
+        box.style.left = '-9999px';
+        box.style.visibility = 'hidden';
+        box.style.opacity = '0';
+        box.style.pointerEvents = 'auto';
+        var bw = box.offsetWidth || 320;
+        var bh = box.offsetHeight || 200;
+        var tr = tip.getBoundingClientRect();
+        var vw = window.innerWidth;
+        var vh = window.innerHeight;
+        var top = tr.bottom + ARROW;
+        if (top + bh > vh - PAD) top = Math.max(PAD, tr.top - bh - ARROW);
+        var left = tr.left;
+        if (left + bw > vw - PAD) left = Math.max(PAD, vw - bw - PAD);
+        if (left < PAD) left = PAD;
+        box.style.top = top + 'px';
+        box.style.left = left + 'px';
+        box.style.maxHeight = Math.min(vh * 0.72, 400) + 'px';
+        box.style.overflowY = 'auto';
+        box.style.visibility = 'visible';
+        box.style.opacity = '1';
+      }
+      function bindTip(tip) {
+        var box = findBox(tip);
+        if (!box) return;
+        var t = null;
+        tip.addEventListener('mouseenter', function () { clearTimeout(t); showTip(tip); });
+        tip.addEventListener('mouseleave', function () { t = setTimeout(function () { hideTip(tip); }, 80); });
+        tip.addEventListener('focusin', function () { showTip(tip); });
+        tip.addEventListener('focusout', function () { hideTip(tip); });
+        tip.addEventListener('click', function (e) {
+          if (e.target.closest('.tt-box')) return;
+          if (tip.classList.contains('tip-open')) hideTip(tip); else showTip(tip);
+        });
+        box.addEventListener('mouseenter', function () { clearTimeout(t); });
+        box.addEventListener('mouseleave', function () { hideTip(tip); });
+      }
+      document.querySelectorAll('.tip').forEach(bindTip);
+    })();
   </script>
 </body>
 </html>
