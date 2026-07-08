@@ -2227,17 +2227,20 @@
             <li class="seg-warn"><strong>回流客</strong> — ⚠️ 樣本不足，暫不作結論<span class="seg-detail">僅 2 對可比 · 不作管理層主要結論</span></li>
           </ul>
           <div class="svg-wrap">
-            <svg viewBox="0 0 480 120" aria-label="Segment contribution chart">
-              <line x1="100" y1="12" x2="100" y2="108" stroke="#cbd5e1" stroke-width="2"/>
-              <text x="8" y="38" fill="#334155" font-size="11" font-weight="700">既有活躍客</text>
-              <rect x="100" y="24" width="220" height="22" rx="6" fill="#15803d"/>
-              <text x="330" y="40" fill="#15803d" font-size="11" font-weight="800">+HK$25.57／人</text>
-              <text x="8" y="72" fill="#334155" font-size="11" font-weight="700">新客</text>
-              <rect x="100" y="58" width="100" height="18" rx="6" fill="#fde68a" stroke="#f59e0b"/>
-              <rect x="100" y="80" width="80" height="16" rx="6" fill="#fef3c7" stroke="#f59e0b"/>
-              <text x="8" y="108" fill="#334155" font-size="11" font-weight="700">回流客</text>
-              <rect x="100" y="96" width="10" height="16" rx="4" fill="#fca5a5"/>
-            </svg>
+            <div style="display:grid;gap:12px;margin:6px 2px;">
+              <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;">
+                <span style="min-width:80px;font-weight:700;">既有活躍客</span>
+                <span style="background:#15803d;color:#fff;font-weight:800;padding:5px 12px;border-radius:999px;">+HK$25.57／人（點估計，未達顯著）</span>
+              </div>
+              <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;">
+                <span style="min-width:80px;font-weight:700;">新客</span>
+                <span style="color:var(--muted);font-size:.88rem;">無活動前紀錄、不做增量；只看留存品質：第 2 單 38.2%、第 3 單 23.5%（與自然新客相近）</span>
+              </div>
+              <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;">
+                <span style="min-width:80px;font-weight:700;">回流客</span>
+                <span style="color:var(--muted);font-size:.88rem;">僅 2 對配對，樣本太少，不作結論</span>
+              </div>
+            </div>
           </div>
           <p class="chart-note">2026 預算應優先投放既有活躍客；新客只看留存品質參考，不作增量主結論；回流客待樣本增加後再評估。<span class="tech-inline" style="display:inline;margin-left:4px;">（136 對 · Matched DiD）</span></p>
           <p class="cite">引用：（2026-07-07 實查，HK TRANSPORT PlatformOD，pre 2025-05-18 to 2025-11-13；post 2025-11-17 to 2026-05-16）</p>
@@ -2332,30 +2335,20 @@
         </div>
         <p class="chart-note">註：<strong>−HK$1.49</strong> 指對照組活動後 180 天比活動前 180 天每人<strong>少賺 HK$1.49</strong>（近乎持平，<strong>非虧損</strong>）。正因為「若無活動，這批人本來大致不會升」，參加者的 +HK$23.88 才顯出 +HK$25.37 的增量差距。</p>
         <div class="svg-wrap svg-wrap--wide">
-          <svg viewBox="0 0 900 300" aria-label="Actual vs no-event counterfactual">
-            <line x1="80" y1="240" x2="860" y2="240" stroke="#cbd5e1" stroke-width="2"/>
-            <line x1="80" y1="40" x2="80" y2="240" stroke="#cbd5e1" stroke-width="2"/>
-            <line x1="430" y1="48" x2="430" y2="240" stroke="#f59e0b" stroke-width="3" stroke-dasharray="8 6"/>
-            <text x="440" y="62" fill="#92400e" font-size="13" font-weight="800">活動日</text>
-            <text x="120" y="262" fill="#475569" font-size="12" text-anchor="middle">活動前</text>
-            <text x="430" y="262" fill="#475569" font-size="12" text-anchor="middle">Doggo Fest</text>
-            <text x="760" y="262" fill="#475569" font-size="12" text-anchor="middle">活動後 180 天</text>
-            <polyline points="120,170 430,168 760,88" fill="none" stroke="#2563eb" stroke-width="5"/>
-            <circle cx="120" cy="170" r="6" fill="#2563eb"/>
-            <circle cx="760" cy="88" r="7" fill="#2563eb"/>
-            <polyline points="120,170 430,168 760,186" fill="none" stroke="#ef4444" stroke-width="5"/>
-            <circle cx="120" cy="170" r="6" fill="#ef4444"/>
-            <circle cx="760" cy="186" r="7" fill="#ef4444"/>
-            <line x1="700" y1="88" x2="700" y2="186" stroke="#15803d" stroke-width="4" stroke-dasharray="6 6"/>
-            <text x="708" y="141" fill="#15803d" font-size="14" font-weight="800">差距 +HK$25.37 / 人</text>
-            <text x="596" y="80" fill="#2563eb" font-size="12" font-weight="700">實際 +HK$23.88/人</text>
-            <text x="560" y="212" fill="#b91c1c" font-size="12" font-weight="700">無活動代理 −HK$1.49/人</text>
-          </svg>
-        </div>
-        <div class="legend">
-          <span class="blue">實際有活動</span>
-          <span class="red">無活動代理</span>
-          <span class="green">活動增量差距</span>
+          <div style="display:grid;gap:12px;margin:6px 2px;max-width:680px;">
+              <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;">
+                <span style="min-width:160px;font-weight:700;">實際有活動（參加者）</span>
+                <span style="background:#2563eb;color:#fff;font-weight:800;padding:5px 12px;border-radius:999px;">活動後比活動前 +HK$23.88／人</span>
+              </div>
+              <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;">
+                <span style="min-width:160px;font-weight:700;">若無活動代理（對照）</span>
+                <span style="background:#e2e8f0;color:#334155;font-weight:800;padding:5px 12px;border-radius:999px;">活動後比活動前 −HK$1.49／人（近乎持平、非虧損）</span>
+              </div>
+              <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;">
+                <span style="min-width:160px;font-weight:700;">活動增量（兩者相差）</span>
+                <span style="background:#15803d;color:#fff;font-weight:800;padding:5px 12px;border-radius:999px;">+HK$25.37／人</span>
+              </div>
+            </div>
         </div>
         <p class="chart-note">解讀：我們不是問「參加者 post 有無升」，而是問「參加者升幅有無比相似未參加者更好」。</p>
         <p class="cite">引用：（2026-07-07 實查，HK TRANSPORT PlatformOD，pre 180 天 2025-05-18 to 2025-11-13；post 180 天 2025-11-17 to 2026-05-16）</p>
