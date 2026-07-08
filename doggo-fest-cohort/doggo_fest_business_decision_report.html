@@ -375,8 +375,17 @@
     }
 
     .kpi.tip-host {
-      cursor: help;
+      cursor: pointer;
       position: relative;
+    }
+
+    .kpi.tip-host::after {
+      content: "點擊查看說明";
+      display: block;
+      margin-top: 6px;
+      font-size: 0.7rem;
+      color: var(--blue);
+      font-weight: 600;
     }
 
     .kpi.tip-host:hover {
@@ -650,6 +659,7 @@
       border: 1px solid #334155;
       padding: 14px 16px;
       box-shadow: 0 10px 30px rgba(15, 23, 42, 0.55);
+      display: none;
       opacity: 0;
       visibility: hidden;
       pointer-events: none;
@@ -660,8 +670,15 @@
       overflow-wrap: anywhere;
       word-break: break-word;
       white-space: normal;
-      top: -9999px;
-      left: -9999px;
+      top: 0;
+      left: 0;
+    }
+
+    .tt-box.is-open {
+      display: block;
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
     }
 
     .tt-box .tt-h {
@@ -1697,6 +1714,13 @@
             </table>
           </div>
           <p class="chart-note">解讀：<strong>organic</strong> = 同期 post 180 天內、首單非 Doggo Fest 帶來的 HK TRANSPORT 自然新客（描述性 benchmark，非因果對照）。第 3 單率 Doggo 較高，但不足以單獨 justify 高成本拉新。</p>
+          <div class="callout amber" style="margin-top:10px;font-size:0.86rem;line-height:1.6;">
+            <strong>⚠️ 兩組客群性質未必完全一致（睇大方向即可）：</strong>
+            Doggo 新客是透過<strong>寵物活動</strong>（用券）進來的，基本上是寵物客；organic 新客則是<strong>一般叫車新客</strong>。
+            因為 BQ 沒有乾淨的「寵物訂單」欄位，organic 這邊<strong>無法只篩寵物客</strong>——
+            所以這裡其實是拿「寵物活動新客」比「全體新客」的第 2／3 單率，<strong>不是「寵物客 vs 寵物客」的同類對照</strong>。
+            結論方向（質量大致持平／略好）可以參考，但不宜當作嚴謹的 apples-to-apples 比較。
+          </div>
           <p class="cite">引用：（2026-07-07 實查，HK TRANSPORT PlatformOD，post 2025-11-17 to 2026-05-16）</p>
         </div>
       </div>
@@ -1704,9 +1728,10 @@
 
     <section id="counterfactual" class="section">
       <h2>7. 如果沒有舉辦 Doggo Fest，結果會如何？</h2>
-      <p class="lead">用 matched control 作為「無活動代理」；將實際 post 180 日結果與 no-event counterfactual 比較。<strong>不是 forecast model。</strong></p>
+      <p class="lead">核心問題：<strong>如果沒舉辦 Doggo Fest，這批客戶本來會賺多少？</strong> 我們用「活動前習慣相似、但沒參加活動」的人推算預期走勢，再與實際結果比較。<span class="tech-note">（比較基準：matched control 配對對照；非 forecast 預測模型）</span></p>
       <div class="callout green">
-        Doggo Fest 的價值不是「post 有收入」，而是「實際 post 比無活動預期多了多少」——人均活動增量 <strong>+HK$25.37</strong>（140 對 matched users）。
+        活動的價值不是「活動後有收入」，而是「比沒做活動時<strong>多賺了多少</strong>」。全部可比樣本平均多 <strong>+HK$25.37 / 人</strong>；管理層簡報請用既有活躍客 <strong>+HK$89.72 / 人</strong>。
+        <span class="tech-note">（140 對 Matched DiD；136 對既有活躍客為主結果）</span>
       </div>
 
       <div class="chart-card">
@@ -1867,7 +1892,7 @@
             <div class="term"><strong>活動參加者（Treatment）</strong>有參加活動、使用 Doggo Fest voucher 的用戶。</div>
             <div class="term"><strong>未參加活動的比較組（Control）</strong>沒有參加 Doggo Fest，但活動前使用習慣相似的一群客戶。</div>
             <div class="term"><strong>相似用戶比較組（Matched Control）</strong>用來模擬「如果沒有舉辦 Doggo Fest，參加者原本可能會有什麼表現」。</div>
-            <div class="term"><strong>自然新增客戶（Organic）</strong>沒有透過 Doggo Fest 而自然獲得的新客戶。<br>只用來比較，不代表活動效果。</div>
+            <div class="term"><strong>自然新增客戶（Organic）</strong>沒有透過 Doggo Fest 而自然獲得的新客戶。<br>只用來比較，不代表活動效果。<br>注意：這批是<strong>一般叫車新客</strong>，因 BQ 沒有乾淨的「寵物訂單」欄位，<strong>無法只篩寵物客</strong>；與 Doggo 寵物新客性質未必一致，比較只看大方向。</div>
             <div class="term"><strong>活動額外增量（Uplift）</strong>活動額外帶來的收入或訂單。</div>
             <div class="term"><strong>CI 含 0</strong>代表目前證據不足，不能肯定活動一定有效（統計上不夠穩）。</div>
             <div class="term"><strong>比較基準（Benchmark）</strong>只用來比較，不代表活動效果。</div>
@@ -2029,27 +2054,77 @@
     (function () {
       var PAD = 8;
       var ARROW = 10;
-      function findBox(tip) { return tip.querySelector('.tt-box'); }
+      var openTip = null;
+      var tipStore = typeof WeakMap !== 'undefined' ? new WeakMap() : null;
+
+      function findBox(tip) {
+        return tip.querySelector(':scope > .tt-box');
+      }
+
+      function stashBox(tip, box) {
+        if (!tipStore) return;
+        if (!tipStore.has(tip)) {
+          tipStore.set(tip, { parent: box.parentElement, next: box.nextSibling });
+        }
+      }
+
+      function restoreBox(tip, box) {
+        if (!tipStore || !tipStore.has(tip)) return;
+        var ref = tipStore.get(tip);
+        if (ref.parent && box.parentElement === document.body) {
+          ref.parent.insertBefore(box, ref.next);
+        }
+      }
+
+      function getBox(tip) {
+        return tip._ttBox || findBox(tip);
+      }
+
       function hideTip(tip) {
-        var box = findBox(tip);
+        if (!tip) return;
+        var box = getBox(tip);
         if (!box) return;
+        box.classList.remove('is-open');
         box.style.opacity = '0';
         box.style.visibility = 'hidden';
         box.style.pointerEvents = 'none';
+        box.style.display = 'none';
         tip.classList.remove('tip-open');
+        restoreBox(tip, box);
+        tip._ttBox = null;
+        if (openTip === tip) openTip = null;
       }
+
+      function hideAllTips() {
+        document.querySelectorAll('.tip-open').forEach(function (el) { hideTip(el); });
+        document.querySelectorAll('body > .tt-box').forEach(function (box) {
+          box.classList.remove('is-open');
+          box.style.display = 'none';
+          box.style.opacity = '0';
+          box.style.visibility = 'hidden';
+          box.style.pointerEvents = 'none';
+        });
+        openTip = null;
+      }
+
       function showTip(tip) {
-        var box = findBox(tip);
+        var box = getBox(tip);
         if (!box) return;
+        hideAllTips();
+        stashBox(tip, box);
+        if (box.parentElement !== document.body) {
+          document.body.appendChild(box);
+        }
+        tip._ttBox = box;
         tip.classList.add('tip-open');
-        box.style.position = 'fixed';
-        box.style.top = '-9999px';
-        box.style.left = '-9999px';
+        openTip = tip;
+        box.style.display = 'block';
         box.style.visibility = 'hidden';
         box.style.opacity = '0';
-        box.style.pointerEvents = 'auto';
+        box.style.pointerEvents = 'none';
+        box.classList.remove('is-open');
         var bw = box.offsetWidth || 320;
-        var bh = box.offsetHeight || 200;
+        var bh = box.offsetHeight || 120;
         var tr = tip.getBoundingClientRect();
         var vw = window.innerWidth;
         var vh = window.innerHeight;
@@ -2064,23 +2139,71 @@
         box.style.overflowY = 'auto';
         box.style.visibility = 'visible';
         box.style.opacity = '1';
+        box.style.pointerEvents = 'auto';
+        box.classList.add('is-open');
+        if (!box.dataset.hoverBound) {
+          bindBoxHover(box, tip);
+          box.dataset.hoverBound = '1';
+        }
       }
-      function bindTip(tip) {
-        var box = findBox(tip);
-        if (!box) return;
+
+      function bindHoverTip(tip) {
+        if (tip.closest('.kpi.tip-host')) return;
+        if (!findBox(tip)) return;
         var t = null;
-        tip.addEventListener('mouseenter', function () { clearTimeout(t); showTip(tip); });
-        tip.addEventListener('mouseleave', function () { t = setTimeout(function () { hideTip(tip); }, 80); });
+        tip._hideTimer = null;
+        tip.addEventListener('mouseenter', function () {
+          clearTimeout(tip._hideTimer);
+          showTip(tip);
+        });
+        tip.addEventListener('mouseleave', function (e) {
+          var box = getBox(tip);
+          if (box && e.relatedTarget && box.contains(e.relatedTarget)) return;
+          tip._hideTimer = setTimeout(function () { hideTip(tip); }, 120);
+        });
         tip.addEventListener('focusin', function () { showTip(tip); });
         tip.addEventListener('focusout', function () { hideTip(tip); });
         tip.addEventListener('click', function (e) {
-          if (e.target.closest('.tt-box')) return;
+          e.preventDefault();
+          e.stopPropagation();
           if (tip.classList.contains('tip-open')) hideTip(tip); else showTip(tip);
         });
-        box.addEventListener('mouseenter', function () { clearTimeout(t); });
-        box.addEventListener('mouseleave', function () { hideTip(tip); });
       }
-      document.querySelectorAll('.tip, .kpi.tip-host').forEach(bindTip);
+
+      function bindBoxHover(box, tip) {
+        box.addEventListener('mouseenter', function () {
+          clearTimeout(tip._hideTimer);
+        });
+        box.addEventListener('mouseleave', function () {
+          hideTip(tip);
+        });
+      }
+
+      function bindClickTip(tip) {
+        var box = findBox(tip);
+        if (!box) return;
+        tip.addEventListener('click', function (e) {
+          if (e.target.closest('.tt-box')) return;
+          e.preventDefault();
+          e.stopPropagation();
+          if (tip.classList.contains('tip-open')) hideTip(tip); else showTip(tip);
+        });
+      }
+
+      document.querySelectorAll('.tip').forEach(bindHoverTip);
+      document.querySelectorAll('.kpi.tip-host').forEach(bindClickTip);
+      document.addEventListener('scroll', hideAllTips, true);
+      window.addEventListener('resize', hideAllTips);
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') hideAllTips();
+      });
+      document.addEventListener('click', function (e) {
+        if (!openTip) return;
+        if (openTip.contains(e.target)) return;
+        var box = openTip._ttBox;
+        if (box && box.contains(e.target)) return;
+        hideAllTips();
+      });
     })();
   </script>
 </body>
