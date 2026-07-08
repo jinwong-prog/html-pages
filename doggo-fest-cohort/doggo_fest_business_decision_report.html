@@ -501,6 +501,48 @@
       min-width: 720px;
     }
 
+    .evidence-scope {
+      margin: 0 0 16px;
+      padding: 12px 14px;
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      font-size: 0.92rem;
+      line-height: 1.55;
+      color: var(--slate);
+    }
+
+    .evidence-scope a {
+      font-weight: 700;
+    }
+
+    .evidence-mgmt-q {
+      margin: 18px 0 14px;
+      padding: 12px 14px;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      line-height: 1.55;
+      color: #1e3a8a;
+    }
+
+    .evidence-mgmt-q strong {
+      color: #1e40af;
+    }
+
+    .segment-answer {
+      margin: 0 0 12px;
+      padding: 12px 14px;
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: #166534;
+      line-height: 1.5;
+    }
+
     .legend {
       display: flex;
       flex-wrap: wrap;
@@ -580,6 +622,64 @@
       color: var(--blue);
     }
 
+    .data-prep-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    .data-prep-card {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px;
+      background: #fff;
+    }
+
+    .data-prep-card h4 {
+      margin: 0 0 10px;
+      font-size: 1rem;
+      color: var(--ink);
+    }
+
+    .data-prep-card .dp-label {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--muted);
+      margin: 10px 0 4px;
+    }
+
+    .data-prep-card ul {
+      margin: 0;
+      padding-left: 1.1rem;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .data-prep-card .dp-outcome {
+      margin: 12px 0 0;
+      padding: 10px 12px;
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #166534;
+      line-height: 1.45;
+    }
+
+    .data-prep-card .tech-inline {
+      display: block;
+      margin-top: 8px;
+      font-size: 0.76rem;
+      font-weight: 500;
+      color: var(--muted);
+    }
+
+    .mgmt-sig-table td:nth-child(3) {
+      white-space: nowrap;
+    }
+
     .cite {
       color: var(--muted);
       font-size: 0.82rem;
@@ -607,6 +707,7 @@
       .hero-kpis { grid-template-columns: repeat(3, 1fr); }
       .method-steps { grid-template-columns: 1fr; }
       .term-grid { grid-template-columns: 1fr; }
+      .data-prep-grid { grid-template-columns: 1fr; }
     }
 
     @media (max-width: 720px) {
@@ -646,6 +747,28 @@
       cursor: help;
       color: var(--tip-trigger);
       font-weight: 700;
+    }
+
+    button.tip {
+      background: none;
+      border: none;
+      border-bottom: 1px dashed var(--tip-trigger);
+      padding: 0;
+      font: inherit;
+      line-height: inherit;
+      text-align: inherit;
+      display: inline;
+      vertical-align: baseline;
+    }
+
+    button.tip:hover,
+    button.tip:focus-visible {
+      color: #1d4ed8;
+      outline: none;
+    }
+
+    .tt-popup-store {
+      display: none;
     }
 
     .tt-box {
@@ -726,6 +849,285 @@
     }
 
     .callout.blue .tech-note { color: #1e40af; opacity: 0.85; }
+
+    .ba-why {
+      margin: 0 0 16px;
+      padding: 20px 18px;
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      font-size: 0.9rem;
+      line-height: 1.55;
+    }
+
+    .ba-why h3 {
+      margin: 0 0 6px;
+      font-size: 1.02rem;
+      font-weight: 800;
+      color: var(--ink);
+    }
+
+    .ba-why-sub {
+      margin: 0 0 16px;
+      color: var(--slate);
+      font-size: 0.88rem;
+    }
+
+    .ba-why-table table {
+      min-width: 0;
+      font-size: 0.88rem;
+    }
+
+    .ba-why-table th,
+    .ba-why-table td {
+      padding: 10px 12px;
+    }
+
+    .ba-why-table th:not(:first-child),
+    .ba-why-table td:not(:first-child) {
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .ba-why-table td:first-child {
+      font-weight: 700;
+      color: var(--ink);
+      min-width: 11rem;
+    }
+
+    .ba-why-table .num-up {
+      color: var(--green);
+      font-weight: 800;
+    }
+
+    .ba-step-arrow {
+      text-align: center;
+      color: var(--muted);
+      font-size: 1.2rem;
+      line-height: 1;
+      margin: 12px 0;
+    }
+
+    .ba-verdict {
+      padding: 14px 16px;
+      border-radius: 12px;
+      margin-bottom: 0;
+    }
+
+    .ba-verdict--wrong {
+      background: #fef2f2;
+      border: 1px solid #fca5a5;
+      color: #991b1b;
+    }
+
+    .ba-verdict--wrong .ba-verdict-label {
+      color: #b91c1c;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    .ba-verdict--right {
+      background: #f0fdf4;
+      border: 1px solid #86efac;
+      color: #065f46;
+    }
+
+    .ba-verdict--right .ba-verdict-label {
+      color: var(--green);
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .ba-formula {
+      margin: 10px 0 0;
+      padding: 12px 14px;
+      background: rgba(255, 255, 255, 0.65);
+      border-radius: 8px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.82rem;
+      line-height: 1.65;
+      color: var(--ink);
+    }
+
+    .ba-formula .ba-formula-result {
+      font-weight: 800;
+      color: var(--green);
+      font-size: 0.95rem;
+    }
+
+    .ba-compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    @media (max-width: 720px) {
+      .ba-compare { grid-template-columns: 1fr; }
+    }
+
+    .ba-flow-card {
+      padding: 14px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: var(--card);
+      font-size: 0.84rem;
+      line-height: 1.55;
+    }
+
+    .ba-flow-card h4 {
+      margin: 0 0 10px;
+      font-size: 0.88rem;
+      font-weight: 800;
+    }
+
+    .ba-flow-card--ba h4 { color: #b91c1c; }
+    .ba-flow-card--did h4 { color: var(--green); }
+
+    .ba-flow-line {
+      margin: 4px 0;
+      color: var(--slate);
+    }
+
+    .ba-flow-line strong { color: var(--ink); }
+
+    .ba-flow-down {
+      text-align: center;
+      color: var(--muted);
+      margin: 6px 0;
+      font-size: 0.9rem;
+    }
+
+    .ba-flow-tag {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-weight: 800;
+      font-size: 0.8rem;
+    }
+
+    .ba-flow-tag--bad {
+      background: var(--red-soft);
+      color: var(--red);
+    }
+
+    .ba-flow-tag--good {
+      background: var(--green-soft);
+      color: var(--green);
+    }
+
+    .ba-why-foot {
+      margin: 16px 0 0;
+      padding-top: 14px;
+      border-top: 1px dashed var(--line);
+      font-size: 0.86rem;
+      color: var(--slate);
+    }
+
+    .ba-why-foot strong { color: var(--ink); }
+
+    .roi-kpi-flow {
+      margin: 12px 0 0;
+      padding: 14px 16px;
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      text-align: center;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .roi-kpi-flow .roi-kpi-line strong {
+      font-size: 1.02rem;
+      color: var(--ink);
+    }
+
+    .roi-kpi-flow .roi-kpi-arrow {
+      color: var(--muted);
+      margin: 4px 0;
+      font-size: 1rem;
+    }
+
+    .roi-kpi-flow .roi-kpi-pct {
+      font-weight: 800;
+      color: #92400e;
+    }
+
+    .qm-conclusion td:first-child {
+      font-weight: 700;
+      color: var(--ink);
+      min-width: 11rem;
+    }
+
+    .qm-conclusion .qm-more {
+      font-size: 0.84rem;
+      white-space: nowrap;
+    }
+
+    .qm-conclusion .qm-more a {
+      color: var(--blue);
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .qm-conclusion .qm-more a:hover {
+      text-decoration: underline;
+    }
+
+    .qm-conclusion .qm-sec {
+      color: var(--muted);
+      font-size: 0.76rem;
+      font-weight: 600;
+    }
+
+    .qm-limits {
+      margin: 16px 0 0;
+      padding: 14px 16px;
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+    }
+
+    .qm-limits h3 {
+      margin: 0 0 10px;
+      font-size: 0.95rem;
+      font-weight: 800;
+    }
+
+    .qm-limits ul {
+      margin: 0;
+      padding-left: 1.2rem;
+      font-size: 0.88rem;
+      line-height: 1.55;
+      color: var(--slate);
+    }
+
+    .qa-summary td:nth-child(2) {
+      font-size: 1.12rem;
+      line-height: 1.45;
+      white-space: nowrap;
+    }
+
+    .qa-summary td:nth-child(3),
+    .qa-summary td:nth-child(4) {
+      font-size: 0.92rem;
+      line-height: 1.55;
+      color: var(--slate);
+    }
+
+    .qa-summary td:nth-child(4) {
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .qa-summary .tech-inline {
+      display: block;
+      margin-top: 4px;
+      font-size: 0.76rem;
+      font-weight: 500;
+      color: var(--muted);
+    }
 
     .mgmt-q {
       margin: 12px 0 0;
@@ -905,7 +1307,7 @@
         <a href="#decision">決策</a>
         <a href="#snapshot">KPI</a>
         <a href="#roi">ROI</a>
-        <a href="#question-map">問題地圖</a>
+        <a href="#question-map">管理層問題</a>
         <a href="#questions">管理層問答</a>
         <a href="#evidence">視覺證據</a>
         <a href="#counterfactual">若沒做活動</a>
@@ -917,6 +1319,79 @@
 
     <section id="cohort-base" class="section" style="border-left:4px solid var(--blue);">
       <h2>開始前必讀 · 誰能拿來比較？多少人能下結論？</h2>
+
+      <div class="ba-why">
+        <h3>為什麼不能只看 Before / After？</h3>
+        <p class="ba-why-sub">因為市場本身也可能成長，真正要看的，是<strong>扣除自然變化後的活動增量</strong>。</p>
+
+        <div class="table-wrap ba-why-table">
+          <table>
+            <thead>
+              <tr>
+                <th></th>
+                <th>活動前</th>
+                <th>活動後</th>
+                <th>增加</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Doggo Fest 參加者</td>
+                <td>HK$500</td>
+                <td>HK$620</td>
+                <td class="num-up">+HK$120</td>
+              </tr>
+              <tr>
+                <td>沒有參加 Doggo Fest（活動前使用習慣相似）</td>
+                <td>HK$490</td>
+                <td>HK$590</td>
+                <td class="num-up">+HK$100</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="chart-note" style="margin-top:8px;margin-bottom:0;">簡化例子：每位客戶活動前／後 180 天平台收入（非本報告真實數字），用來說明概念。</p>
+
+        <div class="ba-step-arrow">▼</div>
+
+        <div class="ba-verdict ba-verdict--wrong">
+          <div class="ba-verdict-label">❌ 如果只看 Before / After</div>
+          <p style="margin:0;">Doggo Fest 很成功，收入增加 <strong>HK$120</strong>。</p>
+          <p style="margin:8px 0 0;font-size:0.84rem;opacity:0.9;">兩組客戶同期都在升——單看參加者上升，<strong>不能證明</strong>是 Doggo Fest 帶來的。</p>
+        </div>
+
+        <div class="ba-step-arrow">▼</div>
+
+        <div class="ba-verdict ba-verdict--right">
+          <div class="ba-verdict-label">✅ 扣除市場自然變化後，才是真正活動增量</div>
+          <p style="margin:0;">同期<strong>沒有參加 Doggo Fest、但活動前使用習慣相似</strong>的客戶，也增加了 HK$100——這代表市場本身也在成長。</p>
+          <div class="ba-formula">真正活動增量<br>= 參加者增加 − 未參加者增加<br>= HK$120 − HK$100<br><span class="ba-formula-result">= HK$20</span></div>
+          <p style="margin:10px 0 0;font-weight:800;">管理層真正應該關注的是 <strong>HK$20</strong>，而不是 HK$120。</p>
+        </div>
+
+        <div class="ba-compare">
+          <div class="ba-flow-card ba-flow-card--ba">
+            <h4>Before / After</h4>
+            <div class="ba-flow-line">參加者：<strong>HK$500 → HK$620</strong></div>
+            <div class="ba-flow-down">↓</div>
+            <div class="ba-flow-line">增加 <strong>HK$120</strong></div>
+            <div class="ba-flow-down">↓</div>
+            <span class="ba-flow-tag ba-flow-tag--bad">❌ 不能證明是 Doggo Fest</span>
+          </div>
+          <div class="ba-flow-card ba-flow-card--did">
+            <h4>Matched DiD</h4>
+            <div class="ba-flow-line">參加者增加：<strong>+HK$120</strong></div>
+            <div class="ba-flow-line">未參加（相似）增加：<strong>+HK$100</strong></div>
+            <div class="ba-flow-down">↓</div>
+            <div class="ba-flow-line">真正增量：<strong>+HK$20</strong></div>
+            <div class="ba-flow-down">↓</div>
+            <span class="ba-flow-tag ba-flow-tag--good">✅ Doggo Fest 真正帶來的增量</span>
+          </div>
+        </div>
+
+        <p class="ba-why-foot"><strong>因此，本報告後續所有活動增量、ROI 及管理層決策，均以 Matched DiD 結果作為主要依據。</strong>本報告為每位參加者配對一位活動前習慣相似、但未參加活動的客戶，比較雙方活動前後收入變化，扣除市場自然成長後，剩餘差異才視為活動真正增量。Before / After 僅作描述性參考，不應單獨用來判斷活動成效。</p>
+      </div>
+
       <p class="lead">先搞清三個數字：<strong>372</strong>（全部參加者）、<strong>140 對</strong>（可公平比較）、<strong>136 對</strong>（管理層主要參考的結果）。人數少不代表結論不可信——代表只有這批人能找到合理比較對象。</p>
 
       <div class="callout blue">
@@ -965,7 +1440,7 @@
           <div class="sub">活動期領券完成單（去重）</div>
           <p class="kpi-hint">全部有用 Doggo Fest 券落單的人；是分析起點，但不是人人都能找來比較。</p>
           <span class="tech-note" style="border:none;padding:0;margin-top:6px;">（分析母體，原稱 Treatment）</span>
-          <span class="tt-box tt-box--kpi"><div class="tt-h">372 位參加者是誰？</div><ul class="tt-ul"><li>2025-11-14～16 使用 Doggo Fest 券完成 HK 叫車單。</li><li>包含新客、回流客、既有活躍客。</li><li>活動期有落單 ≠ 全部能估算活動增量。</li></ul></span>
+          <div class="tt-box tt-box--kpi"><div class="tt-h">372 位參加者是誰？</div><ul class="tt-ul"><li>2025-11-14～16 使用 Doggo Fest 券完成 HK 叫車單。</li><li>包含新客、回流客、既有活躍客。</li><li>活動期有落單 ≠ 全部能估算活動增量。</li></ul></div>
         </div>
         <div class="kpi tip-host" tabindex="0">
           <div class="label">可公平比較的樣本</div>
@@ -973,7 +1448,7 @@
           <div class="sub">37.6% · 140 參加者 + 140 比較對象</div>
           <p class="kpi-hint">找到活動前使用習慣相似的比較對象，才可判斷「活動有沒有多賺」。</p>
           <span class="tech-note" style="border:none;padding:0;margin-top:6px;">（方法：Matched DiD 配對差異中的差異）</span>
-          <span class="tt-box tt-box--kpi"><div class="tt-h">140 對代表什麼？</div><ul class="tt-ul"><li>1 對 = 1 參加者 + 1 未參加但習慣相似的人。</li><li>共 280 人進入活動增量分析。</li><li>其餘 232 人多因新客／回流客無活動前紀錄而無法配對。</li></ul></span>
+          <div class="tt-box tt-box--kpi"><div class="tt-h">140 對代表什麼？</div><ul class="tt-ul"><li>1 對 = 1 參加者 + 1 未參加但習慣相似的人。</li><li>共 280 人進入活動增量分析。</li><li>其餘 232 人多因新客／回流客無活動前紀錄而無法配對。</li></ul></div>
         </div>
         <div class="kpi tip-host" tabindex="0">
           <div class="label">管理層主要參考結果</div>
@@ -981,7 +1456,7 @@
           <div class="sub">每位既有活躍客平均 +HK$89.72 平台收入</div>
           <p class="kpi-hint">這組結果最能反映活動帶來的真實增量；統計上可靠，可作簡報主打數字。</p>
           <span class="tech-note" style="border:none;padding:0;margin-top:6px;">（既有活躍客；95% 信賴區間不包含 0）</span>
-          <span class="tt-box tt-box--kpi"><div class="tt-h">136 對主結果</div><ul class="tt-ul"><li>活動前已在平台活躍的寵物客；配對成功率最高。</li><li>參加者收入變化 +HK$23.44；未參加者 −HK$66.28 → 差距 +HK$89.72。</li><li>活動前／後各 180 天（2026-07-07 實查）。</li></ul></span>
+          <div class="tt-box tt-box--kpi"><div class="tt-h">136 對主結果</div><ul class="tt-ul"><li>活動前已在平台活躍的寵物客；配對成功率最高。</li><li>參加者收入變化 +HK$23.44；未參加者 −HK$66.28 → 差距 +HK$89.72。</li><li>活動前／後各 180 天（2026-07-07 實查）。</li></ul></div>
         </div>
       </div>
 
@@ -1011,7 +1486,7 @@
             140 對 = 140 個參加者 + 140 個對照者（共 280 人入分析），<strong>不是</strong> 372 人全部配到對。
           </div>
           <p class="chart-note">
-            這是一種<span class="tip" tabindex="0">差異中的差異（DiD）<span class="tt-box tt-box--wide"><div class="tt-h">Matched DiD 是什麼？</div><ul class="tt-ul"><li>先找「影子對象」：活動前用車習慣差不多的未參加者（即<strong>對照者</strong>）。</li><li><strong>對照者</strong> = 未領 Doggo Fest 券、但 pre 180 日行為與參加者配成同桶的 Typical Pet 用戶；每人配 1 位，當無活動代理。</li><li>再比活動後：參加者（Post−Pre）提升了多少 − 對照者（Post−Pre）提升了多少。</li><li>差距才可解讀為「若無做活動，本來會如何」以外的增量。</li></ul><div class="tt-note">不是 A/B test 隨機分組；是事後用行為相似的人做對照。</div></span></span>分析：
+            這是一種<button type="button" class="tip" aria-controls="tt-tip-did">差異中的差異（DiD）</button>分析：
             回答「如果這批參加者沒有做 Doggo Fest，結果會不會一樣？」
           </p>
 
@@ -1020,7 +1495,7 @@
             相似行為 = 活動前 180 日用 GoGoX 的方式差不多——不是一模一樣，而是夠接近，可以公平比較。
           </p>
           <p class="chart-note" style="margin-bottom:12px;">
-            一句話：A 有參加、B 無參加；但活動前落單頻率、消費、最近活躍時間差不多，所以 B 可以做 A 的「<span class="tip" tabindex="0">無活動代理<span class="tt-box"><div class="tt-h">無活動代理</div><ul class="tt-ul"><li>用 matched control 模擬：若無做 Doggo Fest，本來預期會如何。</li><li>不是 forecast model；是找一個行為相似、但未參加的人做基準。</li></ul></span></span>」。
+            一句話：A 有參加、B 無參加；但活動前落單頻率、消費、最近活躍時間差不多，所以 B 可以做 A 的「<button type="button" class="tip" aria-controls="tt-tip-proxy">無活動代理</button>」。
           </p>
           <div class="table-wrap">
             <table>
@@ -1029,17 +1504,17 @@
               </thead>
               <tbody>
                 <tr>
-                  <td><span class="tip" tabindex="0">Pre completed orders<span class="tt-box"><div class="tt-h">活動前完成單數</div><ul class="tt-ul"><li>活動前 180 天內完成多少張 TRANSPORT 單。</li><li>配對時用「桶」分組（exact / bucket match），不是要求完全一樣。</li></ul><div class="tt-note">例：A 活動前 6 單，B 活動前 5 單 → 可視為相近。</div></span></span></td>
+                  <td><button type="button" class="tip">Pre completed orders</button><div class="tt-box"><div class="tt-h">活動前完成單數</div><ul class="tt-ul"><li>活動前 180 天內完成多少張 TRANSPORT 單。</li><li>配對時用「桶」分組（exact / bucket match），不是要求完全一樣。</li></ul><div class="tt-note">例：A 活動前 6 單，B 活動前 5 單 → 可視為相近。</div></div></td>
                   <td>活動前落單次數</td>
                   <td>A 活動前 180 日落 5 單；B 落 4–6 單</td>
                 </tr>
                 <tr>
-                  <td><span class="tip" tabindex="0">Pre GTV<span class="tt-box"><div class="tt-h">活動前客戶消費（GTV）</div><ul class="tt-ul"><li>活動前 180 天客戶支付總額（未扣司機分成）。</li><li>用四分位「桶」配對，不看年齡、性別、地區。</li></ul><div class="tt-note">例：A 約 HK$1,200；B 落在相近 GTV 區間。</div></span></span></td>
+                  <td><button type="button" class="tip">Pre GTV</button><div class="tt-box"><div class="tt-h">活動前客戶消費（GTV）</div><ul class="tt-ul"><li>活動前 180 天客戶支付總額（未扣司機分成）。</li><li>用四分位「桶」配對，不看年齡、性別、地區。</li></ul><div class="tt-note">例：A 約 HK$1,200；B 落在相近 GTV 區間。</div></div></td>
                   <td>活動前消費強度</td>
                   <td>A 活動前 GTV 約 HK$1,200；B 也在相近區間</td>
                 </tr>
                 <tr>
-                  <td><span class="tip" tabindex="0">Recency<span class="tt-box"><div class="tt-h">最近活躍時間（Recency）</div><ul class="tt-ul"><li>最近一次完成單距離活動日多久。</li><li>新客無活動前單 → recency 桶 = unknown → 結構上難配對。</li></ul><div class="tt-note">例：A 活動前 20 日叫過車；B 活動前 25 日叫過車。</div></span></span></td>
+                  <td><button type="button" class="tip">Recency</button><div class="tt-box"><div class="tt-h">最近活躍時間（Recency）</div><ul class="tt-ul"><li>最近一次完成單距離活動日多久。</li><li>新客無活動前單 → recency 桶 = unknown → 結構上難配對。</li></ul><div class="tt-note">例：A 活動前 20 日叫過車；B 活動前 25 日叫過車。</div></div></td>
                   <td>最近一次落單距離活動日幾耐</td>
                   <td>A 最近 30 日內叫過車；B 也最近 30 日內叫過車</td>
                 </tr>
@@ -1061,7 +1536,7 @@
                 <tr class="match-ok"><td>活動前 180 日落單</td><td>6 單</td><td>5 單</td></tr>
                 <tr class="match-ok"><td>活動前 GTV</td><td>HK$1,300</td><td>HK$1,180</td></tr>
                 <tr class="match-ok"><td>最近一次落單</td><td>活動前 20 日</td><td>活動前 25 日</td></tr>
-                <tr class="match-ok"><td>配對後比較</td><td colspan="2">A（參加者）Post−Pre − B（<span class="tip" tabindex="0">對照者<span class="tt-box"><div class="tt-h">對照者 B 是誰？</div><ul class="tt-ul"><li>未用 Doggo Fest 券，但活動前落單、消費、活躍時間與 A 接近。</li><li>代表「若 A 沒參加活動，本來可能走的路」。</li></ul></span></span>）Post−Pre = 可能活動增量</td></tr>
+                <tr class="match-ok"><td>配對後比較</td><td colspan="2">A（參加者）Post−Pre − B（<button type="button" class="tip">對照者</button><div class="tt-box"><div class="tt-h">對照者 B 是誰？</div><ul class="tt-ul"><li>未用 Doggo Fest 券，但活動前落單、消費、活躍時間與 A 接近。</li><li>代表「若 A 沒參加活動，本來可能走的路」。</li></ul></div>）Post−Pre = 可能活動增量</td></tr>
               </tbody>
             </table>
           </div>
@@ -1118,40 +1593,91 @@
           </div>
           <p class="chart-note">所以 140 不是「只有 140 人落單」，而是「只有 140 人在活動前 180 天有可比 baseline 去配對」。新客是真新（拉窗無用）；回流客才是被 180 天切窗影響的那批；既有客的 32 人只差 control 池對象。為與 post 180 天對稱、保持 DiD 基線乾淨，pre 窗維持 180 天——這是「配對覆蓋 vs 方法嚴謹」的取捨。</p>
           <p class="chart-note">最短版：<strong>相似行為 = 活動前一樣活躍、一樣消費水平、一樣近期有用，只差在有無參加活動。</strong></p>
+
+          <div class="tt-popup-store" aria-hidden="true">
+            <div class="tt-box tt-box--wide" id="tt-tip-did"><div class="tt-h">Matched DiD 是什麼？</div><ul class="tt-ul"><li>先找「影子對象」：活動前用車習慣差不多的未參加者（即<strong>對照者</strong>）。</li><li><strong>對照者</strong> = 未領 Doggo Fest 券、但 pre 180 日行為與參加者配成同桶的 Typical Pet 用戶；每人配 1 位，當無活動代理。</li><li>再比活動後：參加者（Post−Pre）提升了多少 − 對照者（Post−Pre）提升了多少。</li><li>差距才可解讀為「若無做活動，本來會如何」以外的增量。</li></ul><div class="tt-note">不是 A/B test 隨機分組；是事後用行為相似的人做對照。</div></div>
+            <div class="tt-box" id="tt-tip-proxy"><div class="tt-h">無活動代理</div><ul class="tt-ul"><li>用 matched control 模擬：若無做 Doggo Fest，本來預期會如何。</li><li>不是 forecast model；是找一個行為相似、但未參加的人做基準。</li></ul></div>
+          </div>
         </div>
       </details>
 
       <details style="margin-top:12px;">
-        <summary>③ 樣本細對結論的影響（顯著性）</summary>
+        <summary>③ 樣本較少，結論是否仍可作決策依據？</summary>
         <div class="details-body">
           <div class="table-wrap" style="margin-top:12px;">
-            <table>
+            <table class="mgmt-sig-table">
               <thead>
-                <tr><th>指標</th><th>DiD / 人</th><th>Bootstrap 95% CI</th><th>是否顯著</th><th>報告用法</th></tr>
+                <tr><th>指標</th><th>結果</th><th>能否作主要結論</th><th>管理層應怎樣用</th></tr>
               </thead>
               <tbody>
-                <tr><td>既有活躍客（136 對）</td><td>+HK$89.72</td><td>[+30.19, +141.20]</td><td class="answer-yes">是（排除 0）</td><td>主 headline</td></tr>
-                <tr><td>混合（140 對）</td><td>+HK$25.37</td><td>[−33.63, +76.57]</td><td class="answer-warn">否（含 0）</td><td>僅作輔助</td></tr>
+                <tr><td>既有活躍客（136 對）</td><td><strong>+HK$89.72／人</strong></td><td class="answer-yes">✅ 可以</td><td>作為主要決策依據</td></tr>
+                <tr><td>全部混合樣本（140 對）</td><td><strong>+HK$25.37／人</strong></td><td class="answer-warn">⚠️ 不建議</td><td>僅作輔助參考</td></tr>
               </tbody>
             </table>
           </div>
-          <p class="chart-note">主結論（既有活躍客）統計顯著、穩健；混合平均因含大量異質新客，CI 含 0，只作輔助。因此 sample 細只削弱「混合平均」這個次要數，不削弱決策方向——決策靠的是「人均 uplift 方向 + 顯著性 + ROI proxy + 新客質量 benchmark」，不靠人數規模，且明確不可外推至 372。</p>
+          <div class="callout blue" style="margin-top:12px;">
+            <strong>原因：</strong>混合樣本包含大量新客及回流客，差異較大，因此平均值不夠穩定；管理層應以既有活躍客結果作主要決策依據。
+            <span class="tech-inline" style="display:block;margin-top:6px;color:#1e40af;">（分析師備註：既有活躍客信賴區間 [+30.19, +141.20]；混合樣本區間含 0，[-33.63, +76.57]）</span>
+          </div>
         </div>
       </details>
 
       <details style="margin-top:12px;">
-        <summary>④ 下次分析：要加什麼 tag / 追蹤才收錄得更完整</summary>
+        <summary>④ 下次活動前，建議補充哪些資料？</summary>
         <div class="details-body">
-          <p class="chart-note" style="margin-top:12px;"><strong>底線：</strong>想把 204 名新客／回流客也納入因果分析，關鍵不是收多些人，而是在活動前就為他們留下可配對的 baseline（pet tag、渠道、signup）；否則他們永遠只能做描述性 benchmark。</p>
-          <div class="term-grid">
-            <div class="term"><strong>放寬配對方法</strong>改 1:3、nearest-neighbor / PSM（用可觀察 covariates 而非 pre 行為）+ caliper，讓新客也能配對。</div>
-            <div class="term"><strong>擴大 control 池</strong>不限 Typical Pet 3,470，擴到全 HK existing pet，替 32 名落空既有客找同桶對象。</div>
-            <div class="term"><strong>Voucher attribution</strong>記錄「已派 vs 已用」，連未兌換者都能追蹤，treatment 不只靠活動窗兌換。</div>
-            <div class="term"><strong>結構化 pet / service tag</strong>目前 BQ 無乾淨 pet 欄（靠 request_remarks，noise 大）；有 tag 才能識別活動窗外的 pet 行為，建立 pre-window baseline。</div>
-            <div class="term"><strong>新客 signup + 渠道</strong>寫入 signup date 與獲取渠道，讓新客可用 observed-covariate 配對，而非只做 benchmark。</div>
-            <div class="term"><strong>Direction / venue tag 入 BQ</strong>目前只靠 Sheet tst_496（覆蓋 122/140），入 BQ 才完整。</div>
-            <div class="term"><strong>分渠道成本明細</strong>不只 Sheet grand total，讓 ROI proxy 做得更準。</div>
+          <p class="lead" style="margin-top:12px;font-size:0.95rem;">目的是讓未來可以更準確評估活動成效，<strong>而不是增加分析複雜度</strong>。</p>
+          <div class="data-prep-grid">
+            <div class="data-prep-card">
+              <h4>① 更完整識別新客來源</h4>
+              <p class="dp-label">目前</p>
+              <p style="margin:0;font-size:0.9rem;color:var(--slate);">新客難以與自然獲客公平比較，只能做質量觀察。</p>
+              <p class="dp-label">建議記錄</p>
+              <ul>
+                <li>Signup 日期</li>
+                <li>Acquisition Channel</li>
+                <li>Campaign Source</li>
+              </ul>
+              <p class="dp-outcome">👉 下次可分析：哪個渠道的新客最有價值？</p>
+              <span class="tech-inline">（技術實作：新增 signup_date、channel 欄位，供配對與分析使用）</span>
+            </div>
+            <div class="data-prep-card">
+              <h4>② 建立 Pet Tag</h4>
+              <p class="dp-label">目前</p>
+              <p style="margin:0;font-size:0.9rem;color:var(--slate);">只能靠訂單 remarks 推斷，雜訊大、難追蹤整段生命周期。</p>
+              <p class="dp-label">建議</p>
+              <p style="margin:0;font-size:0.9rem;color:var(--slate);">建立正式 Pet Tag（結構化欄位入庫）。</p>
+              <p class="dp-outcome">👉 下次可分析：寵物客整個生命周期的價值變化。</p>
+              <span class="tech-inline">（技術實作：結構化 pet / service tag 入 BQ，取代 request_remarks）</span>
+            </div>
+            <div class="data-prep-card">
+              <h4>③ 記錄 Voucher 派發</h4>
+              <p class="dp-label">目前</p>
+              <p style="margin:0;font-size:0.9rem;color:var(--slate);">只知道「已使用優惠券」的參加者。</p>
+              <p class="dp-label">建議同時記錄</p>
+              <ul>
+                <li>已派發</li>
+                <li>已查看</li>
+                <li>未使用</li>
+              </ul>
+              <p class="dp-outcome">👉 下次可分析：Voucher 真正轉換率（而不只是兌換率）。</p>
+              <span class="tech-inline">（技術實作：Voucher attribution — 已派 vs 已用）</span>
+            </div>
+            <div class="data-prep-card">
+              <h4>④ 成本拆細</h4>
+              <p class="dp-label">目前</p>
+              <p style="margin:0;font-size:0.9rem;color:var(--slate);">只有活動總成本，難以判斷哪一項最不值。</p>
+              <p class="dp-label">建議拆開</p>
+              <ul>
+                <li>Venue</li>
+                <li>Media</li>
+                <li>Voucher</li>
+                <li>KOL</li>
+              </ul>
+              <p class="dp-outcome">👉 下次可分析：哪一部分回報最低、應優先削減。</p>
+              <span class="tech-inline">（技術實作：分渠道成本明細，讓 ROI 估算更準）</span>
+            </div>
           </div>
+          <p class="chart-note" style="margin-top:14px;">配對方法改進、擴大對照池、場地標籤入庫等技術做法見 <a href="#appendix">附錄 §10</a>。</p>
         </div>
       </details>
 
@@ -1229,7 +1755,7 @@
           <div class="sub">但要改設計，不是照舊加碼</div>
           <span class="mini-tag amber">有條件續做</span>
           <p class="kpi-hint">有額外收入 → 值得做；但回本率低 → 必須控成本、收窄客群。</p>
-          <span class="tt-box tt-box--kpi"><div class="tt-h">有條件續做是什麼意思？</div><ul class="tt-ul"><li>不是「停做」，也不是「無限加碼」。</li><li>續做前提：主攻既有活躍寵物客、加強首單後留存安排、控制派券成本。</li></ul></span>
+          <div class="tt-box tt-box--kpi"><div class="tt-h">有條件續做是什麼意思？</div><ul class="tt-ul"><li>不是「停做」，也不是「無限加碼」。</li><li>續做前提：主攻既有活躍寵物客、加強首單後留存安排、控制派券成本。</li></ul></div>
         </div>
         <div class="kpi tip-host" tabindex="0">
           <div class="label">最應投放的客群</div>
@@ -1237,7 +1763,7 @@
           <div class="sub">平均多帶來 HK$89.72 / 人平台收入</div>
           <span class="mini-tag green">建議主力</span>
           <p class="kpi-hint">活動增量主要來自這批；2026 預算應優先投放這裡。</p>
-          <span class="tt-box tt-box--kpi"><div class="tt-h">為何是既有活躍客？</div><ul class="tt-ul"><li>136 對可比樣本，結果統計可靠。</li><li>新客無活動前紀錄，只能看第 2／3 單率比較。</li><li>回流客僅 2 對，樣本太少。</li></ul></span>
+          <div class="tt-box tt-box--kpi"><div class="tt-h">為何是既有活躍客？</div><ul class="tt-ul"><li>136 對可比樣本，結果統計可靠。</li><li>新客無活動前紀錄，只能看第 2／3 單率比較。</li><li>回流客僅 2 對，樣本太少。</li></ul></div>
         </div>
         <div class="kpi tip-host" tabindex="0">
           <div class="label">不建議的活動定位</div>
@@ -1245,7 +1771,7 @@
           <div class="sub">粗略回本率僅 5.97%</div>
           <span class="mini-tag red">避免誤定位</span>
           <p class="kpi-hint">勿用「拉了多少新客」單獨 justify 整場活動成效。</p>
-          <span class="tt-box tt-box--kpi"><div class="tt-h">為何不適合當拉新活動？</div><ul class="tt-ul"><li>短期回本率僅 5.97%，遠低於成本。</li><li>新客質量與自然新客接近，無明顯超額信號。</li><li>真增量在既有活躍客；拉新是副效益。</li></ul></span>
+          <div class="tt-box tt-box--kpi"><div class="tt-h">為何不適合當拉新活動？</div><ul class="tt-ul"><li>短期回本率僅 5.97%，遠低於成本。</li><li>新客質量與自然新客接近，無明顯超額信號。</li><li>真增量在既有活躍客；拉新是副效益。</li></ul></div>
         </div>
       </div>
       <p class="cite">
@@ -1278,7 +1804,7 @@
           <span class="mini-tag green">簡報主打數字</span>
           <p class="kpi-hint">這是<strong>額外收入</strong>，不是活動後 180 天的總收入。</p>
           <span class="tech-note" style="border:none;padding:0;margin-top:6px;">（136 對；platform_take 平台收入；Matched DiD）</span>
-          <span class="tt-box tt-box--kpi"><div class="tt-h">HK$89.72 怎樣理解？</div><ul class="tt-ul"><li>對象：既有活躍客 136 對。</li><li>時間：活動前／後各 180 天。</li><li>參加者收入變化 +HK$23.44；未參加者 −HK$66.28 → 差距 +HK$89.72。</li><li>結果具有統計支持（95% 信賴區間不包含 0）。</li></ul></span>
+          <div class="tt-box tt-box--kpi"><div class="tt-h">HK$89.72 怎樣理解？</div><ul class="tt-ul"><li>對象：既有活躍客 136 對。</li><li>時間：活動前／後各 180 天。</li><li>參加者收入變化 +HK$23.44；未參加者 −HK$66.28 → 差距 +HK$89.72。</li><li>結果具有統計支持（95% 信賴區間不包含 0）。</li></ul></div>
         </div>
         <div class="kpi tip-host" tabindex="0">
           <div class="label">全部可比樣本平均多賺多少？</div>
@@ -1287,7 +1813,7 @@
           <span class="mini-tag amber">僅作參考</span>
           <p class="kpi-hint">含不同客群混合計算，<strong>不宜作簡報主打</strong>。</p>
           <span class="tech-note" style="border:none;padding:0;margin-top:6px;">（混合 Matched DiD；信賴區間含 0）</span>
-          <span class="tt-box tt-box--kpi"><div class="tt-h">為何不用這個做主打？</div><ul class="tt-ul"><li>新客、回流客等拉低平均，統計上不穩定。</li><li>請用既有活躍客 +HK$89.72 作管理層主數字。</li></ul></span>
+          <div class="tt-box tt-box--kpi"><div class="tt-h">為何不用這個做主打？</div><ul class="tt-ul"><li>新客、回流客等拉低平均，統計上不穩定。</li><li>請用既有活躍客 +HK$89.72 作管理層主數字。</li></ul></div>
         </div>
         <div class="kpi tip-host" tabindex="0">
           <div class="label">短期粗略回本率</div>
@@ -1296,7 +1822,7 @@
           <span class="mini-tag red">短期偏低</span>
           <p class="kpi-hint">花 $1 大約只賺回 $0.06；<strong>不是 Finance 官方 ROI</strong>。</p>
           <span class="tech-note" style="border:none;padding:0;margin-top:6px;">（ROI proxy 粗略回本率）</span>
-          <span class="tt-box tt-box--kpi"><div class="tt-h">5.97% 怎樣計？</div><ul class="tt-ul"><li>效益 ≈ 可比樣本增量 HK$12,238 + 新客活動後收入 HK$2,856。</li><li>成本 = 活動成本 Sheet HK$252,708。</li></ul></span>
+          <div class="tt-box tt-box--kpi"><div class="tt-h">5.97% 怎樣計？</div><ul class="tt-ul"><li>效益 ≈ 可比樣本增量 HK$12,238 + 新客活動後收入 HK$2,856。</li><li>成本 = 活動成本 Sheet HK$252,708。</li></ul></div>
         </div>
         <div class="kpi tip-host" tabindex="0">
           <div class="label">新客有沒有比自然新客好？</div>
@@ -1308,7 +1834,7 @@
           <span class="mini-tag amber">基準比較 · 非增量分析</span>
           <p class="kpi-hint">只看新客質量，<strong>不能回答「活動多賺了多少」</strong>。</p>
           <span class="tech-note" style="border:none;padding:0;margin-top:6px;">（benchmark 基準比較；非 DiD）</span>
-          <span class="tt-box tt-box--kpi"><div class="tt-h">第 2／第 3 單率</div><ul class="tt-ul"><li>第 2 單率 = 39/102（38.2%）。</li><li>第 3 單率 = 24/102（23.5%）。</li><li>與同期自然新客（organic）比較，質量打和或略好。</li></ul></span>
+          <div class="tt-box tt-box--kpi"><div class="tt-h">第 2／第 3 單率</div><ul class="tt-ul"><li>第 2 單率 = 39/102（38.2%）。</li><li>第 3 單率 = 24/102（23.5%）。</li><li>與同期自然新客（organic）比較，質量打和或略好。</li></ul></div>
         </div>
         <div class="kpi tip-host" tabindex="0">
           <div class="label">適合當純拉新回本活動嗎？</div>
@@ -1316,7 +1842,7 @@
           <div class="sub">回本率低；新客質量僅打和</div>
           <span class="mini-tag red">勿當拉新活動主打</span>
           <p class="kpi-hint">綜合回本率與新客質量，不宜用拉新 ROI justify 整場活動。</p>
-          <span class="tt-box tt-box--kpi"><div class="tt-h">管理層怎樣定位？</div><ul class="tt-ul"><li>主價值：激活既有活躍寵物客。</li><li>副價值：品牌曝光、喚回客。</li><li>拉新：觀察用，不作回本主軸。</li></ul></span>
+          <div class="tt-box tt-box--kpi"><div class="tt-h">管理層怎樣定位？</div><ul class="tt-ul"><li>主價值：激活既有活躍寵物客。</li><li>副價值：品牌曝光、喚回客。</li><li>拉新：觀察用，不作回本主軸。</li></ul></div>
         </div>
         <div class="kpi tip-host" tabindex="0">
           <div class="label">多少人能拿來下結論？</div>
@@ -1325,7 +1851,7 @@
           <span class="mini-tag red">不可代表全體 372 人</span>
           <p class="kpi-hint">232 人不是沒落單，是找不到合理比較基準。</p>
           <span class="tech-note" style="border:none;padding:0;margin-top:6px;">（matched sample coverage 配對覆蓋率）</span>
-          <span class="tt-box tt-box--kpi"><div class="tt-h">為何不能外推全體？</div><ul class="tt-ul"><li>+HK$89.72 只適用 136 對既有活躍客。</li><li>勿假設 372 人每人都有同樣增量。</li></ul></span>
+          <div class="tt-box tt-box--kpi"><div class="tt-h">為何不能外推全體？</div><ul class="tt-ul"><li>+HK$89.72 只適用 136 對既有活躍客。</li><li>勿假設 372 人每人都有同樣增量。</li></ul></div>
         </div>
       </div>
       <p class="cite">
@@ -1337,32 +1863,41 @@
     </section>
 
     <section id="roi" class="section">
-      <h2>3. ROI Reality Check</h2>
-      <p class="lead">短期財務回報偏弱——這不是適合用純 ROI justify 的 acquisition campaign；續做必須控成本、收窄 target。</p>
+      <h2>3. 短期財務回報檢視</h2>
+      <p class="lead">管理層第一眼要答的問題：<strong>「為什麼只有約 6%？」</strong>——花了多少、目前量化到多少收益、短期是否足以支持「拉新回本」定位。</p>
       <div class="callout red">
-        ROI proxy 僅 5.97%（benefit proxy HK$15,094.5 ÷ 活動成本 HK$252,708）。此為粗略 proxy，<strong>不是 Finance 官方 ROI</strong>。
+        <strong>每投入 HK$100 活動成本，目前只能觀察到約 HK$6 可量化收益，因此短期不適合作為「拉新回本」活動。</strong>
+        <span class="tech-note" style="display:block;margin-top:8px;color:#991b1b;opacity:0.9;">（此為分析估算，並非 Finance 官方 ROI）</span>
       </div>
       <div class="grid-2">
         <div class="chart-card">
-          <h3>短期財務回報偏弱：ROI proxy 5.97%</h3>
-          <p class="chart-conclusion">可觀察效益遠低於活動成本；若 2026 維持大範圍高成本曝光，Finance 很容易挑戰回本。</p>
+          <h3>短期財務回報不足以支持「拉新回本」定位</h3>
+          <p class="chart-conclusion">每投入 <strong>HK$100</strong> 活動成本，目前只能觀察到約 <strong>HK$6</strong> 可量化收益。</p>
           <div class="svg-wrap">
-            <svg viewBox="0 0 520 260" aria-label="活動成本 vs 可觀察效益（同一比例）">
-              <text x="260" y="22" fill="#64748b" font-size="12" text-anchor="middle" font-weight="700">活動成本 vs 可觀察效益（同一比例）</text>
+            <svg viewBox="0 0 520 260" aria-label="活動成本 vs 目前可量化收益（同一比例）">
+              <text x="260" y="22" fill="#64748b" font-size="12" text-anchor="middle" font-weight="700">活動成本 vs 目前可量化收益（同一比例）</text>
               <line x1="60" y1="220" x2="460" y2="220" stroke="#cbd5e1" stroke-width="2"/>
               <rect x="120" y="52" width="92" height="168" rx="8" fill="#fee2e2" stroke="#ef4444"/>
               <text x="166" y="44" fill="#b91c1c" font-size="12" text-anchor="middle" font-weight="800">活動成本</text>
               <text x="166" y="140" fill="#991b1b" font-size="13" text-anchor="middle" font-weight="800">HK$252,708</text>
               <rect x="308" y="210" width="92" height="10" rx="3" fill="#dbeafe" stroke="#2563eb"/>
-              <text x="354" y="176" fill="#1d4ed8" font-size="12" text-anchor="middle" font-weight="800">效益 proxy</text>
-              <text x="354" y="196" fill="#1d4ed8" font-size="13" text-anchor="middle" font-weight="800">HK$15,094.5</text>
-              <text x="354" y="120" fill="#92400e" font-size="14" text-anchor="middle" font-weight="800">僅為成本的 5.97%</text>
+              <text x="354" y="176" fill="#1d4ed8" font-size="11" text-anchor="middle" font-weight="800">目前可量化收益</text>
+              <text x="354" y="196" fill="#1d4ed8" font-size="13" text-anchor="middle" font-weight="800">HK$15,094</text>
+              <text x="354" y="120" fill="#92400e" font-size="14" text-anchor="middle" font-weight="800">約等於成本 5.97%</text>
             </svg>
           </div>
-          <p class="chart-note">管理層應把 Doggo Fest 定位為品牌／回流／激活，而非純拉新回本活動。</p>
+          <div class="roi-kpi-flow">
+            <div class="roi-kpi-line">活動成本 <strong>HK$252,708</strong></div>
+            <div class="roi-kpi-arrow">↓</div>
+            <div class="roi-kpi-line">目前可量化收益 <strong>HK$15,094</strong></div>
+            <div class="roi-kpi-arrow">↓</div>
+            <div class="roi-kpi-line roi-kpi-pct">約等於成本 <strong>5.97%</strong></div>
+          </div>
+          <p class="chart-note" style="margin-top:12px;"><strong>短期仍未能靠新增收入回本。</strong>若 2026 維持大範圍高成本曝光，Finance 很容易挑戰回本。</p>
+          <p class="chart-note"><strong>不應以短期回報率作為續辦與否的唯一判斷標準。</strong>管理層應把 Doggo Fest 定位為品牌／回流／激活，而非純拉新回本活動。</p>
         </div>
         <div class="chart-card">
-          <h3>效益 proxy 組成（輔助參考）</h3>
+          <h3>可量化收益如何計算（輔助參考）</h3>
           <div class="table-wrap">
             <table>
               <thead>
@@ -1370,17 +1905,17 @@
               </thead>
               <tbody>
                 <tr>
-                  <td>Matched DiD 增量（配對總計）</td>
+                  <td>既有活躍客帶來的增量收入</td>
                   <td>HK$12,238</td>
-                  <td>主要來自既有活躍客（+HK$12,201.7）</td>
+                  <td>（由 Matched DiD 估算；主要來自既有活躍客 +HK$12,201.7）</td>
                 </tr>
                 <tr>
-                  <td>＋ 新客 post platform_take</td>
+                  <td>＋ 活動後 180 天新客貢獻</td>
                   <td>HK$2,856.5</td>
                   <td>102 名新客活動後 180 天貢獻</td>
                 </tr>
                 <tr>
-                  <td>＝ Benefit proxy（合計）</td>
+                  <td>＝ 可量化收益（合計）</td>
                   <td>HK$15,094.5</td>
                   <td>12,238 ＋ 2,856.5</td>
                 </tr>
@@ -1390,151 +1925,134 @@
                   <td>Event Cost Sheet snapshot</td>
                 </tr>
                 <tr>
-                  <td><strong>＝ ROI proxy</strong></td>
+                  <td><strong>＝ 短期回報率（ROI proxy）</strong></td>
                   <td><strong>5.97%</strong></td>
                   <td>非 Finance 官方 ROI</td>
                 </tr>
               </tbody>
             </table>
           </div>
-          <p class="cite">效益引用：（2026-07-07 實查，HK TRANSPORT PlatformOD，pre 180 天 2025-05-18 to 2025-11-13；post 180 天 2025-11-17 to 2026-05-16）</p>
-          <p class="cite">成本引用：（2026-07-07 實查，Doggo Fest Event Cost Sheet，2025-11-14 至 2025-11-16 活動成本 snapshot）</p>
+          <p class="cite">可量化收益引用：（2026-07-07 實查，HK TRANSPORT PlatformOD，活動前 180 天 2025-05-18 to 2025-11-13；活動後 180 天 2025-11-17 to 2026-05-16）</p>
+          <p class="cite">活動成本引用：（2026-07-07 實查，Doggo Fest Event Cost Sheet，2025-11-14 至 2025-11-16 活動成本 snapshot）</p>
         </div>
       </div>
     </section>
 
     <section id="question-map" class="section">
-      <h2>4. 本報告問題地圖</h2>
-      <p class="lead">
-        上層是 <code>analysis-framework.md</code> §2 成效五問（analyst 主幹）；
-        下層是管理層決策加題。兩層合併後，就是本報告要回答的全部 business questions。
-      </p>
+      <h2>4. 本報告回答的管理層問題</h2>
+      <p class="lead">本報告圍繞管理層最常問的問題，<strong>先給結論、再給證據</strong>。下表是整份報告的導覽摘要；有興趣再進入對應章節看圖表與細節。</p>
       <div class="callout blue">
-        閱讀方式：先看<strong>決策層</strong>（是否續做、如何定位、ROI）→ 再看<strong>成效層</strong>（紅框五問）→ 最後用各章圖表驗證。
+        閱讀方式：<strong>先看下表五個結論</strong> → 需要細節時再點「深入了解」→ 訂單量、消費額等細項見 <a href="#questions">§5 管理層問答</a>。
       </div>
       <div class="table-wrap">
-        <table>
+        <table class="qm-conclusion">
           <thead>
             <tr>
-              <th>層級</th>
-              <th>商業問題</th>
-              <th>管理層決策含義</th>
-              <th>本報告章節</th>
+              <th>管理層問題</th>
+              <th>本報告結論</th>
+              <th>深入了解</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td rowspan="5"><strong>成效層</strong><br><span style="color:var(--muted);font-size:0.85rem">framework §2</span></td>
-              <td>參加者活動後有沒有多落單？</td>
-              <td>活動有沒有帶來額外訂單量</td>
-              <td><a href="#questions">§5 問答</a> · <a href="#evidence">§6 DiD 圖</a></td>
+              <td>值不值得繼續做？</td>
+              <td class="answer-yes"><strong>有條件續辦</strong>——有增量，但必須控成本、收窄客群</td>
+              <td class="qm-more"><a href="#decision">決策建議</a> <span class="qm-sec">§1</span></td>
             </tr>
             <tr>
-              <td>客戶消費（GTV）有沒有拉高？</td>
-              <td>客戶有沒有花更多錢</td>
-              <td><a href="#questions">§5 問答</a> · <a href="#evidence">§6 DiD 圖</a></td>
+              <td>Doggo Fest 有沒有真正帶來增量收入？</td>
+              <td class="answer-yes"><strong>有。</strong>既有活躍客平均 <strong>+HK$89.72／人</strong>；優於「若沒辦活動」的預期</td>
+              <td class="qm-more"><a href="#evidence">視覺證據</a> <span class="qm-sec">§6</span> · <a href="#counterfactual">若沒做活動</a> <span class="qm-sec">§7</span></td>
             </tr>
             <tr>
-              <td>平台有沒有多賺？</td>
-              <td>值不值得做（核心成效）</td>
-              <td><a href="#snapshot">§2 KPI</a> · <a href="#questions">§5 問答</a> · <a href="#evidence">§6 DiD 圖</a></td>
+              <td>短期回報是否足以支持繼續投放？</td>
+              <td class="answer-warn"><strong>不足以作拉新回本。</strong>每 HK$100 成本約 HK$6 可量化收益（約 <strong>5.97%</strong>）</td>
+              <td class="qm-more"><a href="#roi">短期財務回報</a> <span class="qm-sec">§3</span></td>
             </tr>
             <tr>
-              <td>活動是「留住本來會用的人」還是「帶來增量」？</td>
-              <td>不是單方面自我合理化；結果需要優於未舉辦活動的預期</td>
-              <td><a href="#questions">§5 問答</a> · <a href="#counterfactual">§7 無活動代理</a></td>
+              <td>應優先投放哪類客戶？應定位為拉新還是品牌／激活？</td>
+              <td class="answer-yes"><strong>既有活躍寵物客；</strong>定位品牌／回流／激活，不宜純拉新回本</td>
+              <td class="qm-more"><a href="#playbook">2026 Playbook</a> <span class="qm-sec">§8</span> · <a href="#evidence">客群分析</a> <span class="qm-sec">§6</span></td>
             </tr>
             <tr>
-              <td>哪類 attendee 貢獻大？</td>
-              <td>2026 應 target 哪類客戶</td>
-              <td><a href="#evidence">§6 Segment 圖</a> · <a href="#appendix">§10 Direction split</a></td>
-            </tr>
-            <tr>
-              <td rowspan="4"><strong>決策層</strong><br><span style="color:var(--muted);font-size:0.85rem">管理層加題</span></td>
-              <td>短期 ROI 是否足夠 justify？</td>
-              <td>Finance 是否會批預算</td>
-              <td><a href="#roi">§3 ROI Reality Check</a></td>
-            </tr>
-            <tr>
-              <td>是否適合用作純拉新活動？</td>
-              <td>可否用拉新 headline 對外講</td>
-              <td><a href="#snapshot">§2 KPI</a> · <a href="#questions">§5 問答</a> · <a href="#evidence">§6 Benchmark</a></td>
-            </tr>
-            <tr>
-              <td>372 人全體可否當因果結論？</td>
-              <td>數字可否外推至全體 treatment</td>
-              <td><a href="#evidence">§6 Funnel</a> · <a href="#cohort-base">開始前必讀 · 基數與配對</a></td>
-            </tr>
-            <tr>
-              <td>2026 是否續做？如何調整 campaign？</td>
-              <td>最終拍板與執行方向</td>
-              <td><a href="#decision">§1 Executive Decision</a> · <a href="#playbook">§8 Playbook</a></td>
+              <td>分析結果是否可以代表全部 372 位參加者？</td>
+              <td class="answer-no"><strong>不可以。</strong>因果主結論僅適用 <strong>140 對</strong>可公平比較樣本</td>
+              <td class="qm-more"><a href="#cohort-base">開始前必讀</a> <span class="qm-sec">基數與配對</span></td>
             </tr>
           </tbody>
         </table>
       </div>
-      <p class="chart-note" style="margin-top:12px">
-        <strong>本報告刻意不作主結論：</strong>新客 102 人的 DiD 增量（無 pre window，只做 benchmark）；
-        ROI proxy 不等於 Finance 官方 ROI；direction 子集 DiD 不可加總為混合 140 對 DiD。
-      </p>
-      <p class="cite">成效五問真源：<code>projects/doggo-fest-cohort/docs/analysis-framework.md</code> §2（2026-07-07 版）</p>
+      <p class="cite" style="margin-top:10px;">結論數字引用：（2026-07-07 實查，HK TRANSPORT PlatformOD，活動前 180 天 2025-05-18 to 2025-11-13；活動後 180 天 2025-11-17 to 2026-05-16）</p>
+
+      <div class="qm-limits">
+        <h3>本報告不回答以下問題</h3>
+        <ul>
+          <li><strong>新客的真正活動增量</strong>——102 名新客缺乏活動前資料，只能做第 2／3 單率基準比較。</li>
+          <li><strong>Finance 官方 ROI</strong>——本報告只提供分析估算的短期回報率，不能取代財務正式口徑。</li>
+          <li><strong>全部 372 人的因果效果</strong>——只有 140 對能找到相似對照；其餘 232 人無法公平比較。</li>
+        </ul>
+        <span class="tech-note" style="display:block;margin-top:10px;">（分析師延伸：成效五問框架見 <code>projects/doggo-fest-cohort/docs/analysis-framework.md</code> §2）</span>
+      </div>
     </section>
 
     <section id="questions" class="section">
-      <h2>5. Business Question → Answer</h2>
-      <p class="lead">管理層真正會問的不是方法論，而是「活動有沒有幫平台多賺、值不值得再做」。</p>
+      <h2>5. 管理層問答一覽</h2>
+      <p class="lead">董事若只有 30 秒，看這一頁就夠：<strong>問題 → 結論 → 原因 → 下一步</strong>。技術細節與圖表證明見後續章節。</p>
+      <div class="callout blue">
+        閱讀方式：<strong>先看「結論」欄</strong> → 需要理由再看「為什麼？」→ 要執行就看「建議行動」。
+      </div>
       <div class="table-wrap">
-        <table>
+        <table class="qa-summary">
           <thead>
             <tr>
               <th>管理層問題</th>
-              <th>答案</th>
-              <th>核心證據</th>
-              <th>應怎樣解讀</th>
+              <th>結論</th>
+              <th>為什麼？</th>
+              <th>建議行動</th>
             </tr>
           </thead>
           <tbody>
             <tr>
               <td>有沒有多落單？</td>
-              <td class="answer-yes">有</td>
-              <td>Matched DiD 完成單 +1.99 單 / 人</td>
-              <td>不是只看參加者 post 變高，而是扣除相似對照組後仍有增量。</td>
+              <td class="answer-yes">✅ 有</td>
+              <td>平均每位可比參加者活動後多完成約 <strong>1.99 單</strong>（扣除市場自然變化後）<span class="tech-inline">Matched DiD · 140 對可比樣本</span></td>
+              <td>對外可講「活動帶來額外訂單」，但不宜外推至全部 372 人。</td>
             </tr>
             <tr>
               <td>有沒有拉高 GTV？</td>
-              <td class="answer-yes">有</td>
-              <td>Matched DiD GTV +HK$210.20 / 人</td>
-              <td>活動後花費增加，不只是單量增加。</td>
+              <td class="answer-yes">✅ 有</td>
+              <td>平均每位可比參加者多消費約 <strong>HK$210</strong>（扣除市場自然變化後）<span class="tech-inline">Matched DiD · 消費額 GTV</span></td>
+              <td>活動後客戶花費明顯上升，不只是單量增加、客單價不變。</td>
             </tr>
             <tr>
               <td>平台有沒有多賺？</td>
-              <td class="answer-yes">有，但集中在既有活躍客</td>
-              <td>混合 DiD +HK$25.37 / 人；既有活躍客 +HK$89.72 / 人</td>
-              <td>主結論應講既有活躍客，而不是混合平均。</td>
+              <td class="answer-yes">⚠️ 有，但主要來自既有活躍客</td>
+              <td>真正增量主要來自既有活躍客（<strong>+HK$89.72／人</strong>）；全體平均僅 +HK$25.37／人<span class="tech-inline">140 對可比樣本 · 平台收入 platform_take</span></td>
+              <td>2026 對外溝通與預算應以既有活躍客為主，勿用全體平均當 headline。</td>
             </tr>
             <tr>
               <td>活動是留存還是增量？</td>
-              <td class="answer-yes">有增量，不是純留存</td>
-              <td>Treatment Post−Pre +HK$23.88；Control Post−Pre −HK$1.49</td>
-              <td>價值在於「比無活動預期更好」，不是單看 post 還有收入。</td>
+              <td class="answer-yes">✅ 有增量，不是純留存</td>
+              <td>相較沒有參加活動的相似客戶，參加者收入增加更多，因此屬真正增量。<span class="tech-inline">配對對照比較 · 140 對</span></td>
+              <td>活動帶來的是新增收入，而非單純保留原有收入。</td>
             </tr>
             <tr>
               <td>哪類客戶最值得 target？</td>
-              <td class="answer-yes">既有活躍客</td>
-              <td>Existing active 136 對 DiD +HK$89.72 / 人</td>
-              <td>這批人最值得做精準 activation。</td>
+              <td class="answer-yes">✅ 既有活躍客</td>
+              <td>可比樣本中既有活躍客 <strong>136 對</strong>，人均增量 <strong>+HK$89.72</strong><span class="tech-inline">扣除市場自然變化後</span></td>
+              <td>2026 應優先投放既有活躍客，做精準激活。</td>
             </tr>
             <tr>
               <td>是否適合用作純拉新活動？</td>
-              <td class="answer-no">不適合</td>
-              <td>ROI proxy 5.97%；第 2 單率 Doggo 39/102（38.2%）vs organic 28,198/75,103（37.5%）；第 3 單率 Doggo 24/102（23.5%）vs organic 14,571/75,103（19.4%）</td>
-              <td>第 2 單率大致持平、第 3 單率略好，但不足以支持高成本拉新 headline。</td>
+              <td class="answer-no">❌ 不適合</td>
+              <td>短期回報約 <strong>5.97%</strong>（每 HK$100 成本約 HK$6 收益）；新客第 2 單率 39/102（38.2%）與自然獲客 37.5% 大致持平<span class="tech-inline">ROI 為分析估算，非 Finance 官方數</span></td>
+              <td>不宜以拉新 headline 對外；新客只做品質觀察，不作增量主結論。</td>
             </tr>
             <tr>
-              <td>2026 要不要續做？</td>
-              <td class="answer-warn">可以續做，但要改</td>
-              <td>有增量、有品牌價值，但短期財務回報弱</td>
-              <td>建議收窄對象、控成本、串接 retention flow。</td>
+              <td>2026 是否續辦？</td>
+              <td class="answer-warn">✅ 有條件續辦</td>
+              <td>有增量收入，但短期回報偏低；品牌價值仍可作輔助理由。</td>
+              <td>續辦，但縮窄 target、控制成本、加強活動後留存。</td>
             </tr>
           </tbody>
         </table>
@@ -1545,125 +2063,143 @@
     </section>
 
     <section id="evidence" class="section">
-      <h2>6. Visual Evidence</h2>
-      <p class="lead">每個圖只回答一個 business question，避免圖多但沒有 decision logic。</p>
+      <h2>6. 視覺證據</h2>
+      <p class="lead">這一頁<strong>只提供證據</strong>，證明前面章節的結論；不是教學，也不再解釋方法。</p>
+      <div class="evidence-scope">
+        管理層決策請參考 <a href="#decision">§1 管理層決策建議</a>；本頁圖表供驗證「有沒有增量」「能否外推至 372 人」等問題。
+      </div>
 
       <div class="chart-card">
-        <h3>372 人全體不可外推：因果主結論只看 140 對</h3>
-        <p class="chart-conclusion">真正可做因果主結論的，不是 372 人全體，而是 140 對 matched users；其中最有價值的是既有活躍客 136 對。</p>
+        <h3>只有 140 對可公平比較，因此結論不能代表全部 372 人</h3>
+        <p class="chart-conclusion">372 人皆為活動參加者；其中 <strong>140 對</strong>可與相似未參加者公平比較，<strong>136 對</strong>既有活躍客為主要決策依據。</p>
         <div class="svg-wrap svg-wrap--wide">
           <svg viewBox="0 0 900 300" aria-label="Cohort funnel">
-            <text x="450" y="22" fill="#64748b" font-size="13" text-anchor="middle" font-weight="700">372 名 Treatment 如何分流</text>
+            <text x="450" y="22" fill="#64748b" font-size="13" text-anchor="middle" font-weight="700">372 名活動參加者如何分流</text>
 
             <rect x="40" y="42" width="220" height="64" rx="14" fill="#2563eb"/>
             <text x="150" y="72" fill="#fff" font-size="24" text-anchor="middle" font-weight="800">372</text>
-            <text x="150" y="94" fill="#dbeafe" font-size="12" text-anchor="middle">全部領券用戶</text>
+            <text x="150" y="94" fill="#dbeafe" font-size="12" text-anchor="middle">全部活動參加者</text>
 
             <line x1="260" y1="74" x2="320" y2="74" stroke="#94a3b8" stroke-width="5"/>
             <polygon points="320,74 306,66 306,82" fill="#94a3b8"/>
 
             <rect x="320" y="42" width="200" height="64" rx="14" fill="#15803d"/>
-            <text x="420" y="72" fill="#fff" font-size="24" text-anchor="middle" font-weight="800">140</text>
-            <text x="420" y="94" fill="#dcfce7" font-size="12" text-anchor="middle">可配對 DiD</text>
+            <text x="420" y="68" fill="#fff" font-size="24" text-anchor="middle" font-weight="800">140</text>
+            <text x="420" y="88" fill="#dcfce7" font-size="11" text-anchor="middle">可公平比較</text>
+            <text x="420" y="100" fill="#bbf7d0" font-size="9" text-anchor="middle">(Matched DiD)</text>
 
             <line x1="520" y1="74" x2="580" y2="74" stroke="#94a3b8" stroke-width="5"/>
             <polygon points="580,74 566,66 566,82" fill="#94a3b8"/>
 
             <rect x="580" y="42" width="200" height="64" rx="14" fill="#0f766e"/>
-            <text x="680" y="72" fill="#fff" font-size="24" text-anchor="middle" font-weight="800">136</text>
-            <text x="680" y="94" fill="#ccfbf1" font-size="12" text-anchor="middle">既有活躍客配對</text>
+            <text x="680" y="68" fill="#fff" font-size="24" text-anchor="middle" font-weight="800">136</text>
+            <text x="680" y="88" fill="#ccfbf1" font-size="11" text-anchor="middle">主要決策依據</text>
+            <text x="680" y="100" fill="#99f6e4" font-size="9" text-anchor="middle">既有活躍客</text>
 
             <rect x="90" y="150" width="170" height="56" rx="12" fill="#fee2e2" stroke="#ef4444"/>
-            <text x="175" y="174" fill="#991b1b" font-size="20" text-anchor="middle" font-weight="800">232</text>
-            <text x="175" y="194" fill="#991b1b" font-size="11" text-anchor="middle">未配對</text>
+            <text x="175" y="170" fill="#991b1b" font-size="20" text-anchor="middle" font-weight="800">232</text>
+            <text x="175" y="188" fill="#991b1b" font-size="10" text-anchor="middle">未能公平比較</text>
+            <text x="175" y="200" fill="#b91c1c" font-size="9" text-anchor="middle">主要為新客／回流客</text>
 
             <rect x="330" y="150" width="170" height="56" rx="12" fill="#fef3c7" stroke="#f59e0b"/>
-            <text x="415" y="174" fill="#92400e" font-size="20" text-anchor="middle" font-weight="800">102</text>
-            <text x="415" y="194" fill="#92400e" font-size="11" text-anchor="middle">新客（無 DiD）</text>
+            <text x="415" y="170" fill="#92400e" font-size="20" text-anchor="middle" font-weight="800">102</text>
+            <text x="415" y="188" fill="#92400e" font-size="10" text-anchor="middle">新客</text>
+            <text x="415" y="200" fill="#a16207" font-size="9" text-anchor="middle">只能做 Benchmark</text>
 
             <rect x="570" y="150" width="260" height="56" rx="12" fill="#e2e8f0" stroke="#94a3b8"/>
-            <text x="700" y="174" fill="#334155" font-size="14" text-anchor="middle" font-weight="800">因果主結論只看 140 對</text>
-            <text x="700" y="194" fill="#475569" font-size="11" text-anchor="middle">不可把混合 DiD 外推至 372 人</text>
+            <text x="700" y="172" fill="#334155" font-size="13" text-anchor="middle" font-weight="800">主結論僅適用 140 對</text>
+            <text x="700" y="192" fill="#475569" font-size="10" text-anchor="middle">不可外推至全部 372 人</text>
 
             <line x1="150" y1="106" x2="175" y2="150" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="4 4"/>
             <line x1="420" y1="106" x2="415" y2="150" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="4 4"/>
             <line x1="260" y1="106" x2="175" y2="150" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="4 4"/>
           </svg>
         </div>
-        <p class="chart-note">解讀：140 對 matched users 才能回答「如果無做活動，本來會怎樣」；新客 102 人只能做 benchmark，不能做 DiD 主結論。</p>
+        <p class="chart-note">140 對才可回答「若沒辦活動會怎樣」；102 名新客僅作質量基準比較，不作增量主結論。<span class="tech-inline" style="display:inline;margin-left:4px;">（Matched DiD · 140 對）</span></p>
         <p class="cite">引用：（2026-07-07 實查，HK TRANSPORT PlatformOD，pre 2025-05-18 to 2025-11-13；post 2025-11-17 to 2026-05-16）</p>
       </div>
 
       <div class="chart-card">
-        <h3>活動真有增量：扣除對照組後 orders / GTV / platform_take 仍為正</h3>
-        <p class="chart-conclusion">活動不是只有「參加者 post 有收入」，而是扣除對照組後，訂單、GTV、platform_take 仍然有正增量。<strong>以下皆為人均（/ 人）</strong>，不是 per order、也不是全體加總；<strong>pre / post 各 180 天</strong>（活動日 2025-11-14 至 11-16 不計）。</p>
+        <h3>Doggo Fest 是否真正帶來額外收入？</h3>
+        <p class="chart-conclusion"><strong>答案：有。</strong>即使扣除市場自然變化後，訂單、消費額（GTV）及平台收入仍然增加。<span class="tech-inline" style="display:inline;margin-left:4px;">（140 對可比樣本 · 人均 · 活動前後各 180 天）</span></p>
         <div class="svg-wrap svg-wrap--wide">
-          <svg viewBox="0 0 920 340" aria-label="DiD bar chart">
-            <text x="200" y="36" fill="#64748b" font-size="11" text-anchor="middle">← 對照組</text>
-            <text x="400" y="36" fill="#64748b" font-size="11" text-anchor="middle">實驗組 →</text>
+          <svg viewBox="0 0 960 340" aria-label="DiD bar chart">
             <line x1="300" y1="48" x2="300" y2="296" stroke="#cbd5e1" stroke-width="2"/>
+            <text x="300" y="30" fill="#64748b" font-size="11" text-anchor="middle">← 沒有參加（對照）　｜　參加活動 →</text>
 
             <text x="16" y="88" fill="#334155" font-size="13" font-weight="700">完成單</text>
-            <text x="108" y="88" fill="#64748b" font-size="10" text-anchor="end">人均</text>
+            <text x="112" y="88" fill="#64748b" font-size="10" text-anchor="end">人均</text>
             <rect x="300" y="70" width="150" height="20" rx="6" fill="#2563eb"/>
-            <text x="720" y="84" fill="#2563eb" font-size="12" font-weight="700">實驗組 Post−Pre +1.34 單/人</text>
             <rect x="236" y="96" width="64" height="20" rx="6" fill="#ef4444"/>
-            <text x="720" y="110" fill="#b91c1c" font-size="12" font-weight="700">對照組 Post−Pre −0.65 單/人</text>
             <rect x="300" y="122" width="224" height="20" rx="6" fill="#15803d"/>
-            <text x="720" y="136" fill="#15803d" font-size="12" font-weight="800">DiD +1.99 單/人</text>
+            <text x="536" y="84" fill="#2563eb" font-size="11" font-weight="700">參加活動 +1.34 單/人</text>
+            <text x="536" y="110" fill="#b91c1c" font-size="11" font-weight="700">沒有參加 −0.65 單/人</text>
+            <text x="536" y="136" fill="#15803d" font-size="11" font-weight="800">真正增量 +1.99 單/人</text>
+            <text x="700" y="136" fill="#64748b" font-size="9">(DiD)</text>
 
             <text x="16" y="178" fill="#334155" font-size="13" font-weight="700">GTV</text>
-            <text x="108" y="178" fill="#64748b" font-size="10" text-anchor="end">人均</text>
+            <text x="112" y="178" fill="#64748b" font-size="10" text-anchor="end">人均</text>
             <rect x="300" y="160" width="355" height="20" rx="6" fill="#93c5fd"/>
-            <text x="720" y="174" fill="#1d4ed8" font-size="12" font-weight="700">實驗組 Post−Pre +HK$186.62/人</text>
             <rect x="255" y="186" width="45" height="20" rx="6" fill="#fca5a5"/>
-            <text x="720" y="200" fill="#b91c1c" font-size="12" font-weight="700">對照組 Post−Pre −HK$23.58/人</text>
             <rect x="300" y="212" width="400" height="20" rx="6" fill="#15803d"/>
-            <text x="720" y="226" fill="#15803d" font-size="12" font-weight="800">DiD +HK$210.20/人</text>
+            <text x="712" y="174" fill="#1d4ed8" font-size="11" font-weight="700">參加活動 +HK$186.62/人</text>
+            <text x="712" y="200" fill="#b91c1c" font-size="11" font-weight="700">沒有參加 −HK$23.58/人</text>
+            <text x="712" y="226" fill="#15803d" font-size="11" font-weight="800">真正增量 +HK$210.20/人</text>
+            <text x="872" y="226" fill="#64748b" font-size="9">(DiD)</text>
 
-            <text x="16" y="268" fill="#334155" font-size="13" font-weight="700">platform_take</text>
-            <text x="108" y="268" fill="#64748b" font-size="10" text-anchor="end">人均</text>
+            <text x="16" y="256" fill="#334155" font-size="13" font-weight="700">平台收入</text>
+            <text x="16" y="272" fill="#64748b" font-size="8">platform take</text>
+            <text x="112" y="264" fill="#64748b" font-size="10" text-anchor="end">人均</text>
             <rect x="300" y="250" width="46" height="20" rx="6" fill="#2563eb"/>
-            <text x="720" y="264" fill="#2563eb" font-size="12" font-weight="700">實驗組 Post−Pre +HK$23.88/人</text>
             <rect x="288" y="276" width="12" height="20" rx="6" fill="#ef4444"/>
-            <text x="720" y="290" fill="#b91c1c" font-size="12" font-weight="700">對照組 Post−Pre −HK$1.49/人</text>
             <rect x="300" y="302" width="48" height="20" rx="6" fill="#15803d"/>
-            <text x="720" y="316" fill="#15803d" font-size="12" font-weight="800">DiD +HK$25.37/人</text>
+            <text x="536" y="264" fill="#2563eb" font-size="11" font-weight="700">參加活動 +HK$23.88/人</text>
+            <text x="536" y="290" fill="#b91c1c" font-size="11" font-weight="700">沒有參加 −HK$1.49/人</text>
+            <text x="536" y="316" fill="#15803d" font-size="11" font-weight="800">真正增量 +HK$25.37/人</text>
+            <text x="700" y="316" fill="#64748b" font-size="9">(DiD)</text>
           </svg>
         </div>
-        <p class="chart-note">解讀：每人先算 pre 180 天與 post 180 天的差（Post−Pre），再比實驗組與對照組的平均變化差距（DiD）。+1.34 單/人 = 每人 post 期比 pre 期平均多完成 1.34 張單，不是「每張單」的增量。樣本：140 對 matched users。</p>
+        <p class="chart-note">圖中<strong>綠色</strong>代表 Doggo Fest 帶來的真正增量（已扣除市場自然變化）。<span class="tech-inline" style="display:inline;margin-left:4px;">（方法：Matched DiD · 140 對）</span></p>
         <p class="cite">引用：（2026-07-07 實查，HK TRANSPORT PlatformOD，pre 180 天 2025-05-18 to 2025-11-13；post 180 天 2025-11-17 to 2026-05-16）</p>
+      </div>
+
+      <div class="evidence-mgmt-q">
+        <strong>管理問題：</strong>2026 應該把預算投放在哪類客戶？<br>
+        <strong>答案：</strong>既有活躍客最值得投資；新客留存表現不差，但目前沒有足夠證據支持高成本拉新。
       </div>
 
       <div class="grid-2">
         <div class="chart-card">
-          <h3>既有活躍客有正增量：HK$89.72 / 人</h3>
-          <p class="chart-conclusion">真正值得加碼的是既有活躍客；新客只可說質量不差，回流客樣本不足。</p>
+          <h3>哪類客戶最值得投資？</h3>
+          <p class="segment-answer">答案：既有活躍客，每人平均帶來 <strong>HK$89.72</strong> 增量收入。</p>
           <div class="svg-wrap">
-            <svg viewBox="0 0 520 250" aria-label="Segment contribution chart">
-              <line x1="128" y1="24" x2="128" y2="220" stroke="#cbd5e1" stroke-width="2"/>
-              <text x="12" y="72" fill="#334155" font-size="12" font-weight="700">既有活躍客</text>
-              <rect x="128" y="52" width="220" height="28" rx="8" fill="#15803d"/>
-              <text x="360" y="70" fill="#15803d" font-size="12" font-weight="800">+HK$89.72 / 人</text>
+            <svg viewBox="0 0 560 260" aria-label="Segment contribution chart">
+              <line x1="128" y1="20" x2="128" y2="240" stroke="#cbd5e1" stroke-width="2"/>
 
-              <text x="12" y="132" fill="#334155" font-size="12" font-weight="700">新客</text>
-              <rect x="128" y="108" width="108" height="22" rx="8" fill="#f59e0b"/>
-              <text x="246" y="123" fill="#92400e" font-size="11" font-weight="800">第 2 單 38.2%</text>
-              <rect x="128" y="136" width="88" height="22" rx="8" fill="#fde68a"/>
-              <text x="226" y="151" fill="#92400e" font-size="11" font-weight="800">第 3 單 23.5%</text>
+              <text x="12" y="58" fill="#334155" font-size="12" font-weight="700">既有活躍客</text>
+              <rect x="128" y="38" width="200" height="28" rx="8" fill="#15803d"/>
+              <text x="338" y="56" fill="#15803d" font-size="11" font-weight="800">+HK$89.72／人</text>
+              <text x="128" y="78" fill="#166534" font-size="11" font-weight="700">✅ 已證明帶來增量收入</text>
 
-              <text x="12" y="202" fill="#334155" font-size="12" font-weight="700">回流客</text>
-              <rect x="128" y="182" width="12" height="28" rx="6" fill="#ef4444"/>
-              <text x="148" y="200" fill="#b91c1c" font-size="11" font-weight="800">僅 2 對，不可作主結論</text>
+              <text x="12" y="128" fill="#334155" font-size="12" font-weight="700">新客</text>
+              <rect x="128" y="108" width="88" height="20" rx="8" fill="#fde68a" stroke="#f59e0b"/>
+              <rect x="128" y="132" width="72" height="20" rx="8" fill="#fef3c7" stroke="#f59e0b"/>
+              <text x="128" y="162" fill="#92400e" font-size="11" font-weight="700">⚠️ 留存率不差，但未證明能回本</text>
+              <text x="128" y="178" fill="#a16207" font-size="9">第 2 單 38.2% · 第 3 單 23.5%（102 人 · 品質參考）</text>
+
+              <text x="12" y="218" fill="#334155" font-size="12" font-weight="700">回流客</text>
+              <rect x="128" y="198" width="12" height="24" rx="6" fill="#fca5a5"/>
+              <text x="148" y="214" fill="#b91c1c" font-size="11" font-weight="700">⚠️ 樣本不足，暫不作結論</text>
+              <text x="148" y="228" fill="#991b1b" font-size="9">僅 2 對可比 · 不作管理層主要結論</text>
             </svg>
           </div>
-          <p class="chart-note">解讀：分段故事很清楚。既有活躍客可以講增量；新客只能講 quality benchmark；回流客暫時不要拿來做主 headline。</p>
+          <p class="chart-note">2026 預算應優先投放既有活躍客；新客只看留存品質參考，不作增量主結論；回流客待樣本增加後再評估。<span class="tech-inline" style="display:inline;margin-left:4px;">（136 對 · Matched DiD）</span></p>
           <p class="cite">引用：（2026-07-07 實查，HK TRANSPORT PlatformOD，pre 2025-05-18 to 2025-11-13；post 2025-11-17 to 2026-05-16）</p>
         </div>
 
         <div class="chart-card">
-          <h3>Doggo 新客第 2 單率大致持平、第 3 單率略好，但仍不足以 justify 純拉新</h3>
-          <p class="chart-conclusion">可比第 2 單率 Doggo 39/102（38.2%）vs organic 28,198/75,103（37.5%）；第 3 單率 Doggo 24/102（23.5%）vs organic 14,571/75,103（19.4%）。質量不是差，但高成本活動仍難回本。</p>
+          <h3>Doggo 新客留存不差，但不足以支持「拉新回本」定位</h3>
+          <p class="chart-conclusion">Doggo Fest 新客的第 2、3 單留存率與一般新客相近，甚至略好；但考慮活動成本後，短期仍不足以支持「拉新回本」策略。</p>
           <div class="svg-wrap">
             <svg viewBox="0 0 520 270" aria-label="New customer benchmark">
               <line x1="70" y1="220" x2="470" y2="220" stroke="#cbd5e1" stroke-width="2"/>
@@ -1676,7 +2212,7 @@
 
               <rect x="200" y="80" width="70" height="140" rx="8" fill="#93c5fd"/>
               <text x="235" y="68" fill="#1d4ed8" font-size="12" text-anchor="middle" font-weight="800">37.5%</text>
-              <text x="235" y="262" fill="#475569" font-size="11" text-anchor="middle">Organic</text>
+              <text x="235" y="262" fill="#475569" font-size="11" text-anchor="middle">一般新客</text>
 
               <rect x="330" y="132" width="70" height="88" rx="8" fill="#15803d"/>
               <text x="365" y="122" fill="#15803d" font-size="12" text-anchor="middle" font-weight="800">23.5%</text>
@@ -1684,28 +2220,28 @@
 
               <rect x="420" y="146" width="70" height="74" rx="8" fill="#86efac"/>
               <text x="455" y="136" fill="#15803d" font-size="12" text-anchor="middle" font-weight="800">19.4%</text>
-              <text x="455" y="262" fill="#475569" font-size="11" text-anchor="middle">Organic</text>
+              <text x="455" y="262" fill="#475569" font-size="11" text-anchor="middle">一般新客</text>
             </svg>
           </div>
           <div class="legend">
-            <span class="blue">Doggo 新客</span>
-            <span class="slate">Organic benchmark</span>
-            <span class="green">第 3 單率 Doggo 較高</span>
+            <span class="blue">Doggo Fest 新客</span>
+            <span class="slate">一般新客（品質參考）</span>
+            <span class="green">第 3 單率 Doggo 略高</span>
           </div>
           <div class="table-wrap" style="margin-top:12px;">
             <table>
               <thead>
-                <tr><th>群體</th><th>人數</th><th>第 2 單率（可比）</th><th>第 3 單率</th></tr>
+                <tr><th>群體</th><th>人數</th><th>第 2 單率</th><th>第 3 單率</th></tr>
               </thead>
               <tbody>
                 <tr>
-                  <td>Doggo Fest 新客（Treatment 內新客）</td>
+                  <td>Doggo Fest 新客</td>
                   <td>102</td>
                   <td>39/102（38.2%）</td>
                   <td>24/102（23.5%）</td>
                 </tr>
                 <tr>
-                  <td>Organic 自然新客（benchmark）</td>
+                  <td>一般新客（品質參考）</td>
                   <td>75,103</td>
                   <td>28,198/75,103（37.5%）</td>
                   <td>14,571/75,103（19.4%）</td>
@@ -1713,13 +2249,12 @@
               </tbody>
             </table>
           </div>
-          <p class="chart-note">解讀：<strong>organic</strong> = 同期 post 180 天內、首單非 Doggo Fest 帶來的 HK TRANSPORT 自然新客（描述性 benchmark，非因果對照）。第 3 單率 Doggo 較高，但不足以單獨 justify 高成本拉新。</p>
-          <div class="callout amber" style="margin-top:10px;font-size:0.86rem;line-height:1.6;">
-            <strong>⚠️ 兩組客群性質未必完全一致（睇大方向即可）：</strong>
-            Doggo 新客是透過<strong>寵物活動</strong>（用券）進來的，基本上是寵物客；organic 新客則是<strong>一般叫車新客</strong>。
-            因為 BQ 沒有乾淨的「寵物訂單」欄位，organic 這邊<strong>無法只篩寵物客</strong>——
-            所以這裡其實是拿「寵物活動新客」比「全體新客」的第 2／3 單率，<strong>不是「寵物客 vs 寵物客」的同類對照</strong>。
-            結論方向（質量大致持平／略好）可以參考，但不宜當作嚴謹的 apples-to-apples 比較。
+          <p class="chart-note">一般新客 = 同期活動後 180 天內、首單非 Doggo Fest 帶來的 HK TRANSPORT 新客；用作<strong>品質參考</strong>，非因果對照。<span class="tech-inline" style="display:inline;margin-left:4px;">（102 人 · post 180 天）</span></p>
+          <div class="callout amber" style="margin-top:10px;font-size:0.86rem;line-height:1.65;">
+            <strong>比較限制（閱讀前請留意）</strong><br>
+            這裡比較的是 Doggo Fest 新客與平台一般新客的留存率，用作<strong>方向性參考</strong>，而不是嚴格因果分析。<br><br>
+            原因是目前 <strong>BigQuery（BQ）</strong>未有完整的「寵物服務」標籤，未能完全識別所有寵物相關訂單，因此兩組客戶並非完全一致。<br><br>
+            <strong>結論可用於判斷趨勢，但不應直接視為活動因果效果。</strong>
           </div>
           <p class="cite">引用：（2026-07-07 實查，HK TRANSPORT PlatformOD，post 2025-11-17 to 2026-05-16）</p>
         </div>
@@ -1919,7 +2454,7 @@
             活動期 2025-11-14 至 2025-11-16 使用 Doggo Fest 相關 voucher 的完成單用戶，共 372 人。
           </div>
           <p class="kpi-hint">用 voucher 識別參加者（不用 TST 地點），雜訊最低。</p>
-          <span class="tt-box tt-box--kpi"><div class="tt-h">Treatment 372 人</div><ul class="tt-ul"><li>HK TRANSPORT · PlatformOD · 完成單 · Doggo Fest voucher。</li><li>活動日 3 天內領券落單即入組。</li></ul></span>
+          <div class="tt-box tt-box--kpi"><div class="tt-h">Treatment 372 人</div><ul class="tt-ul"><li>HK TRANSPORT · PlatformOD · 完成單 · Doggo Fest voucher。</li><li>活動日 3 天內領券落單即入組。</li></ul></div>
         </div>
         <div class="kpi tip-host" tabindex="0">
           <div class="label">Control 定義</div>
@@ -1927,7 +2462,7 @@
             Typical Pet 池中、活動前三項特徵相近的用戶，配對成 140 對 matched control。
           </div>
           <p class="kpi-hint">對照者 = 未參加、但活動前習慣相似的寵物客。</p>
-          <span class="tt-box tt-box--kpi"><div class="tt-h">Control 對照池</div><ul class="tt-ul"><li>Typical Pet 池約 3,470 人（未領 Doggo Fest 券）。</li><li>每位參加者配 1 位對照者（1:1 exact bucket）。</li></ul></span>
+          <div class="tt-box tt-box--kpi"><div class="tt-h">Control 對照池</div><ul class="tt-ul"><li>Typical Pet 池約 3,470 人（未領 Doggo Fest 券）。</li><li>每位參加者配 1 位對照者（1:1 exact bucket）。</li></ul></div>
         </div>
         <div class="kpi tip-host" tabindex="0">
           <div class="label">Pre / Post window</div>
@@ -1935,7 +2470,7 @@
             Pre：2025-05-18 to 2025-11-13；Post：2025-11-17 to 2026-05-16；活動日不計入 pre / post。
           </div>
           <p class="kpi-hint">pre／post 各 180 天，等長對稱，DiD 才可公平比較。</p>
-          <span class="tt-box tt-box--kpi"><div class="tt-h">時間窗</div><ul class="tt-ul"><li>Pre 180 天：baseline。</li><li>Post 180 天：觀察活動後表現。</li><li>2025-11-14～16 活動日排除，避免重疊。</li></ul></span>
+          <div class="tt-box tt-box--kpi"><div class="tt-h">時間窗</div><ul class="tt-ul"><li>Pre 180 天：baseline。</li><li>Post 180 天：觀察活動後表現。</li><li>2025-11-14～16 活動日排除，避免重疊。</li></ul></div>
         </div>
         <div class="kpi tip-host" tabindex="0">
           <div class="label">Matching method</div>
@@ -1943,7 +2478,7 @@
             以 pre orders、pre GTV quartile、recency bucket 做 exact / bucket match；主輸出為 matched pairs。
           </div>
           <p class="kpi-hint">今次用分桶 1:1 配對；<strong>未用 PSM 或 1:3 NN</strong>。</p>
-          <span class="tt-box tt-box--kpi"><div class="tt-h">配對方法</div><ul class="tt-ul"><li>三維度：活動前落單桶 × GTV 四分位 × recency 桶。</li><li>貪婪 1:1 配對，無放回。</li><li>PSM／1:3 為未來可選改進，非本次做法。</li></ul></span>
+          <div class="tt-box tt-box--kpi"><div class="tt-h">配對方法</div><ul class="tt-ul"><li>三維度：活動前落單桶 × GTV 四分位 × recency 桶。</li><li>貪婪 1:1 配對，無放回。</li><li>PSM／1:3 為未來可選改進，非本次做法。</li></ul></div>
         </div>
       </div>
 
@@ -1985,6 +2520,36 @@
       </div>
 
       <details style="margin-top:16px;">
+        <summary>下次分析：技術做法與配對改進（Analytics Team）</summary>
+        <div class="details-body">
+          <p class="chart-note" style="margin-top:12px;"><strong>底線：</strong>想把 204 名新客／回流客也納入因果分析，關鍵不是收多些人，而是在活動前就為他們留下可配對的 baseline（pet tag、渠道、signup）；否則他們永遠只能做描述性 benchmark。</p>
+          <div class="term-grid">
+            <div class="term"><strong>放寬配對方法</strong>改 1:3、nearest-neighbor / PSM（用可觀察 covariates 而非 pre 行為）+ caliper，讓新客也能配對。</div>
+            <div class="term"><strong>擴大 control 池</strong>不限 Typical Pet 3,470，擴到全 HK existing pet，替 32 名落空既有客找同桶對象。</div>
+            <div class="term"><strong>Voucher attribution</strong>記錄「已派 vs 已用」，連未兌換者都能追蹤，treatment 不只靠活動窗兌換。</div>
+            <div class="term"><strong>結構化 pet / service tag</strong>目前 BQ 無乾淨 pet 欄（靠 request_remarks，noise 大）；有 tag 才能識別活動窗外的 pet 行為，建立 pre-window baseline。</div>
+            <div class="term"><strong>新客 signup + 渠道</strong>寫入 signup date 與獲取渠道，讓新客可用 observed-covariate 配對，而非只做 benchmark。</div>
+            <div class="term"><strong>Direction / venue tag 入 BQ</strong>目前只靠 Sheet tst_496（覆蓋 122/140），入 BQ 才完整。</div>
+            <div class="term"><strong>分渠道成本明細</strong>不只 Sheet grand total，讓 ROI proxy 做得更準。</div>
+          </div>
+          <div class="table-wrap" style="margin-top:14px;">
+            <table>
+              <thead><tr><th>商業問題</th><th>需要什麼資料</th><th>技術做法</th></tr></thead>
+              <tbody>
+                <tr><td>哪個拉新渠道最有效？</td><td>Signup 日期、Acquisition Channel</td><td>新增 signup_date、channel 欄位；PSM / matching</td></tr>
+                <tr><td>寵物客整段生命周期價值？</td><td>結構化 Pet Tag</td><td>pet / service tag 入 BQ，取代 remarks</td></tr>
+                <tr><td>Voucher 真正轉換率？</td><td>派發、瀏覽、兌換全鏈路</td><td>Voucher attribution（已派 vs 已用）</td></tr>
+                <tr><td>哪項成本 ROI 最低？</td><td>分渠道成本</td><td>Venue / Media / Voucher / KOL 明細</td></tr>
+                <tr><td>新客能否納入因果分析？</td><td>可觀察特徵 baseline</td><td>1:3 NN / PSM + caliper；observed covariates</td></tr>
+                <tr><td>既有客配對覆蓋率？</td><td>更大對照池</td><td>擴大至全 HK existing pet</td></tr>
+                <tr><td>場地效果可比較？</td><td>Direction / venue tag</td><td>Sheet tst_496 → BQ 入庫</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </details>
+
+      <details style="margin-top:12px;">
         <summary>Event study：活動前平行趨勢（輔助可信度）</summary>
         <div class="details-body">
           <p class="chart-conclusion">活動前兩組走勢大致相近，matched DiD 的平行趨勢假設有基本支持。</p>
@@ -2058,6 +2623,14 @@
       var tipStore = typeof WeakMap !== 'undefined' ? new WeakMap() : null;
 
       function findBox(tip) {
+        if (tip._ttBox) return tip._ttBox;
+        var id = tip.getAttribute('aria-controls');
+        if (id) {
+          var linked = document.getElementById(id);
+          if (linked) return linked;
+        }
+        var sib = tip.nextElementSibling;
+        if (sib && sib.classList && sib.classList.contains('tt-box')) return sib;
         return tip.querySelector(':scope > .tt-box');
       }
 
@@ -2190,7 +2763,7 @@
         });
       }
 
-      document.querySelectorAll('.tip').forEach(bindHoverTip);
+      document.querySelectorAll('button.tip, .tip:not(.kpi)').forEach(bindHoverTip);
       document.querySelectorAll('.kpi.tip-host').forEach(bindClickTip);
       document.addEventListener('scroll', hideAllTips, true);
       window.addEventListener('resize', hideAllTips);
