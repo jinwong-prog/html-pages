@@ -2184,31 +2184,40 @@
         <h3>Doggo Fest 是否真正帶來額外收入？</h3>
         <p class="chart-conclusion"><strong>答案：有。</strong>即使扣除市場自然變化後，訂單、消費額（GTV）及平台收入仍然增加。<span class="tech-inline" style="display:inline;margin-left:4px;">（140 對可比樣本 · 人均 · 活動前後各 180 天）</span></p>
         <div class="svg-wrap svg-wrap--wide">
-          <div style="display:grid;gap:16px;margin:6px 2px;">
-              <div>
-                <div style="font-weight:700;">完成單（人均）</div>
-                <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:6px;">
-                  <span style="background:#15803d;color:#fff;font-weight:800;padding:6px 14px;border-radius:999px;white-space:nowrap;">真正增量 +1.99 單／人</span>
-                  <span style="color:var(--muted);font-size:.86rem;">＝ 參加者活動後 +1.34／人 − 相似未參加者的變化 −0.65（近乎持平、非虧損）</span>
-                </div>
-              </div>
-              <div>
-                <div style="font-weight:700;">GTV（人均）</div>
-                <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:6px;">
-                  <span style="background:#15803d;color:#fff;font-weight:800;padding:6px 14px;border-radius:999px;white-space:nowrap;">真正增量 +HK$210.20／人</span>
-                  <span style="color:var(--muted);font-size:.86rem;">＝ 參加者 +HK$186.62 − 相似未參加者 −HK$23.58（活動後比活動前少賺，非虧損）</span>
-                </div>
-              </div>
-              <div>
-                <div style="font-weight:700;">平台收入 platform_take（人均）</div>
-                <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:6px;">
-                  <span style="background:#15803d;color:#fff;font-weight:800;padding:6px 14px;border-radius:999px;white-space:nowrap;">真正增量 +HK$25.37／人</span>
-                  <span style="color:var(--muted);font-size:.86rem;">＝ 參加者 +HK$23.88 − 相似未參加者 −HK$1.49（近乎持平、非虧損）</span>
-                </div>
-              </div>
-            </div>
+          <svg viewBox="0 0 960 340" aria-label="DiD 對比圖：參加者 vs 沒參加 vs 真正增量">
+            <text x="300" y="26" fill="#64748b" font-size="11" text-anchor="middle">← 沒有參加（對照）　｜　參加活動 →</text>
+            <line x1="300" y1="44" x2="300" y2="300" stroke="#cbd5e1" stroke-width="2"/>
+            <text x="16" y="88" fill="#334155" font-size="13" font-weight="700">完成單</text>
+            <text x="112" y="88" fill="#64748b" font-size="10" text-anchor="end">人均</text>
+            <rect x="300" y="70" width="150" height="20" rx="6" fill="#2563eb"/>
+            <rect x="236" y="96" width="64" height="20" rx="6" fill="#94a3b8"/>
+            <rect x="300" y="122" width="224" height="20" rx="6" fill="#15803d"/>
+            <text x="536" y="84" fill="#2563eb" font-size="11" font-weight="700">參加活動 +1.34 單/人</text>
+            <text x="536" y="110" fill="#64748b" font-size="11" font-weight="700">沒有參加 −0.65 單/人（近乎持平）</text>
+            <text x="536" y="136" fill="#15803d" font-size="11" font-weight="800">真正增量 +1.99 單/人</text>
+            <text x="770" y="136" fill="#94a3b8" font-size="9">(DiD)</text>
+            <text x="16" y="178" fill="#334155" font-size="13" font-weight="700">GTV</text>
+            <text x="112" y="178" fill="#64748b" font-size="10" text-anchor="end">人均</text>
+            <rect x="300" y="160" width="355" height="20" rx="6" fill="#93c5fd"/>
+            <rect x="255" y="186" width="45" height="20" rx="6" fill="#94a3b8"/>
+            <rect x="300" y="212" width="400" height="20" rx="6" fill="#15803d"/>
+            <text x="712" y="174" fill="#1d4ed8" font-size="11" font-weight="700">參加活動 +HK$186.62/人</text>
+            <text x="712" y="200" fill="#64748b" font-size="11" font-weight="700">沒有參加 −HK$23.58/人</text>
+            <text x="712" y="226" fill="#15803d" font-size="11" font-weight="800">真正增量 +HK$210.20/人</text>
+            <text x="872" y="226" fill="#94a3b8" font-size="9">(DiD)</text>
+            <text x="16" y="256" fill="#334155" font-size="13" font-weight="700">平台收入</text>
+            <text x="16" y="272" fill="#64748b" font-size="8">platform take</text>
+            <text x="112" y="264" fill="#64748b" font-size="10" text-anchor="end">人均</text>
+            <rect x="300" y="250" width="46" height="20" rx="6" fill="#2563eb"/>
+            <rect x="288" y="276" width="12" height="20" rx="6" fill="#94a3b8"/>
+            <rect x="300" y="302" width="48" height="20" rx="6" fill="#15803d"/>
+            <text x="536" y="264" fill="#2563eb" font-size="11" font-weight="700">參加活動 +HK$23.88/人</text>
+            <text x="536" y="290" fill="#64748b" font-size="11" font-weight="700">沒有參加 −HK$1.49/人（近乎持平）</text>
+            <text x="536" y="316" fill="#15803d" font-size="11" font-weight="800">真正增量 +HK$25.37/人</text>
+            <text x="770" y="316" fill="#94a3b8" font-size="9">(DiD)</text>
+          </svg>
         </div>
-        <p class="chart-note"><strong>綠色＝真正增量（DiD）</strong>：Doggo Fest 帶來、已扣除市場自然變化的部分。括號內對照組為負，代表該組活動後 180 天比活動前<strong>輕微賺少了</strong>（近乎持平、<strong>非虧損</strong>）。<span class="tech-inline" style="display:inline;margin-left:4px;">（方法：Matched DiD · 140 對）</span></p>
+        <p class="chart-note"><strong>藍</strong>＝參加者、<strong>灰</strong>＝沒參加者（兩者皆為活動後相對活動前的變化）、<strong>綠</strong>＝真正增量（DiD，已扣除市場自然變化）。灰色向左代表對照組活動後 180 天比活動前<strong>輕微賺少了</strong>（近乎持平、<strong>非虧損</strong>），不是蝕錢。<span class="tech-inline" style="display:inline;margin-left:4px;">（方法：Matched DiD · 140 對）</span></p>
         <p class="cite">引用：（2026-07-07 實查，HK TRANSPORT PlatformOD，pre 180 天 2025-05-18 to 2025-11-13；post 180 天 2025-11-17 to 2026-05-16）</p>
       </div>
 
@@ -2227,20 +2236,16 @@
             <li class="seg-warn"><strong>回流客</strong> — ⚠️ 樣本不足，暫不作結論<span class="seg-detail">僅 2 對可比 · 不作管理層主要結論</span></li>
           </ul>
           <div class="svg-wrap">
-            <div style="display:grid;gap:12px;margin:6px 2px;">
-              <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;">
-                <span style="min-width:80px;font-weight:700;">既有活躍客</span>
-                <span style="background:#15803d;color:#fff;font-weight:800;padding:5px 12px;border-radius:999px;">+HK$25.57／人（點估計，未達顯著）</span>
-              </div>
-              <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;">
-                <span style="min-width:80px;font-weight:700;">新客</span>
-                <span style="color:var(--muted);font-size:.88rem;">無活動前紀錄、不做增量；只看留存品質：第 2 單 38.2%、第 3 單 23.5%（與自然新客相近）</span>
-              </div>
-              <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;">
-                <span style="min-width:80px;font-weight:700;">回流客</span>
-                <span style="color:var(--muted);font-size:.88rem;">僅 2 對配對，樣本太少，不作結論</span>
-              </div>
-            </div>
+            <svg viewBox="0 0 520 132" aria-label="Segment contribution chart">
+              <line x1="104" y1="12" x2="104" y2="120" stroke="#cbd5e1" stroke-width="2"/>
+              <text x="8" y="36" fill="#334155" font-size="11" font-weight="700">既有活躍客</text>
+              <rect x="104" y="24" width="240" height="22" rx="6" fill="#15803d"/>
+              <text x="352" y="40" fill="#15803d" font-size="11" font-weight="800">+HK$25.57／人</text>
+              <text x="8" y="76" fill="#334155" font-size="11" font-weight="700">新客</text>
+              <text x="104" y="76" fill="#64748b" font-size="10.5">無 DiD；第 2 單 38.2%、第 3 單 23.5%（品質參考）</text>
+              <text x="8" y="110" fill="#334155" font-size="11" font-weight="700">回流客</text>
+              <text x="104" y="110" fill="#94a3b8" font-size="10.5">僅 2 對，樣本太少，不作結論</text>
+            </svg>
           </div>
           <p class="chart-note">2026 預算應優先投放既有活躍客；新客只看留存品質參考，不作增量主結論；回流客待樣本增加後再評估。<span class="tech-inline" style="display:inline;margin-left:4px;">（136 對 · Matched DiD）</span></p>
           <p class="cite">引用：（2026-07-07 實查，HK TRANSPORT PlatformOD，pre 2025-05-18 to 2025-11-13；post 2025-11-17 to 2026-05-16）</p>
@@ -2335,20 +2340,30 @@
         </div>
         <p class="chart-note">註：<strong>−HK$1.49</strong> 指對照組活動後 180 天比活動前 180 天每人<strong>少賺 HK$1.49</strong>（近乎持平，<strong>非虧損</strong>）。正因為「若無活動，這批人本來大致不會升」，參加者的 +HK$23.88 才顯出 +HK$25.37 的增量差距。</p>
         <div class="svg-wrap svg-wrap--wide">
-          <div style="display:grid;gap:12px;margin:6px 2px;max-width:680px;">
-              <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;">
-                <span style="min-width:160px;font-weight:700;">實際有活動（參加者）</span>
-                <span style="background:#2563eb;color:#fff;font-weight:800;padding:5px 12px;border-radius:999px;">活動後比活動前 +HK$23.88／人</span>
-              </div>
-              <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;">
-                <span style="min-width:160px;font-weight:700;">若無活動代理（對照）</span>
-                <span style="background:#e2e8f0;color:#334155;font-weight:800;padding:5px 12px;border-radius:999px;">活動後比活動前 −HK$1.49／人（近乎持平、非虧損）</span>
-              </div>
-              <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;">
-                <span style="min-width:160px;font-weight:700;">活動增量（兩者相差）</span>
-                <span style="background:#15803d;color:#fff;font-weight:800;padding:5px 12px;border-radius:999px;">+HK$25.37／人</span>
-              </div>
-            </div>
+          <svg viewBox="0 0 900 300" aria-label="Actual vs no-event counterfactual">
+            <line x1="80" y1="240" x2="860" y2="240" stroke="#cbd5e1" stroke-width="2"/>
+            <line x1="80" y1="40" x2="80" y2="240" stroke="#cbd5e1" stroke-width="2"/>
+            <line x1="430" y1="48" x2="430" y2="240" stroke="#f59e0b" stroke-width="3" stroke-dasharray="8 6"/>
+            <text x="440" y="62" fill="#92400e" font-size="13" font-weight="800">活動日</text>
+            <text x="120" y="262" fill="#475569" font-size="12" text-anchor="middle">活動前</text>
+            <text x="430" y="262" fill="#475569" font-size="12" text-anchor="middle">Doggo Fest</text>
+            <text x="760" y="262" fill="#475569" font-size="12" text-anchor="middle">活動後 180 天</text>
+            <polyline points="120,170 430,168 760,88" fill="none" stroke="#2563eb" stroke-width="5"/>
+            <circle cx="120" cy="170" r="6" fill="#2563eb"/>
+            <circle cx="760" cy="88" r="7" fill="#2563eb"/>
+            <polyline points="120,170 430,168 760,186" fill="none" stroke="#94a3b8" stroke-width="5"/>
+            <circle cx="120" cy="170" r="6" fill="#94a3b8"/>
+            <circle cx="760" cy="186" r="7" fill="#94a3b8"/>
+            <line x1="700" y1="88" x2="700" y2="186" stroke="#15803d" stroke-width="4" stroke-dasharray="6 6"/>
+            <text x="708" y="141" fill="#15803d" font-size="14" font-weight="800">差距 +HK$25.37 / 人</text>
+            <text x="596" y="80" fill="#2563eb" font-size="12" font-weight="700">實際 +HK$23.88/人</text>
+            <text x="560" y="212" fill="#64748b" font-size="12" font-weight="700">若無活動 −HK$1.49/人（近乎持平）</text>
+          </svg>
+        </div>
+        <div class="legend">
+          <span class="blue">實際有活動</span>
+          <span class="slate">若無活動代理</span>
+          <span class="green">活動增量差距</span>
         </div>
         <p class="chart-note">解讀：我們不是問「參加者 post 有無升」，而是問「參加者升幅有無比相似未參加者更好」。</p>
         <p class="cite">引用：（2026-07-07 實查，HK TRANSPORT PlatformOD，pre 180 天 2025-05-18 to 2025-11-13；post 180 天 2025-11-17 to 2026-05-16）</p>
