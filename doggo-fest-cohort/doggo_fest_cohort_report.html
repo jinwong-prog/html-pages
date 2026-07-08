@@ -243,21 +243,40 @@ footer p { margin:0 0 10px; color:var(--text); opacity:.9; }
 .campaign-block ul { margin:0; padding-left:1.1rem; font-size:.86rem; }
 .evidence-bullets { margin:0; padding-left:1.2rem; }
 .evidence-bullets li { margin:10px 0; font-size:.95rem; }
-@media print { .sticky-nav { display:none; } .hero-banner { print-color-adjust:exact; -webkit-print-color-adjust:exact; } .card { break-inside:avoid; } .tt-box { display:none !important; } }
+.glossary-fold {
+  background:var(--card); border:1px solid var(--border); border-radius:var(--radius);
+  margin-bottom:18px; box-shadow:0 4px 20px rgba(0,0,0,.06);
+}
+.glossary-fold summary {
+  cursor:pointer; padding:14px 18px; font-weight:700; font-size:.95rem;
+  list-style:none; display:flex; align-items:center; gap:8px; color:var(--text);
+}
+.glossary-fold summary::-webkit-details-marker { display:none; }
+.glossary-fold summary::before {
+  content:"▸"; color:var(--blue); font-size:.85rem; transition:transform .15s;
+}
+.glossary-fold[open] summary::before { transform:rotate(90deg); }
+.glossary-fold summary:hover { color:var(--blue); }
+.glossary-body { padding:0 18px 16px; border-top:1px solid var(--border); }
+.glossary-hint { font-size:.82rem; color:var(--muted); margin:10px 0 12px; }
+.glossary-dl { margin:0; display:grid; gap:10px; }
+.glossary-dl dt { font-size:.82rem; font-weight:700; color:var(--tip-trigger); margin:0; }
+.glossary-dl dd { margin:2px 0 0; font-size:.84rem; color:var(--text); line-height:1.5; }
+@media print { .sticky-nav { display:none; } .hero-banner { print-color-adjust:exact; -webkit-print-color-adjust:exact; } .card { break-inside:avoid; } .tt-box { display:none !important; } .glossary-fold { break-inside:avoid; } }
 </style>
 </head>
 <body>
 <div class="page">
   <header class="hero-banner">
     <h1>Doggo Fest 2025：建議續做，但改為 Brand / Win-back 活動</h1>
-    <p class="subtitle">短期 ROI 不足；正面成效主要來自既有活躍客，不宜以純拉新 ROI 活動定位。</p>
+    <p class="subtitle">短期<span class="tip" tabindex="0">ROI<span class="tt-box"><div class="tt-h">ROI</div><ul class="tt-ul"><li>投資回報（ROI）：花出去的錢有沒有賺回來。</li></ul></span></span>不足；正面成效主要來自既有活躍客的<span class="tip" tabindex="0">uplift<span class="tt-box"><div class="tt-h">uplift</div><ul class="tt-ul"><li>額外增長（uplift）：活動帶來、相對於對照組多出的部分。</li></ul></span></span>，不宜以<span class="tip" tabindex="0">Pure Acquisition ROI<span class="tt-box"><div class="tt-h">Pure Acquisition ROI</div><ul class="tt-ul"><li>純拉新回本（Pure Acquisition ROI）：只用新增客戶收入去 justify 活動。</li></ul></span></span>定位。</p>
     <div class="decision-badges">
-      <span class="badge badge--amber">Decision：Conditional Go</span>
-      <span class="badge badge--green">Use Case：Brand / Win-back</span>
-      <span class="badge badge--red">Not For：Pure Acquisition ROI</span>
+      <span class="badge badge--amber"><span class="tip" tabindex="0">Conditional Go<span class="tt-box"><div class="tt-h">Conditional Go</div><ul class="tt-ul"><li>有條件續做（Conditional Go）：可以再做，但要控成本、收窄對象，不是無條件加碼。</li></ul></span></span></span>
+      <span class="badge badge--green"><span class="tip" tabindex="0">Brand / Win-back<span class="tt-box"><div class="tt-h">Brand / Win-back</div><ul class="tt-ul"><li>品牌曝光／召回舊客（Brand / Win-back）：不是以大規模拉新為主。</li></ul></span></span></span>
+      <span class="badge badge--red"><span class="tip" tabindex="0">Pure Acquisition ROI<span class="tt-box"><div class="tt-h">Pure Acquisition ROI</div><ul class="tt-ul"><li>純拉新回本（Pure Acquisition ROI）：只用新增客戶收入去 justify 活動。</li></ul></span></span></span>
     </div>
     <p class="hero-oneliner">一句講晒：有既有客增量，但不宜用「拉新 ROI 活動」justify。</p>
-    <p class="meta">HK TRANSPORT PlatformOD · Treatment <strong>372</strong> · Snapshot 2026-07-07</p>
+    <p class="meta">HK TRANSPORT PlatformOD · <span class="tip" tabindex="0">Treatment<span class="tt-box"><div class="tt-h">Treatment</div><ul class="tt-ul"><li>實驗組（Treatment）：有參加活動／有用 Doggo Fest 券的人。</li></ul></span></span> <strong>372</strong> · <span class="tip" tabindex="0">Snapshot<span class="tt-box"><div class="tt-h">Snapshot</div><ul class="tt-ul"><li>數據截點（Snapshot）：本報告數字是哪一天查詢的。</li></ul></span></span> 2026-07-07</p>
     <p class="meta">（2026-07-07 查詢日期，HK TRANSPORT PlatformOD，活動前／活動後各 180 天：2025-05-18 to 2025-11-13；2025-11-17 to 2026-05-16）</p>
     <div class="timeline" aria-label="活動時間軸">
       <div class="tl-seg tl-pre">活動前 180 天<br>2025-05-18 → 2025-11-13</div>
@@ -289,41 +308,49 @@ footer p { margin:0 0 10px; color:var(--text); opacity:.9; }
     </ul>
     <p class="note" style="margin-top:12px"><strong>Business takeaway：</strong>2026 要續做，必須收窄 target、控成本、加 retention flow。</p>
     <p class="note"><strong>原因（數據）：</strong></p>
-    <ul><li>既有活躍客正向增量：<strong>HK$89.72/人</strong>（136 對）</li><li>新客可比第 2 單率：Doggo <strong>39/102（38.2%）</strong> vs organic <strong>28198/75103（37.5%）</strong></li><li>ROI proxy <span class="tip" tabindex="0">ROI proxy<span class="tt-box"><div class="tt-h">ROI proxy</div><ul class="tt-ul"><li>效益 proxy ÷ Sheet 活動成本；非官方財務 ROI。</li></ul></span></span>：<strong>6.0%</strong> — 短期財務回報不足</li><li>混合 DiD：不可外推至 372 (僅 140 對可配對)</li></ul>
+    <ul><li>既有活躍客正向增量：<strong>HK$89.72/人</strong>（136 對）</li><li>新客可比第 2 單率：Doggo <strong>39/102（38.2%）</strong> vs <span class="tip" tabindex="0">organic<span class="tt-box"><div class="tt-h">organic</div><ul class="tt-ul"><li>自然新客（organic）：不是 Doggo Fest 帶來、同期自己來平台的客戶。</li></ul></span></span> <strong>28198/75103（37.5%）</strong></li><li>ROI proxy <span class="tip" tabindex="0">ROI proxy<span class="tt-box"><div class="tt-h">ROI proxy</div><ul class="tt-ul"><li>粗略回本率（ROI proxy）：用估計收益除以活動成本，不是 Finance 官方 ROI。</li></ul></span></span>：<strong>6.0%</strong> — 短期財務回報不足</li><li>混合 DiD <span class="tip" tabindex="0">DiD<span class="tt-box"><div class="tt-h">DiD</div><ul class="tt-ul"><li>雙差法（DiD）：比較「參加者活動前後變化」與「對照組活動前後變化」的差距，用來估計活動真正帶來多少增量。</li></ul></span></span>：不可外推至 372 (僅 140 對可配對)</li></ul>
   </div>
 </section>
+  
+<details class="glossary-fold" id="glossary">
+  <summary>術語白話說明（點開查看）</summary>
+  <div class="glossary-body">
+    <p class="glossary-hint">報告內有底線的詞彙可點擊或滑鼠懸停，查看白話解說。</p>
+    <dl class="glossary-dl"><div><dt>ROI proxy</dt><dd>粗略回本率（ROI proxy）：用估計收益除以活動成本，不是 Finance 官方 ROI。</dd></div><div><dt>DiD</dt><dd>雙差法（DiD）：比較「參加者活動前後變化」與「對照組活動前後變化」的差距，用來估計活動真正帶來多少增量。</dd></div><div><dt>platform_take</dt><dd>平台實際收入（platform_take）：平台從每張完成訂單賺到的錢，不是客戶付款總額；本報告主成效指標。</dd></div><div><dt>GTV</dt><dd>客戶支付總額（GTV）：客戶付了多少錢，未扣司機分成與其他成本。</dd></div><div><dt>Treatment</dt><dd>實驗組（Treatment）：有參加活動／有用 Doggo Fest 券的人。</dd></div><div><dt>Control</dt><dd>對照組（Control）：無參加活動、但活動前特徵與實驗組相似的人。</dd></div><div><dt>matched control</dt><dd>配對對照組（matched control）：找一批活動前行為相似的人作比較，模擬「若無活動」會怎樣。</dd></div><div><dt>organic</dt><dd>自然新客（organic）：不是 Doggo Fest 帶來、同期自己來平台的客戶。</dd></div><div><dt>CI 含 0</dt><dd>CI 含 0：統計上未夠穩，不能太硬說一定有效。</dd></div><div><dt>uplift</dt><dd>額外增長（uplift）：活動帶來、相對於對照組多出的部分。</dd></div></dl>
+  </div>
+</details>
   
 <section id="kpi-snapshot">
   <div class="card card--exec-kpi">
     <h2>核心 KPI 一覽</h2>
     <div class="kpi-grid">
       <div class="kpi kpi-exec kpi-exec--good">
-        <div class="label">既有活躍客增量</div>
+        <div class="label">既有活躍客<span class="tip" tabindex="0">uplift<span class="tt-box"><div class="tt-h">uplift</div><ul class="tt-ul"><li>額外增長（uplift）：活動帶來、相對於對照組多出的部分。</li></ul></span></span></div>
         <div class="value">HK$89.72</div>
-        <div class="sub">/人 · <span class="tip" tabindex="0">platform_take<span class="tt-box"><div class="tt-h">platform_take</div><ul class="tt-ul"><li>平台收入（platform_take）：平台從每張完成訂單實際賺取的金額，是本報告的主要成效指標。</li></ul></span></span></div>
+        <div class="sub">/人 · <span class="tip" tabindex="0">platform_take<span class="tt-box"><div class="tt-h">platform_take</div><ul class="tt-ul"><li>平台實際收入（platform_take）：平台從每張完成訂單賺到的錢，不是客戶付款總額；本報告主成效指標。</li></ul></span></span></div>
         <span class="status">正面</span>
-        <div class="sub" style="margin-top:6px">主 headline</div>
+        <div class="sub" style="margin-top:6px">主 <span class="tip" tabindex="0">headline<span class="tt-box"><div class="tt-h">headline</div><ul class="tt-ul"><li>管理層主結論（headline）：對外簡報優先講的數字或故事。</li></ul></span></span></div>
       </div>
       <div class="kpi kpi-exec kpi-exec--neutral">
         <div class="label">新客質量</div>
         <div class="value">39/102（38.2%）</div>
-        <div class="sub">vs organic 28198/75103（37.5%）</div>
+        <div class="sub">vs <span class="tip" tabindex="0">organic<span class="tt-box"><div class="tt-h">organic</div><ul class="tt-ul"><li>自然新客（organic）：不是 Doggo Fest 帶來、同期自己來平台的客戶。</li></ul></span></span> 28198/75103（37.5%）</div>
         <span class="status">打和／略好</span>
         <div class="sub" style="margin-top:6px">不宜主打拉新</div>
       </div>
       <div class="kpi kpi-exec kpi-exec--low">
         <div class="label">ROI proxy</div>
         <div class="value">6.0%</div>
-        <div class="sub"><span class="tip" tabindex="0">ROI proxy<span class="tt-box"><div class="tt-h">ROI proxy</div><ul class="tt-ul"><li>效益 proxy ÷ Sheet 成本；非官方財務口徑。</li></ul></span></span></div>
+        <div class="sub"><span class="tip" tabindex="0">ROI proxy<span class="tt-box"><div class="tt-h">ROI proxy</div><ul class="tt-ul"><li>粗略回本率（ROI proxy）：用估計收益除以活動成本，不是 Finance 官方 ROI。</li></ul></span></span></div>
         <span class="status">偏低</span>
         <div class="sub" style="margin-top:6px">短期財務回報不足</div>
       </div>
       <div class="kpi kpi-exec kpi-exec--neutral">
-        <div class="label">混合 DiD</div>
+        <div class="label">混合 <span class="tip" tabindex="0">DiD<span class="tt-box"><div class="tt-h">DiD</div><ul class="tt-ul"><li>雙差法（DiD）：比較「參加者活動前後變化」與「對照組活動前後變化」的差距，用來估計活動真正帶來多少增量。</li></ul></span></span></div>
         <div class="value">HK$25.37/人</div>
-        <div class="sub"><span class="tip" tabindex="0">DiD<span class="tt-box"><div class="tt-h">DiD</div><ul class="tt-ul"><li>雙差法（Difference-in-Differences）：比較實驗組與對照組在活動前後的變化差額，用來估計活動的增量效果。</li></ul></span></span></div>
+        <div class="sub"><span class="tip" tabindex="0">CI 含 0<span class="tt-box"><div class="tt-h">CI 含 0</div><ul class="tt-ul"><li>CI 含 0：統計上未夠穩，不能太硬說一定有效。</li></ul></span></span></div>
         <span class="status">附註</span>
-        <div class="sub" style="margin-top:6px">不可外推 372 人；CI 含 0</div>
+        <div class="sub" style="margin-top:6px">不可外推 372 人</div>
       </div></div>
   </div>
 </section>
@@ -331,14 +358,14 @@ footer p { margin:0 0 10px; color:var(--text); opacity:.9; }
 <section id="recommendation">
   <div class="card">
     <h2>2026 活動設計建議</h2>
-    <div class="campaign-grid"><div class="campaign-block"><h3>Targeting（對象）</h3><ul><li>優先：既有活躍客 + 高意圖寵物用戶</li><li>減少：低意圖新客大範圍派券</li></ul></div><div class="campaign-block"><h3>KPI（成功指標）</h3><ul><li>主 KPI：platform_take uplift / 人</li><li>次 KPI：第 2、第 3 單率（Doggo 39/102（38.2%） vs organic 28198/75103（37.5%））</li><li>不建議：只看活動日訂單或 ≥1 單留存</li></ul></div><div class="campaign-block"><h3>Budget（預算）</h3><ul><li>若成本維持 HK$252,708.00，短期 ROI 不足</li><li>要續做，需降低 cost per activated user</li></ul></div><div class="campaign-block"><h3>Follow-up（跟進）</h3><ul><li>新客首單後 30 天內要有 retention offer</li></ul></div></div>
+    <div class="campaign-grid"><div class="campaign-block"><h3>Targeting（對象）</h3><ul><li>優先：既有活躍客 + 高意圖寵物用戶</li><li>減少：低意圖新客大範圍派券</li></ul></div><div class="campaign-block"><h3><span class="tip" tabindex="0">KPI<span class="tt-box"><div class="tt-h">KPI</div><ul class="tt-ul"><li>成功指標（KPI）：用來判斷活動值不值得做。</li></ul></span></span>（成功指標）</h3><ul><li>主 KPI：<span class="tip" tabindex="0">platform_take<span class="tt-box"><div class="tt-h">platform_take</div><ul class="tt-ul"><li>平台實際收入（platform_take）：平台從每張完成訂單賺到的錢，不是客戶付款總額；本報告主成效指標。</li></ul></span></span> <span class="tip" tabindex="0">uplift<span class="tt-box"><div class="tt-h">uplift</div><ul class="tt-ul"><li>額外增長（uplift）：活動帶來、相對於對照組多出的部分。</li></ul></span></span> / 人</li><li>次 KPI：第 2、第 3 單率（Doggo 39/102（38.2%） vs <span class="tip" tabindex="0">organic<span class="tt-box"><div class="tt-h">organic</div><ul class="tt-ul"><li>自然新客（organic）：不是 Doggo Fest 帶來、同期自己來平台的客戶。</li></ul></span></span> 28198/75103（37.5%））</li><li>不建議：只看活動日訂單或 ≥1 單留存</li></ul></div><div class="campaign-block"><h3>Budget（預算）</h3><ul><li>若成本維持 HK$252,708.00，短期 <span class="tip" tabindex="0">ROI<span class="tt-box"><div class="tt-h">ROI</div><ul class="tt-ul"><li>投資回報（ROI）：花出去的錢有沒有賺回來。</li></ul></span></span> 不足</li><li>要續做，需降低 <span class="tip" tabindex="0">cost per activated user<span class="tt-box"><div class="tt-h">cost per activated user</div><ul class="tt-ul"><li>每激活一客成本（cost per activated user）：成功激活一個客戶要花多少錢。</li></ul></span></span></li></ul></div><div class="campaign-block"><h3>Follow-up（<span class="tip" tabindex="0">retention flow<span class="tt-box"><div class="tt-h">retention flow</div><ul class="tt-ul"><li>後續留存安排（retention flow）：例如首單後 30 天內再推優惠。</li></ul></span></span>）</h3><ul><li>新客首單後 30 天內要有 retention offer</li></ul></div></div>
   </div>
 </section>
   
 <section id="evidence">
   <div class="card">
     <h2>為何如此 — 證據摘要</h2>
-    <ul class="evidence-bullets"><li><strong>A. 既有活躍客有明顯增量</strong> — 實驗組 vs 配對對照：<strong>HK$89.72/人</strong>（136 對）。</li><li><strong>B. 新客質量（可比第 2 單率）</strong> — Doggo <strong>39/102（38.2%）</strong> vs organic <strong>28198/75103（37.5%）</strong>。</li><li><strong>C. 混合 DiD 僅作附註</strong> — <strong>HK$25.37/人</strong>；CI 含 0；不作 headline。</li></ul>
+    <ul class="evidence-bullets"><li><strong>A. 既有活躍客有明顯增量</strong> — 實驗組 vs <span class="tip" tabindex="0">matched control<span class="tt-box"><div class="tt-h">matched control</div><ul class="tt-ul"><li>配對對照組（matched control）：找一批活動前行為相似的人作比較，模擬「若無活動」會怎樣。</li></ul></span></span>：<strong>HK$89.72/人</strong>（136 對）。</li><li><strong>B. 新客質量（可比第 2 單率）</strong> — Doggo <strong>39/102（38.2%）</strong> vs <span class="tip" tabindex="0">organic<span class="tt-box"><div class="tt-h">organic</div><ul class="tt-ul"><li>自然新客（organic）：不是 Doggo Fest 帶來、同期自己來平台的客戶。</li></ul></span></span> <strong>28198/75103（37.5%）</strong>。</li><li><strong>C. 混合 <span class="tip" tabindex="0">DiD<span class="tt-box"><div class="tt-h">DiD</div><ul class="tt-ul"><li>雙差法（DiD）：比較「參加者活動前後變化」與「對照組活動前後變化」的差距，用來估計活動真正帶來多少增量。</li></ul></span></span> 僅作附註</strong> — <strong>HK$25.37/人</strong>；<span class="tip" tabindex="0">CI 含 0<span class="tt-box"><div class="tt-h">CI 含 0</div><ul class="tt-ul"><li>CI 含 0：統計上未夠穩，不能太硬說一定有效。</li></ul></span></span>；不作 <span class="tip" tabindex="0">headline<span class="tt-box"><div class="tt-h">headline</div><ul class="tt-ul"><li>管理層主結論（headline）：對外簡報優先講的數字或故事。</li></ul></span></span>。</li></ul>
   </div>
 </section>
   
@@ -346,12 +373,12 @@ footer p { margin:0 0 10px; color:var(--text); opacity:.9; }
     <h2>分段一覽（管理層版）</h2>
     <div class="table-wrap"><table>
       <thead><tr><th>分段</th><th>結果</th><th>關鍵指標</th><th>簡報用法</th><th>行動</th></tr></thead>
-      <tbody><tr><td>既有活躍客</td><td>強</td><td>HK$89.72/人</td><td>Headline</td><td>可加碼</td></tr><tr><td>平台新客</td><td>質量需觀察</td><td>39/102（38.2%）</td><td>謹慎</td><td>加 retention</td></tr><tr><td>回流客</td><td>樣本細</td><td>2 對</td><td>勿引用 DiD</td><td>收集更多樣本</td></tr><tr><td>Direction 分層</td><td>僅附錄</td><td>—</td><td>Appendix</td><td>不做主結論</td></tr></tbody>
+      <tbody><tr><td>既有活躍客</td><td>強</td><td>HK$89.72/人</td><td><span class="tip" tabindex="0">headline<span class="tt-box"><div class="tt-h">headline</div><ul class="tt-ul"><li>管理層主結論（headline）：對外簡報優先講的數字或故事。</li></ul></span></span></td><td>可加碼</td></tr><tr><td>平台新客</td><td>質量需觀察</td><td>39/102（38.2%）</td><td>謹慎</td><td>加 <span class="tip" tabindex="0">retention flow<span class="tt-box"><div class="tt-h">retention flow</div><ul class="tt-ul"><li>後續留存安排（retention flow）：例如首單後 30 天內再推優惠。</li></ul></span></span></td></tr><tr><td>回流客</td><td>樣本細</td><td>2 對</td><td>勿引用 <span class="tip" tabindex="0">DiD<span class="tt-box"><div class="tt-h">DiD</div><ul class="tt-ul"><li>雙差法（DiD）：比較「參加者活動前後變化」與「對照組活動前後變化」的差距，用來估計活動真正帶來多少增量。</li></ul></span></span></td><td>收集更多樣本</td></tr><tr><td><span class="tip" tabindex="0">Direction<span class="tt-box"><div class="tt-h">Direction</div><ul class="tt-ul"><li>叫車方向（Direction）：例如去會場、離開會場。</li></ul></span></span> 分層</td><td>僅附錄</td><td>—</td><td>Appendix</td><td>不做主結論</td></tr></tbody>
     </table></div>
   </div>
 
   <div class="card">
-    <h2>關鍵證據：反事實對照（配對 DiD）</h2>
+    <h2>關鍵證據：反事實對照（<span class="tip" tabindex="0">matched control<span class="tt-box"><div class="tt-h">matched control</div><ul class="tt-ul"><li>配對對照組（matched control）：找一批活動前行為相似的人作比較，模擬「若無活動」會怎樣。</li></ul></span></span> + <span class="tip" tabindex="0">DiD<span class="tt-box"><div class="tt-h">DiD</div><ul class="tt-ul"><li>雙差法（DiD）：比較「參加者活動前後變化」與「對照組活動前後變化」的差距，用來估計活動真正帶來多少增量。</li></ul></span></span>）</h2>
     <p class="note">完整分析見下方附錄。</p>
   </div>
   
@@ -359,10 +386,10 @@ footer p { margin:0 0 10px; color:var(--text); opacity:.9; }
     <h2>反事實對照：若無 Doggo Fest 會怎樣？</h2>
     <p class="note">
       <strong>有分析數據，而且已落地。</strong>我們無法觀察「同一批人沒參加活動」的平行宇宙，但 BQ 有
-      <strong>3,470 名</strong><span class="tip" tabindex="0">對照組候選<span class="tt-box"><div class="tt-h">對照組候選</div><ul class="tt-ul"><li>對照組（control group）：未領券、但特徵與實驗組相似的 PlatformOD 用戶，用來隔離「若不辦活動會怎樣」。</li></ul></span></span>（Typical Pet 池、未領 Doggo Fest 券），
-      並為 <strong>140 對</strong>參加者各配一位活動前 profile 相近的人，作為
-      <strong>「若無活動」代理</strong>。方法 = <span class="tip" tabindex="0">配對雙差法 DiD<span class="tt-box"><div class="tt-h">配對雙差法 DiD</div><ul class="tt-ul"><li>雙差法（Difference-in-Differences）：比較實驗組與對照組在活動前後的變化差額，用來估計活動的增量效果。</li></ul></span></span>：
-      實驗組 Post−Pre 減去配對對照 Post−Pre = 活動增量。（2026-07-07 實查，HK TRANSPORT PlatformOD，pre 2025-05-18 to 2025-11-13，post 2025-11-17 to 2026-05-16）
+      <strong>3,470 名</strong><span class="tip" tabindex="0">對照組候選<span class="tt-box"><div class="tt-h">對照組候選</div><ul class="tt-ul"><li>對照組（Control）：無參加活動、但活動前特徵與實驗組相似的人。</li></ul></span></span>（Typical Pet 池、未領 Doggo Fest 券），
+      並為 <strong>140 對</strong>參加者各配一位活動前 <span class="tip" tabindex="0">profile<span class="tt-box"><div class="tt-h">profile</div><ul class="tt-ul"><li>活動前客戶特徵（profile）：如下單頻率、消費、最近一次下單。</li></ul></span></span> 相近的人，作為
+      <strong>「若無活動」<span class="tip" tabindex="0">matched control<span class="tt-box"><div class="tt-h">matched control</div><ul class="tt-ul"><li>配對對照組（matched control）：找一批活動前行為相似的人作比較，模擬「若無活動」會怎樣。</li></ul></span></span></strong>。方法 = <span class="tip" tabindex="0">配對雙差法 DiD<span class="tt-box"><div class="tt-h">配對雙差法 DiD</div><ul class="tt-ul"><li>雙差法（DiD）：比較「參加者活動前後變化」與「對照組活動前後變化」的差距，用來估計活動真正帶來多少增量。</li></ul></span></span>：
+      <span class="tip" tabindex="0">Treatment<span class="tt-box"><div class="tt-h">Treatment</div><ul class="tt-ul"><li>實驗組（Treatment）：有參加活動／有用 Doggo Fest 券的人。</li></ul></span></span> <span class="tip" tabindex="0">Post−Pre<span class="tt-box"><div class="tt-h">Post−Pre</div><ul class="tt-ul"><li>活動後減活動前（Post−Pre）：看活動前後人均變化。</li></ul></span></span> 減去 <span class="tip" tabindex="0">matched control<span class="tt-box"><div class="tt-h">matched control</div><ul class="tt-ul"><li>配對對照組（matched control）：找一批活動前行為相似的人作比較，模擬「若無活動」會怎樣。</li></ul></span></span> <span class="tip" tabindex="0">Post−Pre<span class="tt-box"><div class="tt-h">Post−Pre</div><ul class="tt-ul"><li>活動後減活動前（Post−Pre）：看活動前後人均變化。</li></ul></span></span> = 活動增量。（2026-07-07 實查，HK TRANSPORT PlatformOD，pre 2025-05-18 to 2025-11-13，post 2025-11-17 to 2026-05-16）
     </p>
 
     <div class="table-wrap"><table class="biz-subtable">
@@ -376,20 +403,20 @@ footer p { margin:0 0 10px; color:var(--text); opacity:.9; }
     </table></div>
 
     <h3 style="margin:18px 0 10px;font-size:1rem">主對照：有活動 vs 配對「若無活動」代理（140 對）</h3>
-    <p class="note">欄位為活動後 180 天 vs 活動前 180 天的<strong>人均 Post−Pre 變化</strong>；最右欄為兩者之差（DiD 增量）。</p>
+    <p class="note">欄位為活動後 180 天 vs 活動前 180 天的<strong>人均 <span class="tip" tabindex="0">Post−Pre<span class="tt-box"><div class="tt-h">Post−Pre</div><ul class="tt-ul"><li>活動後減活動前（Post−Pre）：看活動前後人均變化。</li></ul></span></span> 變化</strong>；最右欄為兩者之差（<span class="tip" tabindex="0">DiD<span class="tt-box"><div class="tt-h">DiD</div><ul class="tt-ul"><li>雙差法（DiD）：比較「參加者活動前後變化」與「對照組活動前後變化」的差距，用來估計活動真正帶來多少增量。</li></ul></span></span> 增量）。</p>
     <div class="table-wrap"><table class="biz-table">
       <thead>
         <tr>
           <th>指標</th>
-          <th>有 Doggo Fest（實驗組）</th>
-          <th>若無活動代理（配對對照）</th>
-          <th>活動增量（DiD）</th>
+          <th>有 Doggo Fest（<span class="tip" tabindex="0">Treatment<span class="tt-box"><div class="tt-h">Treatment</div><ul class="tt-ul"><li>實驗組（Treatment）：有參加活動／有用 Doggo Fest 券的人。</li></ul></span></span>）</th>
+          <th>若無活動代理（<span class="tip" tabindex="0">matched control<span class="tt-box"><div class="tt-h">matched control</div><ul class="tt-ul"><li>配對對照組（matched control）：找一批活動前行為相似的人作比較，模擬「若無活動」會怎樣。</li></ul></span></span>）</th>
+          <th>活動增量（<span class="tip" tabindex="0">DiD<span class="tt-box"><div class="tt-h">DiD</div><ul class="tt-ul"><li>雙差法（DiD）：比較「參加者活動前後變化」與「對照組活動前後變化」的差距，用來估計活動真正帶來多少增量。</li></ul></span></span>）</th>
         </tr>
       </thead>
       <tbody>
         <tr><td>Δorders（完成單）</td><td>+1.34 單</td><td>-0.65 單</td><td><strong>+1.99 單</strong></td></tr>
-        <tr><td>ΔGTV</td><td>HK$186.62</td><td>HK$-23.58</td><td><strong>HK$210.20</strong></td></tr>
-        <tr><td><strong>Δplatform_take（headline）</strong></td><td>HK$23.88</td><td>HK$-1.49</td><td><strong>HK$25.37</strong></td></tr>
+        <tr><td>Δ<span class="tip" tabindex="0">GTV<span class="tt-box"><div class="tt-h">GTV</div><ul class="tt-ul"><li>客戶支付總額（GTV）：客戶付了多少錢，未扣司機分成與其他成本。</li></ul></span></span></td><td>HK$186.62</td><td>HK$-23.58</td><td><strong>HK$210.20</strong></td></tr>
+        <tr><td><strong>Δ<span class="tip" tabindex="0">platform_take<span class="tt-box"><div class="tt-h">platform_take</div><ul class="tt-ul"><li>平台實際收入（platform_take）：平台從每張完成訂單賺到的錢，不是客戶付款總額；本報告主成效指標。</li></ul></span></span>（<span class="tip" tabindex="0">headline<span class="tt-box"><div class="tt-h">headline</div><ul class="tt-ul"><li>管理層主結論（headline）：對外簡報優先講的數字或故事。</li></ul></span></span>）</strong></td><td>HK$23.88</td><td>HK$-1.49</td><td><strong>HK$25.37</strong></td></tr>
       </tbody>
     </table></div>
 
@@ -398,13 +425,13 @@ footer p { margin:0 0 10px; color:var(--text); opacity:.9; }
       <svg viewBox="0 0 520 136" width="520" height="136" role="img" aria-label="既有活躍客 136 對 · platform_take Post−Pre 人均"><text x="8" y="16" fill="var(--muted)" font-size="11" font-weight="600">既有活躍客 136 對 · platform_take Post−Pre 人均</text><line x1="375.9" y1="24" x2="375.9" y2="128" stroke="var(--muted)" stroke-width="1"/><text x="164" y="44" text-anchor="end" fill="var(--text)" font-size="10" font-weight="600">實驗組（有券）</text><rect x="375.9" y="30" width="64.4" height="16" rx="3" fill="#2563eb" opacity=".92"/><text x="444.0" y="44" text-anchor="start" fill="#2563eb" font-size="10" font-weight="700">HK$23.44</text><text x="164" y="88" text-anchor="end" fill="var(--text)" font-size="10" font-weight="600">配對對照（無券）</text><rect x="193.8" y="74" width="182.1" height="16" rx="3" fill="#c2410c" opacity=".92"/><text x="381.9" y="88" text-anchor="start" fill="#c2410c" font-size="10" font-weight="700">HK$-66.28</text></svg>
     </div>
     <p class="note">
-      <strong>解讀：</strong>若只看實驗組 Post−Pre（例 platform_take HK$23.88），
-      會以為「參加者都在升」；但同期相似未參加者平均 HK$-1.49，
+      <strong>解讀：</strong>若只看<span class="tip" tabindex="0">Treatment<span class="tt-box"><div class="tt-h">Treatment</div><ul class="tt-ul"><li>實驗組（Treatment）：有參加活動／有用 Doggo Fest 券的人。</li></ul></span></span> <span class="tip" tabindex="0">Post−Pre<span class="tt-box"><div class="tt-h">Post−Pre</div><ul class="tt-ul"><li>活動後減活動前（Post−Pre）：看活動前後人均變化。</li></ul></span></span>（例 <span class="tip" tabindex="0">platform_take<span class="tt-box"><div class="tt-h">platform_take</div><ul class="tt-ul"><li>平台實際收入（platform_take）：平台從每張完成訂單賺到的錢，不是客戶付款總額；本報告主成效指標。</li></ul></span></span> HK$23.88），
+      會以為「參加者都在升」；但同期相似未參加者（<span class="tip" tabindex="0">Control<span class="tt-box"><div class="tt-h">Control</div><ul class="tt-ul"><li>對照組（Control）：無參加活動、但活動前特徵與實驗組相似的人。</li></ul></span></span>）平均 HK$-1.49，
       扣減後增量為 <strong>HK$25.37/人</strong>。
-      既有活躍客 136 對：實驗組 HK$23.44 vs 對照 HK$-66.28 → DiD <strong>HK$89.72/人</strong>。
+      既有活躍客 136 對：實驗組 HK$23.44 vs 對照 HK$-66.28 → <span class="tip" tabindex="0">DiD<span class="tt-box"><div class="tt-h">DiD</div><ul class="tt-ul"><li>雙差法（DiD）：比較「參加者活動前後變化」與「對照組活動前後變化」的差距，用來估計活動真正帶來多少增量。</li></ul></span></span> <strong>HK$89.72/人</strong>。
     </p>
 
-    <h3 style="margin:18px 0 10px;font-size:1rem">輔助背景：全池未配對（sanity check）</h3>
+    <h3 style="margin:18px 0 10px;font-size:1rem">輔助背景：全池未配對（<span class="tip" tabindex="0">sanity check<span class="tt-box"><div class="tt-h">sanity check</div><ul class="tt-ul"><li>合理性檢查（sanity check）：輔助參考，不是主結論。</li></ul></span></span>）</h3>
     <div class="table-wrap"><table class="biz-subtable">
       <thead><tr><th>母體</th><th>人數</th><th>platform_take Post−Pre 人均</th><th>用途</th></tr></thead>
       <tbody>
@@ -416,7 +443,7 @@ footer p { margin:0 0 10px; color:var(--text); opacity:.9; }
   </div>
   
   <div class="card">
-    <h2>新客質量 benchmark（Doggo Fest vs 同期 organic）（2026-07-07 實查，HK TRANSPORT PlatformOD，pre 2025-05-18 to 2025-11-13，post 2025-11-17 to 2026-05-16）</h2>
+    <h2>新客質量 <span class="tip" tabindex="0">benchmark<span class="tt-box"><div class="tt-h">benchmark</div><ul class="tt-ul"><li>比較基準（benchmark）：用來判斷 Doggo 新客質量好不好。</li></ul></span></span>（Doggo Fest vs 同期 <span class="tip" tabindex="0">organic<span class="tt-box"><div class="tt-h">organic</div><ul class="tt-ul"><li>自然新客（organic）：不是 Doggo Fest 帶來、同期自己來平台的客戶。</li></ul></span></span>）（2026-07-07 實查，HK TRANSPORT PlatformOD，pre 2025-05-18 to 2025-11-13，post 2025-11-17 to 2026-05-16）</h2>
     <p class="note" style="margin-bottom:10px"><strong>拉新質量與同期 organic 自然新客打和或略好</strong>：可比第 2 單率 Doggo 39/102（38.2%） vs organic 28198/75103（37.5%）；第 3 單率 Doggo 24/102（23.5%） vs organic 14571/75103（19.4%）（2026-07-07 實查，HK TRANSPORT PlatformOD，pre 2025-05-18 to 2025-11-13，post 2025-11-17 to 2026-05-16）。（Doggo 活動首單在 event 窗不計 post；organic 首單在 post 內——兩邊「第 2 單」已按生涯口徑對齊。）</p>
     <div class="table-wrap"><table>
       <thead><tr><th>群體</th><th>人數</th><th>第 2 單率（可比）</th><th>第 3 單率</th></tr></thead>
@@ -444,19 +471,19 @@ footer p { margin:0 0 10px; color:var(--text); opacity:.9; }
     <p class="meta">（2026-07-07 查詢日期，HK TRANSPORT PlatformOD，活動前／活動後各 180 天：2025-05-18 to 2025-11-13；2025-11-17 to 2026-05-16）</p>
     <div class="hero-explainer" style="margin-top:12px;background:var(--kpi-bg);border:1px solid var(--border);border-radius:12px;padding:14px">
       <p><strong>為何 372 人？</strong> BQ 可核實的 Doggo Fest 優惠券領取／使用用戶全數；其中 <strong>140 對</strong>可配對做 DiD，其餘 <strong>232</strong> 人主因活動前無完成單而無法配對。</p>
-      <p><strong>怎樣解讀？</strong> 看「實驗組活動後變化」減「對照組活動後變化」= 活動增量；對照組同期也可能下滑，不可只看單邊上升。</p>
+      <p><strong>怎樣解讀？</strong> 看「<span class="tip" tabindex="0">Treatment<span class="tt-box"><div class="tt-h">Treatment</div><ul class="tt-ul"><li>實驗組（Treatment）：有參加活動／有用 Doggo Fest 券的人。</li></ul></span></span> <span class="tip" tabindex="0">Post−Pre<span class="tt-box"><div class="tt-h">Post−Pre</div><ul class="tt-ul"><li>活動後減活動前（Post−Pre）：看活動前後人均變化。</li></ul></span></span>」減「<span class="tip" tabindex="0">Control<span class="tt-box"><div class="tt-h">Control</div><ul class="tt-ul"><li>對照組（Control）：無參加活動、但活動前特徵與實驗組相似的人。</li></ul></span></span> <span class="tip" tabindex="0">Post−Pre<span class="tt-box"><div class="tt-h">Post−Pre</div><ul class="tt-ul"><li>活動後減活動前（Post−Pre）：看活動前後人均變化。</li></ul></span></span>」= <span class="tip" tabindex="0">Incremental Effect<span class="tt-box"><div class="tt-h">Incremental Effect</div><ul class="tt-ul"><li>真正新增貢獻（Incremental Effect）：不是本來就會發生的收入。</li></ul></span></span>；對照組同期也可能下滑，不可只看單邊上升。</p>
     </div>
   </div>
   <div class="card">
-    <div class="lead">值得再做品牌／回流活動，但不應以「純拉新寵物客」為成功標準。既有活躍客（136 對）<span class="tip" tabindex="0">platform_take<span class="tt-box"><div class="tt-h">platform_take</div><ul class="tt-ul"><li>平台收入（platform_take）：平台從每張完成訂單實際賺取的金額，是本報告的主要成效指標。</li></ul></span></span> 增量 HK$89.72/人；ROI proxy 6.0%。<br><strong>拉新質量與同期 organic 自然新客打和或略好</strong>：可比第 2 單率 Doggo 39/102（38.2%） vs organic 28198/75103（37.5%）；第 3 單率 Doggo 24/102（23.5%） vs organic 14571/75103（19.4%）（2026-07-07 查詢日期，HK TRANSPORT PlatformOD，活動前／活動後各 180 天：2025-05-18 to 2025-11-13；2025-11-17 to 2026-05-16）。（Doggo 活動首單在 event 窗不計 post；organic 首單在 post 內——兩邊「第 2 單」已按生涯口徑對齊。）</div>
+    <div class="lead">值得再做品牌／回流活動，但不應以「純拉新寵物客」為成功標準。既有活躍客（136 對）<span class="tip" tabindex="0">platform_take<span class="tt-box"><div class="tt-h">platform_take</div><ul class="tt-ul"><li>平台實際收入（platform_take）：平台從每張完成訂單賺到的錢，不是客戶付款總額；本報告主成效指標。</li></ul></span></span> 增量 HK$89.72/人；<span class="tip" tabindex="0">ROI proxy<span class="tt-box"><div class="tt-h">ROI proxy</div><ul class="tt-ul"><li>粗略回本率（ROI proxy）：用估計收益除以活動成本，不是 Finance 官方 ROI。</li></ul></span></span> 6.0%。<br><strong>拉新質量與同期 organic 自然新客打和或略好</strong>：可比第 2 單率 Doggo 39/102（38.2%） vs organic 28198/75103（37.5%）；第 3 單率 Doggo 24/102（23.5%） vs organic 14571/75103（19.4%）（2026-07-07 查詢日期，HK TRANSPORT PlatformOD，活動前／活動後各 180 天：2025-05-18 to 2025-11-13；2025-11-17 to 2026-05-16）。（Doggo 活動首單在 event 窗不計 post；organic 首單在 post 內——兩邊「第 2 單」已按生涯口徑對齊。）</div>
   </div>
 
   
   <div class="card">
     <h2>2. 商業問題拆解（Business Question Framework）</h2>
-    <p class="note">方法：第一層 Post-minus-Pre Change（Post − Pre，描述性）＋第二層 <span class="tip" tabindex="0">Difference-in-Differences（DiD）<span class="tt-box"><div class="tt-h">Difference-in-Differences（DiD）</div><ul class="tt-ul"><li>雙差法（Difference-in-Differences）：比較實驗組與對照組在活動前後的變化差額，用來估計活動的增量效果。</li></ul></span></span>（配對後組間比較，主結論）。（2026-07-07 實查，HK TRANSPORT PlatformOD，混合 140 對可配對子集，pre 2025-05-18 to 2025-11-13，post 2025-11-17 to 2026-05-16）</p>
+    <p class="note">方法：第一層 Post-minus-Pre Change（Post − Pre，描述性）＋第二層 <span class="tip" tabindex="0">Difference-in-Differences（DiD）<span class="tt-box"><div class="tt-h">Difference-in-Differences（DiD）</div><ul class="tt-ul"><li>雙差法（DiD）：比較「參加者活動前後變化」與「對照組活動前後變化」的差距，用來估計活動真正帶來多少增量。</li></ul></span></span>（配對後組間比較，主結論）。（2026-07-07 實查，HK TRANSPORT PlatformOD，混合 140 對可配對子集，pre 2025-05-18 to 2025-11-13，post 2025-11-17 to 2026-05-16）</p>
     <div class="chart-wrap"><svg viewBox="0 0 520 168" width="520" height="168" role="img" aria-label="三項主 KPI DiD"><line x1="278.0" y1="12" x2="278.0" y2="156" stroke="var(--muted)" stroke-width="1"/><text x="8" y="32" fill="var(--text)" font-size="11">Δorders DiD</text><rect x="278.0" y="18" width="2.0" height="18" rx="4" fill="#2563eb" opacity=".85"/><text x="285.3" y="32" text-anchor="start" fill="#2563eb" font-size="11" font-weight="700">+1.99 單</text><text x="8" y="76" fill="var(--text)" font-size="11">ΔGTV DiD</text><rect x="278.0" y="62" width="141.7" height="18" rx="4" fill="#7c3aed" opacity=".85"/><text x="425.7" y="76" text-anchor="start" fill="#7c3aed" font-size="11" font-weight="700">HK$210.20</text><text x="8" y="120" fill="var(--text)" font-size="11">Δplatform_take DiD</text><rect x="278.0" y="106" width="17.1" height="18" rx="4" fill="#15803d" opacity=".85"/><text x="301.1" y="120" text-anchor="start" fill="#15803d" font-size="11" font-weight="700">HK$25.37</text></svg></div>
-    <p class="note">輔助敏感度：寵物單 Δorders <span class="tip" tabindex="0">DiD<span class="tt-box"><div class="tt-h">DiD</div><ul class="tt-ul"><li>雙差法（Difference-in-Differences）：比較實驗組與對照組在活動前後的變化差額，用來估計活動的增量效果。</li></ul></span></span> +0.69 單/人（全單增量為主，pet 單為輔助）。</p>
+    <p class="note">輔助敏感度：寵物單 Δorders <span class="tip" tabindex="0">DiD<span class="tt-box"><div class="tt-h">DiD</div><ul class="tt-ul"><li>雙差法（DiD）：比較「參加者活動前後變化」與「對照組活動前後變化」的差距，用來估計活動真正帶來多少增量。</li></ul></span></span> +0.69 單/人（全單增量為主，pet 單為輔助）。</p>
     <div class="table-wrap"><table class="biz-table">
       <thead>
         <tr><th>#</th><th>商業問題</th><th>建議 KPI</th><th>方法（中英）</th><th>BQ 答案</th></tr>
@@ -467,39 +494,39 @@ footer p { margin:0 0 10px; color:var(--text); opacity:.9; }
           <td>參加者活動後有沒有多落單？</td>
           <td>Post − Pre（Δorders）</td>
           <td>Post-minus-Pre Change 描述 + Difference-in-Differences（DiD）</td>
-          <td><span class="answer-yes">有增量。</span> 實驗組 Post−Pre 人均 <strong>+1.34 單</strong>；對照組 <strong>-0.65 單</strong>；<span class="tip" tabindex="0">DiD<span class="tt-box"><div class="tt-h">DiD</div><ul class="tt-ul"><li>雙差法（Difference-in-Differences）：比較實驗組與對照組在活動前後的變化差額，用來估計活動的增量效果。</li></ul></span></span> <strong>+1.99 單/人</strong>（總計 +278 單）</td>
+          <td><span class="answer-yes">有增量。</span> <span class="tip" tabindex="0">Treatment<span class="tt-box"><div class="tt-h">Treatment</div><ul class="tt-ul"><li>實驗組（Treatment）：有參加活動／有用 Doggo Fest 券的人。</li></ul></span></span> <span class="tip" tabindex="0">Post−Pre<span class="tt-box"><div class="tt-h">Post−Pre</div><ul class="tt-ul"><li>活動後減活動前（Post−Pre）：看活動前後人均變化。</li></ul></span></span> 人均 <strong>+1.34 單</strong>；<span class="tip" tabindex="0">Control<span class="tt-box"><div class="tt-h">Control</div><ul class="tt-ul"><li>對照組（Control）：無參加活動、但活動前特徵與實驗組相似的人。</li></ul></span></span> <strong>-0.65 單</strong>；<span class="tip" tabindex="0">DiD<span class="tt-box"><div class="tt-h">DiD</div><ul class="tt-ul"><li>雙差法（DiD）：比較「參加者活動前後變化」與「對照組活動前後變化」的差距，用來估計活動真正帶來多少增量。</li></ul></span></span> <strong>+1.99 單/人</strong>（總計 +278 單）</td>
         </tr>
         <tr>
           <td>2</td>
           <td>客戶消費（GTV）有沒有拉高？</td>
           <td>Post − Pre（ΔGTV）</td>
           <td>同上</td>
-          <td><span class="answer-yes">有拉高。</span> 實驗組 Post−Pre 人均 <strong>HK$186.62</strong>；對照組 <strong>HK$-23.58</strong>；<span class="tip" tabindex="0">DiD<span class="tt-box"><div class="tt-h">DiD</div><ul class="tt-ul"><li>雙差法（Difference-in-Differences）：比較實驗組與對照組在活動前後的變化差額，用來估計活動的增量效果。</li></ul></span></span> <strong>HK$210.20/人</strong>（總計 HK$29,428.00）</td>
+          <td><span class="answer-yes">有拉高。</span> <span class="tip" tabindex="0">Treatment<span class="tt-box"><div class="tt-h">Treatment</div><ul class="tt-ul"><li>實驗組（Treatment）：有參加活動／有用 Doggo Fest 券的人。</li></ul></span></span> <span class="tip" tabindex="0">Post−Pre<span class="tt-box"><div class="tt-h">Post−Pre</div><ul class="tt-ul"><li>活動後減活動前（Post−Pre）：看活動前後人均變化。</li></ul></span></span> 人均 <strong>HK$186.62</strong>；<span class="tip" tabindex="0">Control<span class="tt-box"><div class="tt-h">Control</div><ul class="tt-ul"><li>對照組（Control）：無參加活動、但活動前特徵與實驗組相似的人。</li></ul></span></span> <strong>HK$-23.58</strong>；<span class="tip" tabindex="0">DiD<span class="tt-box"><div class="tt-h">DiD</div><ul class="tt-ul"><li>雙差法（DiD）：比較「參加者活動前後變化」與「對照組活動前後變化」的差距，用來估計活動真正帶來多少增量。</li></ul></span></span> <strong>HK$210.20/人</strong>（總計 HK$29,428.00）</td>
         </tr>
         <tr>
           <td>3</td>
           <td>平台有沒有多賺？</td>
           <td>Post − Pre（Δplatform_take）</td>
           <td>同上 — <strong>建議 headline</strong></td>
-          <td><span class="answer-yes">有多賺（建議 headline）。</span> 實驗組 Post−Pre 人均 <strong>HK$23.88</strong>；對照組 <strong>HK$-1.49</strong>；<span class="tip" tabindex="0">DiD<span class="tt-box"><div class="tt-h">DiD</div><ul class="tt-ul"><li>雙差法（Difference-in-Differences）：比較實驗組與對照組在活動前後的變化差額，用來估計活動的增量效果。</li></ul></span></span> <strong>HK$25.37/人</strong>（總計 HK$3,552.10）；既有活躍客 136 對 <span class="tip" tabindex="0">DiD<span class="tt-box"><div class="tt-h">DiD</div><ul class="tt-ul"><li>雙差法（Difference-in-Differences）：比較實驗組與對照組在活動前後的變化差額，用來估計活動的增量效果。</li></ul></span></span> <strong>HK$89.72/人</strong>。</td>
+          <td><span class="answer-yes">有多賺（建議 <span class="tip" tabindex="0">headline<span class="tt-box"><div class="tt-h">headline</div><ul class="tt-ul"><li>管理層主結論（headline）：對外簡報優先講的數字或故事。</li></ul></span></span>）。</span> <span class="tip" tabindex="0">Treatment<span class="tt-box"><div class="tt-h">Treatment</div><ul class="tt-ul"><li>實驗組（Treatment）：有參加活動／有用 Doggo Fest 券的人。</li></ul></span></span> <span class="tip" tabindex="0">Post−Pre<span class="tt-box"><div class="tt-h">Post−Pre</div><ul class="tt-ul"><li>活動後減活動前（Post−Pre）：看活動前後人均變化。</li></ul></span></span> 人均 <strong>HK$23.88</strong>；<span class="tip" tabindex="0">Control<span class="tt-box"><div class="tt-h">Control</div><ul class="tt-ul"><li>對照組（Control）：無參加活動、但活動前特徵與實驗組相似的人。</li></ul></span></span> <strong>HK$-1.49</strong>；<span class="tip" tabindex="0">DiD<span class="tt-box"><div class="tt-h">DiD</div><ul class="tt-ul"><li>雙差法（DiD）：比較「參加者活動前後變化」與「對照組活動前後變化」的差距，用來估計活動真正帶來多少增量。</li></ul></span></span> <strong>HK$25.37/人</strong>（總計 HK$3,552.10）；既有活躍客 136 對 <span class="tip" tabindex="0">DiD<span class="tt-box"><div class="tt-h">DiD</div><ul class="tt-ul"><li>雙差法（DiD）：比較「參加者活動前後變化」與「對照組活動前後變化」的差距，用來估計活動真正帶來多少增量。</li></ul></span></span> <strong>HK$89.72/人</strong>。</td>
         </tr>
         <tr>
           <td>4</td>
           <td>活動是「留住本來會用的人」還是「帶來增量」？</td>
           <td>DiD ≈ 0 vs &gt; 0</td>
           <td>DiD ≈ 0 → 留存為主；&gt; 0 → 有 Incremental Effect</td>
-          <td><span class="answer-yes">有 Incremental Effect（增量），不是純留存。</span> 三項主 KPI 的 <span class="tip" tabindex="0">DiD<span class="tt-box"><div class="tt-h">DiD</div><ul class="tt-ul"><li>雙差法（Difference-in-Differences）：比較實驗組與對照組在活動前後的變化差額，用來估計活動的增量效果。</li></ul></span></span> 均 &gt; 0（單量 +1.99 單、GTV HK$210.20、platform_take HK$25.37）。若 DiD ≈ 0 才解讀為「留住本來會用的人」；現況為相對對照組的額外貢獻。輔助：活動後留存率 實驗組 88.6% vs 對照 67.1%（+21.4 pp），留存與增量並存。</td>
+          <td><span class="answer-yes">有 <span class="tip" tabindex="0">Incremental Effect<span class="tt-box"><div class="tt-h">Incremental Effect</div><ul class="tt-ul"><li>真正新增貢獻（Incremental Effect）：不是本來就會發生的收入。</li></ul></span></span>，不是純留存。</span> 三項主 <span class="tip" tabindex="0">KPI<span class="tt-box"><div class="tt-h">KPI</div><ul class="tt-ul"><li>成功指標（KPI）：用來判斷活動值不值得做。</li></ul></span></span> 的 <span class="tip" tabindex="0">DiD<span class="tt-box"><div class="tt-h">DiD</div><ul class="tt-ul"><li>雙差法（DiD）：比較「參加者活動前後變化」與「對照組活動前後變化」的差距，用來估計活動真正帶來多少增量。</li></ul></span></span> 均 &gt; 0（單量 +1.99 單、<span class="tip" tabindex="0">GTV<span class="tt-box"><div class="tt-h">GTV</div><ul class="tt-ul"><li>客戶支付總額（GTV）：客戶付了多少錢，未扣司機分成與其他成本。</li></ul></span></span> HK$210.20、<span class="tip" tabindex="0">platform_take<span class="tt-box"><div class="tt-h">platform_take</div><ul class="tt-ul"><li>平台實際收入（platform_take）：平台從每張完成訂單賺到的錢，不是客戶付款總額；本報告主成效指標。</li></ul></span></span> HK$25.37）。若 DiD ≈ 0 才解讀為「留住本來會用的人」；現況為相對對照組的額外貢獻。輔助：活動後留存率 實驗組 88.6% vs 對照 67.1%（+21.4 pp），留存與增量並存。</td>
         </tr>
         <tr>
           <td>5</td>
-          <td>哪類 attendee 貢獻大？</td>
-          <td>按 direction 分層</td>
+          <td>哪類 <span class="tip" tabindex="0">attendee<span class="tt-box"><div class="tt-h">attendee</div><ul class="tt-ul"><li>活動參加者（attendee）：領券或參與 Doggo Fest 的用戶。</li></ul></span></span> 貢獻大？</td>
+          <td>按 <span class="tip" tabindex="0">Direction<span class="tt-box"><div class="tt-h">Direction</div><ul class="tt-ul"><li>叫車方向（Direction）：例如去會場、離開會場。</li></ul></span></span> 分層</td>
           <td>分層後重複 §6.1～6.2</td>
-          <td><span class="answer-yes">既有活躍客（Existing active）貢獻最大。</span> 136 對 platform_take <span class="tip" tabindex="0">DiD<span class="tt-box"><div class="tt-h">DiD</div><ul class="tt-ul"><li>雙差法（Difference-in-Differences）：比較實驗組與對照組在活動前後的變化差額，用來估計活動的增量效果。</li></ul></span></span> HK$89.72/人，總增量 HK$12,201.70。新客 102 人無 pre 窗，活動後總 platform_take HK$2,856.50（拉新信號，非 DiD）。回流客僅 2 對，勿引用 DiD。<br><span class="answer-muted">按 direction 分層（tst_496）：<strong>To venue (drop-off TST)</strong> DiD 最高 <strong>HK$66.00/人</strong>（26 對）；從全局 140 對篩選，非重新配對。</span>
+          <td><span class="answer-yes">既有活躍客（Existing active）貢獻最大。</span> 136 對 platform_take <span class="tip" tabindex="0">DiD<span class="tt-box"><div class="tt-h">DiD</div><ul class="tt-ul"><li>雙差法（DiD）：比較「參加者活動前後變化」與「對照組活動前後變化」的差距，用來估計活動真正帶來多少增量。</li></ul></span></span> HK$89.72/人，總增量 HK$12,201.70。新客 102 人無 pre 窗，活動後總 platform_take HK$2,856.50（拉新信號，非 DiD）。回流客僅 2 對，勿引用 DiD。<br><span class="answer-muted">按 direction 分層（tst_496）：<strong>To venue (drop-off TST)</strong> DiD 最高 <strong>HK$66.00/人</strong>（26 對）；從全局 140 對篩選，非重新配對。</span>
     <div class="table-wrap"><table class="biz-subtable">
       <thead><tr><th>分層（attendee）</th><th>人數</th><th>platform_take 貢獻</th><th>方法</th></tr></thead>
       <tbody>
-        <tr><td>既有活躍客</td><td>168（136 對）</td><td>HK$89.72/人 · 總計 HK$12,201.70</td><td>配對 <span class="tip" tabindex="0">DiD<span class="tt-box"><div class="tt-h">DiD</div><ul class="tt-ul"><li>雙差法（Difference-in-Differences）：比較實驗組與對照組在活動前後的變化差額，用來估計活動的增量效果。</li></ul></span></span></td></tr>
+        <tr><td>既有活躍客</td><td>168（136 對）</td><td>HK$89.72/人 · 總計 HK$12,201.70</td><td>配對 <span class="tip" tabindex="0">DiD<span class="tt-box"><div class="tt-h">DiD</div><ul class="tt-ul"><li>雙差法（DiD）：比較「參加者活動前後變化」與「對照組活動前後變化」的差距，用來估計活動真正帶來多少增量。</li></ul></span></span></td></tr>
         <tr><td>平台新客</td><td>102</td><td>活動後總計 HK$2,856.50</td><td>Post 窗 only（無 DiD）</td></tr>
         <tr><td>回流客</td><td>102（2 對）</td><td class="answer-muted">樣本不足</td><td>勿引用 DiD</td></tr>
         <tr><td>Both directions</td><td>111（58 對）</td><td>HK$44.21/人</td><td>全局 140 對子集 DiD</td></tr><tr><td>From venue (pick-up TST)</td><td>125（39 對）</td><td>HK$34.45/人</td><td>全局 140 對子集 DiD</td></tr><tr><td>To venue (drop-off TST)</td><td>84（26 對）</td><td>HK$66.00/人</td><td>全局 140 對子集 DiD</td></tr><tr><td>NO_DIRECTION</td><td>52（17 對）</td><td>HK$-121.84/人</td><td>全局 140 對子集 DiD</td></tr>
@@ -515,10 +542,10 @@ footer p { margin:0 0 10px; color:var(--text); opacity:.9; }
     <h2>反事實對照：若無 Doggo Fest 會怎樣？</h2>
     <p class="note">
       <strong>有分析數據，而且已落地。</strong>我們無法觀察「同一批人沒參加活動」的平行宇宙，但 BQ 有
-      <strong>3,470 名</strong><span class="tip" tabindex="0">對照組候選<span class="tt-box"><div class="tt-h">對照組候選</div><ul class="tt-ul"><li>對照組（control group）：未領券、但特徵與實驗組相似的 PlatformOD 用戶，用來隔離「若不辦活動會怎樣」。</li></ul></span></span>（Typical Pet 池、未領 Doggo Fest 券），
-      並為 <strong>140 對</strong>參加者各配一位活動前 profile 相近的人，作為
-      <strong>「若無活動」代理</strong>。方法 = <span class="tip" tabindex="0">配對雙差法 DiD<span class="tt-box"><div class="tt-h">配對雙差法 DiD</div><ul class="tt-ul"><li>雙差法（Difference-in-Differences）：比較實驗組與對照組在活動前後的變化差額，用來估計活動的增量效果。</li></ul></span></span>：
-      實驗組 Post−Pre 減去配對對照 Post−Pre = 活動增量。（2026-07-07 實查，HK TRANSPORT PlatformOD，pre 2025-05-18 to 2025-11-13，post 2025-11-17 to 2026-05-16）
+      <strong>3,470 名</strong><span class="tip" tabindex="0">對照組候選<span class="tt-box"><div class="tt-h">對照組候選</div><ul class="tt-ul"><li>對照組（Control）：無參加活動、但活動前特徵與實驗組相似的人。</li></ul></span></span>（Typical Pet 池、未領 Doggo Fest 券），
+      並為 <strong>140 對</strong>參加者各配一位活動前 <span class="tip" tabindex="0">profile<span class="tt-box"><div class="tt-h">profile</div><ul class="tt-ul"><li>活動前客戶特徵（profile）：如下單頻率、消費、最近一次下單。</li></ul></span></span> 相近的人，作為
+      <strong>「若無活動」<span class="tip" tabindex="0">matched control<span class="tt-box"><div class="tt-h">matched control</div><ul class="tt-ul"><li>配對對照組（matched control）：找一批活動前行為相似的人作比較，模擬「若無活動」會怎樣。</li></ul></span></span></strong>。方法 = <span class="tip" tabindex="0">配對雙差法 DiD<span class="tt-box"><div class="tt-h">配對雙差法 DiD</div><ul class="tt-ul"><li>雙差法（DiD）：比較「參加者活動前後變化」與「對照組活動前後變化」的差距，用來估計活動真正帶來多少增量。</li></ul></span></span>：
+      <span class="tip" tabindex="0">Treatment<span class="tt-box"><div class="tt-h">Treatment</div><ul class="tt-ul"><li>實驗組（Treatment）：有參加活動／有用 Doggo Fest 券的人。</li></ul></span></span> <span class="tip" tabindex="0">Post−Pre<span class="tt-box"><div class="tt-h">Post−Pre</div><ul class="tt-ul"><li>活動後減活動前（Post−Pre）：看活動前後人均變化。</li></ul></span></span> 減去 <span class="tip" tabindex="0">matched control<span class="tt-box"><div class="tt-h">matched control</div><ul class="tt-ul"><li>配對對照組（matched control）：找一批活動前行為相似的人作比較，模擬「若無活動」會怎樣。</li></ul></span></span> <span class="tip" tabindex="0">Post−Pre<span class="tt-box"><div class="tt-h">Post−Pre</div><ul class="tt-ul"><li>活動後減活動前（Post−Pre）：看活動前後人均變化。</li></ul></span></span> = 活動增量。（2026-07-07 實查，HK TRANSPORT PlatformOD，pre 2025-05-18 to 2025-11-13，post 2025-11-17 to 2026-05-16）
     </p>
 
     <div class="table-wrap"><table class="biz-subtable">
@@ -532,20 +559,20 @@ footer p { margin:0 0 10px; color:var(--text); opacity:.9; }
     </table></div>
 
     <h3 style="margin:18px 0 10px;font-size:1rem">主對照：有活動 vs 配對「若無活動」代理（140 對）</h3>
-    <p class="note">欄位為活動後 180 天 vs 活動前 180 天的<strong>人均 Post−Pre 變化</strong>；最右欄為兩者之差（DiD 增量）。</p>
+    <p class="note">欄位為活動後 180 天 vs 活動前 180 天的<strong>人均 <span class="tip" tabindex="0">Post−Pre<span class="tt-box"><div class="tt-h">Post−Pre</div><ul class="tt-ul"><li>活動後減活動前（Post−Pre）：看活動前後人均變化。</li></ul></span></span> 變化</strong>；最右欄為兩者之差（<span class="tip" tabindex="0">DiD<span class="tt-box"><div class="tt-h">DiD</div><ul class="tt-ul"><li>雙差法（DiD）：比較「參加者活動前後變化」與「對照組活動前後變化」的差距，用來估計活動真正帶來多少增量。</li></ul></span></span> 增量）。</p>
     <div class="table-wrap"><table class="biz-table">
       <thead>
         <tr>
           <th>指標</th>
-          <th>有 Doggo Fest（實驗組）</th>
-          <th>若無活動代理（配對對照）</th>
-          <th>活動增量（DiD）</th>
+          <th>有 Doggo Fest（<span class="tip" tabindex="0">Treatment<span class="tt-box"><div class="tt-h">Treatment</div><ul class="tt-ul"><li>實驗組（Treatment）：有參加活動／有用 Doggo Fest 券的人。</li></ul></span></span>）</th>
+          <th>若無活動代理（<span class="tip" tabindex="0">matched control<span class="tt-box"><div class="tt-h">matched control</div><ul class="tt-ul"><li>配對對照組（matched control）：找一批活動前行為相似的人作比較，模擬「若無活動」會怎樣。</li></ul></span></span>）</th>
+          <th>活動增量（<span class="tip" tabindex="0">DiD<span class="tt-box"><div class="tt-h">DiD</div><ul class="tt-ul"><li>雙差法（DiD）：比較「參加者活動前後變化」與「對照組活動前後變化」的差距，用來估計活動真正帶來多少增量。</li></ul></span></span>）</th>
         </tr>
       </thead>
       <tbody>
         <tr><td>Δorders（完成單）</td><td>+1.34 單</td><td>-0.65 單</td><td><strong>+1.99 單</strong></td></tr>
-        <tr><td>ΔGTV</td><td>HK$186.62</td><td>HK$-23.58</td><td><strong>HK$210.20</strong></td></tr>
-        <tr><td><strong>Δplatform_take（headline）</strong></td><td>HK$23.88</td><td>HK$-1.49</td><td><strong>HK$25.37</strong></td></tr>
+        <tr><td>Δ<span class="tip" tabindex="0">GTV<span class="tt-box"><div class="tt-h">GTV</div><ul class="tt-ul"><li>客戶支付總額（GTV）：客戶付了多少錢，未扣司機分成與其他成本。</li></ul></span></span></td><td>HK$186.62</td><td>HK$-23.58</td><td><strong>HK$210.20</strong></td></tr>
+        <tr><td><strong>Δ<span class="tip" tabindex="0">platform_take<span class="tt-box"><div class="tt-h">platform_take</div><ul class="tt-ul"><li>平台實際收入（platform_take）：平台從每張完成訂單賺到的錢，不是客戶付款總額；本報告主成效指標。</li></ul></span></span>（<span class="tip" tabindex="0">headline<span class="tt-box"><div class="tt-h">headline</div><ul class="tt-ul"><li>管理層主結論（headline）：對外簡報優先講的數字或故事。</li></ul></span></span>）</strong></td><td>HK$23.88</td><td>HK$-1.49</td><td><strong>HK$25.37</strong></td></tr>
       </tbody>
     </table></div>
 
@@ -554,13 +581,13 @@ footer p { margin:0 0 10px; color:var(--text); opacity:.9; }
       <svg viewBox="0 0 520 136" width="520" height="136" role="img" aria-label="既有活躍客 136 對 · platform_take Post−Pre 人均"><text x="8" y="16" fill="var(--muted)" font-size="11" font-weight="600">既有活躍客 136 對 · platform_take Post−Pre 人均</text><line x1="375.9" y1="24" x2="375.9" y2="128" stroke="var(--muted)" stroke-width="1"/><text x="164" y="44" text-anchor="end" fill="var(--text)" font-size="10" font-weight="600">實驗組（有券）</text><rect x="375.9" y="30" width="64.4" height="16" rx="3" fill="#2563eb" opacity=".92"/><text x="444.0" y="44" text-anchor="start" fill="#2563eb" font-size="10" font-weight="700">HK$23.44</text><text x="164" y="88" text-anchor="end" fill="var(--text)" font-size="10" font-weight="600">配對對照（無券）</text><rect x="193.8" y="74" width="182.1" height="16" rx="3" fill="#c2410c" opacity=".92"/><text x="381.9" y="88" text-anchor="start" fill="#c2410c" font-size="10" font-weight="700">HK$-66.28</text></svg>
     </div>
     <p class="note">
-      <strong>解讀：</strong>若只看實驗組 Post−Pre（例 platform_take HK$23.88），
-      會以為「參加者都在升」；但同期相似未參加者平均 HK$-1.49，
+      <strong>解讀：</strong>若只看<span class="tip" tabindex="0">Treatment<span class="tt-box"><div class="tt-h">Treatment</div><ul class="tt-ul"><li>實驗組（Treatment）：有參加活動／有用 Doggo Fest 券的人。</li></ul></span></span> <span class="tip" tabindex="0">Post−Pre<span class="tt-box"><div class="tt-h">Post−Pre</div><ul class="tt-ul"><li>活動後減活動前（Post−Pre）：看活動前後人均變化。</li></ul></span></span>（例 <span class="tip" tabindex="0">platform_take<span class="tt-box"><div class="tt-h">platform_take</div><ul class="tt-ul"><li>平台實際收入（platform_take）：平台從每張完成訂單賺到的錢，不是客戶付款總額；本報告主成效指標。</li></ul></span></span> HK$23.88），
+      會以為「參加者都在升」；但同期相似未參加者（<span class="tip" tabindex="0">Control<span class="tt-box"><div class="tt-h">Control</div><ul class="tt-ul"><li>對照組（Control）：無參加活動、但活動前特徵與實驗組相似的人。</li></ul></span></span>）平均 HK$-1.49，
       扣減後增量為 <strong>HK$25.37/人</strong>。
-      既有活躍客 136 對：實驗組 HK$23.44 vs 對照 HK$-66.28 → DiD <strong>HK$89.72/人</strong>。
+      既有活躍客 136 對：實驗組 HK$23.44 vs 對照 HK$-66.28 → <span class="tip" tabindex="0">DiD<span class="tt-box"><div class="tt-h">DiD</div><ul class="tt-ul"><li>雙差法（DiD）：比較「參加者活動前後變化」與「對照組活動前後變化」的差距，用來估計活動真正帶來多少增量。</li></ul></span></span> <strong>HK$89.72/人</strong>。
     </p>
 
-    <h3 style="margin:18px 0 10px;font-size:1rem">輔助背景：全池未配對（sanity check）</h3>
+    <h3 style="margin:18px 0 10px;font-size:1rem">輔助背景：全池未配對（<span class="tip" tabindex="0">sanity check<span class="tt-box"><div class="tt-h">sanity check</div><ul class="tt-ul"><li>合理性檢查（sanity check）：輔助參考，不是主結論。</li></ul></span></span>）</h3>
     <div class="table-wrap"><table class="biz-subtable">
       <thead><tr><th>母體</th><th>人數</th><th>platform_take Post−Pre 人均</th><th>用途</th></tr></thead>
       <tbody>
@@ -584,7 +611,7 @@ footer p { margin:0 0 10px; color:var(--text); opacity:.9; }
       <span class="legend-blue">實驗組（Treatment）</span>
       <span class="legend-orange">對照組（Control）</span>
     </div>
-    <p class="note">檢查 <span class="tip" tabindex="0">DiD<span class="tt-box"><div class="tt-h">DiD</div><ul class="tt-ul"><li>雙差法（Difference-in-Differences）：比較實驗組與對照組在活動前後的變化差額，用來估計活動的增量效果。</li></ul></span></span> 假設：活動前兩組趨勢應相近。
+    <p class="note">檢查 <span class="tip" tabindex="0">DiD<span class="tt-box"><div class="tt-h">DiD</div><ul class="tt-ul"><li>雙差法（DiD）：比較「參加者活動前後變化」與「對照組活動前後變化」的差距，用來估計活動真正帶來多少增量。</li></ul></span></span> 假設：活動前兩組趨勢應相近。
     活動前首末月人均 platform_take 斜率差（T−C）=30.60；接近 0 表示 pre 趨勢較平行。</p>
   </div>
 
@@ -709,7 +736,7 @@ footer p { margin:0 0 10px; color:var(--text); opacity:.9; }
 
   <div class="card">
     <h2>Bootstrap 95% CI（森林圖）</h2>
-    <div class="chart-wrap chart-tip tip-host" tabindex="0"><svg viewBox="0 0 520 160" width="520" height="160" role="img" aria-label="Bootstrap 95% CI 森林圖"><line x1="192.3" y1="12" x2="192.3" y2="140" stroke="var(--muted)" stroke-width="1.5"/><text x="192.3" y="154" text-anchor="middle" fill="var(--muted)" font-size="10">0</text><text x="8" y="44" fill="var(--text)" font-size="12">既有活躍客</text><line x1="257.3" y1="40" x2="496.0" y2="40" stroke="#15803d" stroke-width="6" stroke-linecap="round" opacity=".35"/><line x1="257.3" y1="40" x2="496.0" y2="40" stroke="#15803d" stroke-width="2"/><circle cx="375.4" cy="40" r="6" fill="#15803d"/><text x="500" y="44" fill="var(--muted)" font-size="10">[HK$30.19, HK$141.20]</text><text x="8" y="96" fill="var(--text)" font-size="12">混合 140 對</text><line x1="120.0" y1="92" x2="357.0" y2="92" stroke="#d97706" stroke-width="6" stroke-linecap="round" opacity=".35"/><line x1="120.0" y1="92" x2="357.0" y2="92" stroke="#d97706" stroke-width="2"/><circle cx="246.9" cy="92" r="6" fill="#d97706"/><text x="500" y="96" fill="var(--muted)" font-size="10">[HK$-33.63, HK$76.57]</text></svg><span class="tt-box tt-box--wide"><div class="tt-h">Bootstrap 95% 置信區間</div><ul class="tt-ul"><li>既有活躍客 [HK$30.19, HK$141.20]</li><li>混合 140 [HK$-33.63, HK$76.57]</li><li>ci_includes_zero</li></ul><div class="tt-note">自助法置信區間（Bootstrap CI）：在配對層反覆重抽樣 2000 次，估計 DiD 估計值的不確定範圍；區間不含 0 代表統計上較可信為正。</div><span class="tt-cite">（2026-07-07 查詢日期，HK TRANSPORT PlatformOD，活動前／活動後各 180 天：2025-05-18 to 2025-11-13；2025-11-17 to 2026-05-16）</span></span></div>
+    <div class="chart-wrap chart-tip tip-host" tabindex="0"><svg viewBox="0 0 520 160" width="520" height="160" role="img" aria-label="Bootstrap 95% CI 森林圖"><line x1="192.3" y1="12" x2="192.3" y2="140" stroke="var(--muted)" stroke-width="1.5"/><text x="192.3" y="154" text-anchor="middle" fill="var(--muted)" font-size="10">0</text><text x="8" y="44" fill="var(--text)" font-size="12">既有活躍客</text><line x1="257.3" y1="40" x2="496.0" y2="40" stroke="#15803d" stroke-width="6" stroke-linecap="round" opacity=".35"/><line x1="257.3" y1="40" x2="496.0" y2="40" stroke="#15803d" stroke-width="2"/><circle cx="375.4" cy="40" r="6" fill="#15803d"/><text x="500" y="44" fill="var(--muted)" font-size="10">[HK$30.19, HK$141.20]</text><text x="8" y="96" fill="var(--text)" font-size="12">混合 140 對</text><line x1="120.0" y1="92" x2="357.0" y2="92" stroke="#d97706" stroke-width="6" stroke-linecap="round" opacity=".35"/><line x1="120.0" y1="92" x2="357.0" y2="92" stroke="#d97706" stroke-width="2"/><circle cx="246.9" cy="92" r="6" fill="#d97706"/><text x="500" y="96" fill="var(--muted)" font-size="10">[HK$-33.63, HK$76.57]</text></svg><span class="tt-box tt-box--wide"><div class="tt-h">Bootstrap 95% 置信區間</div><ul class="tt-ul"><li>既有活躍客 [HK$30.19, HK$141.20]</li><li>混合 140 [HK$-33.63, HK$76.57]</li><li>ci_includes_zero</li></ul><div class="tt-note">自助法置信區間（Bootstrap CI）：在配對層重抽樣 2000 次，估計 DiD 的不確定範圍。</div><span class="tt-cite">（2026-07-07 查詢日期，HK TRANSPORT PlatformOD，活動前／活動後各 180 天：2025-05-18 to 2025-11-13；2025-11-17 to 2026-05-16）</span></span></div>
     <p class="note">136 對 · 10000 resamples · ci_excludes_zero_positive</p>
   </div>
 
@@ -722,10 +749,10 @@ footer p { margin:0 0 10px; color:var(--text); opacity:.9; }
   <div class="card">
     <h2>核心指標（KPI · 分析師明細）</h2>
     <div class="kpi-grid">
-      <div class="kpi tip-host" tabindex="0"><div class="label">既有活躍客 <span class="tip" tabindex="0">DiD<span class="tt-box"><div class="tt-h">DiD</div><ul class="tt-ul"><li>雙差法（Difference-in-Differences）：比較實驗組與對照組在活動前後的變化差額，用來估計活動的增量效果。</li></ul></span></span> (platform_take/user)</div><div class="value">HK$89.72</div><div class="sub">136 對 · 總增量 HK$12,201.70</div><span class="tt-box tt-box--kpi"><div class="tt-h">既有活躍客 DiD（主結論）</div><table class="tt-tbl"><tbody><tr><th>配對數</th><td>136</td></tr><tr><th>Treatment Post−Pre</th><td>HK$23.44</td></tr><tr><th>Control Post−Pre</th><td>HK$-66.28</td></tr><tr><th>DiD</th><td><strong>HK$89.72/人</strong></td></tr><tr><th>Bootstrap CI</th><td>[HK$30.19, HK$141.20]</td></tr></tbody></table><ul class="tt-ul"><li>管理層 headline 建議用此數字</li></ul><span class="tt-cite">（2026-07-07 查詢日期，HK TRANSPORT PlatformOD，活動前／活動後各 180 天：2025-05-18 to 2025-11-13；2025-11-17 to 2026-05-16）</span></span></div>
+      <div class="kpi tip-host" tabindex="0"><div class="label">既有活躍客 <span class="tip" tabindex="0">DiD<span class="tt-box"><div class="tt-h">DiD</div><ul class="tt-ul"><li>雙差法（DiD）：比較「參加者活動前後變化」與「對照組活動前後變化」的差距，用來估計活動真正帶來多少增量。</li></ul></span></span> (platform_take/user)</div><div class="value">HK$89.72</div><div class="sub">136 對 · 總增量 HK$12,201.70</div><span class="tt-box tt-box--kpi"><div class="tt-h">既有活躍客 DiD（主結論）</div><table class="tt-tbl"><tbody><tr><th>配對數</th><td>136</td></tr><tr><th>Treatment Post−Pre</th><td>HK$23.44</td></tr><tr><th>Control Post−Pre</th><td>HK$-66.28</td></tr><tr><th>DiD</th><td><strong>HK$89.72/人</strong></td></tr><tr><th>Bootstrap CI</th><td>[HK$30.19, HK$141.20]</td></tr></tbody></table><ul class="tt-ul"><li>管理層 headline 建議用此數字</li></ul><span class="tt-cite">（2026-07-07 查詢日期，HK TRANSPORT PlatformOD，活動前／活動後各 180 天：2025-05-18 to 2025-11-13；2025-11-17 to 2026-05-16）</span></span></div>
       <div class="kpi tip-host" tabindex="0"><div class="label">新客活動後總 platform_take</div><div class="value">HK$2,856.50</div><div class="sub">留存率 39/102（38.2%）</div><span class="tt-box tt-box--kpi"><div class="tt-h">平台新客（無 DiD）</div><table class="tt-tbl"><tbody><tr><th>人數</th><td>102</td></tr><tr><th>留存</th><td>39/102（38.2%）</td></tr><tr><th>Total post platform_take</th><td>HK$2,856.50</td></tr><tr><th>人均</th><td>HK$28.00</td></tr></tbody></table><ul class="tt-ul"><li>活動前無完成單，無法配對 DiD</li></ul><span class="tt-cite">（2026-07-07 查詢日期，HK TRANSPORT PlatformOD，活動前／活動後各 180 天：2025-05-18 to 2025-11-13；2025-11-17 to 2026-05-16）</span></span></div>
-      <div class="kpi tip-host" tabindex="0"><div class="label">混合 <span class="tip" tabindex="0">DiD<span class="tt-box"><div class="tt-h">DiD</div><ul class="tt-ul"><li>雙差法（Difference-in-Differences）：比較實驗組與對照組在活動前後的變化差額，用來估計活動的增量效果。</li></ul></span></span></div><div class="value">HK$25.37</div><div class="sub">140 對 · HK$3,552.10</div><span class="tt-box tt-box--kpi"><div class="tt-h">混合 140 對 DiD</div><table class="tt-tbl"><tbody><tr><th>配對數</th><td>140 / 372</td></tr><tr><th>DiD platform_take</th><td>HK$25.37/人</td></tr><tr><th>Bootstrap CI</th><td>[HK$-33.63, HK$76.57]</td></tr><tr><th>未配對</th><td>232</td></tr></tbody></table><ul class="tt-ul"><li>不可 × 全體人數外推</li></ul><span class="tt-cite">（2026-07-07 查詢日期，HK TRANSPORT PlatformOD，活動前／活動後各 180 天：2025-05-18 to 2025-11-13；2025-11-17 to 2026-05-16）</span></span></div>
-      <div class="kpi tip-host" tabindex="0"><div class="label">ROI proxy</div><div class="value">6.0%</div><div class="sub">成本 HK$252,708.00 · 效益 HK$15,094.50</div><span class="tt-box tt-box--kpi"><div class="tt-h">ROI proxy 說明</div><table class="tt-tbl"><tbody><tr><th>活動成本（Sheet ref）</th><td>HK$252,708.00</td></tr><tr><th>效益 proxy</th><td>HK$15,094.50</td></tr><tr><th>ROI proxy</th><td>6.0%</td></tr></tbody></table><ul class="tt-ul"><li>非官方財務口徑</li></ul><span class="tt-cite">（2026-07-07 查詢日期，HK TRANSPORT PlatformOD，活動前／活動後各 180 天：2025-05-18 to 2025-11-13；2025-11-17 to 2026-05-16）</span></span></div>
+      <div class="kpi tip-host" tabindex="0"><div class="label">混合 <span class="tip" tabindex="0">DiD<span class="tt-box"><div class="tt-h">DiD</div><ul class="tt-ul"><li>雙差法（DiD）：比較「參加者活動前後變化」與「對照組活動前後變化」的差距，用來估計活動真正帶來多少增量。</li></ul></span></span></div><div class="value">HK$25.37</div><div class="sub">140 對 · HK$3,552.10</div><span class="tt-box tt-box--kpi"><div class="tt-h">混合 140 對 DiD</div><table class="tt-tbl"><tbody><tr><th>配對數</th><td>140 / 372</td></tr><tr><th>DiD platform_take</th><td>HK$25.37/人</td></tr><tr><th>Bootstrap CI</th><td>[HK$-33.63, HK$76.57]</td></tr><tr><th>未配對</th><td>232</td></tr></tbody></table><ul class="tt-ul"><li>不可 × 全體人數外推</li></ul><span class="tt-cite">（2026-07-07 查詢日期，HK TRANSPORT PlatformOD，活動前／活動後各 180 天：2025-05-18 to 2025-11-13；2025-11-17 to 2026-05-16）</span></span></div>
+      <div class="kpi tip-host" tabindex="0"><div class="label">ROI proxy</div><div class="value">6.0%</div><div class="sub">成本 HK$252,708.00 · 效益 HK$15,094.50</div><span class="tt-box tt-box--kpi"><div class="tt-h">ROI proxy 說明</div><table class="tt-tbl"><tbody><tr><th>活動成本（Sheet ref）</th><td>HK$252,708.00</td></tr><tr><th>效益 proxy</th><td>HK$15,094.50</td></tr><tr><th>ROI proxy</th><td>6.0%</td></tr></tbody></table><ul class="tt-ul"><li>粗略回本率（ROI proxy）：用估計收益除以活動成本，不是 Finance 官方 ROI。</li></ul><span class="tt-cite">（2026-07-07 查詢日期，HK TRANSPORT PlatformOD，活動前／活動後各 180 天：2025-05-18 to 2025-11-13；2025-11-17 to 2026-05-16）</span></span></div>
     </div>
   </div>
 
@@ -746,7 +773,7 @@ footer p { margin:0 0 10px; color:var(--text); opacity:.9; }
     <h2>與 Google Sheet 短答對照（<span class="tag warn">部分一致</span>）</h2>
     <div class="table-wrap"><table>
       <thead><tr><th>主題</th><th>Sheet</th><th>BigQuery</th><th>判定</th></tr></thead>
-      <tbody><tr><td>活動新增客戶數</td><td>239（Sheet 521：New 95 + Reactivated 144）</td><td>204（BQ voucher 372：New 102 + Reactivated 102）</td><td><span class="tag bad">不一致</span></td></tr><tr><td>活動成本</td><td>HK$252,708</td><td>HK$252,708（Sheet ref）</td><td><span class="tag ok">一致</span></td></tr><tr><td>新客＋回流客活動後 GTV</td><td>HK$98,061（Sheet 7 個月 measured，2025-11-18～2026-05-31）</td><td>HK$61,924（BQ post 180 天，2025-11-17 to 2026-05-16）</td><td><span class="tag bad">不一致</span></td></tr><tr><td>既有活躍客增量</td><td>No real change</td><td>matched DiD platform_take +HK$85.11/人（136 對）</td><td><span class="tag bad">不一致</span></td></tr><tr><td>新客留存率</td><td>62.0%</td><td>38.2%（post 窗 ≥1 完成單）</td><td><span class="tag bad">不一致</span></td></tr><tr><td>回流客留存率</td><td>71.0%</td><td>60.8%（post 窗 ≥1 完成單）</td><td><span class="tag bad">不一致</span></td></tr><tr><td>老客留存率</td><td>81.0%</td><td>81.5%（post 窗 ≥1 完成單）</td><td><span class="tag ok">一致</span></td></tr><tr><td>成本 vs 效益方向</td><td>Spend HK$252,708；measured GTV ~HK$98k &lt;&lt; cost</td><td>ROI proxy 5.69%（benefit HK$14,390 vs cost HK$252,708）</td><td><span class="tag ok">一致</span></td></tr><tr><td>混合 DiD 主結論</td><td>Brand / win-back play - yes; pure pet-customer acquisition - no</td><td>混合 DiD +HK$25.37/人（140 對可配對子集）</td><td><span class="tag bad">不一致</span></td></tr></tbody>
+      <tbody><tr><td>活動新增客戶數</td><td>239（Sheet 521：New 95 + Reactivated 144）</td><td>204（BQ voucher 372：New 102 + Reactivated 102）</td><td><span class="tag bad">不一致</span></td></tr><tr><td>活動成本</td><td>HK$252,708</td><td>HK$252,708（Sheet ref）</td><td><span class="tag ok">一致</span></td></tr><tr><td>新客＋回流客活動後 GTV</td><td>HK$98,061（Sheet 7 個月 measured，2025-11-18～2026-05-31）</td><td>HK$61,924（BQ post 180 天，2025-11-17 to 2026-05-16）</td><td><span class="tag bad">不一致</span></td></tr><tr><td>既有活躍客增量</td><td>No real change</td><td>matched DiD platform_take +HK$89.72/人（136 對）</td><td><span class="tag bad">不一致</span></td></tr><tr><td>新客留存率</td><td>62.0%</td><td>38.2%（post 窗 ≥1 完成單）</td><td><span class="tag bad">不一致</span></td></tr><tr><td>回流客留存率</td><td>71.0%</td><td>60.8%（post 窗 ≥1 完成單）</td><td><span class="tag bad">不一致</span></td></tr><tr><td>老客留存率</td><td>81.0%</td><td>81.5%（post 窗 ≥1 完成單）</td><td><span class="tag ok">一致</span></td></tr><tr><td>成本 vs 效益方向</td><td>Spend HK$252,708；measured GTV ~HK$98k &lt;&lt; cost</td><td>ROI proxy 5.97%（benefit HK$15,094.5 vs cost HK$252,708）</td><td><span class="tag ok">一致</span></td></tr><tr><td>混合 DiD 主結論</td><td>Brand / win-back play - yes; pure pet-customer acquisition - no</td><td>混合 DiD +HK$25.37/人（140 對可配對子集）</td><td><span class="tag bad">不一致</span></td></tr></tbody>
     </table></div>
   </div>
 
