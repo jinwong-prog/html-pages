@@ -551,7 +551,7 @@
           <div class="term-grid">
             <div class="term"><strong>ROI proxy</strong> 粗略回本率，不是 Finance 官方 ROI。</div>
             <div class="term"><strong>DiD</strong> 差異中的差異：實驗組變化減對照組變化。</div>
-            <div class="term"><strong>platform_take</strong> 平台實際收入，本報告主 KPI。</div>
+            <div class="term"><strong>platform_take</strong> 平台實際收入，本報告主 KPI。公式：<code>driver_commission + premium_platform_support</code>（平台向司機抽佣 ＋ 平台支援費；null 當 0）。</div>
             <div class="term"><strong>無活動代理</strong> matched control 模擬「若無做活動」的預期走勢，不是 forecast model。</div>
           </div>
         </div>
@@ -1072,7 +1072,7 @@
           <div class="term-grid">
             <div class="term"><strong>ROI proxy</strong> 粗略回本率。用可觀察收益 proxy 除以活動成本，不是 Finance 官方 ROI。</div>
             <div class="term"><strong>DiD</strong> 差異中的差異。不是只看活動前後，而是看 treatment 比 control 多好多少。</div>
-            <div class="term"><strong>platform_take</strong> 平台實際收入。這份報告最核心的 business KPI。</div>
+            <div class="term"><strong>platform_take</strong> 平台實際收入，本報告最核心 business KPI。<br>公式：<code>driver_commission + premium_platform_support</code>（平台向司機抽佣 ＋ 平台支援費；null 當 0，已對 BQ 驗證）。<br>注意：非 GTV、亦非 Finance 官方淨利（未扣營運成本）。</div>
             <div class="term"><strong>GTV</strong> 客戶支付總額，不等於平台賺到的錢。</div>
             <div class="term"><strong>Treatment</strong> 有參加活動、使用 Doggo Fest voucher 的用戶。</div>
             <div class="term"><strong>Control</strong> 沒參加活動，但活動前特徵相似的用戶。</div>
@@ -1137,7 +1137,7 @@
             </tr>
             <tr>
               <td>主 KPI</td>
-              <td>completed_orders、GTV、platform_take；其中 platform_take 為主 headline</td>
+              <td>completed_orders、GTV、platform_take；其中 platform_take 為主 headline。<code>platform_take = driver_commission + premium_platform_support</code>（COALESCE null→0；已對 BQ 驗證）</td>
             </tr>
             <tr>
               <td>Direction split</td>
