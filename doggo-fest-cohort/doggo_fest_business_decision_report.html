@@ -638,6 +638,63 @@
         </div>
       </details>
 
+      <details style="margin-top:12px;">
+        <summary>⑤ 為何唔把 Pre window 拉長到 365 日？</summary>
+        <div class="details-body">
+          <div class="callout blue" style="margin-top:12px;">
+            <strong>結論：</strong>不建議把活動前觀察窗由 180 日拉長到 365 日。拉長 Pre window <strong>不會增加實驗組人數</strong>——Doggo Fest 實驗組由 voucher 使用定義，仍是 372 人；改窗只影響「多少人能找到相似對照組」，不改變誰是參加者。而且 365 日只救到部分回流客，救不到真新客，還會破壞 Pre／Post 對稱，令 DiD 較難解讀。
+          </div>
+
+          <p class="chart-conclusion" style="margin-top:6px;">會影響哪些人？</p>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>分段</th><th>拉到 365 日有冇幫助</th><th>原因</th></tr></thead>
+              <tbody>
+                <tr><td>真新客 102 人</td><td class="answer-no">無幫助</td><td>生涯首單就在活動期；即使 Pre 拉到 365 日，活動前仍沒有歷史訂單，不能用活動前行為配對。</td></tr>
+                <tr><td>回流客約 100 人</td><td class="answer-warn">部分有幫助</td><td>若上次下單在活動前 180–365 日之間，365 日窗可重新看到舊紀錄；但只代表他曾用過，不代表近期活躍。</td></tr>
+                <tr><td>既有客 32 人</td><td class="answer-no">無幫助</td><td>問題不是沒有歷史，而是 control pool 找不到夠相似的對照；要擴大 control pool，而非拉長 Pre window。</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p class="chart-conclusion" style="margin-top:14px;">1. Pre／Post 必須對稱，否則 DiD 有偏差</p>
+          <p class="chart-note">本分析用活動前 180 日、活動後 180 日，兩段等長，Post−Pre 可直接解讀。若改成 Pre = 365 日、Post = 180 日，Pre 期自然累積更多訂單／GTV／platform_take（時間接近 Post 的兩倍），會令 Post−Pre 被人為拉低、DiD 結果不公平。若一定要用 365 日 Pre，就不能用累計值直接比較，必須改成人均每日率（每人每日訂單／GTV／platform_take）；但這樣整個 KPI 定義會改變，不能與目前 180／180 的結果直接混用。</p>
+
+          <p class="chart-conclusion" style="margin-top:14px;">2. 回流客本質是 Reactivation，不應與既有活躍客混在一起</p>
+          <p class="chart-note">一個客戶 250 日前下過單、最近 180 日完全沒用，他在活動前最近 180 日並非活躍用戶；拉到 365 日看到舊單也不改變這事實。這類客戶應獨立分析為 reactivation / win-back，而非與 existing active 的增量混合。</p>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>客群</th><th>要回答的商業問題</th></tr></thead>
+              <tbody>
+                <tr><td>Existing active</td><td>對近期本來已活躍的寵物客，Doggo Fest 有沒有帶來額外增量？</td></tr>
+                <tr><td>Reactivated</td><td>Doggo Fest 有沒有把休眠客叫回來？</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="chart-note">這是兩個不同的商業問題，不應用同一 headline 混合解讀。</p>
+
+          <p class="chart-conclusion" style="margin-top:14px;">3. 樣本變多，不代表結論更可信</p>
+          <p class="chart-note">目前 mixed matched DiD 為 140 對，統計信心已有限（CI 含 0）。若把更多行為不穩定的回流客加入，樣本數會增加，但變異也增加，信賴區間可能更闊。<strong>更多人 ≠ 更可信</strong>——應優先保留乾淨、可解讀的 matched sample，而非為了衝樣本數把行為差異很大的客群混在一起。</p>
+
+          <p class="chart-conclusion" style="margin-top:14px;">正確做法（按客群改方法，而非拉長窗）</p>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>目標</th><th>建議做法</th></tr></thead>
+              <tbody>
+                <tr><td>分析真新客</td><td>不用 DiD；改用 signup date、渠道、地區、首單特徵、device 等 observed covariates 做 PSM / matching，或用同期 organic 新客做 benchmark。</td></tr>
+                <tr><td>分析回流客</td><td>獨立做 reactivation analysis，不與 existing active 混合。</td></tr>
+                <tr><td>增加既有客 matched sample</td><td>擴大 control pool，為未配對的既有客尋找更多相似對照。</td></tr>
+                <tr><td>一定要用 365 日 Pre</td><td>KPI 改成人均每日率，避免 365 日累計值與 180 日累計值直接比較。</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="callout amber" style="margin-top:14px;">
+            <strong>對外解讀：</strong>拉長 Pre window 到 365 日不能解決全部配對問題——只幫到部分回流客，幫不到真新客；且若 Post 仍是 180 日，Pre／Post 長度不一致會令 DiD 有偏差。因此本報告保留 180／180 對稱時間窗，重點放在可乾淨配對的 matched sample；未來要提高覆蓋率，正確方向是改進配對方法與擴大 control pool，而非單純加長 baseline window。
+          </div>
+        </div>
+      </details>
+
       <p class="cite">引用：（2026-07-07 實查，HK TRANSPORT PlatformOD，pre 2025-05-18 to 2025-11-13；post 2025-11-17 to 2026-05-16）</p>
     </section>
 
