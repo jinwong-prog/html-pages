@@ -506,6 +506,7 @@
         <a href="#counterfactual">無活動代理</a>
         <a href="#playbook">2026 Playbook</a>
         <a href="#glossary">術語</a>
+        <a href="#cohort-base">基數與配對</a>
         <a href="#appendix">Appendix</a>
       </nav>
     </div>
@@ -1087,8 +1088,108 @@
       </details>
     </section>
 
+    <section id="cohort-base" class="section">
+      <h2>9. 人群基數與配對覆蓋（Cohort Base &amp; Matching）</h2>
+      <p class="lead">先講清楚 372 從何而來、為何只有 140 對可做因果，以及這對結論的影響——避免誤讀成「人數少＝結論不可信」。</p>
+
+      <div class="callout blue">
+        這份報告的重點不是「有多少人」，而是「相對無活動代理，參加者是否真有增量」。主結論（既有活躍客 +HK$89.72／人）建立在可配對且統計顯著的子集上，人數規模不影響決策方向。
+      </div>
+
+      <div class="grid-3" style="margin-bottom:16px;">
+        <div class="kpi">
+          <div class="label">Treatment 基數</div>
+          <div class="value">372 人</div>
+          <div class="sub">活動期領券完成單（去重）</div>
+        </div>
+        <div class="kpi">
+          <div class="label">可配對 DiD</div>
+          <div class="value">140 對</div>
+          <div class="sub">37.6%；其餘 232 人結構上無法配對</div>
+        </div>
+        <div class="kpi">
+          <div class="label">主結論母體</div>
+          <div class="value">既有活躍客 136 對</div>
+          <div class="sub">Bootstrap CI 排除 0，統計顯著</div>
+        </div>
+      </div>
+
+      <details open>
+        <summary>① 納入條件：372 人怎樣圈出來</summary>
+        <div class="details-body">
+          <p class="chart-note" style="margin-top:12px;">活動期 2025-11-14 至 11-16 使用 Doggo Fest voucher 完成至少一張單，並符合以下口徑（去重後 372 人）：</p>
+          <ul>
+            <li>country = hk；product_name = TRANSPORT</li>
+            <li>business_segment = PlatformOD</li>
+            <li>vehicle_type ∈ (van、mudou、mudou9)</li>
+            <li>status = completed</li>
+            <li>voucher 命中：<code>voucher_title LIKE '%Doggo Fest%'</code> 或指定 voucher code</li>
+          </ul>
+          <p class="chart-note">用 voucher（而非尖沙咀 TST 地點）識別參加者：活動期 TST 叫車 2,214 人多為普通訂單，noise 太大；voucher 才是最乾淨的參與訊號。</p>
+          <p class="chart-note">Control 候選：Typical Pet 池 3,470 名「活動前已活躍」的 PlatformOD 寵物客（未領 Doggo Fest 券）。</p>
+        </div>
+      </details>
+
+      <details style="margin-top:12px;">
+        <summary>② 為何只配到 140 對（37.6%）</summary>
+        <div class="details-body">
+          <p class="chart-conclusion" style="margin-top:12px;">配對用「活動前 180 天行為」分桶（pre 完成單桶 × pre GTV 四分位 × recency 桶）做 exact / bucket match；沒有活動前行為的人，結構上就無同桶對照可配。</p>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>分段</th><th>Treatment 人數</th><th>可配對</th><th>未配對</th><th>原因</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>既有活躍客</td><td>168</td><td>136 對</td><td>32</td><td>個別桶組合在 control 池找不到同桶對象</td></tr>
+                <tr><td>真・新客</td><td>102</td><td>2 對</td><td>~100</td><td>活動前無任何完成單 → recency 桶 = unknown，無得配</td></tr>
+                <tr><td>回流客</td><td>102</td><td>2 對</td><td>~100</td><td>長期休眠，活動前行為近乎空白</td></tr>
+                <tr><td><strong>合計</strong></td><td><strong>372</strong></td><td><strong>140 對</strong></td><td><strong>232</strong></td><td>—</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="chart-note">一句：232 人不是「配不到」，而是新客／回流客根本沒有活動前 baseline，屬「結構上無法配」。</p>
+        </div>
+      </details>
+
+      <details style="margin-top:12px;">
+        <summary>③ 樣本細對結論的影響（顯著性）</summary>
+        <div class="details-body">
+          <div class="table-wrap" style="margin-top:12px;">
+            <table>
+              <thead>
+                <tr><th>指標</th><th>DiD / 人</th><th>Bootstrap 95% CI</th><th>是否顯著</th><th>報告用法</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>既有活躍客（136 對）</td><td>+HK$89.72</td><td>[+30.19, +141.20]</td><td class="answer-yes">是（排除 0）</td><td>主 headline</td></tr>
+                <tr><td>混合（140 對）</td><td>+HK$25.37</td><td>[−33.63, +76.57]</td><td class="answer-warn">否（含 0）</td><td>僅作輔助</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="chart-note">主結論（既有活躍客）統計顯著、穩健；混合平均因含大量異質新客，CI 含 0，只作輔助。因此 sample 細只削弱「混合平均」這個次要數，不削弱決策方向——決策靠的是「人均 uplift 方向 + 顯著性 + ROI proxy + 新客質量 benchmark」，不靠人數規模，且明確不可外推至 372。</p>
+        </div>
+      </details>
+
+      <details style="margin-top:12px;">
+        <summary>④ 下次分析：要加什麼 tag / 追蹤才收錄得更完整</summary>
+        <div class="details-body">
+          <p class="chart-note" style="margin-top:12px;"><strong>底線：</strong>想把 204 名新客／回流客也納入因果分析，關鍵不是收多些人，而是在活動前就為他們留下可配對的 baseline（pet tag、渠道、signup）；否則他們永遠只能做描述性 benchmark。</p>
+          <div class="term-grid">
+            <div class="term"><strong>放寬配對方法</strong>改 1:3、nearest-neighbor / PSM（用可觀察 covariates 而非 pre 行為）+ caliper，讓新客也能配對。</div>
+            <div class="term"><strong>擴大 control 池</strong>不限 Typical Pet 3,470，擴到全 HK existing pet，替 32 名落空既有客找同桶對象。</div>
+            <div class="term"><strong>Voucher attribution</strong>記錄「已派 vs 已用」，連未兌換者都能追蹤，treatment 不只靠活動窗兌換。</div>
+            <div class="term"><strong>結構化 pet / service tag</strong>目前 BQ 無乾淨 pet 欄（靠 request_remarks，noise 大）；有 tag 才能識別活動窗外的 pet 行為，建立 pre-window baseline。</div>
+            <div class="term"><strong>新客 signup + 渠道</strong>寫入 signup date 與獲取渠道，讓新客可用 observed-covariate 配對，而非只做 benchmark。</div>
+            <div class="term"><strong>Direction / venue tag 入 BQ</strong>目前只靠 Sheet tst_496（覆蓋 122/140），入 BQ 才完整。</div>
+            <div class="term"><strong>分渠道成本明細</strong>不只 Sheet grand total，讓 ROI proxy 做得更準。</div>
+          </div>
+        </div>
+      </details>
+
+      <p class="cite">引用：（2026-07-07 實查，HK TRANSPORT PlatformOD，pre 2025-05-18 to 2025-11-13；post 2025-11-17 to 2026-05-16）</p>
+    </section>
+
     <section id="appendix" class="section">
-      <h2>9. Method Appendix</h2>
+      <h2>10. Method Appendix</h2>
       <p class="lead">主報告先解決決策問題；這一節才放方法論，方便 Data / Finance / PM 補看。</p>
 
       <div class="callout blue">
