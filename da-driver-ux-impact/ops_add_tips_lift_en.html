@@ -168,6 +168,28 @@
   </div>
   <p class="meta">This corrects an earlier version of this report, which mistakenly compared against a subset of "no-tip" orders that had been further filtered, making 2026-06-08 appear to have two cells where tipping "won." Using all eligible no-tip orders as the comparison removes that artifact — no day, no fare tier, shows tipping beating no-tip.</p>
 
+  <h2>Additional finding: "same difficulty" may not actually mean equally difficult</h2>
+  <p><b>Why:</b> although both groups clear the "wait ≥120s, backlog ≥40 orders" threshold, tipped orders have a higher actual wait time and backlog. For example, in the $85–149 fare tier, the median wait time is 519 seconds — clearly higher than the 247 seconds for no-tip orders. <b>What this means:</b> the dual-gate condition can only tell whether the threshold was cleared, not how much harder an order got beyond it — tipped orders remain the harder batch even within the group that met the threshold. <b>Conclusion:</b> "tipped orders have a lower completion rate" is therefore more likely to reflect that these orders were inherently harder to dispatch, not direct proof that tipping itself lowered completion. Comparing actual wait time and backlog within the "same difficulty" subset, tipped vs. no-tip, by fare tier:</p>
+  <table class="cmp">
+    <thead><tr>
+      <th>Fare tier</th><th>Group</th><th>Orders</th>
+      <th>Avg. wait (sec)</th><th>Median wait (sec)</th>
+      <th>Avg. backlog</th><th>Median backlog</th>
+    </tr></thead>
+    <tbody>
+      <tr><td>Under $85</td><td>No tip</td><td>276</td><td>407.7</td><td>259</td><td>117.4</td><td>111</td></tr>
+      <tr><td>Under $85</td><td class="lose">Tipped</td><td>81</td><td class="lose tip-val">820.5</td><td class="lose tip-val">699</td><td class="lose tip-val">144.4</td><td class="lose tip-val">144</td></tr>
+      <tr><td>$85 – $149</td><td>No tip</td><td>1,650</td><td>318.7</td><td>247</td><td>131.4</td><td>132</td></tr>
+      <tr><td>$85 – $149</td><td class="lose">Tipped</td><td>491</td><td class="lose tip-val">684.0</td><td class="lose tip-val">519</td><td class="lose tip-val">161.8</td><td class="lose tip-val">155</td></tr>
+      <tr><td>$150 – $199</td><td>No tip</td><td>657</td><td>495.8</td><td>271</td><td>138.3</td><td>139</td></tr>
+      <tr><td>$150 – $199</td><td class="lose">Tipped</td><td>130</td><td class="lose tip-val">795.5</td><td class="lose tip-val">688</td><td class="lose tip-val">170.6</td><td class="lose tip-val">180</td></tr>
+    </tbody>
+  </table>
+  <div class="box warn">
+    <b>Consistent across all three fare tiers:</b> the tipped group's median wait time and backlog are both noticeably higher than the no-tip group's. This is a form of <b>residual confounding</b> — tips are not assigned randomly, but to the orders judged hardest within the same difficulty bucket. Confirming whether tipping itself has any effect requires random assignment (see the recommendation below) to remove this selection bias.
+  </div>
+  <p class="meta">Table: <code>gogox-ba-sandbox.reporting.pres_ops_add_tips_amount_lift</code> (now includes avg/median_wait_sec and avg/median_backlog_at_120).</p>
+
   <h2>Special check ①: are any low-fare orders getting the $15 tip?</h2>
   <p>The sheet's amount rule explicitly states that a fare above $150 (but under $200) maps to the $15 tip. Checking the actual fare (GTV — the amount the customer paid) against each tip amount, to see whether any low-fare order received the $15 tip:</p>
   <table class="cmp">
@@ -246,6 +268,7 @@
     <li><b>Consistency:</b> across 17 day-by-fare-tier comparison cells, not a single one shows tipping outperforming no-tip.</li>
     <li><b>Rule check:</b> no evidence of high-fare orders being over-subsidized; however, 305 orders received a tip amount below what the sheet's rule calls for — the cause should be confirmed.</li>
     <li><b>Financial impact:</b> tipped, completed orders still net a positive $8.60 per order on average, though lower than the $18.44 for no-tip orders; no case was found where the tip exceeded the order's revenue.</li>
+    <li><b>Residual difficulty confounding:</b> even within the "same difficulty" subset, tipped orders still have a noticeably higher median wait time and backlog than no-tip orders (see the additional finding above) — tips are likely assigned to the hardest orders within that difficulty bucket, so part of the observed completion-rate gap may reflect selection bias rather than the effect of tipping itself.</li>
     <li><b>Recommendation:</b> the current results only reflect correlation and cannot prove that tipping causes the completion-rate difference; a formal A/B test or randomized controlled trial (RCT) is recommended to verify the effect.</li>
     <li><b>Data limitation:</b> the data still contains tipped orders with a fare ≥ $200, which is inconsistent with the sheet's rule; separately, BigQuery cannot verify "has not previously received a one-time tip," so this was not included in the analysis.</li>
   </ul>
