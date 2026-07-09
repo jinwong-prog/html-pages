@@ -168,8 +168,15 @@
   </div>
   <p class="meta">This corrects an earlier version of this report, which mistakenly compared against a subset of "no-tip" orders that had been further filtered, making 2026-06-08 appear to have two cells where tipping "won." Using all eligible no-tip orders as the comparison removes that artifact — no day, no fare tier, shows tipping beating no-tip.</p>
 
-  <h2>Additional finding: "same difficulty" may not actually mean equally difficult</h2>
-  <p><b>Why:</b> although both groups clear the "wait ≥120s, backlog ≥40 orders" threshold, tipped orders have a higher actual wait time and backlog. For example, in the $85–149 fare tier, the median wait time is 519 seconds — clearly higher than the 247 seconds for no-tip orders. <b>What this means:</b> the dual-gate condition can only tell whether the threshold was cleared, not how much harder an order got beyond it — tipped orders remain the harder batch even within the group that met the threshold. <b>Conclusion:</b> "tipped orders have a lower completion rate" is therefore more likely to reflect that these orders were inherently harder to dispatch, not direct proof that tipping itself lowered completion. Comparing actual wait time and backlog within the "same difficulty" subset, tipped vs. no-tip, by fare tier:</p>
+  <h2>Additional finding: even after controlling for the difficulty threshold, tipped orders are still harder to dispatch</h2>
+  <ul class="plain">
+    <li><b>Additional finding:</b> even when comparing only orders that already met the same threshold (wait ≥120s, backlog ≥40 orders), <b>tipped orders are still harder to dispatch than no-tip orders</b>.</li>
+    <li><b>What the data shows:</b> tipped orders have a <b>median wait time of 560 seconds</b>, versus <b>257 seconds</b> for no-tip orders; median backlog is also higher (<b>155 orders vs. 131 orders</b>).</li>
+    <li><b>What this means:</b> the dual-gate condition can only tell whether the dispatch threshold was met, <b>not how difficult an order is beyond that threshold</b>. Tipped orders are mostly the <b>harder</b> batch among those that qualify.</li>
+    <li><b>Therefore:</b> the lower completion rate for tipped orders <b>more likely reflects that these orders were inherently harder to complete, rather than tipping itself lowering the completion rate</b>.</li>
+    <li><b>Recommendation:</b> to fairly evaluate the effect of tipping, use a finer difficulty breakdown (e.g. actual wait time, actual backlog), or run an <b>A/B test</b> to verify tipping's true impact.</li>
+  </ul>
+  <p>Comparing actual wait time and backlog within the "same difficulty" subset, tipped vs. no-tip, by fare tier:</p>
   <table class="cmp">
     <thead><tr>
       <th>Fare tier</th><th>Group</th><th>Orders</th>
@@ -186,7 +193,7 @@
     </tbody>
   </table>
   <div class="box warn">
-    <b>Consistent across all three fare tiers:</b> the tipped group's median wait time and backlog are both noticeably higher than the no-tip group's. This is a form of <b>residual confounding</b> — tips are not assigned randomly, but to the orders judged hardest within the same difficulty bucket. Confirming whether tipping itself has any effect requires random assignment (see the recommendation below) to remove this selection bias.
+    <b>Consistent across all three fare tiers:</b> even within the "same difficulty" subset, the tipped group still waited longer and had a higher backlog than the no-tip group — tips are not going to all qualifying orders evenly, but to the hardest-to-dispatch portion of them.
   </div>
   <p class="meta">Table: <code>gogox-ba-sandbox.reporting.pres_ops_add_tips_amount_lift</code> (now includes avg/median_wait_sec and avg/median_backlog_at_120).</p>
 
