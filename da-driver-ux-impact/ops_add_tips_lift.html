@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>繁忙時段加貼士救單，到底有沒有用？</title>
+<style>
+  :root{
+    --plane:#f9f9f7; --surface:#fcfcfb;
+    --ink:#0b0b0b; --ink2:#52514e; --muted:#898781;
+    --grid:#e1e0d9; --axis:#c3c2b7; --border:rgba(11,11,11,.10);
+    --base:#2a78d6; --lt200:#1baf7a;
+    --bad:#d03b3b; --good:#006300;
+    --badbg:rgba(208,59,59,.08); --goodbg:rgba(0,99,0,.08); --warnbg:rgba(237,161,0,.10);
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --plane:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7; --muted:#898781;
+      --grid:#2c2c2a; --axis:#383835; --border:rgba(255,255,255,.10);
+      --base:#3987e5; --lt200:#199e70; --bad:#e66767; --good:#0ca30c;
+      --badbg:rgba(230,103,103,.12); --goodbg:rgba(12,163,12,.12); --warnbg:rgba(201,133,0,.15);
+    }
+  }
+  :root[data-theme=dark]{--plane:#0d0d0d;--surface:#1a1a19;--ink:#fff;--ink2:#c3c2b7;--muted:#898781;--grid:#2c2c2a;--axis:#383835;--border:rgba(255,255,255,.10);--base:#3987e5;--lt200:#199e70;--bad:#e66767;--good:#0ca30c;--badbg:rgba(230,103,103,.12);--goodbg:rgba(12,163,12,.12);--warnbg:rgba(201,133,0,.15);}
+  :root[data-theme=light]{--plane:#f9f9f7;--surface:#fcfcfb;--ink:#0b0b0b;--ink2:#52514e;--muted:#898781;--grid:#e1e0d9;--axis:#c3c2b7;--border:rgba(11,11,11,.10);--base:#2a78d6;--lt200:#1baf7a;--bad:#d03b3b;--good:#006300;--badbg:rgba(208,59,59,.08);--goodbg:rgba(0,99,0,.08);--warnbg:rgba(237,161,0,.10);}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--plane);color:var(--ink);
+    font-family:system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.7;
+    -webkit-font-smoothing:antialiased;font-size:16px}
+  .wrap{max-width:1080px;margin:0 auto;padding:44px 40px 88px}
+  h1{font-size:29px;margin:0 0 6px;letter-spacing:-.01em;line-height:1.3}
+  .meta{color:var(--muted);font-size:13px;margin:0 0 32px}
+  .answer{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--bad);
+    border-radius:12px;padding:20px 24px;margin:0 0 40px;font-size:17px}
+  .answer .big{font-size:20px;font-weight:700}
+  h2{font-size:20px;margin:44px 0 6px;letter-spacing:-.01em}
+  .step{color:var(--muted);font-size:13px;font-weight:700;letter-spacing:.06em;margin:44px 0 2px}
+  p{margin:10px 0;max-width:78ch}
+  .hl-bad{color:var(--bad);font-weight:700}
+  .hl-good{color:var(--good);font-weight:700}
+  .box{border-radius:12px;padding:16px 20px;margin:16px 0;font-size:15.5px;max-width:90ch}
+  .box.bad{background:var(--badbg)} .box.good{background:var(--goodbg)} .box.warn{background:var(--warnbg)}
+  .box b{font-weight:700}
+  table{border-collapse:collapse;width:100%;font-size:15px;margin:14px 0}
+  th,td{padding:10px 16px;text-align:right;border-bottom:1px solid var(--grid);
+    font-variant-numeric:tabular-nums;white-space:nowrap}
+  th:first-child,td:first-child{text-align:left}
+  thead th{color:var(--muted);font-weight:600;border-bottom:1px solid var(--axis);font-size:13px}
+  tr.base td{background:color-mix(in srgb,var(--muted) 9%,transparent);font-weight:700}
+  .win{color:var(--good);font-weight:700} .lose{color:var(--bad);font-weight:700}
+  table.cmp th.notip,table.cmp td.notip{background:color-mix(in srgb,var(--base) 10%,transparent)}
+  table.cmp th.tip,table.cmp td.tip{background:color-mix(in srgb,var(--bad) 9%,transparent)}
+  table.cmp .notip-val{color:var(--base);font-weight:700}
+  table.cmp .tip-val{color:var(--bad);font-weight:700}
+  table.cmp th.notip,table.cmp th.tip{font-weight:700;font-size:13px}
+  table.cmp td.n{color:var(--ink2);font-weight:400;font-size:12.5px}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:22px;margin:18px 0;overflow-x:auto}
+  .legend{display:flex;gap:22px;flex-wrap:wrap;font-size:13.5px;color:var(--ink2);padding:2px 2px 16px}
+  .legend .it{display:flex;align-items:center;gap:8px}
+  .swatch{width:26px;height:0;border-top-width:3px;border-top-style:solid;display:inline-block}
+  .swatch.dash{border-top-style:dashed}
+  figcaption{color:var(--ink2);font-size:14px;margin-top:8px;max-width:88ch}
+  .tooltip{position:fixed;pointer-events:none;opacity:0;transition:opacity .08s;background:var(--ink);color:var(--plane);
+    font-size:12.5px;border-radius:8px;padding:8px 11px;font-variant-numeric:tabular-nums;box-shadow:0 6px 20px rgba(0,0,0,.25);z-index:9}
+  ul.plain{padding-left:20px;max-width:82ch} ul.plain li{margin:8px 0}
+  .foot{color:var(--muted);font-size:12px;margin-top:48px;border-top:1px solid var(--grid);padding-top:14px;max-width:90ch}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>繁忙時段加貼士救單，到底有沒有用？</h1>
+  <p class="meta">香港 · 個人客貨車訂單（PlatformOD）｜ 2026-07-08 實查 ｜ 嚴格跟足 Sheet 的六個 campaign 日與每日繁忙時段（香港時間，見下表）｜ 數字全部由 BigQuery 產出，對齊正式訂單表</p>
+
+  <div class="box good" style="margin-bottom:28px">
+    <ul class="plain" style="margin:0">
+      <li><b>分析範圍：</b>完全依照 Subsidy Sheet 的資格規則篩選訂單，並全程使用相同比較基礎。</li>
+      <li><b>納入條件：</b>Van、ASAP 即時單、個人客（非 Enterprise）、車費 &lt; HK$200、符合有效規則及地區範圍。</li>
+      <li><b>比較對象：</b>全部合資格有貼士單 vs 全部合資格沒有貼士單，按 Sheet 車費段分組直接比較（車費段與對應金額——&lt;$85→$5、$85–150→$10、&gt;$150→$15——直接引用自 Sheet 的 Amount by price 規則）。</li>
+      <li><b>資料限制：</b>BigQuery 無法驗證「未曾領取過一次性貼士」，因此未納入分析條件。</li>
+    </ul>
+  </div>
+
+  <div class="answer">
+    <span class="big">一句總結：在符合資格的訂單中，<span class="hl-bad">有加貼士的訂單，完成率反而低於沒有加貼士的訂單。</span></span><br>
+    逐日、逐個車費段檢視（六日 × 三個車費段），<b>沒有任何一格是「加了貼士好過不加」</b>——差距由最小 19.9 個百分點到最大 66.0 個百分點，方向完全一致。
+  </div>
+
+  <h2>分析範圍：完全依照 Sheet 的日子與時段</h2>
+  <p>本報告<b>不是自訂範圍</b>，而是嚴格跟足營運 Sheet 所設定的六個 campaign 日、每日的繁忙時段（香港時間）。下表逐日核對，實際數據的起訖時間與 Sheet 完全吻合。</p>
+  <table>
+    <thead><tr><th>Campaign 日</th><th>星期</th><th>Sheet 設定時段</th><th>實際數據時段</th><th>Budget</th><th>時段有否跟足</th></tr></thead>
+    <tbody>
+      <tr><td>2026-05-26</td><td>星期二</td><td>09:36–11:00</td><td>09:36–10:59</td><td>$2,000</td><td class="win">✓ 一致</td></tr>
+      <tr><td>2026-05-29</td><td>星期五</td><td>09:30–11:00</td><td>09:30–10:59</td><td>$1,000</td><td class="win">✓ 一致</td></tr>
+      <tr><td>2026-06-08</td><td>星期一</td><td>09:55–11:00</td><td>09:55–10:59</td><td>$1,500</td><td class="win">✓ 一致</td></tr>
+      <tr><td>2026-06-18</td><td>星期四</td><td>09:30–11:00</td><td>09:30–10:59</td><td>$2,000</td><td class="win">✓ 一致</td></tr>
+      <tr><td>2026-06-22</td><td>星期一</td><td>09:30–11:00</td><td>09:30–10:59</td><td>$1,000</td><td class="win">✓ 一致</td></tr>
+      <tr><td>2026-07-03</td><td>星期五</td><td>09:30–11:00</td><td>09:30–10:59</td><td>$2,000</td><td class="win">✓ 一致</td></tr>
+    </tbody>
+  </table>
+
+  <div class="step">如實比較 · 全部有貼士單 vs 全部沒有貼士單，按車費分組</div>
+  <h2>按 Sheet 車費段分組之下：加了貼士，完成率仍然較低</h2>
+  <p>全部合資格有貼士單 vs 全部合資格冇貼士單，按 Sheet 明文寫定的車費段分組，比較同一車費段內的完成率：</p>
+  <table class="cmp">
+    <thead><tr>
+      <th>車費段</th>
+      <th class="notip">沒有貼士 · 張數</th><th class="notip">沒有貼士 · 完成張數</th><th class="notip">沒有貼士 · 完成率</th>
+      <th class="tip">有貼士 · 張數</th><th class="tip">有貼士 · 完成張數</th><th class="tip">有貼士 · 完成率</th>
+      <th>對應貼士金額</th>
+      <th>差距</th>
+    </tr></thead>
+    <tbody>
+      <tr><td>低於 $85</td>
+        <td class="notip">1,028</td><td class="notip">828</td><td class="notip notip-val">80.5%</td>
+        <td class="tip">89</td><td class="tip">33</td><td class="tip tip-val">37.1%</td>
+        <td>$5</td>
+        <td class="lose">低 43.4%</td></tr>
+      <tr><td>$85 – $149</td>
+        <td class="notip">6,464</td><td class="notip">5,476</td><td class="notip notip-val">84.7%</td>
+        <td class="tip">508</td><td class="tip">287</td><td class="tip tip-val">56.5%</td>
+        <td>$10</td>
+        <td class="lose">低 28.2%</td></tr>
+      <tr><td>$150 – $199</td>
+        <td class="notip">2,588</td><td class="notip">2,063</td><td class="notip notip-val">79.7%</td>
+        <td class="tip">137</td><td class="tip">42</td><td class="tip tip-val">30.7%</td>
+        <td>$15</td>
+        <td class="lose">低 49.0%</td></tr>
+    </tbody>
+  </table>
+  <p class="meta">三個車費段的「沒有貼士」完成率都明顯高於同段的「有貼士」，差距（−43.4 / −28.2 / −49.0 個百分點）比之前套用任何額外篩選時都更大。（另有 149 張車費 $85–149 卻只獲 $5、155 張車費 $150–199 卻只獲 $10、1 張車費 $150 卻只獲 $5 的貼士金額不一致訂單，合共 305 張，已在下文特殊情況①處理，此表不計入，只比較金額正確的訂單。）</p>
+  <div class="box warn">
+    <b>留意 $150–199 車費段：</b>加 $15 的訂單完成率只有 <b>30.7%</b>，比同車費段沒有貼士的 79.7% 低 49.0 個百分點，是三個車費段之中差距最大的一段。給予更高金額的貼士，並沒有換來更高完成率，反而是三個金額之中表現最差。
+  </div>
+
+  <h2>一圖看清：同一車費段內，有貼士（右點）始終低於沒有貼士（左點）</h2>
+  <div class="card">
+    <figure>
+      <div class="legend">
+        <span class="it"><span class="swatch" style="border-color:var(--base)"></span>沒有貼士</span>
+        <span class="it"><span class="swatch" style="border-color:var(--bad)"></span>有貼士</span>
+      </div>
+      <svg id="chart" viewBox="0 0 640 300" width="100%" role="img"
+        aria-label="三個車費段的完成率對比圖，每段內有貼士的完成率都低於沒有貼士"></svg>
+      <figcaption>三個車費段各自獨立比較，<b>不連成一條趨勢線</b>（三段本身不連續，連線會誤導成「金額遞增的趨勢」）。每段左邊藍點是沒有貼士的完成率，右邊紅點是對應金額有貼士的完成率，兩點之間的差距即該車費段的落差。<b>三段的紅點都低於同段的藍點</b> —— 即在同一車費段內，加貼士都追不回沒有貼士的完成率。將滑鼠移上去可看詳細數字。</figcaption>
+    </figure>
+  </div>
+
+  <h2>那麼有沒有一天是「加了贏過不加」？沒有，一次都沒有</h2>
+  <p>在全部合資格訂單中，逐日、逐個車費段檢視（六日 × 三個車費段，共 17 格有足夠樣本），對比有貼士與沒有貼士的完成率：</p>
+  <table class="cmp">
+    <thead><tr>
+      <th>日子</th><th>車費段</th>
+      <th class="tip">有貼士 · 張數</th><th class="tip">有貼士 · 完成率</th>
+      <th class="notip">沒有貼士 · 完成率</th>
+      <th>差距</th>
+    </tr></thead>
+    <tbody>
+      <tr><td>2026-06-08</td><td>$150–199</td>
+        <td class="tip">34</td><td class="tip tip-val">70.6%</td>
+        <td class="notip notip-val">90.5%</td><td class="lose">低 19.9%</td></tr>
+      <tr><td>2026-07-03</td><td>$85–149</td>
+        <td class="tip">175</td><td class="tip tip-val">62.3%</td>
+        <td class="notip notip-val">86.3%</td><td class="lose">低 24.1%</td></tr>
+      <tr><td>2026-06-22</td><td>$150–199</td>
+        <td class="tip">34</td><td class="tip tip-val">11.8%</td>
+        <td class="notip notip-val">77.7%</td><td class="lose">低 66.0%</td></tr>
+    </tbody>
+  </table>
+  <div class="box bad">
+    <b>結果：全部 17 格，沒有一格是「加了貼士好過不加」。</b>差距最小的一格是 2026-06-08、$150–199 車費段，仍然低 19.9 個百分點；差距最大的一格（2026-06-22、$150–199）低達 66.0 個百分點。上表只列最好與最差的例子，完整 17 格結果方向一致。
+  </div>
+  <p class="meta">此結果修正了本報告較早版本的一個錯誤：早前曾誤用一批經額外篩選的「沒有貼士」子集做對照，令 2026-06-08 出現兩格「貼士較優」的假象；改用全部合資格的沒有貼士訂單做對照後，該假象消失——不論哪一天、哪一個車費段，沒有貼士的完成率都高於有貼士。</p>
+
+  <h2>特殊情況①：有沒有「車費偏低的訂單卻補到 $15」？</h2>
+  <p>Sheet 的金額規則明文寫明：車費高於 $150（但低於 $200）才對應 $15 貼士。逐個貼士金額，對比實際車費（GTV，客戶實付車資）的分佈，檢查是否有車費偏低但補到 $15 的訂單：</p>
+  <table class="cmp">
+    <thead><tr><th>實付貼士</th><th>車費（GTV）範圍</th><th>張數</th><th>對應 Sheet 車費段</th><th>是否一致</th></tr></thead>
+    <tbody>
+      <tr><td>$5</td><td>$60 – $135</td><td>238</td><td>低於 $85 / $85–149</td><td class="win">✓ 一致</td></tr>
+      <tr><td>$10</td><td>$90 – $195</td><td>663</td><td>$85–149 / $150–199</td><td class="win">✓ 一致</td></tr>
+      <tr><td>$15</td><td><b>$160 – $195</b></td><td>137</td><td>$150–199（規則：高於 $150）</td><td class="win">✓ 一致，全部高於 $150</td></tr>
+    </tbody>
+  </table>
+  <div class="box good">
+    <b>答案：沒有。</b>全部 137 張獲得 $15 貼士的訂單，車費都在 $160–$195 之間，<b>沒有一張車費低於 $150 的訂單獲得 $15 貼士</b>。「車費偏低卻補高額貼士」這個情況在這批訂單中不存在。
+  </div>
+  <p>但反過來，存在<b>貼士金額偏低</b>的不一致訂單（車費本應對應更高金額，實際卻補得較少）：</p>
+  <table class="cmp">
+    <thead><tr><th>實付貼士</th><th>車費（GTV）範圍</th><th>張數</th><th>按 Sheet 規則本應金額</th></tr></thead>
+    <tbody>
+      <tr><td>$5</td><td>$150.0</td><td>1</td><td class="lose">$15</td></tr>
+      <tr><td>$5</td><td>$85 – $135</td><td>149</td><td class="lose">$10</td></tr>
+      <tr><td>$10</td><td>$150 – $195</td><td>155</td><td class="lose">$15</td></tr>
+    </tbody>
+  </table>
+  <p class="meta">合共 305 張訂單（佔 1,039 張符合規則且有貼士訂單的 29.4%）金額與車費段不一致，方向全部是「補得較少」，沒有出現「車費偏低卻補得較多」的情況。完整清單見資料表：<code>gogox-ba-sandbox.analytics.mart_ops_add_tips_rule_violations</code>。</p>
+
+  <h2>特殊情況③：有沒有訂單未達「等候≥120秒」但仍然獲得貼士？</h2>
+  <p>Sheet 的 Column Reference 有一個獨立欄位 <code>min_pending_seconds</code>（預設 120 秒）。逐張核對全部 1,039 張符合規則且有貼士的訂單，是否都符合這個等候時間門檻：</p>
+  <table class="cmp">
+    <thead><tr><th>情況</th><th>張數</th><th>車費（GTV）範圍</th><th>完成率</th><th>平均貼士金額</th></tr></thead>
+    <tbody>
+      <tr><td>等候時間無紀錄（`wait_sec` 無值）</td><td>24</td><td>$70 – $190</td><td class="lose">0.0%</td><td>$9.2</td></tr>
+      <tr><td>等候時間低於 120 秒</td><td>20</td><td>$70 – $185</td><td class="lose">5.0%</td><td>$9.8</td></tr>
+      <tr class="base"><td>等候時間達 120 秒或以上</td><td>995</td><td>—</td><td>52.5%</td><td>—</td></tr>
+    </tbody>
+  </table>
+  <div class="box warn">
+    <b>觀察：</b>1,039 張符合規則且有貼士的訂單中，<b>44 張（4.2%）未能確認通過「等候≥120 秒」這個獨立欄位</b>就獲得貼士——其中 24 張系統沒有記錄到等候時間，另外 20 張等候時間明顯低於 120 秒。這批訂單的完成率極低（0.0% 與 5.0%），遠低於等候時間達標的訂單（52.5%）。
+  </div>
+  <div class="box bad">
+    <b>但這不能直接當作「系統違反規則」的證據：</b>BigQuery 的等候時間只是事後估算的 proxy（取第一輪派單時間），訂單在司機釋放後重新派發才觸發貼士的情況，proxy 會低估甚至無法記錄真實等候時間。需要與 Product／Ops 直接核實系統紀錄，才能判斷這 44 張是否真的不符合資格。
+  </div>
+
+  <h2>公司是賺錢還是虧錢？（按司機佣金與平台溢價計算）</h2>
+  <p>貼士只是公司的<b>成本</b>；公司真正的<b>收入</b>來自每張完成訂單的<b>司機佣金（driver commission）與平台溢價（platform premium）</b>。而且只有訂單<b>真正完成</b>才計算成本與收入——已取消的訂單既收不到司機佣金與溢價，貼士亦不會真正扣賬（與「觸發金額」對比「完成扣數」是同一道理）。</p>
+  <table class="cmp">
+    <thead><tr>
+      <th>組別</th><th>觸發總張數</th><th>完成單張數</th>
+      <th class="notip">每張完成單平均收入</th>
+      <th class="tip">每張完成單平均貼士成本</th>
+      <th>每張完成單淨賺</th>
+    </tr></thead>
+    <tbody>
+      <tr><td>沒有貼士</td><td>10,080</td><td>8,367</td>
+        <td class="notip notip-val">$18.44</td>
+        <td class="tip tip-val">$0.00</td>
+        <td class="win">$18.44</td></tr>
+      <tr><td>有貼士（$5/$10/$15 合計）</td><td>1,039</td><td>523</td>
+        <td class="notip notip-val">$17.93</td>
+        <td class="tip tip-val">$9.33</td>
+        <td class="lose">$8.60</td></tr>
+    </tbody>
+  </table>
+  <p class="meta">觸發總張數＝此組全部訂單（含已取消，未必完成）；此表母體＝全部合資格訂單（未收窄至「同樣困難」），有貼士側包含 305 張金額與車費段不一致的訂單（見上文特殊情況①）——因為本表計嘅係公司實際收入與成本，違規單一樣有真實金額，不應剔走；同上文「按車費段分組」表（89/508/137 張）口徑不同，純屬刻意設計，並非數字錯誤。資料表：<code>gogox-ba-sandbox.reporting.pres_ops_add_tips_net_margin</code>。</p>
+  <div class="box warn">
+    <b>結論：公司仍然賺錢，但利潤減少超過一半。</b>有貼士的完成訂單，公司每張淨賺 $8.60，只是沒有貼士訂單（$18.44）的 46.6%。貼士本身沒有導致虧本，但明顯拉低了這批訂單的邊際利潤。
+  </div>
+  <p><b>特殊情況②：有沒有單一訂單出現「貼士金額超過該單收入」（即補得比賺得多）？</b></p>
+  <div class="box good">
+    <b>答案：沒有。</b>逐張檢查全部 523 張有貼士的完成訂單，<b>0 張</b>出現貼士金額超過該單司機佣金與平台溢價總和的情況——即沒有一張訂單「貼一張、虧一張」，公司每張完成訂單依然是正數（有利潤）。
+  </div>
+  <p class="meta">資料來源：`driver_commission`、`premium_platform_support`（來自正式訂單表 `order_master_table_hk`，經 `system_order_request_id` 對照現有分析表篩選範圍）；已落地為 <code>gogox-ba-sandbox.reporting.pres_ops_add_tips_net_margin</code>，可常規查詢覆核。</p>
+
+  <h2>總結與建議</h2>
+  <ul class="plain">
+    <li><b>整體結果：</b>所有車費區間中，有貼士訂單的完成率均低於沒有貼士訂單，差距約 28–49 個百分點。</li>
+    <li><b>貼士金額效果：</b>未見貼士愈高、完成率愈高的趨勢，提高貼士金額未帶來穩定改善。</li>
+    <li><b>一致性：</b>逐日、逐車費區間共 17 個比較組合，沒有任何一組出現有貼士完成率高於沒有貼士。</li>
+    <li><b>規則檢查：</b>未發現高車費訂單被過度補貼；但有 305 張訂單的貼士金額低於 Sheet 規則，建議確認原因。</li>
+    <li><b>財務影響：</b>有貼士完成單平均每張仍為正收益（$8.60），但低於沒有貼士訂單（$18.44）；未發現貼士高於收入的個案。</li>
+    <li><b>建議：</b>目前結果僅反映關聯性，不能證明貼士影響完成率；建議以 A/B Test 或隨機對照試驗（RCT）驗證貼士效果。</li>
+    <li><b>資料限制：</b>資料中仍有車費 ≥ $200 的貼士訂單，與 Sheet 規則不一致；另因 BigQuery 無法驗證「未曾領取過一次性貼士」，故未納入分析。</li>
+  </ul>
+
+  <p class="foot">資料：香港 · 個人客貨車訂單（PlatformOD）· 六個 campaign 日繁忙時段 · 2026-07-08 由 BigQuery 實查，對齊正式訂單表。已排除 2026-05-21 測試日；2026-07-10 當日尚未發生。資格篩選＝Van 車型 · ASAP 即時單 · 個人客 · 車費低於 $200（BQ 欄位：`pass_sheet_van` / `pass_sheet_asap` / `pass_sheet_personal` / `gross_transaction_value`）。「完成率」＝最終成功完成的訂單佔比；「取消率」＝100% 減完成率。合共 1,039 張合資格有貼士訂單，觸發貼士總金額 $9,880；但未完成訂單的貼士不會真正扣賬，實際扣賬金額（只計 523 張完成單）為 $4,880。</p>
+</div>
+
+<div class="tooltip" id="tip"></div>
+<script>
+const GROUPS=[
+  {band:'低於 $85',    amt:5,  notip:80.5, tip:37.1, o:89,  n:33},
+  {band:'$85–149',   amt:10, notip:84.7, tip:56.5, o:508, n:287},
+  {band:'$150–199', amt:15, notip:79.7, tip:30.7, o:137, n:42}
+];
+const W=640,H=300,M={t:22,r:24,b:56,l:44},IW=W-M.l-M.r,IH=H-M.t-M.b;
+const YMIN=25,YMAX=90;
+const gx=i=>M.l+(i+0.5)/GROUPS.length*IW;
+const y=v=>M.t+(1-(v-YMIN)/(YMAX-YMIN))*IH;
+const NS='http://www.w3.org/2000/svg';
+function el(n,at){const e=document.createElementNS(NS,n);for(const k in at)e.setAttribute(k,at[k]);return e;}
+const svg=document.getElementById('chart');
+for(let v=30;v<=90;v+=10){
+  svg.appendChild(el('line',{x1:M.l,x2:M.l+IW,y1:y(v),y2:y(v),stroke:'var(--grid)','stroke-width':1}));
+  const t=el('text',{x:M.l-10,y:y(v)+4,'text-anchor':'end',fill:'var(--muted)','font-size':11.5,'font-family':'system-ui'});
+  t.textContent=v+'%';svg.appendChild(t);
+}
+svg.appendChild(el('line',{x1:M.l,x2:M.l+IW,y1:M.t+IH,y2:M.t+IH,stroke:'var(--axis)','stroke-width':1}));
+const tip=document.getElementById('tip');
+function showTip(e,g){
+  const d=(g.tip-g.notip).toFixed(1);
+  tip.innerHTML=`<b>車費段 ${g.band}｜加 $${g.amt}</b><br>沒有貼士完成率 ${g.notip.toFixed(1)}%<br>有貼士完成率 ${g.tip.toFixed(1)}%（${g.n}/${g.o} 張完成）<br>差距 低 ${Math.abs(d)}%`;
+  tip.style.opacity=1;tip.style.left=(e.clientX+14)+'px';tip.style.top=(e.clientY+14)+'px';
+}
+function hideTip(){tip.style.opacity=0;}
+GROUPS.forEach((g,i)=>{
+  const cx=gx(i), pairGap=34;
+  const x1=cx-pairGap/2, x2=cx+pairGap/2;
+  const y1=y(g.notip), y2=y(g.tip);
+  // x-axis group label
+  const lab1=el('text',{x:cx,y:M.t+IH+22,'text-anchor':'middle',fill:'var(--ink2)','font-size':12.5,'font-weight':700,'font-family':'system-ui'});
+  lab1.textContent=g.band;svg.appendChild(lab1);
+  const lab2=el('text',{x:cx,y:M.t+IH+38,'text-anchor':'middle',fill:'var(--muted)','font-size':11,'font-family':'system-ui'});
+  lab2.textContent='貼士 $'+g.amt;svg.appendChild(lab2);
+  // connector
+  svg.appendChild(el('line',{x1,x2,y1,y2,stroke:'var(--muted)','stroke-width':2,opacity:.45}));
+  // gap badge at midpoint
+  const mx=cx, my=(y1+y2)/2;
+  const gapText='低 '+Math.abs(g.tip-g.notip).toFixed(1)+'%';
+  const est=gapText.length*6.4+14;
+  svg.appendChild(el('rect',{x:mx-est/2,y:my-10,width:est,height:20,rx:10,fill:'var(--surface)',stroke:'var(--border)','stroke-width':1}));
+  const gl=el('text',{x:mx,y:my+4,'text-anchor':'middle',fill:'var(--bad)','font-size':11.5,'font-weight':700,'font-family':'system-ui'});
+  gl.textContent=gapText;svg.appendChild(gl);
+  // no-tip point (left, blue)
+  svg.appendChild(el('circle',{cx:x1,cy:y1,r:6,fill:'var(--base)',stroke:'var(--surface)','stroke-width':2}));
+  const t1=el('text',{x:x1,y:y1-14,'text-anchor':'middle',fill:'var(--base)','font-size':13,'font-weight':700,'font-family':'system-ui'});
+  t1.textContent=g.notip.toFixed(1)+'%';svg.appendChild(t1);
+  // tip point (right, red)
+  svg.appendChild(el('circle',{cx:x2,cy:y2,r:6,fill:'var(--bad)',stroke:'var(--surface)','stroke-width':2}));
+  const t2=el('text',{x:x2,y:y2+20,'text-anchor':'middle',fill:'var(--bad)','font-size':13,'font-weight':700,'font-family':'system-ui'});
+  t2.textContent=g.tip.toFixed(1)+'%';svg.appendChild(t2);
+  // hover hit targets
+  const hit1=el('circle',{cx:x1,cy:y1,r:16,fill:'transparent',style:'cursor:pointer'});
+  hit1.addEventListener('mousemove',e=>showTip(e,g));hit1.addEventListener('mouseleave',hideTip);
+  svg.appendChild(hit1);
+  const hit2=el('circle',{cx:x2,cy:y2,r:16,fill:'transparent',style:'cursor:pointer'});
+  hit2.addEventListener('mousemove',e=>showTip(e,g));hit2.addEventListener('mouseleave',hideTip);
+  svg.appendChild(hit2);
+});
+</script>
+</body>
+</html>

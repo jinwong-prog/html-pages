@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Do Peak-Hour Tips Actually Rescue Orders?</title>
+<style>
+  :root{
+    --plane:#f9f9f7; --surface:#fcfcfb;
+    --ink:#0b0b0b; --ink2:#52514e; --muted:#898781;
+    --grid:#e1e0d9; --axis:#c3c2b7; --border:rgba(11,11,11,.10);
+    --base:#2a78d6; --lt200:#1baf7a;
+    --bad:#d03b3b; --good:#006300;
+    --badbg:rgba(208,59,59,.08); --goodbg:rgba(0,99,0,.08); --warnbg:rgba(237,161,0,.10);
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --plane:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7; --muted:#898781;
+      --grid:#2c2c2a; --axis:#383835; --border:rgba(255,255,255,.10);
+      --base:#3987e5; --lt200:#199e70; --bad:#e66767; --good:#0ca30c;
+      --badbg:rgba(230,103,103,.12); --goodbg:rgba(12,163,12,.12); --warnbg:rgba(201,133,0,.15);
+    }
+  }
+  :root[data-theme=dark]{--plane:#0d0d0d;--surface:#1a1a19;--ink:#fff;--ink2:#c3c2b7;--muted:#898781;--grid:#2c2c2a;--axis:#383835;--border:rgba(255,255,255,.10);--base:#3987e5;--lt200:#199e70;--bad:#e66767;--good:#0ca30c;--badbg:rgba(230,103,103,.12);--goodbg:rgba(12,163,12,.12);--warnbg:rgba(201,133,0,.15);}
+  :root[data-theme=light]{--plane:#f9f9f7;--surface:#fcfcfb;--ink:#0b0b0b;--ink2:#52514e;--muted:#898781;--grid:#e1e0d9;--axis:#c3c2b7;--border:rgba(11,11,11,.10);--base:#2a78d6;--lt200:#1baf7a;--bad:#d03b3b;--good:#006300;--badbg:rgba(208,59,59,.08);--goodbg:rgba(0,99,0,.08);--warnbg:rgba(237,161,0,.10);}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--plane);color:var(--ink);
+    font-family:system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.7;
+    -webkit-font-smoothing:antialiased;font-size:16px}
+  .wrap{max-width:1080px;margin:0 auto;padding:44px 40px 88px}
+  h1{font-size:28px;margin:0 0 6px;letter-spacing:-.01em;line-height:1.3}
+  .meta{color:var(--muted);font-size:13px;margin:0 0 32px}
+  .answer{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--bad);
+    border-radius:12px;padding:20px 24px;margin:0 0 40px;font-size:17px}
+  .answer .big{font-size:19px;font-weight:700}
+  h2{font-size:20px;margin:44px 0 6px;letter-spacing:-.01em}
+  .step{color:var(--muted);font-size:13px;font-weight:700;letter-spacing:.06em;margin:44px 0 2px;text-transform:uppercase}
+  p{margin:10px 0;max-width:80ch}
+  .hl-bad{color:var(--bad);font-weight:700}
+  .hl-good{color:var(--good);font-weight:700}
+  .box{border-radius:12px;padding:16px 20px;margin:16px 0;font-size:15.5px;max-width:90ch}
+  .box.bad{background:var(--badbg)} .box.good{background:var(--goodbg)} .box.warn{background:var(--warnbg)}
+  .box b{font-weight:700}
+  table{border-collapse:collapse;width:100%;font-size:15px;margin:14px 0}
+  th,td{padding:10px 16px;text-align:right;border-bottom:1px solid var(--grid);
+    font-variant-numeric:tabular-nums;white-space:nowrap}
+  th:first-child,td:first-child{text-align:left}
+  thead th{color:var(--muted);font-weight:600;border-bottom:1px solid var(--axis);font-size:13px}
+  .win{color:var(--good);font-weight:700} .lose{color:var(--bad);font-weight:700}
+  table.cmp th.notip,table.cmp td.notip{background:color-mix(in srgb,var(--base) 10%,transparent)}
+  table.cmp th.tip,table.cmp td.tip{background:color-mix(in srgb,var(--bad) 9%,transparent)}
+  table.cmp .notip-val{color:var(--base);font-weight:700}
+  table.cmp .tip-val{color:var(--bad);font-weight:700}
+  table.cmp th.notip,table.cmp th.tip{font-weight:700;font-size:13px}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:22px;margin:18px 0;overflow-x:auto}
+  .legend{display:flex;gap:22px;flex-wrap:wrap;font-size:13.5px;color:var(--ink2);padding:2px 2px 16px}
+  .legend .it{display:flex;align-items:center;gap:8px}
+  .swatch{width:26px;height:0;border-top-width:3px;border-top-style:solid;display:inline-block}
+  .swatch.dash{border-top-style:dashed}
+  figcaption{color:var(--ink2);font-size:14px;margin-top:8px;max-width:88ch}
+  .tooltip{position:fixed;pointer-events:none;opacity:0;transition:opacity .08s;background:var(--ink);color:var(--plane);
+    font-size:12.5px;border-radius:8px;padding:8px 11px;font-variant-numeric:tabular-nums;box-shadow:0 6px 20px rgba(0,0,0,.25);z-index:9}
+  ul.plain{padding-left:20px;max-width:84ch} ul.plain li{margin:8px 0}
+  .foot{color:var(--muted);font-size:12px;margin-top:48px;border-top:1px solid var(--grid);padding-top:14px;max-width:90ch}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>Do Peak-Hour Tips Actually Rescue Orders?</h1>
+  <p class="meta">Hong Kong · Personal-account van orders (PlatformOD) | Data pulled 2026-07-08 | Six campaign days, each day's peak window per the Ops sheet (Hong Kong time, see table below) | All figures from BigQuery, matched to the production order table</p>
+
+  <div class="box good" style="margin-bottom:28px">
+    <ul class="plain" style="margin:0">
+      <li><b>Scope:</b> orders are filtered strictly per the Subsidy Sheet's eligibility rules, and compared on the same basis throughout.</li>
+      <li><b>Eligibility used:</b> van · ASAP booking · personal account (not Enterprise) · fare &lt; HK$200 · within an active rule row and region.</li>
+      <li><b>Comparison:</b> ALL eligible tipped orders vs. ALL eligible no-tip orders, grouped by the sheet's fare tier.</li>
+      <li><b>Data limitation:</b> BigQuery cannot verify "has not previously received a one-time tip," so it is not included as a filter in this analysis.</li>
+    </ul>
+  </div>
+
+  <div class="answer">
+    <span class="big">Bottom line: among eligible orders, <span class="hl-bad">tipped orders had a lower completion rate than orders with no tip.</span></span><br>
+    Checked day by day and fare tier by fare tier (six days × three fare tiers), <b>not a single cell shows tipping outperforming no-tip</b> — gaps range from −19.9 to −66.0 percentage points, all in the same direction.
+  </div>
+
+  <h2>Scope: strictly follows the sheet's dates and time windows</h2>
+  <p>This report does <b>not</b> use a custom scope — it strictly follows the six campaign days and each day's peak window set by the Ops sheet (Hong Kong time). The table below checks each day: the actual data start/end times match the sheet exactly.</p>
+  <table>
+    <thead><tr><th>Campaign date</th><th>Weekday</th><th>Sheet window</th><th>Actual data window</th><th>Budget</th><th>Match</th></tr></thead>
+    <tbody>
+      <tr><td>2026-05-26</td><td>Tuesday</td><td>09:36–11:00</td><td>09:36–10:59</td><td>$2,000</td><td class="win">✓ Match</td></tr>
+      <tr><td>2026-05-29</td><td>Friday</td><td>09:30–11:00</td><td>09:30–10:59</td><td>$1,000</td><td class="win">✓ Match</td></tr>
+      <tr><td>2026-06-08</td><td>Monday</td><td>09:55–11:00</td><td>09:55–10:59</td><td>$1,500</td><td class="win">✓ Match</td></tr>
+      <tr><td>2026-06-18</td><td>Thursday</td><td>09:30–11:00</td><td>09:30–10:59</td><td>$2,000</td><td class="win">✓ Match</td></tr>
+      <tr><td>2026-06-22</td><td>Monday</td><td>09:30–11:00</td><td>09:30–10:59</td><td>$1,000</td><td class="win">✓ Match</td></tr>
+      <tr><td>2026-07-03</td><td>Friday</td><td>09:30–11:00</td><td>09:30–10:59</td><td>$2,000</td><td class="win">✓ Match</td></tr>
+    </tbody>
+  </table>
+
+  <div class="step">Taken as-is · ALL eligible tipped vs. ALL eligible no-tip, grouped by fare tier</div>
+  <h2>Grouped by the sheet's fare tier: tipped orders still complete at a lower rate</h2>
+  <p>No custom "hard-to-fill" filter is applied. This takes all eligible orders as they are, grouped by the sheet's stated fare tier, and compares completion rates within the same tier:</p>
+  <table class="cmp">
+    <thead><tr>
+      <th>Fare tier</th>
+      <th class="notip">No tip · orders</th><th class="notip">No tip · completed</th><th class="notip">No tip · completion rate</th>
+      <th class="tip">Tipped · orders</th><th class="tip">Tipped · completed</th><th class="tip">Tipped · completion rate</th>
+      <th>Tip amount</th>
+      <th>Gap</th>
+    </tr></thead>
+    <tbody>
+      <tr><td>Under $85</td>
+        <td class="notip">1,028</td><td class="notip">828</td><td class="notip notip-val">80.5%</td>
+        <td class="tip">89</td><td class="tip">33</td><td class="tip tip-val">37.1%</td>
+        <td>$5</td>
+        <td class="lose">−43.4 pts</td></tr>
+      <tr><td>$85 – $149</td>
+        <td class="notip">6,464</td><td class="notip">5,476</td><td class="notip notip-val">84.7%</td>
+        <td class="tip">508</td><td class="tip">287</td><td class="tip tip-val">56.5%</td>
+        <td>$10</td>
+        <td class="lose">−28.2 pts</td></tr>
+      <tr><td>$150 – $199</td>
+        <td class="notip">2,588</td><td class="notip">2,063</td><td class="notip notip-val">79.7%</td>
+        <td class="tip">137</td><td class="tip">42</td><td class="tip tip-val">30.7%</td>
+        <td>$15</td>
+        <td class="lose">−49.0 pts</td></tr>
+    </tbody>
+  </table>
+  <p class="meta">In all three fare tiers, the no-tip completion rate is clearly higher than the tipped rate in the same tier, with gaps of −43.4 / −28.2 / −49.0 points. (A further 149 orders priced $85–149 that received only a $5 tip, 155 orders priced $150–199 that received only a $10 tip, and 1 order priced $150 that received only a $5 tip — 305 in total — are under-tipped relative to the rule and are handled separately in Special check ① below; this table only compares orders with the correct tip amount for their fare tier.)</p>
+
+  <h2>The chart: within each fare tier, tipped (right dot) sits below no-tip (left dot)</h2>
+  <div class="card">
+    <figure>
+      <div class="legend">
+        <span class="it"><span class="swatch" style="border-color:var(--base)"></span>No tip</span>
+        <span class="it"><span class="swatch" style="border-color:var(--bad)"></span>Tipped</span>
+      </div>
+      <svg id="chart" viewBox="0 0 640 300" width="100%" role="img"
+        aria-label="Three fare-tier comparisons; in every tier the tipped completion rate is below the no-tip rate"></svg>
+      <figcaption>Each fare tier is a self-contained comparison — <b>the three tiers are not connected into one trend line</b> (they are not continuous, and a connecting line would wrongly imply a rising trend by amount). Within each tier, the left blue dot is the no-tip completion rate and the right red dot is the completion rate for that tier's tip amount; the gap between the two dots is that tier's difference. <b>The red dot sits below the blue dot in all three tiers</b> — tipping does not close the gap within any tier. Hover for exact figures.</figcaption>
+    </figure>
+  </div>
+
+  <h2>Was there ever a day where tipping won? No — not once</h2>
+  <p>Checking every day and every fare tier among all eligible orders (six days × three fare tiers, 17 cells with enough sample):</p>
+  <table class="cmp">
+    <thead><tr>
+      <th>Date</th><th>Fare tier</th>
+      <th class="tip">Tipped · orders</th><th class="tip">Tipped · completion rate</th>
+      <th class="notip">No-tip · completion rate</th>
+      <th>Gap</th>
+    </tr></thead>
+    <tbody>
+      <tr><td>2026-06-08</td><td>$150–199</td>
+        <td class="tip">34</td><td class="tip tip-val">70.6%</td>
+        <td class="notip notip-val">90.5%</td><td class="lose">−19.9 pts</td></tr>
+      <tr><td>2026-07-03</td><td>$85–149</td>
+        <td class="tip">175</td><td class="tip tip-val">62.3%</td>
+        <td class="notip notip-val">86.3%</td><td class="lose">−24.1 pts</td></tr>
+      <tr><td>2026-06-22</td><td>$150–199</td>
+        <td class="tip">34</td><td class="tip tip-val">11.8%</td>
+        <td class="notip notip-val">77.7%</td><td class="lose">−66.0 pts</td></tr>
+    </tbody>
+  </table>
+  <div class="box bad">
+    <b>Result: across all 17 cells, not one shows tipping outperforming no-tip.</b> The smallest gap (2026-06-08, $150–199 fare tier) is still −19.9 points; the largest (2026-06-22, $150–199) is −66.0 points. The table shows the best and worst examples only; the remaining cells are directionally consistent.
+  </div>
+  <p class="meta">This corrects an earlier version of this report, which mistakenly compared against a subset of "no-tip" orders that had been further filtered, making 2026-06-08 appear to have two cells where tipping "won." Using all eligible no-tip orders as the comparison removes that artifact — no day, no fare tier, shows tipping beating no-tip.</p>
+
+  <h2>Special check ①: are any low-fare orders getting the $15 tip?</h2>
+  <p>The sheet's amount rule explicitly states that a fare above $150 (but under $200) maps to the $15 tip. Checking the actual fare (GTV — the amount the customer paid) against each tip amount, to see whether any low-fare order received the $15 tip:</p>
+  <table class="cmp">
+    <thead><tr><th>Tip paid</th><th>Fare (GTV) range</th><th>Orders</th><th>Sheet fare tier</th><th>Consistent?</th></tr></thead>
+    <tbody>
+      <tr><td>$5</td><td>$60 – $135</td><td>238</td><td>Under $85 / $85–149</td><td class="win">✓ Consistent</td></tr>
+      <tr><td>$10</td><td>$90 – $195</td><td>663</td><td>$85–149 / $150–199</td><td class="win">✓ Consistent</td></tr>
+      <tr><td>$15</td><td><b>$160 – $195</b></td><td>137</td><td>$150–199 (rule: above $150)</td><td class="win">✓ Consistent — all above $150</td></tr>
+    </tbody>
+  </table>
+  <div class="box good">
+    <b>Answer: no.</b> All 137 orders that received the $15 tip had a fare between $160 and $195 — <b>not a single order with a fare below $150 received the $15 tip.</b> The "low fare getting a high tip" scenario does not occur in this batch.
+  </div>
+  <p>The reverse case does occur, however — orders where the tip amount is <b>lower</b> than the fare tier would call for:</p>
+  <table class="cmp">
+    <thead><tr><th>Tip paid</th><th>Fare (GTV) range</th><th>Orders</th><th>Amount the sheet rule calls for</th></tr></thead>
+    <tbody>
+      <tr><td>$5</td><td>$150.0</td><td>1</td><td class="lose">$15</td></tr>
+      <tr><td>$5</td><td>$85 – $135</td><td>149</td><td class="lose">$10</td></tr>
+      <tr><td>$10</td><td>$150 – $195</td><td>155</td><td class="lose">$15</td></tr>
+    </tbody>
+  </table>
+  <p class="meta">A combined 305 orders (29.4% of the 1,039 eligible, tipped orders) have a tip amount inconsistent with their fare tier — every one of them is under-tipped relative to the rule; none is over-tipped for a low fare. Full list: <code>gogox-ba-sandbox.analytics.mart_ops_add_tips_rule_violations</code>.</p>
+
+  <h2>Special check ③: did any order receive a tip without meeting the 120-second wait time?</h2>
+  <p>The sheet's Column Reference has an independent column, <code>min_pending_seconds</code> (default 120). Checking all 1,039 eligible, tipped orders against this wait-time threshold:</p>
+  <table class="cmp">
+    <thead><tr><th>Case</th><th>Orders</th><th>Fare (GTV) range</th><th>Completion rate</th><th>Avg. tip amount</th></tr></thead>
+    <tbody>
+      <tr><td>No wait-time record (`wait_sec` is null)</td><td>24</td><td>$70 – $190</td><td class="lose">0.0%</td><td>$9.2</td></tr>
+      <tr><td>Wait time under 120 seconds</td><td>20</td><td>$70 – $185</td><td class="lose">5.0%</td><td>$9.8</td></tr>
+      <tr class="base"><td>Wait time 120 seconds or more</td><td>995</td><td>—</td><td>52.5%</td><td>—</td></tr>
+    </tbody>
+  </table>
+  <div class="box warn">
+    <b>Observation:</b> Of the 1,039 eligible, tipped orders, <b>44 (4.2%) cannot be confirmed to have met the "wait ≥120 seconds" column</b> yet still received a tip — 24 have no recorded wait time at all, and another 20 have a wait time clearly under 120 seconds. These orders have an extremely low completion rate (0.0% and 5.0%), far below orders with a confirmed 120+ second wait (52.5%).
+  </div>
+  <div class="box bad">
+    <b>But this is not proof the system broke a rule:</b> BigQuery's wait-time field is only an after-the-fact proxy (time to first dispatch); if the tip actually triggers after a driver releases the order and it gets re-dispatched, the proxy will understate or fail to record the true wait. Confirming with Product/Ops directly is needed before concluding whether these 44 orders were truly ineligible.
+  </div>
+
+  <h2>Is the company making or losing money? (based on driver commission and platform premium)</h2>
+  <p>The tip is purely a <b>cost</b> to the company. The company's actual <b>revenue</b> on each completed order comes from <b>driver commission plus platform premium</b>. And cost and revenue only apply to orders that actually <b>complete</b> — a cancelled order earns no commission or premium, and the tip is not actually charged either (the same logic as "triggered amount" versus "amount actually deducted").</p>
+  <table class="cmp">
+    <thead><tr>
+      <th>Group</th><th>Triggered orders</th><th>Completed orders</th>
+      <th class="notip">Avg. revenue per completed order</th>
+      <th class="tip">Avg. tip cost per completed order</th>
+      <th>Net profit per completed order</th>
+    </tr></thead>
+    <tbody>
+      <tr><td>No tip</td><td>10,080</td><td>8,367</td>
+        <td class="notip notip-val">$18.44</td>
+        <td class="tip tip-val">$0.00</td>
+        <td class="win">$18.44</td></tr>
+      <tr><td>Tipped ($5/$10/$15 combined)</td><td>1,039</td><td>523</td>
+        <td class="notip notip-val">$17.93</td>
+        <td class="tip tip-val">$9.33</td>
+        <td class="lose">$8.60</td></tr>
+    </tbody>
+  </table>
+  <p class="meta">Triggered orders = all orders in this group (including cancelled, not just completed). This table's population is all eligible orders (not narrowed to "same difficulty"); the tipped side includes the 305 orders with a tip amount inconsistent with their fare tier (see Special check ① above) — because this table measures actual company revenue and cost, and those orders still carry real amounts, they should not be excluded. This intentionally differs from the "grouped by fare tier" table above (89/508/137 orders), which excludes them to keep the same-tier comparison clean — this is a deliberate scope difference, not a data error. Table: <code>gogox-ba-sandbox.reporting.pres_ops_add_tips_net_margin</code>.</p>
+  <div class="box warn">
+    <b>Conclusion: the company still profits, but margin is more than halved.</b> On tipped, completed orders the company nets $8.60 per order — only 46.6% of the $18.44 it nets on no-tip orders. Tipping is not causing a loss outright, but it is clearly compressing the margin on these orders.
+  </div>
+  <p><b>Special check ②: is there any single order where the tip amount exceeds that order's revenue (i.e. the company loses money on that specific order)?</b></p>
+  <div class="box good">
+    <b>Answer: no.</b> Checking all 523 tipped, completed orders individually, <b>zero</b> had a tip amount exceeding that order's driver commission plus platform premium — meaning there is no single order where the company loses money outright; every completed order still nets positive.
+  </div>
+  <p class="meta">Data source: `driver_commission` and `premium_platform_support` (from the production order table `order_master_table_hk`, joined via `system_order_request_id` against the existing analysis scope); now materialized as <code>gogox-ba-sandbox.reporting.pres_ops_add_tips_net_margin</code> for ongoing tracking.</p>
+
+  <h2>Summary and recommendations</h2>
+  <ul class="plain">
+    <li><b>Overall result:</b> across all fare tiers, tipped orders have a lower completion rate than no-tip orders, with gaps of roughly 28–49 percentage points.</li>
+    <li><b>Effect of tip amount:</b> no trend of "higher tip, higher completion rate" — raising the tip amount does not produce a consistent improvement.</li>
+    <li><b>Consistency:</b> across 17 day-by-fare-tier comparison cells, not a single one shows tipping outperforming no-tip.</li>
+    <li><b>Rule check:</b> no evidence of high-fare orders being over-subsidized; however, 305 orders received a tip amount below what the sheet's rule calls for — the cause should be confirmed.</li>
+    <li><b>Financial impact:</b> tipped, completed orders still net a positive $8.60 per order on average, though lower than the $18.44 for no-tip orders; no case was found where the tip exceeded the order's revenue.</li>
+    <li><b>Recommendation:</b> the current results only reflect correlation and cannot prove that tipping causes the completion-rate difference; a formal A/B test or randomized controlled trial (RCT) is recommended to verify the effect.</li>
+    <li><b>Data limitation:</b> the data still contains tipped orders with a fare ≥ $200, which is inconsistent with the sheet's rule; separately, BigQuery cannot verify "has not previously received a one-time tip," so this was not included in the analysis.</li>
+  </ul>
+
+  <p class="foot">Data: Hong Kong · personal-account van orders (PlatformOD) · six campaign-day peak windows · pulled from BigQuery on 2026-07-08, matched to the production order table. The 2026-05-21 test row is excluded; 2026-07-10 had not yet occurred at query time. Eligibility = van vehicle type · ASAP booking · personal account · fare under $200 (BigQuery fields: `pass_sheet_van` / `pass_sheet_asap` / `pass_sheet_personal` / `gross_transaction_value`). "Completion rate" = share of orders that finished successfully; "cancellation rate" = 100% minus completion rate. A total of 1,039 eligible orders triggered a tip, for $9,880 in triggered tip value; however, tips on orders that did not complete are never actually charged, so the actual amount deducted (523 completed orders only) was $4,880.</p>
+</div>
+
+<div class="tooltip" id="tip"></div>
+<script>
+const GROUPS=[
+  {band:'Under $85', amt:5,  notip:80.5, tip:37.1, o:89,  n:33},
+  {band:'$85–149',   amt:10, notip:84.7, tip:56.5, o:508, n:287},
+  {band:'$150–199',  amt:15, notip:79.7, tip:30.7, o:137, n:42}
+];
+const W=640,H=300,M={t:22,r:24,b:56,l:44},IW=W-M.l-M.r,IH=H-M.t-M.b;
+const YMIN=25,YMAX=75;
+const gx=i=>M.l+(i+0.5)/GROUPS.length*IW;
+const y=v=>M.t+(1-(v-YMIN)/(YMAX-YMIN))*IH;
+const NS='http://www.w3.org/2000/svg';
+function el(n,at){const e=document.createElementNS(NS,n);for(const k in at)e.setAttribute(k,at[k]);return e;}
+const svg=document.getElementById('chart');
+for(let v=30;v<=70;v+=10){
+  svg.appendChild(el('line',{x1:M.l,x2:M.l+IW,y1:y(v),y2:y(v),stroke:'var(--grid)','stroke-width':1}));
+  const t=el('text',{x:M.l-10,y:y(v)+4,'text-anchor':'end',fill:'var(--muted)','font-size':11.5,'font-family':'system-ui'});
+  t.textContent=v+'%';svg.appendChild(t);
+}
+svg.appendChild(el('line',{x1:M.l,x2:M.l+IW,y1:M.t+IH,y2:M.t+IH,stroke:'var(--axis)','stroke-width':1}));
+const tip=document.getElementById('tip');
+function showTip(e,g){
+  const d=(g.tip-g.notip).toFixed(1);
+  tip.innerHTML=`<b>${g.band} fare tier | $${g.amt} tip</b><br>No-tip completion rate ${g.notip.toFixed(1)}%<br>Tipped completion rate ${g.tip.toFixed(1)}% (${g.n}/${g.o} completed)<br>Gap: −${Math.abs(d)} pts`;
+  tip.style.opacity=1;tip.style.left=(e.clientX+14)+'px';tip.style.top=(e.clientY+14)+'px';
+}
+function hideTip(){tip.style.opacity=0;}
+GROUPS.forEach((g,i)=>{
+  const cx=gx(i), pairGap=34;
+  const x1=cx-pairGap/2, x2=cx+pairGap/2;
+  const y1=y(g.notip), y2=y(g.tip);
+  const lab1=el('text',{x:cx,y:M.t+IH+22,'text-anchor':'middle',fill:'var(--ink2)','font-size':12.5,'font-weight':700,'font-family':'system-ui'});
+  lab1.textContent=g.band;svg.appendChild(lab1);
+  const lab2=el('text',{x:cx,y:M.t+IH+38,'text-anchor':'middle',fill:'var(--muted)','font-size':11,'font-family':'system-ui'});
+  lab2.textContent='$'+g.amt+' tip';svg.appendChild(lab2);
+  svg.appendChild(el('line',{x1,x2,y1,y2,stroke:'var(--muted)','stroke-width':2,opacity:.45}));
+  const mx=cx, my=(y1+y2)/2;
+  const gapText='−'+Math.abs(g.tip-g.notip).toFixed(1)+' pts';
+  const est=gapText.length*6.4+14;
+  svg.appendChild(el('rect',{x:mx-est/2,y:my-10,width:est,height:20,rx:10,fill:'var(--surface)',stroke:'var(--border)','stroke-width':1}));
+  const gl=el('text',{x:mx,y:my+4,'text-anchor':'middle',fill:'var(--bad)','font-size':11.5,'font-weight':700,'font-family':'system-ui'});
+  gl.textContent=gapText;svg.appendChild(gl);
+  svg.appendChild(el('circle',{cx:x1,cy:y1,r:6,fill:'var(--base)',stroke:'var(--surface)','stroke-width':2}));
+  const t1=el('text',{x:x1,y:y1-14,'text-anchor':'middle',fill:'var(--base)','font-size':13,'font-weight':700,'font-family':'system-ui'});
+  t1.textContent=g.notip.toFixed(1)+'%';svg.appendChild(t1);
+  svg.appendChild(el('circle',{cx:x2,cy:y2,r:6,fill:'var(--bad)',stroke:'var(--surface)','stroke-width':2}));
+  const t2=el('text',{x:x2,y:y2+20,'text-anchor':'middle',fill:'var(--bad)','font-size':13,'font-weight':700,'font-family':'system-ui'});
+  t2.textContent=g.tip.toFixed(1)+'%';svg.appendChild(t2);
+  const hit1=el('circle',{cx:x1,cy:y1,r:16,fill:'transparent',style:'cursor:pointer'});
+  hit1.addEventListener('mousemove',e=>showTip(e,g));hit1.addEventListener('mouseleave',hideTip);
+  svg.appendChild(hit1);
+  const hit2=el('circle',{cx:x2,cy:y2,r:16,fill:'transparent',style:'cursor:pointer'});
+  hit2.addEventListener('mousemove',e=>showTip(e,g));hit2.addEventListener('mouseleave',hideTip);
+  svg.appendChild(hit2);
+});
+</script>
+</body>
+</html>
