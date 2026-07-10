@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>控制等候時間後，加貼士仍未見提升完成率</title>
+<style>
+  :root{
+    --plane:#f9f9f7; --surface:#fcfcfb;
+    --ink:#0b0b0b; --ink2:#52514e; --muted:#898781;
+    --grid:#e1e0d9; --axis:#c3c2b7; --border:rgba(11,11,11,.10);
+    --ctrl:#2a78d6; --trt:#d03b3b;
+    --bad:#d03b3b; --good:#006300;
+    --badbg:rgba(208,59,59,.08); --goodbg:rgba(0,99,0,.08); --warnbg:rgba(237,161,0,.10);
+    --neutbg:rgba(137,135,129,.09);
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --plane:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7; --muted:#898781;
+      --grid:#2c2c2a; --axis:#383835; --border:rgba(255,255,255,.10);
+      --ctrl:#3987e5; --trt:#e66767; --bad:#e66767; --good:#0ca30c;
+      --badbg:rgba(230,103,103,.12); --goodbg:rgba(12,163,12,.12); --warnbg:rgba(201,133,0,.15);
+      --neutbg:rgba(137,135,129,.14);
+    }
+  }
+  :root[data-theme=dark]{--plane:#0d0d0d;--surface:#1a1a19;--ink:#fff;--ink2:#c3c2b7;--muted:#898781;--grid:#2c2c2a;--axis:#383835;--border:rgba(255,255,255,.10);--ctrl:#3987e5;--trt:#e66767;--bad:#e66767;--good:#0ca30c;--badbg:rgba(230,103,103,.12);--goodbg:rgba(12,163,12,.12);--warnbg:rgba(201,133,0,.15);--neutbg:rgba(137,135,129,.14);}
+  :root[data-theme=light]{--plane:#f9f9f7;--surface:#fcfcfb;--ink:#0b0b0b;--ink2:#52514e;--muted:#898781;--grid:#e1e0d9;--axis:#c3c2b7;--border:rgba(11,11,11,.10);--ctrl:#2a78d6;--trt:#d03b3b;--bad:#d03b3b;--good:#006300;--badbg:rgba(208,59,59,.08);--goodbg:rgba(0,99,0,.08);--warnbg:rgba(237,161,0,.10);--neutbg:rgba(137,135,129,.09);}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--plane);color:var(--ink);
+    font-family:system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.7;
+    -webkit-font-smoothing:antialiased;font-size:16px}
+  .wrap{max-width:1080px;margin:0 auto;padding:44px 40px 88px}
+  h1{font-size:28px;margin:0 0 6px;letter-spacing:-.01em;line-height:1.34}
+  .meta{color:var(--muted);font-size:13px;margin:0 0 32px;max-width:92ch}
+  .answer{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--bad);
+    border-radius:12px;padding:20px 24px;margin:0 0 12px;font-size:17px}
+  .answer .big{font-size:20px;font-weight:700}
+  h2{font-size:20px;margin:46px 0 6px;letter-spacing:-.01em}
+  .en{color:var(--muted);font-weight:400;font-size:.82em}
+  p{margin:10px 0;max-width:80ch}
+  .hl-bad{color:var(--bad);font-weight:700}
+  .hl-good{color:var(--good);font-weight:700}
+  .box{border-radius:12px;padding:16px 20px;margin:16px 0;font-size:15.5px;max-width:92ch}
+  .box.bad{background:var(--badbg)} .box.good{background:var(--goodbg)} .box.warn{background:var(--warnbg)}
+  .box b{font-weight:700}
+  table{border-collapse:collapse;width:100%;font-size:15px;margin:14px 0}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:8px 22px 18px;margin:18px 0;overflow-x:auto}
+  th,td{padding:9px 14px;text-align:right;border-bottom:1px solid var(--grid);
+    font-variant-numeric:tabular-nums;white-space:nowrap}
+  th:first-child,td:first-child{text-align:left}
+  thead th{color:var(--muted);font-weight:600;border-bottom:1px solid var(--axis);font-size:13px}
+  caption{caption-side:top;text-align:left;font-size:13px;color:var(--muted);padding:10px 0 2px}
+  table.cmp th.ctrl,table.cmp td.ctrl{background:color-mix(in srgb,var(--ctrl) 10%,transparent)}
+  table.cmp th.trt,table.cmp td.trt{background:color-mix(in srgb,var(--trt) 9%,transparent)}
+  table.cmp .ctrl-val{color:var(--ctrl);font-weight:700}
+  table.cmp .trt-val{color:var(--trt);font-weight:700}
+  td.n{color:var(--ink2);font-weight:400;font-size:12.5px}
+  table.cmp tr.pos td{background:var(--goodbg) !important;box-shadow:inset 0 0 0 9999px var(--goodbg)}
+  table.cmp tr.pos td:first-child{box-shadow:inset 3px 0 0 var(--good), inset 0 0 0 9999px var(--goodbg)}
+  td.diff{font-weight:700}
+  .small td{color:var(--muted);font-size:12px}
+  .kpi{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:16px 0}
+  .kpi .k{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 18px}
+  .kpi .lbl{font-size:12.5px;color:var(--muted)}
+  .kpi .val{font-size:26px;font-weight:800;margin-top:4px;letter-spacing:-.01em}
+  .kpi .sub{font-size:12px;color:var(--ink2);margin-top:6px}
+  .legend{display:flex;gap:22px;flex-wrap:wrap;font-size:13.5px;color:var(--ink2);padding:6px 2px 4px}
+  .legend .it{display:flex;align-items:center;gap:8px}
+  .chip{width:14px;height:14px;border-radius:4px;display:inline-block}
+  .chip.ctrl{background:var(--ctrl)} .chip.trt{background:var(--trt)}
+  ul.plain{padding-left:20px;max-width:84ch} ul.plain li{margin:8px 0}
+  .win{color:var(--good);font-weight:700} .lose{color:var(--bad);font-weight:700}
+  .foot{color:var(--muted);font-size:12px;margin-top:48px;border-top:1px solid var(--grid);padding-top:14px;max-width:92ch}
+  @media(max-width:640px){.kpi{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>控制等候時間後，加貼士仍未見提升完成率</h1>
+  <p class="meta">香港 PlatformOD · Van · ASAP · 車費 &lt; HK$200，共 6 個 campaign 日繁忙時段 ｜（2026-07-10 實查，香港時間）｜ 數字全部由 BigQuery 產出</p>
+
+  <div class="answer">
+    <span class="big">把條件相近的訂單放在一起比較後，未觀察到加貼士能提升完成率。</span><br>
+    Add-Tips 是在繁忙時段給某些訂單額外貼士、希望更快有司機接單的做法。這次分析發現：現階段<b>無法證明 Add-Tips 有效，也算不出可信的 ROI（投資回報）</b>。我們只能確認實際花了多少貼士，不能確認這筆錢是否值得。
+  </div>
+  <p style="font-size:13.5px;color:var(--ink2)">管理層想知的三件事：① 有沒有救到單？→ 見 ②；② 若沒有，原因是什麼？→ 見 ③；③ 下一步怎做？→ 見 ⑤。</p>
+
+  <!-- ① 控制了哪些因素 -->
+  <h2>① 這次比較控制了哪些因素？</h2>
+  <p>為了公平比較，只把<b>條件相近</b>的訂單放在一起比：同一組內，比較<b>有貼士組</b>與<b>沒有貼士組（Control）</b>的完成率。</p>
+  <div class="card">
+  <table>
+    <thead><tr><th>控制的因素</th><th style="text-align:left">BQ 欄位</th><th style="text-align:left">分組方式</th></tr></thead>
+    <tbody>
+      <tr><td>車費 Fare</td><td style="text-align:left"><code>gross_transaction_value</code></td><td style="text-align:left">&lt;$85 ｜ $85–149 ｜ $150–199（&ge;$200 不符貼士資格，已排除）</td></tr>
+      <tr><td>等候時間 Wait</td><td style="text-align:left"><code>wait_sec</code></td><td style="text-align:left">0–60 ｜ 60–120 ｜ 120–180 ｜ 180–400 ｜ 400+ 秒</td></tr>
+      <tr><td>訂單積壓 Backlog</td><td style="text-align:left"><code>backlog_at_120</code></td><td style="text-align:left">&lt;40 / 40–80 / 80–120 / 120–160 / 160+（額外測試，見 ③）</td></tr>
+      <tr><td>Campaign 日期 / 星期</td><td style="text-align:left"><code>campaign_date</code></td><td style="text-align:left">6 日逐日對齊；日期已鎖定星期幾</td></tr>
+      <tr><td>繁忙時段 Time</td><td style="text-align:left"><code>created_at</code></td><td style="text-align:left">按落單小時對齊（見下表）</td></tr>
+      <tr><td>客戶類型 Segment</td><td style="text-align:left"><code>business_segment</code></td><td style="text-align:left">全部 PlatformOD 個人客</td></tr>
+      <tr><td>訂單狀態 Status</td><td style="text-align:left"><code>status</code></td><td style="text-align:left">只有 completed（9,062）與 cancelled（2,357），無 pending；完成率分母乾淨</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="card">
+  <table class="small">
+    <caption>6 個 campaign 日的繁忙時段（香港時間；時間指落單時間 created_at）</caption>
+    <thead><tr><th>日期</th><th>星期</th><th>訂單數</th><th>最早落單</th><th>最遲落單</th><th>有貼士單</th></tr></thead>
+    <tbody>
+      <tr><td>2026-05-26</td><td>週二</td><td>1,918</td><td>09:36</td><td>10:59</td><td>189</td></tr>
+      <tr><td>2026-05-29</td><td>週五</td><td>2,168</td><td>09:30</td><td>10:59</td><td>106</td></tr>
+      <tr><td>2026-06-08</td><td>週一</td><td>1,229</td><td>09:55</td><td>10:59</td><td>149</td></tr>
+      <tr><td>2026-06-18</td><td>週四</td><td>1,913</td><td>09:30</td><td>10:59</td><td>269</td></tr>
+      <tr><td>2026-06-22</td><td>週一</td><td>2,095</td><td>09:30</td><td>10:59</td><td>86</td></tr>
+      <tr><td>2026-07-03</td><td>週五</td><td>2,098</td><td>09:30</td><td>10:59</td><td>251</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <!-- ② 結果 -->
+  <h2>② 結果：加貼士組完成率仍然較低</h2>
+  <p>把訂單分成 15 個條件相近的分組。<b class="hl-bad">其中 13 個分組，有貼士組完成率低於沒有貼士組</b>；只有 2 個分組較高（綠色行）。表中「差距」= 有貼士組完成率 − 沒有貼士組完成率，負數代表有貼士組較低。</p>
+  <div class="legend">
+    <span class="it"><span class="chip ctrl"></span> 沒有貼士組</span>
+    <span class="it"><span class="chip trt"></span> 有貼士組</span>
+  </div>
+  <div class="card">
+  <table class="cmp">
+    <thead><tr>
+      <th>車費</th><th>等候(秒)</th>
+      <th class="ctrl">無貼士 n</th><th class="ctrl">完成率</th>
+      <th class="trt">有貼士 n</th><th class="trt">完成率</th><th>差距 Δpp</th>
+    </tr></thead>
+    <tbody>
+      <tr><td>&lt;$85</td><td>0–60</td><td class="ctrl n">613</td><td class="ctrl"><span class="ctrl-val">90.9%</span></td><td class="trt n">2</td><td class="trt"><span class="trt-val">0.0%</span></td><td class="diff lose">−90.9</td></tr>
+      <tr><td>&lt;$85</td><td>60–120</td><td class="ctrl n">117</td><td class="ctrl"><span class="ctrl-val">76.1%</span></td><td class="trt n">0</td><td class="trt">—</td><td class="diff">—</td></tr>
+      <tr class="pos"><td>&lt;$85</td><td>120–180</td><td class="ctrl n">79</td><td class="ctrl"><span class="ctrl-val">67.1%</span></td><td class="trt n">6</td><td class="trt"><span class="trt-val">83.3%</span></td><td class="diff win">+16.2</td></tr>
+      <tr><td>&lt;$85</td><td>180–400</td><td class="ctrl n">131</td><td class="ctrl"><span class="ctrl-val">59.5%</span></td><td class="trt n">19</td><td class="trt"><span class="trt-val">47.4%</span></td><td class="diff lose">−12.1</td></tr>
+      <tr><td>&lt;$85</td><td>400+</td><td class="ctrl n">131</td><td class="ctrl"><span class="ctrl-val">51.1%</span></td><td class="trt n">56</td><td class="trt"><span class="trt-val">33.9%</span></td><td class="diff lose">−17.2</td></tr>
+      <tr><td>$85–149</td><td>0–60</td><td class="ctrl n">3,989</td><td class="ctrl"><span class="ctrl-val">92.7%</span></td><td class="trt n">4</td><td class="trt"><span class="trt-val">0.0%</span></td><td class="diff lose">−92.7</td></tr>
+      <tr><td>$85–149</td><td>60–120</td><td class="ctrl n">773</td><td class="ctrl"><span class="ctrl-val">78.1%</span></td><td class="trt n">8</td><td class="trt"><span class="trt-val">12.5%</span></td><td class="diff lose">−65.6</td></tr>
+      <tr><td>$85–149</td><td>120–180</td><td class="ctrl n">513</td><td class="ctrl"><span class="ctrl-val">78.4%</span></td><td class="trt n">24</td><td class="trt"><span class="trt-val">54.2%</span></td><td class="diff lose">−24.2</td></tr>
+      <tr><td>$85–149</td><td>180–400</td><td class="ctrl n">798</td><td class="ctrl"><span class="ctrl-val">68.2%</span></td><td class="trt n">202</td><td class="trt"><span class="trt-val">64.9%</span></td><td class="diff lose">−3.3</td></tr>
+      <tr><td>$85–149</td><td>400+</td><td class="ctrl n">496</td><td class="ctrl"><span class="ctrl-val">56.3%</span></td><td class="trt n">417</td><td class="trt"><span class="trt-val">54.0%</span></td><td class="diff lose">−2.3</td></tr>
+      <tr><td>$150–199</td><td>0–60</td><td class="ctrl n">1,733</td><td class="ctrl"><span class="ctrl-val">91.2%</span></td><td class="trt n">4</td><td class="trt"><span class="trt-val">0.0%</span></td><td class="diff lose">−91.2</td></tr>
+      <tr><td>$150–199</td><td>60–120</td><td class="ctrl n">239</td><td class="ctrl"><span class="ctrl-val">64.9%</span></td><td class="trt n">2</td><td class="trt"><span class="trt-val">0.0%</span></td><td class="diff lose">−64.9</td></tr>
+      <tr><td>$150–199</td><td>120–180</td><td class="ctrl n">184</td><td class="ctrl"><span class="ctrl-val">66.8%</span></td><td class="trt n">6</td><td class="trt"><span class="trt-val">33.3%</span></td><td class="diff lose">−33.5</td></tr>
+      <tr class="pos"><td>$150–199</td><td>180–400</td><td class="ctrl n">336</td><td class="ctrl"><span class="ctrl-val">54.5%</span></td><td class="trt n">84</td><td class="trt"><span class="trt-val">58.3%</span></td><td class="diff win">+3.8</td></tr>
+      <tr><td>$150–199</td><td>400+</td><td class="ctrl n">238</td><td class="ctrl"><span class="ctrl-val">50.0%</span></td><td class="trt n">192</td><td class="trt"><span class="trt-val">39.1%</span></td><td class="diff lose">−10.9</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="box bad"><b>兩個「較高」的分組都靠不住：</b>「&lt;$85 × 120–180」全期只有 <b>6 張有貼士單</b>（見下方逐日）；「$150–199 × 180–400」逐日拆開後方向不一致（見下方）。因此沒有足夠證據支持「加貼士有效」。</div>
+
+  <div class="card">
+  <table class="cmp small">
+    <caption><b>拆解 1 · &lt;$85 × 120–180（+16.2）</b>：有貼士全期只有 6 張，屬雜訊</caption>
+    <thead><tr><th>日期</th><th>星期</th><th class="ctrl">無貼士 n</th><th class="ctrl">完成率</th><th class="trt">有貼士 n</th><th class="trt">完成率</th></tr></thead>
+    <tbody>
+      <tr><td>2026-05-26</td><td>週二</td><td class="ctrl n">11</td><td class="ctrl"><span class="ctrl-val">63.6%</span></td><td class="trt n">0</td><td class="trt">—</td></tr>
+      <tr><td>2026-05-29</td><td>週五</td><td class="ctrl n">18</td><td class="ctrl"><span class="ctrl-val">72.2%</span></td><td class="trt n">0</td><td class="trt">—</td></tr>
+      <tr><td>2026-06-08</td><td>週一</td><td class="ctrl n">8</td><td class="ctrl"><span class="ctrl-val">87.5%</span></td><td class="trt n">3</td><td class="trt"><span class="trt-val">100.0%</span></td></tr>
+      <tr><td>2026-06-18</td><td>週四</td><td class="ctrl n">12</td><td class="ctrl"><span class="ctrl-val">58.3%</span></td><td class="trt n">1</td><td class="trt"><span class="trt-val">0.0%</span></td></tr>
+      <tr><td>2026-06-22</td><td>週一</td><td class="ctrl n">19</td><td class="ctrl"><span class="ctrl-val">57.9%</span></td><td class="trt n">0</td><td class="trt">—</td></tr>
+      <tr><td>2026-07-03</td><td>週五</td><td class="ctrl n">11</td><td class="ctrl"><span class="ctrl-val">72.7%</span></td><td class="trt n">2</td><td class="trt"><span class="trt-val">100.0%</span></td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="card">
+  <table class="cmp small">
+    <caption><b>拆解 2 · $150–199 × 180–400（+3.8）</b>：逐日方向不一致（2 日高、2 日低、1 日平），且有貼士組 backlog 逐日都較高</caption>
+    <thead><tr><th>日期</th><th>星期</th><th class="ctrl">無貼士 n / 完成率 / backlog</th><th class="trt">有貼士 n / 完成率 / backlog</th><th>方向</th></tr></thead>
+    <tbody>
+      <tr><td>2026-05-26</td><td>週二</td><td class="ctrl"><span class="ctrl-val">53 · 47.2% · 161</span></td><td class="trt"><span class="trt-val">16 · 43.8% · 206</span></td><td class="lose">較低</td></tr>
+      <tr><td>2026-05-29</td><td>週五</td><td class="ctrl"><span class="ctrl-val">77 · 53.2% · 112</span></td><td class="trt"><span class="trt-val">7 · 71.4% · 136</span></td><td class="win">較高(n=7)</td></tr>
+      <tr><td>2026-06-08</td><td>週一</td><td class="ctrl"><span class="ctrl-val">17 · 76.5% · 80</span></td><td class="trt"><span class="trt-val">17 · 76.5% · 129</span></td><td>持平</td></tr>
+      <tr><td>2026-06-18</td><td>週四</td><td class="ctrl"><span class="ctrl-val">74 · 52.7% · 150</span></td><td class="trt"><span class="trt-val">15 · 60.0% · 189</span></td><td class="win">較高</td></tr>
+      <tr><td>2026-06-22</td><td>週一</td><td class="ctrl"><span class="ctrl-val">77 · 53.2% · 183</span></td><td class="trt"><span class="trt-val">0 · — · —</span></td><td>—</td></tr>
+      <tr><td>2026-07-03</td><td>週五</td><td class="ctrl"><span class="ctrl-val">38 · 63.2% · 101</span></td><td class="trt"><span class="trt-val">29 · 51.7% · 148</span></td><td class="lose">較低</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h2 style="font-size:17px;color:var(--ink2)">長等候訂單（400 秒以上）也沒有改善</h2>
+  <p>等候超過 400 秒的訂單，最難派、最需要救。但三個車費區間<b class="hl-bad">全部仍是有貼士組完成率較低</b>（&lt;$85 低 17.2 個百分點、$150–199 低 10.9、$85–149 低 2.3）。連最難派的訂單，加貼士都沒有幫助。</p>
+
+  <!-- ③ 為什麼 -->
+  <h2>③ 為什麼會這樣？——貼士本身派給更難的單</h2>
+  <p>不是貼士一定沒用，而是<b>有貼士的訂單本身就比較難派</b>。這裡用 Backlog（訂單積壓：派單當下同時在搶司機的訂單數，越多代表越難派）來看：就算等候時間一樣，<b class="hl-bad">有貼士組每一組的 Backlog 都更高</b>。即兩組的實際難度並不一樣，直接比完成率，對有貼士組不公平。</p>
+  <div class="card">
+  <table class="cmp">
+    <thead><tr><th>車費</th><th>等候(秒)</th><th class="ctrl">無貼士 Backlog</th><th class="trt">有貼士 Backlog</th><th>Δ（有貼士更高＝更難）</th></tr></thead>
+    <tbody>
+      <tr><td>&lt;$85</td><td>0–60</td><td class="ctrl"><span class="ctrl-val">103.2</span></td><td class="trt"><span class="trt-val">138.0</span></td><td class="diff lose">+34.8</td></tr>
+      <tr><td>&lt;$85</td><td>120–180</td><td class="ctrl"><span class="ctrl-val">110.9</span></td><td class="trt"><span class="trt-val">138.8</span></td><td class="diff lose">+27.9</td></tr>
+      <tr><td>&lt;$85</td><td>180–400</td><td class="ctrl"><span class="ctrl-val">110.0</span></td><td class="trt"><span class="trt-val">149.2</span></td><td class="diff lose">+39.2</td></tr>
+      <tr><td>&lt;$85</td><td>400+</td><td class="ctrl"><span class="ctrl-val">104.0</span></td><td class="trt"><span class="trt-val">143.4</span></td><td class="diff lose">+39.4</td></tr>
+      <tr><td>$85–149</td><td>0–60</td><td class="ctrl"><span class="ctrl-val">105.5</span></td><td class="trt"><span class="trt-val">173.5</span></td><td class="diff lose">+68.0</td></tr>
+      <tr><td>$85–149</td><td>60–120</td><td class="ctrl"><span class="ctrl-val">123.4</span></td><td class="trt"><span class="trt-val">165.6</span></td><td class="diff lose">+42.2</td></tr>
+      <tr><td>$85–149</td><td>120–180</td><td class="ctrl"><span class="ctrl-val">123.7</span></td><td class="trt"><span class="trt-val">140.0</span></td><td class="diff lose">+16.3</td></tr>
+      <tr><td>$85–149</td><td>180–400</td><td class="ctrl"><span class="ctrl-val">130.0</span></td><td class="trt"><span class="trt-val">156.1</span></td><td class="diff lose">+26.1</td></tr>
+      <tr><td>$85–149</td><td>400+</td><td class="ctrl"><span class="ctrl-val">122.0</span></td><td class="trt"><span class="trt-val">163.5</span></td><td class="diff lose">+41.5</td></tr>
+      <tr><td>$150–199</td><td>0–60</td><td class="ctrl"><span class="ctrl-val">109.6</span></td><td class="trt"><span class="trt-val">199.3</span></td><td class="diff lose">+89.7</td></tr>
+      <tr><td>$150–199</td><td>60–120</td><td class="ctrl"><span class="ctrl-val">128.8</span></td><td class="trt"><span class="trt-val">157.5</span></td><td class="diff lose">+28.7</td></tr>
+      <tr><td>$150–199</td><td>120–180</td><td class="ctrl"><span class="ctrl-val">121.3</span></td><td class="trt"><span class="trt-val">148.0</span></td><td class="diff lose">+26.7</td></tr>
+      <tr><td>$150–199</td><td>180–400</td><td class="ctrl"><span class="ctrl-val">141.5</span></td><td class="trt"><span class="trt-val">161.3</span></td><td class="diff lose">+19.8</td></tr>
+      <tr><td>$150–199</td><td>400+</td><td class="ctrl"><span class="ctrl-val">128.7</span></td><td class="trt"><span class="trt-val">170.6</span></td><td class="diff lose">+41.9</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <p><b>那把 Backlog 也拉到一樣呢？</b>兩組完成率的差距（統計上叫 Lift）由 <b>−9.3 個百分點</b> 收窄到 <b>−4.6 個百分點</b>。Backlog 的確解釋了一部分差距，<b class="hl-bad">但有貼士組完成率仍然低於沒有貼士組</b>。不論逐日或逐星期看，六日都是有貼士組較低：</p>
+  <div class="card">
+  <table class="small">
+    <thead><tr><th style="text-align:left">控制到哪些條件</th><th>兩組完成率差距</th><th style="text-align:left">逐日差距（6 個 campaign 日）</th></tr></thead>
+    <tbody>
+      <tr><td style="text-align:left">車費 × 等候</td><td class="lose">−9.3 pp</td><td rowspan="4" style="text-align:left;vertical-align:middle;font-size:13px;color:var(--ink2)">週二 −10.4 ｜ 週五 −1.0 ｜ 週一 −7.3<br>週四 −9.2 ｜ 週一 −24.8 ｜ 週五 −3.4<br><b class="hl-bad">六日都是有貼士組較低</b></td></tr>
+      <tr><td style="text-align:left">＋ 日期 × 時段</td><td class="lose">−9.6 pp</td></tr>
+      <tr><td style="text-align:left">只保留 n≥20 穩定格</td><td class="lose">−7.9 pp</td></tr>
+      <tr><td style="text-align:left">＋ Backlog（三重對齊）</td><td class="lose">−4.6 pp</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <!-- ④ ROI -->
+  <h2>④ ROI：成本可確認，效果不能</h2>
+  <div class="card">
+  <table>
+    <thead><tr><th style="text-align:left">項目</th><th>數值</th><th style="text-align:left">說明</th></tr></thead>
+    <tbody>
+      <tr><td style="text-align:left">已支付貼士</td><td>$7,120</td><td style="text-align:left">只在完成的 679 張支付（承諾 $13,005，取消單 $5,885 不付）</td></tr>
+      <tr><td style="text-align:left">有貼士訂單</td><td>1,255</td><td style="text-align:left">完成 679（54.1%）</td></tr>
+      <tr><td style="text-align:left">多救回的訂單</td><td class="lose">沒有（−117 至 −58）</td><td style="text-align:left">因為有貼士組完成率較低，算出來是負數，即沒有多救回訂單</td></tr>
+      <tr><td style="text-align:left">每救一單成本</td><td class="lose">無法計算</td><td style="text-align:left">沒有多救回訂單，無法計算每單成本</td></tr>
+      <tr><td style="text-align:left">浪費率 Wastage</td><td class="lose">105–109%</td><td style="text-align:left">Wastage＝發了貼士但本來就會完成的比例；因有貼士組完成率較低，數字超過 100%，並非真的浪費超過 100%</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="box warn">因為有貼士組完成率低於沒有貼士組，「多救回的訂單、每救一單成本、浪費率」目前都算不出有意義的數字。要有可靠的 ROI，先要看到有貼士組完成率高於沒有貼士組（見 ⑤ 的建議做法）。</div>
+
+  <p style="font-size:13.5px;color:var(--ink2);margin:22px 0 4px"><b>另一角度：這批單的現金總帳</b>（平台實收 = 佣金 + premium，取自 <code>order_master_table_hk</code>）</p>
+  <div class="kpi">
+    <div class="k"><div class="lbl">平台實收</div><div class="val hl-good">$13,394</div><div class="sub">完成 679 張：佣金 $9,999 + premium $3,395</div></div>
+    <div class="k"><div class="lbl">實付貼士</div><div class="val">−$7,120</div><div class="sub">完成單 GTV 共 $102,615</div></div>
+    <div class="k"><div class="lbl">現金淨額</div><div class="val hl-good">+$6,274</div><div class="sub">帳面為正（抽成 13.1% &gt; 打和 6.9%）</div></div>
+  </div>
+  <div class="box bad"><b>但帳面賺錢 ≠ 貼士花得對：</b>完成的 679 張<b>大部分本來就會完成</b>（見 ②），這筆貼士屬增量浪費，不是靠貼士才賺到的錢。所以「賺 $6,274」不能當作增加 Budget 的理由。</div>
+
+  <!-- ⑤ 下一步 -->
+  <h2>⑤ 下一步：要怎樣才能真正知道貼士有沒有用？</h2>
+  <div class="box"><b>這份分析可以說：</b>未觀察到加貼士能提升完成率；而且可以確認一件事——<b>Add-Tips 傾向派給較難完成的訂單</b>（條件相近時，有貼士組的 Backlog 都更高）。<br><b>但不能直接說「貼士沒用」。</b>因為還有一些會影響難度的條件沒有完全控制，例如 Region（地區）、車型、落單分鐘、當下的司機供給。</div>
+  <div class="box good"><b>如果要回答「Add-Tips 值不值得加 Budget」，建議改用以下方法：</b>
+    <ul class="plain" style="margin:8px 0 0">
+      <li><b>Pre-treatment Matching</b>（事前條件配對）——只用派單前就已存在的條件來配對訂單（Backlog、車費、車型、地區、落單分鐘），<b>不要用等候時間</b>（等候時間是派單後才出現的結果，會混淆比較）。</li>
+      <li>或做 <b>A/B Test</b>（隨機分組實驗）——最乾淨，能真正看出加貼士有沒有提升完成率。</li>
+    </ul>
+  </div>
+
+  <p class="foot">
+    來源：<code>gogox-ba-sandbox.analytics.mart_ops_add_tips_campaign_orders</code>、<code>order_master_table_hk</code>（2026-07-10 實查，6 個 campaign 日繁忙時段，香港時間）。範圍：PlatformOD 個人客 · Van · ASAP · 車費 &lt; HK$200。有貼士 = <code>company_paid_incentive &gt; 0</code>；貼士只在完成單支付。完成率 = <code>is_completed</code>；Δpp = 有貼士完成率 − 沒貼士完成率。
+  </p>
+
+</div>
+</body>
+</html>
