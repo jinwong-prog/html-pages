@@ -81,8 +81,8 @@
   <p class="meta">Hong Kong PlatformOD · Van · ASAP · fare &lt; HK$200, across the peak periods of 6 campaign days ｜ (queried 2026-07-08, Hong Kong time) ｜ all figures produced by BigQuery</p>
 
   <div class="answer">
-    <span class="big">Even after matching on wait time and order backlog, the subsidy shows no lift in completion rate, so the actual return and wastage per subsidized order cannot be reliably estimated.</span><br>
-    This report puts orders with <b>similar wait times</b> side by side and estimates the subsidy cost per completed order and the wastage rate (the share of subsidies that did not lead to an additional completion). Current result: subsidized orders do not have a higher completion rate than non-subsidized orders. The cost is known (the actual amount paid), but the real return and wastage rate cannot be reliably estimated — an A/B Test is recommended to verify.
+    <span class="big">No evidence so far that the subsidy works.</span><br>
+    After controlling for wait time and backlog, the subsidized group still completes at a lower rate than the non-subsidized group. The subsidy's ROI and wastage cannot be assessed at this stage. Current data does not support increasing the subsidy budget.
   </div>
   <p style="font-size:13.5px;color:var(--ink2)">How to read this: is there any lift → ②; why not → ③; what to do next → ⑤.</p>
 
@@ -272,6 +272,7 @@ Incremental completions = subsidized orders × adjusted completion-rate gap
   </div>
 
   <p class="foot">
+    Method: orders with similar <b>fare, wait time and order backlog</b> are compared side by side, and the subsidy cost per completed order and the wastage rate (the share of subsidies that did not lead to an additional completion) are estimated.<br>
     Sources: <code>gogox-ba-sandbox.analytics.mart_ops_add_tips_campaign_orders</code>, <code>order_master_table_hk</code> (queried 2026-07-08, peak periods of 6 campaign days, Hong Kong time). Scope: PlatformOD individual customers · Van · ASAP · fare &lt; HK$200. Subsidized = <code>company_paid_incentive &gt; 0</code>; subsidies paid only on completed orders. Completion rate = <code>is_completed</code>; Δpp = subsidized completion rate − no-subsidy completion rate.
   </p>
 

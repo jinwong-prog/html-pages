@@ -81,8 +81,8 @@
   <p class="meta">香港 PlatformOD · Van · ASAP · 車費 &lt; HK$200，共 6 個 campaign 日繁忙時段 ｜（2026-07-08 實查，香港時間）｜ 數字全部由 BigQuery 產出</p>
 
   <div class="answer">
-    <span class="big">即使把等待時間與訂單積壓都拉近比較，補貼仍未見提升完成率，因此每張補貼的實際回報與浪費程度目前無法可靠估算。</span><br>
-    本報告把<b>等待時間相近</b>的訂單放在一起比較，並嘗試估算每完成一張訂單的補貼成本與浪費率（未帶來額外完成的補貼比例）。目前結果顯示：有補貼訂單的完成率並未高於未有補貼訂單，成本已知（實付金額），但實際回報與浪費率無法可靠估算，建議以 A/B Test 驗證。
+    <span class="big">目前未見補貼有效。</span><br>
+    控制等待時間及積壓後，補貼組完成率仍低於非補貼組。目前無法評估補貼的 ROI 或 Wastage。現有數據不足以支持增加補貼預算。
   </div>
   <p style="font-size:13.5px;color:var(--ink2)">閱讀建議：是否有提升 → ②；為何沒有 → ③；下一步 → ⑤。</p>
 
@@ -271,6 +271,7 @@
   </div>
 
   <p class="foot">
+    方法：把<b>車費、等待時間、訂單積壓</b>相近的訂單放在一起比較，估算每完成一張訂單的補貼成本與浪費率（未帶來額外完成的補貼比例）。<br>
     來源：<code>gogox-ba-sandbox.analytics.mart_ops_add_tips_campaign_orders</code>、<code>order_master_table_hk</code>（2026-07-08 實查，6 個 campaign 日繁忙時段，香港時間）。範圍：PlatformOD 個人客 · Van · ASAP · 車費 &lt; HK$200。有補貼 = <code>company_paid_incentive &gt; 0</code>；補貼只在完成單支付。完成率 = <code>is_completed</code>；Δpp = 有補貼完成率 − 沒補貼完成率。
   </p>
 
