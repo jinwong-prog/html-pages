@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>After controlling for wait time, Add-Tips still shows no lift in completion rate</title>
+<style>
+  :root{
+    --plane:#f9f9f7; --surface:#fcfcfb;
+    --ink:#0b0b0b; --ink2:#52514e; --muted:#898781;
+    --grid:#e1e0d9; --axis:#c3c2b7; --border:rgba(11,11,11,.10);
+    --ctrl:#2a78d6; --trt:#d03b3b;
+    --bad:#d03b3b; --good:#006300;
+    --badbg:rgba(208,59,59,.08); --goodbg:rgba(0,99,0,.08); --warnbg:rgba(237,161,0,.10);
+    --neutbg:rgba(137,135,129,.09);
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --plane:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7; --muted:#898781;
+      --grid:#2c2c2a; --axis:#383835; --border:rgba(255,255,255,.10);
+      --ctrl:#3987e5; --trt:#e66767; --bad:#e66767; --good:#0ca30c;
+      --badbg:rgba(230,103,103,.12); --goodbg:rgba(12,163,12,.12); --warnbg:rgba(201,133,0,.15);
+      --neutbg:rgba(137,135,129,.14);
+    }
+  }
+  :root[data-theme=dark]{--plane:#0d0d0d;--surface:#1a1a19;--ink:#fff;--ink2:#c3c2b7;--muted:#898781;--grid:#2c2c2a;--axis:#383835;--border:rgba(255,255,255,.10);--ctrl:#3987e5;--trt:#e66767;--bad:#e66767;--good:#0ca30c;--badbg:rgba(230,103,103,.12);--goodbg:rgba(12,163,12,.12);--warnbg:rgba(201,133,0,.15);--neutbg:rgba(137,135,129,.14);}
+  :root[data-theme=light]{--plane:#f9f9f7;--surface:#fcfcfb;--ink:#0b0b0b;--ink2:#52514e;--muted:#898781;--grid:#e1e0d9;--axis:#c3c2b7;--border:rgba(11,11,11,.10);--ctrl:#2a78d6;--trt:#d03b3b;--bad:#d03b3b;--good:#006300;--badbg:rgba(208,59,59,.08);--goodbg:rgba(0,99,0,.08);--warnbg:rgba(237,161,0,.10);--neutbg:rgba(137,135,129,.09);}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--plane);color:var(--ink);
+    font-family:system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.7;
+    -webkit-font-smoothing:antialiased;font-size:16px}
+  .wrap{max-width:1080px;margin:0 auto;padding:44px 40px 88px}
+  h1{font-size:28px;margin:0 0 6px;letter-spacing:-.01em;line-height:1.34}
+  .meta{color:var(--muted);font-size:13px;margin:0 0 32px;max-width:92ch}
+  .answer{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--bad);
+    border-radius:12px;padding:20px 24px;margin:0 0 12px;font-size:17px}
+  .answer .big{font-size:20px;font-weight:700}
+  h2{font-size:20px;margin:46px 0 6px;letter-spacing:-.01em}
+  .en{color:var(--muted);font-weight:400;font-size:.82em}
+  p{margin:10px 0;max-width:80ch}
+  .hl-bad{color:var(--bad);font-weight:700}
+  .hl-good{color:var(--good);font-weight:700}
+  .box{border-radius:12px;padding:16px 20px;margin:16px 0;font-size:15.5px;max-width:92ch}
+  .box.bad{background:var(--badbg)} .box.good{background:var(--goodbg)} .box.warn{background:var(--warnbg)}
+  .box b{font-weight:700}
+  table{border-collapse:collapse;width:100%;font-size:15px;margin:14px 0}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:8px 22px 18px;margin:18px 0;overflow-x:auto}
+  th,td{padding:9px 14px;text-align:right;border-bottom:1px solid var(--grid);
+    font-variant-numeric:tabular-nums;white-space:nowrap}
+  th:first-child,td:first-child{text-align:left}
+  thead th{color:var(--muted);font-weight:600;border-bottom:1px solid var(--axis);font-size:13px}
+  caption{caption-side:top;text-align:left;font-size:13px;color:var(--muted);padding:10px 0 2px}
+  table.cmp th.ctrl,table.cmp td.ctrl{background:color-mix(in srgb,var(--ctrl) 10%,transparent)}
+  table.cmp th.trt,table.cmp td.trt{background:color-mix(in srgb,var(--trt) 9%,transparent)}
+  table.cmp .ctrl-val{color:var(--ctrl);font-weight:700}
+  table.cmp .trt-val{color:var(--trt);font-weight:700}
+  td.n{color:var(--ink2);font-weight:400;font-size:12.5px}
+  table.cmp tr.pos td{background:var(--goodbg) !important;box-shadow:inset 0 0 0 9999px var(--goodbg)}
+  table.cmp tr.pos td:first-child{box-shadow:inset 3px 0 0 var(--good), inset 0 0 0 9999px var(--goodbg)}
+  td.diff{font-weight:700}
+  .small td{color:var(--muted);font-size:12px}
+  .kpi{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:16px 0}
+  .kpi .k{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 18px}
+  .kpi .lbl{font-size:12.5px;color:var(--muted)}
+  .kpi .val{font-size:26px;font-weight:800;margin-top:4px;letter-spacing:-.01em}
+  .kpi .sub{font-size:12px;color:var(--ink2);margin-top:6px}
+  .legend{display:flex;gap:22px;flex-wrap:wrap;font-size:13.5px;color:var(--ink2);padding:6px 2px 4px}
+  .legend .it{display:flex;align-items:center;gap:8px}
+  .chip{width:14px;height:14px;border-radius:4px;display:inline-block}
+  .chip.ctrl{background:var(--ctrl)} .chip.trt{background:var(--trt)}
+  ul.plain{padding-left:20px;max-width:84ch} ul.plain li{margin:8px 0}
+  .win{color:var(--good);font-weight:700} .lose{color:var(--bad);font-weight:700}
+  .foot{color:var(--muted);font-size:12px;margin-top:48px;border-top:1px solid var(--grid);padding-top:14px;max-width:92ch}
+  @media(max-width:640px){.kpi{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>After controlling for wait time, Add-Tips still shows no lift in completion rate</h1>
+  <p class="meta">Hong Kong PlatformOD · Van · ASAP · fare &lt; HK$200, across the peak periods of 6 campaign days ｜ (queried 2026-07-08, Hong Kong time) ｜ all figures produced by BigQuery</p>
+
+  <div class="answer">
+    <span class="big">Add-Tips did not lift the completion rate, and whether this money is worth spending cannot be answered for now.</span><br>
+    Add-Tips: during peak periods, extra tips are given on some orders to make drivers accept them faster. Conclusion: <b>when orders with similar conditions are put side by side, the tipped batch actually has a lower completion rate</b>, so at this stage no credible ROI (return) can be computed — i.e., we know how much was spent, but not whether it was money well spent.
+  </div>
+  <p style="font-size:13.5px;color:var(--ink2)">How to read this: did it rescue orders → ②; why not → ③; what to do next → ⑤.</p>
+
+  <!-- ① Which factors were controlled -->
+  <h2>① Which factors were controlled in this comparison?</h2>
+  <p>For a fair comparison, only <b>orders with similar conditions</b> are put together: within the same group, the completion rate of the <b>tipped group</b> is compared with the <b>no-tip group (Control)</b>.</p>
+  <div class="card">
+  <table>
+    <thead><tr><th>Factor controlled</th><th style="text-align:left">BQ column</th><th style="text-align:left">Grouping method</th></tr></thead>
+    <tbody>
+      <tr><td>Fare</td><td style="text-align:left"><code>gross_transaction_value</code></td><td style="text-align:left">&lt;$85 ｜ $85–149 ｜ $150–199 (&ge;$200 not eligible for tips, already excluded)</td></tr>
+      <tr><td>Wait</td><td style="text-align:left"><code>wait_sec</code></td><td style="text-align:left">0–60 ｜ 60–120 ｜ 120–180 ｜ 180–400 ｜ 400+ sec</td></tr>
+      <tr><td>Backlog</td><td style="text-align:left"><code>backlog_at_120</code></td><td style="text-align:left">&lt;40 / 40–80 / 80–120 / 120–160 / 160+ (additional test, see ③)</td></tr>
+      <tr><td>Campaign date / weekday</td><td style="text-align:left"><code>campaign_date</code></td><td style="text-align:left">aligned day by day across 6 days; date locks the weekday</td></tr>
+      <tr><td>Peak period / Time</td><td style="text-align:left"><code>created_at</code></td><td style="text-align:left">aligned by order-placement hour (see table below)</td></tr>
+      <tr><td>Customer type / Segment</td><td style="text-align:left"><code>business_segment</code></td><td style="text-align:left">all PlatformOD individual customers</td></tr>
+      <tr><td>Order status</td><td style="text-align:left"><code>status</code></td><td style="text-align:left">only completed (9,062) and cancelled (2,357), no pending; clean completion-rate denominator</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="card">
+  <table class="small">
+    <caption>Peak periods of the 6 campaign days (Hong Kong time; time refers to order-placement time created_at)</caption>
+    <thead><tr><th>Date</th><th>Weekday</th><th>Orders</th><th>Earliest order</th><th>Latest order</th><th>Tipped orders</th></tr></thead>
+    <tbody>
+      <tr><td>2026-05-26</td><td>Tue</td><td>1,918</td><td>09:36</td><td>10:59</td><td>189</td></tr>
+      <tr><td>2026-05-29</td><td>Fri</td><td>2,168</td><td>09:30</td><td>10:59</td><td>106</td></tr>
+      <tr><td>2026-06-08</td><td>Mon</td><td>1,229</td><td>09:55</td><td>10:59</td><td>149</td></tr>
+      <tr><td>2026-06-18</td><td>Thu</td><td>1,913</td><td>09:30</td><td>10:59</td><td>269</td></tr>
+      <tr><td>2026-06-22</td><td>Mon</td><td>2,095</td><td>09:30</td><td>10:59</td><td>86</td></tr>
+      <tr><td>2026-07-03</td><td>Fri</td><td>2,098</td><td>09:30</td><td>10:59</td><td>251</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <!-- ② Results -->
+  <h2>② Result: the tipped group still has a lower completion rate</h2>
+  <p>Orders are split into 15 groups with similar conditions. <b class="hl-bad">In 13 of these groups, the tipped group has a lower completion rate than the no-tip group</b>; only 2 groups are higher (green rows). In the table, "Gap" = tipped-group completion rate − no-tip-group completion rate, where a negative number means the tipped group is lower.</p>
+  <div class="legend">
+    <span class="it"><span class="chip ctrl"></span> No-tip group</span>
+    <span class="it"><span class="chip trt"></span> Tipped group</span>
+  </div>
+  <div class="card">
+  <table class="cmp">
+    <thead><tr>
+      <th>Fare</th><th>Wait (sec)</th>
+      <th class="ctrl">No-tip n</th><th class="ctrl">Completion</th>
+      <th class="trt">Tipped n</th><th class="trt">Completion</th><th>Gap Δpp</th>
+    </tr></thead>
+    <tbody>
+      <tr><td>&lt;$85</td><td>0–60</td><td class="ctrl n">613</td><td class="ctrl"><span class="ctrl-val">90.9%</span></td><td class="trt n">2</td><td class="trt"><span class="trt-val">0.0%</span></td><td class="diff lose">−90.9</td></tr>
+      <tr><td>&lt;$85</td><td>60–120</td><td class="ctrl n">117</td><td class="ctrl"><span class="ctrl-val">76.1%</span></td><td class="trt n">0</td><td class="trt">—</td><td class="diff">—</td></tr>
+      <tr class="pos"><td>&lt;$85</td><td>120–180</td><td class="ctrl n">79</td><td class="ctrl"><span class="ctrl-val">67.1%</span></td><td class="trt n">6</td><td class="trt"><span class="trt-val">83.3%</span></td><td class="diff win">+16.2</td></tr>
+      <tr><td>&lt;$85</td><td>180–400</td><td class="ctrl n">131</td><td class="ctrl"><span class="ctrl-val">59.5%</span></td><td class="trt n">19</td><td class="trt"><span class="trt-val">47.4%</span></td><td class="diff lose">−12.1</td></tr>
+      <tr><td>&lt;$85</td><td>400+</td><td class="ctrl n">131</td><td class="ctrl"><span class="ctrl-val">51.1%</span></td><td class="trt n">56</td><td class="trt"><span class="trt-val">33.9%</span></td><td class="diff lose">−17.2</td></tr>
+      <tr><td>$85–149</td><td>0–60</td><td class="ctrl n">3,989</td><td class="ctrl"><span class="ctrl-val">92.7%</span></td><td class="trt n">4</td><td class="trt"><span class="trt-val">0.0%</span></td><td class="diff lose">−92.7</td></tr>
+      <tr><td>$85–149</td><td>60–120</td><td class="ctrl n">773</td><td class="ctrl"><span class="ctrl-val">78.1%</span></td><td class="trt n">8</td><td class="trt"><span class="trt-val">12.5%</span></td><td class="diff lose">−65.6</td></tr>
+      <tr><td>$85–149</td><td>120–180</td><td class="ctrl n">513</td><td class="ctrl"><span class="ctrl-val">78.4%</span></td><td class="trt n">24</td><td class="trt"><span class="trt-val">54.2%</span></td><td class="diff lose">−24.2</td></tr>
+      <tr><td>$85–149</td><td>180–400</td><td class="ctrl n">798</td><td class="ctrl"><span class="ctrl-val">68.2%</span></td><td class="trt n">202</td><td class="trt"><span class="trt-val">64.9%</span></td><td class="diff lose">−3.3</td></tr>
+      <tr><td>$85–149</td><td>400+</td><td class="ctrl n">496</td><td class="ctrl"><span class="ctrl-val">56.3%</span></td><td class="trt n">417</td><td class="trt"><span class="trt-val">54.0%</span></td><td class="diff lose">−2.3</td></tr>
+      <tr><td>$150–199</td><td>0–60</td><td class="ctrl n">1,733</td><td class="ctrl"><span class="ctrl-val">91.2%</span></td><td class="trt n">4</td><td class="trt"><span class="trt-val">0.0%</span></td><td class="diff lose">−91.2</td></tr>
+      <tr><td>$150–199</td><td>60–120</td><td class="ctrl n">239</td><td class="ctrl"><span class="ctrl-val">64.9%</span></td><td class="trt n">2</td><td class="trt"><span class="trt-val">0.0%</span></td><td class="diff lose">−64.9</td></tr>
+      <tr><td>$150–199</td><td>120–180</td><td class="ctrl n">184</td><td class="ctrl"><span class="ctrl-val">66.8%</span></td><td class="trt n">6</td><td class="trt"><span class="trt-val">33.3%</span></td><td class="diff lose">−33.5</td></tr>
+      <tr class="pos"><td>$150–199</td><td>180–400</td><td class="ctrl n">336</td><td class="ctrl"><span class="ctrl-val">54.5%</span></td><td class="trt n">84</td><td class="trt"><span class="trt-val">58.3%</span></td><td class="diff win">+3.8</td></tr>
+      <tr><td>$150–199</td><td>400+</td><td class="ctrl n">238</td><td class="ctrl"><span class="ctrl-val">50.0%</span></td><td class="trt n">192</td><td class="trt"><span class="trt-val">39.1%</span></td><td class="diff lose">−10.9</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="box bad"><b>Both "higher" groups are unreliable:</b> "&lt;$85 × 120–180" has only <b>6 tipped orders</b> across the whole period (see day-by-day below); "$150–199 × 180–400" is inconsistent in direction once broken down by day (see below). So there is not enough evidence to support "Add-Tips works".</div>
+
+  <div class="card">
+  <table class="cmp small">
+    <caption><b>Breakdown 1 · &lt;$85 × 120–180 (+16.2)</b>: only 6 tipped orders across the whole period — noise</caption>
+    <thead><tr><th>Date</th><th>Weekday</th><th class="ctrl">No-tip n</th><th class="ctrl">Completion</th><th class="trt">Tipped n</th><th class="trt">Completion</th></tr></thead>
+    <tbody>
+      <tr><td>2026-05-26</td><td>Tue</td><td class="ctrl n">11</td><td class="ctrl"><span class="ctrl-val">63.6%</span></td><td class="trt n">0</td><td class="trt">—</td></tr>
+      <tr><td>2026-05-29</td><td>Fri</td><td class="ctrl n">18</td><td class="ctrl"><span class="ctrl-val">72.2%</span></td><td class="trt n">0</td><td class="trt">—</td></tr>
+      <tr><td>2026-06-08</td><td>Mon</td><td class="ctrl n">8</td><td class="ctrl"><span class="ctrl-val">87.5%</span></td><td class="trt n">3</td><td class="trt"><span class="trt-val">100.0%</span></td></tr>
+      <tr><td>2026-06-18</td><td>Thu</td><td class="ctrl n">12</td><td class="ctrl"><span class="ctrl-val">58.3%</span></td><td class="trt n">1</td><td class="trt"><span class="trt-val">0.0%</span></td></tr>
+      <tr><td>2026-06-22</td><td>Mon</td><td class="ctrl n">19</td><td class="ctrl"><span class="ctrl-val">57.9%</span></td><td class="trt n">0</td><td class="trt">—</td></tr>
+      <tr><td>2026-07-03</td><td>Fri</td><td class="ctrl n">11</td><td class="ctrl"><span class="ctrl-val">72.7%</span></td><td class="trt n">2</td><td class="trt"><span class="trt-val">100.0%</span></td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="card">
+  <table class="cmp small">
+    <caption><b>Breakdown 2 · $150–199 × 180–400 (+3.8)</b>: inconsistent direction by day (2 days higher, 2 days lower, 1 day flat), and the tipped group's backlog is higher every day</caption>
+    <thead><tr><th>Date</th><th>Weekday</th><th class="ctrl">No-tip n / completion / backlog</th><th class="trt">Tipped n / completion / backlog</th><th>Direction</th></tr></thead>
+    <tbody>
+      <tr><td>2026-05-26</td><td>Tue</td><td class="ctrl"><span class="ctrl-val">53 · 47.2% · 161</span></td><td class="trt"><span class="trt-val">16 · 43.8% · 206</span></td><td class="lose">lower</td></tr>
+      <tr><td>2026-05-29</td><td>Fri</td><td class="ctrl"><span class="ctrl-val">77 · 53.2% · 112</span></td><td class="trt"><span class="trt-val">7 · 71.4% · 136</span></td><td class="win">higher (n=7)</td></tr>
+      <tr><td>2026-06-08</td><td>Mon</td><td class="ctrl"><span class="ctrl-val">17 · 76.5% · 80</span></td><td class="trt"><span class="trt-val">17 · 76.5% · 129</span></td><td>flat</td></tr>
+      <tr><td>2026-06-18</td><td>Thu</td><td class="ctrl"><span class="ctrl-val">74 · 52.7% · 150</span></td><td class="trt"><span class="trt-val">15 · 60.0% · 189</span></td><td class="win">higher</td></tr>
+      <tr><td>2026-06-22</td><td>Mon</td><td class="ctrl"><span class="ctrl-val">77 · 53.2% · 183</span></td><td class="trt"><span class="trt-val">0 · — · —</span></td><td>—</td></tr>
+      <tr><td>2026-07-03</td><td>Fri</td><td class="ctrl"><span class="ctrl-val">38 · 63.2% · 101</span></td><td class="trt"><span class="trt-val">29 · 51.7% · 148</span></td><td class="lose">lower</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h2 style="font-size:17px;color:var(--ink2)">Long-wait orders (over 400 sec) show no improvement either</h2>
+  <p>Orders waiting over 400 sec are the hardest to dispatch and most in need of rescue. But in all three fare bands <b class="hl-bad">the tipped group still has a lower completion rate</b> (&lt;$85 lower by 17.2 percentage points, $150–199 lower by 10.9, $85–149 lower by 2.3). Even for the hardest-to-dispatch orders, tips did not help.</p>
+
+  <!-- ③ Why -->
+  <h2>③ Why is this happening? — Tips are given to harder orders in the first place</h2>
+  <p>It is not that tips are necessarily useless, but that <b>tipped orders are inherently harder to dispatch</b>. Here we use Backlog (order backlog: the number of orders competing for drivers at the moment of dispatch; higher means harder to dispatch) to see this: even at the same wait time, <b class="hl-bad">the tipped group has a higher Backlog in every group</b>. That is, the actual difficulty of the two groups is not the same, and comparing completion rates directly is unfair to the tipped group.</p>
+  <div class="card">
+  <table class="cmp">
+    <thead><tr><th>Fare</th><th>Wait (sec)</th><th class="ctrl">No-tip Backlog</th><th class="trt">Tipped Backlog</th><th>Δ (tipped higher = harder)</th></tr></thead>
+    <tbody>
+      <tr><td>&lt;$85</td><td>0–60</td><td class="ctrl"><span class="ctrl-val">103.2</span></td><td class="trt"><span class="trt-val">138.0</span></td><td class="diff lose">+34.8</td></tr>
+      <tr><td>&lt;$85</td><td>120–180</td><td class="ctrl"><span class="ctrl-val">110.9</span></td><td class="trt"><span class="trt-val">138.8</span></td><td class="diff lose">+27.9</td></tr>
+      <tr><td>&lt;$85</td><td>180–400</td><td class="ctrl"><span class="ctrl-val">110.0</span></td><td class="trt"><span class="trt-val">149.2</span></td><td class="diff lose">+39.2</td></tr>
+      <tr><td>&lt;$85</td><td>400+</td><td class="ctrl"><span class="ctrl-val">104.0</span></td><td class="trt"><span class="trt-val">143.4</span></td><td class="diff lose">+39.4</td></tr>
+      <tr><td>$85–149</td><td>0–60</td><td class="ctrl"><span class="ctrl-val">105.5</span></td><td class="trt"><span class="trt-val">173.5</span></td><td class="diff lose">+68.0</td></tr>
+      <tr><td>$85–149</td><td>60–120</td><td class="ctrl"><span class="ctrl-val">123.4</span></td><td class="trt"><span class="trt-val">165.6</span></td><td class="diff lose">+42.2</td></tr>
+      <tr><td>$85–149</td><td>120–180</td><td class="ctrl"><span class="ctrl-val">123.7</span></td><td class="trt"><span class="trt-val">140.0</span></td><td class="diff lose">+16.3</td></tr>
+      <tr><td>$85–149</td><td>180–400</td><td class="ctrl"><span class="ctrl-val">130.0</span></td><td class="trt"><span class="trt-val">156.1</span></td><td class="diff lose">+26.1</td></tr>
+      <tr><td>$85–149</td><td>400+</td><td class="ctrl"><span class="ctrl-val">122.0</span></td><td class="trt"><span class="trt-val">163.5</span></td><td class="diff lose">+41.5</td></tr>
+      <tr><td>$150–199</td><td>0–60</td><td class="ctrl"><span class="ctrl-val">109.6</span></td><td class="trt"><span class="trt-val">199.3</span></td><td class="diff lose">+89.7</td></tr>
+      <tr><td>$150–199</td><td>60–120</td><td class="ctrl"><span class="ctrl-val">128.8</span></td><td class="trt"><span class="trt-val">157.5</span></td><td class="diff lose">+28.7</td></tr>
+      <tr><td>$150–199</td><td>120–180</td><td class="ctrl"><span class="ctrl-val">121.3</span></td><td class="trt"><span class="trt-val">148.0</span></td><td class="diff lose">+26.7</td></tr>
+      <tr><td>$150–199</td><td>180–400</td><td class="ctrl"><span class="ctrl-val">141.5</span></td><td class="trt"><span class="trt-val">161.3</span></td><td class="diff lose">+19.8</td></tr>
+      <tr><td>$150–199</td><td>400+</td><td class="ctrl"><span class="ctrl-val">128.7</span></td><td class="trt"><span class="trt-val">170.6</span></td><td class="diff lose">+41.9</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <p><b>So what if Backlog is also matched to the same level?</b> The gap in completion rate between the two groups (statistically called Lift) narrows from <b>−9.3 percentage points</b> to <b>−4.6 percentage points</b>. Backlog does explain part of the gap, <b class="hl-bad">but the tipped group's completion rate is still lower than the no-tip group's</b>. Whether viewed by day or by weekday, all six days show the tipped group lower:</p>
+  <div class="card">
+  <table class="small">
+    <thead><tr><th style="text-align:left">Conditions controlled</th><th>Gap between the two groups</th><th style="text-align:left">Gap by day (6 campaign days)</th></tr></thead>
+    <tbody>
+      <tr><td style="text-align:left">Fare × Wait</td><td class="lose">−9.3 pp</td><td rowspan="4" style="text-align:left;vertical-align:middle;font-size:13px;color:var(--ink2)">Tue −10.4 ｜ Fri −1.0 ｜ Mon −7.3<br>Thu −9.2 ｜ Mon −24.8 ｜ Fri −3.4<br><b class="hl-bad">all six days show the tipped group lower</b></td></tr>
+      <tr><td style="text-align:left">＋ Date × Time period</td><td class="lose">−9.6 pp</td></tr>
+      <tr><td style="text-align:left">Keep only stable cells with n≥20</td><td class="lose">−7.9 pp</td></tr>
+      <tr><td style="text-align:left">＋ Backlog (triple alignment)</td><td class="lose">−4.6 pp</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <!-- ④ ROI -->
+  <h2>④ ROI: cost is confirmable, effect is not</h2>
+  <div class="card">
+  <table>
+    <thead><tr><th style="text-align:left">Item</th><th>Value</th><th style="text-align:left">Note</th></tr></thead>
+    <tbody>
+      <tr><td style="text-align:left">Tips paid</td><td>$7,120</td><td style="text-align:left">paid only on the 679 completed orders (committed $13,005, cancelled orders' $5,885 not paid)</td></tr>
+      <tr><td style="text-align:left">Tipped orders</td><td>1,255</td><td style="text-align:left">679 completed (54.1%)</td></tr>
+      <tr><td style="text-align:left">Extra orders rescued</td><td class="lose">none (−117 to −58)</td><td style="text-align:left">because the tipped group's completion rate is lower, the result is negative, i.e. no extra orders were rescued</td></tr>
+      <tr><td style="text-align:left">Cost per order rescued</td><td class="lose">cannot be computed</td><td style="text-align:left">no extra orders rescued, so cost per order cannot be computed</td></tr>
+      <tr><td style="text-align:left">Wastage</td><td class="lose">100% (est.)</td><td style="text-align:left">Wastage = the share of paid tips that "bought no provable incremental completion" = (paid − effective tips)/paid; effective tips = incremental completions × tip per order. Since incremental completions ≤ 0 (none observed), effective tips = $0, so = $7,120 ÷ $7,120 = 100%. Capped at 100% (you cannot spend negative money); the point estimate being negative suggests harder orders were selected — a selection bias, see ③</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="box">
+    <b>What is "extra orders rescued (incremental completions)"?</b>
+    Assuming no tip had been given, how many of these orders would have been cancelled but were completed only because a tip was added — i.e. the orders the tip <b>genuinely rescued</b>.
+    <br>Incremental completions <b>is not a number you can directly count in real life</b> (no one can tell which specific order "would have been cancelled without the tip") — it is estimated using the adjusted completion-rate gap:
+    <pre style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:13.5px;overflow-x:auto;margin:10px 0">Adjusted completion-rate gap = tipped-group completion rate − no-tip-group completion rate,
+                               after controlling for fare / wait time / backlog
+                             = 55.3% − 62.6%
+                             = −1.9pp (i.e. −1.9%)
+
+Incremental completions = tipped orders × adjusted completion-rate gap
+                        = 1,255 × (−1.9%)
+                        ≈ −24 (negative, i.e. no evidence of extra completions)</pre>
+    The result is ≤ 0, i.e. <b class="hl-bad">no incremental completions observed</b>.
+  </div>
+  <div class="box warn">Because no incremental completions were observed (estimate −58 to −117, with a 95% confidence interval crossing 0), "cost per order rescued" cannot be computed, and "wastage" can only be conservatively estimated at 100% (i.e. at this stage no provable effective tip spend can be seen). For a reliable ROI and Wastage, we first need pre-treatment matching or an A/B test to confirm that the tipped group's completion rate is genuinely higher than the no-tip group's (see the recommended approach in ⑤).</div>
+
+  <p style="font-size:13.5px;color:var(--ink2);margin:22px 0 4px"><b>Another angle: the cash ledger for this batch of orders</b> (platform net take = commission + premium, from <code>order_master_table_hk</code>)</p>
+  <div class="kpi">
+    <div class="k"><div class="lbl">Platform net take</div><div class="val hl-good">$13,394</div><div class="sub">679 completed orders: commission $9,999 + premium $3,395</div></div>
+    <div class="k"><div class="lbl">Tips actually paid</div><div class="val">−$7,120</div><div class="sub">completed-order GTV totals $102,615</div></div>
+    <div class="k"><div class="lbl">Net cash</div><div class="val hl-good">+$6,274</div><div class="sub">positive on paper (take rate 13.1% &gt; break-even 6.9%)</div></div>
+  </div>
+  <div class="box bad"><b>But making money on paper ≠ tips being well spent:</b> the 679 completed orders <b>mostly would have completed anyway</b> (see ②), so these tips are incremental wastage, not money earned thanks to tips. So the "$6,274 profit" cannot be used as a reason to increase Budget.</div>
+
+  <!-- ⑤ Next steps -->
+  <h2>⑤ Next steps: how can we actually know whether tips work?</h2>
+  <div class="box"><b>What can be said:</b> no lift in completion rate from Add-Tips was observed; and the tipped batch of orders is inherently harder to dispatch (higher backlog).<br><b>But we cannot conclude "tips are entirely useless"</b> — region, vehicle type, order-placement time, driver supply and so on are not yet fully aligned and may still affect the result.</div>
+  <div class="box good"><b>To answer "is it worth increasing Budget", we recommend:</b>
+    <ul class="plain" style="margin:8px 0 0">
+      <li>Match and compare using conditions already known <b>before</b> dispatch (backlog, fare, vehicle type, region, order-placement time), and <b>do not use wait time</b> — wait time only appears after dispatch, so using it for matching distorts the result.</li>
+      <li>Or run an <b>A/B experiment</b> (random assignment) directly — the cleanest way to see whether Add-Tips truly lifts the completion rate.</li>
+    </ul>
+  </div>
+
+  <p class="foot">
+    Sources: <code>gogox-ba-sandbox.analytics.mart_ops_add_tips_campaign_orders</code>, <code>order_master_table_hk</code> (queried 2026-07-08, peak periods of 6 campaign days, Hong Kong time). Scope: PlatformOD individual customers · Van · ASAP · fare &lt; HK$200. Tipped = <code>company_paid_incentive &gt; 0</code>; tips paid only on completed orders. Completion rate = <code>is_completed</code>; Δpp = tipped completion rate − no-tip completion rate.
+  </p>
+
+</div>
+</body>
+</html>
