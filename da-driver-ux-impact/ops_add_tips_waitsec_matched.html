@@ -87,7 +87,7 @@
 
   <div class="card">
   <table class="cmp small">
-    <caption><b>主結論 · 逐層拉齊後兩組完成率差距</b>（負數＝有補貼組較低；★ 為最嚴格公平比較）｜（2026-07-13 實查，HK PlatformOD Van，6 campaign 日，車費 &lt; $200）</caption>
+    <caption><b>主結論 · 逐層拉齊後兩組完成率差距</b>（負數＝有補貼組較低；★ 為最嚴格公平比較；無補貼組括號內為同格加權等價完成數）｜（2026-07-13 實查，HK PlatformOD Van，6 campaign 日，車費 &lt; $200；來源 <code>mart_ops_add_tips_campaign_orders</code>）</caption>
     <thead><tr>
       <th style="text-align:left">控制到哪些條件</th>
       <th class="trt">有補貼組完成率</th>
@@ -97,18 +97,18 @@
     </tr></thead>
     <tbody>
       <tr><td style="text-align:left">車費 × 等候</td>
-        <td class="trt"><span class="trt-val">51.6%</span> <span class="n">(529/1,026)</span></td>
-        <td class="ctrl"><span class="ctrl-val">58.3%</span> <span class="n">(598/1,026)</span></td>
-        <td class="diff lose">−6.7</td>
+        <td class="trt"><span class="trt-val">50.4%</span> <span class="n">(529/1,050)</span></td>
+        <td class="ctrl"><span class="ctrl-val">58.1%</span> <span class="n">(610/1,050)</span></td>
+        <td class="diff lose">−7.7</td>
         <td rowspan="4" style="text-align:left;vertical-align:middle;font-size:13px;color:var(--ink2)">週二 −12.1 ｜ 週五 −2.7 ｜ 週一 −7.3<br>週四 −10.7 ｜ 週一 −25.8 ｜ 週五 −3.4<br><b class="hl-bad">六日都是有補貼組較低</b></td></tr>
       <tr><td style="text-align:left">＋ 日期 × 時段</td>
         <td class="trt"><span class="trt-val">50.4%</span> <span class="n">(525/1,042)</span></td>
         <td class="ctrl"><span class="ctrl-val">58.1%</span> <span class="n">(605/1,042)</span></td>
         <td class="diff lose">−7.7</td></tr>
       <tr><td style="text-align:left">只分析有補貼訂單達 20 張以上的分組<br><span style="font-size:12px;color:var(--muted)">（排除樣本過少的分組，避免少量訂單影響結果）</span></td>
-        <td class="trt"><span class="trt-val">52.5%</span> <span class="n">(512/975)</span></td>
-        <td class="ctrl"><span class="ctrl-val">57.6%</span> <span class="n">(562/975)</span></td>
-        <td class="diff lose">−5.1</td></tr>
+        <td class="trt"><span class="trt-val">51.3%</span> <span class="n">(512/999)</span></td>
+        <td class="ctrl"><span class="ctrl-val">57.5%</span> <span class="n">(574/999)</span></td>
+        <td class="diff lose">−6.2</td></tr>
       <tr><td style="text-align:left"><b>＋ Backlog（三重對齊）★</b></td>
         <td class="trt"><span class="trt-val">50.4%</span> <span class="n">(529/1,050)</span></td>
         <td class="ctrl"><span class="ctrl-val">56.1%</span> <span class="n">(589/1,050)</span></td>
@@ -242,7 +242,7 @@
   </table>
   </div>
 
-  <p><b>那把 Backlog 也拉到一樣呢？</b>兩組完成率的差距由 <b>−6.7 個百分點</b>（車費×等候）收窄到 <b>−5.7 個百分點</b>（三重對齊）。Backlog 的確解釋了一部分差距，<b class="hl-bad">但有補貼組完成率仍然低於沒有補貼組</b>。完整四層數字見頁首主表；逐日拆開，六日都是有補貼組較低（週二 −12.1 至 週一 −25.8）。</p>
+  <p><b>那把 Backlog 也拉到一樣呢？</b>兩組完成率的差距由 <b>−7.7 個百分點</b>（車費×等候）收窄到 <b>−5.7 個百分點</b>（三重對齊）。Backlog 的確解釋了一部分差距，<b class="hl-bad">但有補貼組完成率仍然低於沒有補貼組</b>。完整四層數字見頁首主表；逐日拆開，六日都是有補貼組較低（週二 −12.1 至 週一 −25.8）。</p>
 
   <!-- ④ ROI -->
   <h2>④ ROI：成本可確認，效果不能</h2>
