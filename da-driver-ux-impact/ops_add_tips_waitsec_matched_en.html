@@ -78,13 +78,45 @@
 <div class="wrap">
 
   <h1>Subsidy Effectiveness &amp; Wastage Assessment (Fare × Wait × Backlog Matched Comparison)</h1>
-  <p class="meta">Hong Kong PlatformOD · Van · ASAP · fare &lt; HK$200, across the peak periods of 6 campaign days ｜ (queried 2026-07-08, Hong Kong time) ｜ all figures produced by BigQuery</p>
+  <p class="meta">Hong Kong PlatformOD · Van · ASAP · fare &lt; HK$200, across the peak periods of 6 campaign days ｜ (queried 2026-07-13, Hong Kong time, 6 campaign days 2026-05-26 to 2026-07-03) ｜ all figures produced by BigQuery</p>
 
   <div class="answer">
     <span class="big">No evidence so far that the subsidy works.</span><br>
-    After controlling for wait time and backlog, the subsidized group still completes at a lower rate than the non-subsidized group. The subsidy's ROI and wastage cannot be assessed at this stage. Current data does not support increasing the subsidy budget.
+    After progressively matching fare, wait, date/time, and backlog, the <b>subsidized group still completes at a lower rate</b> than the no-subsidy group (triple alignment gap: −5.7 percentage points). Subsidy paid: $7,120 (679/1,255 completed orders), but <b>no incremental completions can be proven</b>. Current data does not support increasing the subsidy budget.
   </div>
-  <p style="font-size:13.5px;color:var(--ink2)">How to read this: is there any lift → ②; why not → ③; what to do next → ⑤.</p>
+
+  <div class="card">
+  <table class="cmp small">
+    <caption><b>Headline · completion-rate gap after progressive matching</b> (negative = subsidized group lower; ★ = strictest fair comparison) ｜ (queried 2026-07-13, HK PlatformOD Van, 6 campaign days, fare &lt; $200)</caption>
+    <thead><tr>
+      <th style="text-align:left">Matched on</th>
+      <th class="trt">Subsidized completion</th>
+      <th class="ctrl">No-subsidy completion</th>
+      <th>Gap Δpp</th>
+      <th style="text-align:left">Day-by-day gap (6 campaign days)</th>
+    </tr></thead>
+    <tbody>
+      <tr><td style="text-align:left">Fare × Wait</td>
+        <td class="trt"><span class="trt-val">51.6%</span> <span class="n">(529/1,026)</span></td>
+        <td class="ctrl"><span class="ctrl-val">58.3%</span> <span class="n">(598/1,026)</span></td>
+        <td class="diff lose">−6.7</td>
+        <td rowspan="4" style="text-align:left;vertical-align:middle;font-size:13px;color:var(--ink2)">Tue −12.1 ｜ Fri −2.7 ｜ Mon −7.3<br>Thu −10.7 ｜ Mon −25.8 ｜ Fri −3.4<br><b class="hl-bad">all six days show the subsidized group lower</b></td></tr>
+      <tr><td style="text-align:left">＋ Date × Time period</td>
+        <td class="trt"><span class="trt-val">50.4%</span> <span class="n">(525/1,042)</span></td>
+        <td class="ctrl"><span class="ctrl-val">58.1%</span> <span class="n">(605/1,042)</span></td>
+        <td class="diff lose">−7.7</td></tr>
+      <tr><td style="text-align:left">Only groups with 20+ subsidized orders<br><span style="font-size:12px;color:var(--muted)">(exclude tiny cells so a handful of orders do not sway the result)</span></td>
+        <td class="trt"><span class="trt-val">52.5%</span> <span class="n">(512/975)</span></td>
+        <td class="ctrl"><span class="ctrl-val">57.6%</span> <span class="n">(562/975)</span></td>
+        <td class="diff lose">−5.1</td></tr>
+      <tr><td style="text-align:left"><b>＋ Backlog (triple alignment) ★</b></td>
+        <td class="trt"><span class="trt-val">50.4%</span> <span class="n">(529/1,050)</span></td>
+        <td class="ctrl"><span class="ctrl-val">56.1%</span> <span class="n">(589/1,050)</span></td>
+        <td class="diff lose"><b>−5.7</b></td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p style="font-size:13.5px;color:var(--ink2)">How to read: headline table above has the core finding → cell breakdown in ②; why not → ③; next steps → ⑤.</p>
 
   <!-- ① Which factors were controlled -->
   <h2>① Which factors were controlled in this comparison?</h2>
@@ -210,18 +242,7 @@
   </table>
   </div>
 
-  <p><b>So what if Backlog is also matched to the same level?</b> The gap in completion rate between the two groups (statistically called Lift) narrows from <b>−9.3 percentage points</b> to <b>−4.6 percentage points</b>. Backlog does explain part of the gap, <b class="hl-bad">but the subsidized group's completion rate is still lower than the no-subsidy group's</b>. Whether viewed by day or by weekday, all six days show the subsidized group lower:</p>
-  <div class="card">
-  <table class="small">
-    <thead><tr><th style="text-align:left">Conditions controlled</th><th>Gap between the two groups</th><th style="text-align:left">Gap by day (6 campaign days)</th></tr></thead>
-    <tbody>
-      <tr><td style="text-align:left">Fare × Wait</td><td class="lose">−9.3 pp</td><td rowspan="4" style="text-align:left;vertical-align:middle;font-size:13px;color:var(--ink2)">Tue −10.4 ｜ Fri −1.0 ｜ Mon −7.3<br>Thu −9.2 ｜ Mon −24.8 ｜ Fri −3.4<br><b class="hl-bad">all six days show the subsidized group lower</b></td></tr>
-      <tr><td style="text-align:left">＋ Date × Time period</td><td class="lose">−9.6 pp</td></tr>
-      <tr><td style="text-align:left">Only groups with 20+ subsidized orders<br><span style="font-size:12px;color:var(--muted)">(exclude groups with too few orders, so a handful of orders don't sway the result)</span></td><td class="lose">−7.9 pp</td></tr>
-      <tr><td style="text-align:left">＋ Backlog (triple alignment)</td><td class="lose">−4.6 pp</td></tr>
-    </tbody>
-  </table>
-  </div>
+  <p><b>So what if Backlog is also matched to the same level?</b> The completion-rate gap narrows from <b>−6.7 percentage points</b> (fare × wait) to <b>−5.7 percentage points</b> (triple alignment). Backlog does explain part of the gap, <b class="hl-bad">but the subsidized group's completion rate is still lower than the no-subsidy group's</b>. See the headline table at the top for all four layers; day by day, all six campaign days show the subsidized group lower (Tue −12.1 through Mon −25.8).</p>
 
   <!-- ④ ROI -->
   <h2>④ ROI: cost is confirmable, effect is not</h2>
