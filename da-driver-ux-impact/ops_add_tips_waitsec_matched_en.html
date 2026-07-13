@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Subsidy Effectiveness &amp; Wastage Assessment (Wait-Time-Matched Comparison)</title>
+<title>Subsidy Effectiveness &amp; Wastage Assessment (Fare × Wait × Backlog Matched Comparison)</title>
 <style>
   :root{
     --plane:#f9f9f7; --surface:#fcfcfb;
@@ -77,11 +77,11 @@
 <body>
 <div class="wrap">
 
-  <h1>Subsidy Effectiveness &amp; Wastage Assessment (Wait-Time-Matched Comparison)</h1>
+  <h1>Subsidy Effectiveness &amp; Wastage Assessment (Fare × Wait × Backlog Matched Comparison)</h1>
   <p class="meta">Hong Kong PlatformOD · Van · ASAP · fare &lt; HK$200, across the peak periods of 6 campaign days ｜ (queried 2026-07-08, Hong Kong time) ｜ all figures produced by BigQuery</p>
 
   <div class="answer">
-    <span class="big">When compared at similar wait times, the subsidy shows no lift in completion rate, so the actual return and wastage per subsidized order cannot be reliably estimated.</span><br>
+    <span class="big">Even after matching on wait time and order backlog, the subsidy shows no lift in completion rate, so the actual return and wastage per subsidized order cannot be reliably estimated.</span><br>
     This report puts orders with <b>similar wait times</b> side by side and estimates the subsidy cost per completed order and the wastage rate (the share of subsidies that did not lead to an additional completion). Current result: subsidized orders do not have a higher completion rate than non-subsidized orders. The cost is known (the actual amount paid), but the real return and wastage rate cannot be reliably estimated — an A/B Test is recommended to verify.
   </div>
   <p style="font-size:13.5px;color:var(--ink2)">How to read this: is there any lift → ②; why not → ③; what to do next → ⑤.</p>
@@ -217,7 +217,7 @@
     <tbody>
       <tr><td style="text-align:left">Fare × Wait</td><td class="lose">−9.3 pp</td><td rowspan="4" style="text-align:left;vertical-align:middle;font-size:13px;color:var(--ink2)">Tue −10.4 ｜ Fri −1.0 ｜ Mon −7.3<br>Thu −9.2 ｜ Mon −24.8 ｜ Fri −3.4<br><b class="hl-bad">all six days show the subsidized group lower</b></td></tr>
       <tr><td style="text-align:left">＋ Date × Time period</td><td class="lose">−9.6 pp</td></tr>
-      <tr><td style="text-align:left">Keep only stable cells with n≥20</td><td class="lose">−7.9 pp</td></tr>
+      <tr><td style="text-align:left">Only groups with 20+ subsidized orders<br><span style="font-size:12px;color:var(--muted)">(exclude groups with too few orders, so a handful of orders don't sway the result)</span></td><td class="lose">−7.9 pp</td></tr>
       <tr><td style="text-align:left">＋ Backlog (triple alignment)</td><td class="lose">−4.6 pp</td></tr>
     </tbody>
   </table>

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>補貼效益與浪費評估（等待時間拉齊比較）</title>
+<title>補貼效益與浪費評估（車費 × 等候 × 積壓 拉齊比較）</title>
 <style>
   :root{
     --plane:#f9f9f7; --surface:#fcfcfb;
@@ -77,11 +77,11 @@
 <body>
 <div class="wrap">
 
-  <h1>補貼效益與浪費評估（等待時間拉齊比較）</h1>
+  <h1>補貼效益與浪費評估（車費 × 等候 × 積壓 拉齊比較）</h1>
   <p class="meta">香港 PlatformOD · Van · ASAP · 車費 &lt; HK$200，共 6 個 campaign 日繁忙時段 ｜（2026-07-08 實查，香港時間）｜ 數字全部由 BigQuery 產出</p>
 
   <div class="answer">
-    <span class="big">在相近等待時間下比較，補貼未見提升完成率，因此每張補貼的實際回報與浪費程度目前無法可靠估算。</span><br>
+    <span class="big">即使把等待時間與訂單積壓都拉近比較，補貼仍未見提升完成率，因此每張補貼的實際回報與浪費程度目前無法可靠估算。</span><br>
     本報告把<b>等待時間相近</b>的訂單放在一起比較，並嘗試估算每完成一張訂單的補貼成本與浪費率（未帶來額外完成的補貼比例）。目前結果顯示：有補貼訂單的完成率並未高於未有補貼訂單，成本已知（實付金額），但實際回報與浪費率無法可靠估算，建議以 A/B Test 驗證。
   </div>
   <p style="font-size:13.5px;color:var(--ink2)">閱讀建議：是否有提升 → ②；為何沒有 → ③；下一步 → ⑤。</p>
@@ -217,7 +217,7 @@
     <tbody>
       <tr><td style="text-align:left">車費 × 等候</td><td class="lose">−9.3 pp</td><td rowspan="4" style="text-align:left;vertical-align:middle;font-size:13px;color:var(--ink2)">週二 −10.4 ｜ 週五 −1.0 ｜ 週一 −7.3<br>週四 −9.2 ｜ 週一 −24.8 ｜ 週五 −3.4<br><b class="hl-bad">六日都是有補貼組較低</b></td></tr>
       <tr><td style="text-align:left">＋ 日期 × 時段</td><td class="lose">−9.6 pp</td></tr>
-      <tr><td style="text-align:left">只保留 n≥20 穩定格</td><td class="lose">−7.9 pp</td></tr>
+      <tr><td style="text-align:left">只分析有補貼訂單達 20 張以上的分組<br><span style="font-size:12px;color:var(--muted)">（排除樣本過少的分組，避免少量訂單影響結果）</span></td><td class="lose">−7.9 pp</td></tr>
       <tr><td style="text-align:left">＋ Backlog（三重對齊）</td><td class="lose">−4.6 pp</td></tr>
     </tbody>
   </table>
