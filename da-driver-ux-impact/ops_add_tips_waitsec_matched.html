@@ -78,13 +78,13 @@
 <div class="wrap">
 
   <h1>控制等候時間後，加貼士仍未見提升完成率</h1>
-  <p class="meta">香港 PlatformOD · Van · ASAP · 車費 &lt; HK$200，共 6 個 campaign 日繁忙時段 ｜（2026-07-10 實查，香港時間）｜ 數字全部由 BigQuery 產出</p>
+  <p class="meta">香港 PlatformOD · Van · ASAP · 車費 &lt; HK$200，共 6 個 campaign 日繁忙時段 ｜（2026-07-08 實查，香港時間）｜ 數字全部由 BigQuery 產出</p>
 
   <div class="answer">
-    <span class="big">把條件相近的訂單放在一起比較後，未觀察到加貼士能提升完成率。</span><br>
-    Add-Tips 是在繁忙時段給某些訂單額外貼士、希望更快有司機接單的做法。這次分析發現：現階段<b>無法證明 Add-Tips 有效，也算不出可信的 ROI（投資回報）</b>。我們只能確認實際花了多少貼士，不能確認這筆錢是否值得。
+    <span class="big">加貼士未能提升完成率，這筆錢值不值得花，暫時答不到。</span><br>
+    Add-Tips：繁忙時段對部分訂單多給貼士，想令司機更快接單。結論：<b>條件相近的單放埋一齊比，加咗貼士嗰批完成率反而更低</b>，所以現階段計唔到可信嘅 ROI（回報）——即係：知道使咗幾多錢，但唔知道使得值唔值。
   </div>
-  <p style="font-size:13.5px;color:var(--ink2)">管理層想知的三件事：① 有沒有救到單？→ 見 ②；② 若沒有，原因是什麼？→ 見 ③；③ 下一步怎做？→ 見 ⑤。</p>
+  <p style="font-size:13.5px;color:var(--ink2)">睇法：有冇救到單 → ②；點解冇 → ③；下一步點做 → ⑤。</p>
 
   <!-- ① 控制了哪些因素 -->
   <h2>① 這次比較控制了哪些因素？</h2>
@@ -233,11 +233,24 @@
       <tr><td style="text-align:left">有貼士訂單</td><td>1,255</td><td style="text-align:left">完成 679（54.1%）</td></tr>
       <tr><td style="text-align:left">多救回的訂單</td><td class="lose">沒有（−117 至 −58）</td><td style="text-align:left">因為有貼士組完成率較低，算出來是負數，即沒有多救回訂單</td></tr>
       <tr><td style="text-align:left">每救一單成本</td><td class="lose">無法計算</td><td style="text-align:left">沒有多救回訂單，無法計算每單成本</td></tr>
-      <tr><td style="text-align:left">浪費率 Wastage</td><td class="lose">105–109%</td><td style="text-align:left">Wastage＝發了貼士但本來就會完成的比例；因有貼士組完成率較低，數字超過 100%，並非真的浪費超過 100%</td></tr>
+      <tr><td style="text-align:left">浪費率 Wastage</td><td class="lose">100%（暫估）</td><td style="text-align:left">Wastage＝已付貼士中「買不到可證明的新增完成」的比例＝(已付 − 有效貼士)/已付；有效貼士＝新增完成 × 每張貼士，因新增完成 ≤ 0（未見新增完成），有效貼士＝$0，故 = $7,120 ÷ $7,120 = 100%。上限封頂 100%（花不到負錢）；point estimate 為負，代表可能揀了更難的單，此為 selection bias，另見 ③</td></tr>
     </tbody>
   </table>
   </div>
-  <div class="box warn">因為有貼士組完成率低於沒有貼士組，「多救回的訂單、每救一單成本、浪費率」目前都算不出有意義的數字。要有可靠的 ROI，先要看到有貼士組完成率高於沒有貼士組（見 ⑤ 的建議做法）。</div>
+  <div class="box">
+    <b>「多救回的訂單（新增完成）」是什麼？</b>
+    假設沒有加貼士，這批單裡面有多少張本來會取消、但因為加了貼士才完成——也就是<b>「貼士真正拯救回來」的訂單</b>。
+    <br>「新增完成」<b>不是現實中能直接數出來的數字</b>（沒有人能確定哪一張單「如果沒有貼士就會取消」），是用調整後完成率差距這個統計方法估算出來的：
+    <pre style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:13.5px;overflow-x:auto;margin:10px 0">調整後完成率差距 = 控制車費/等候/積壓後，有貼士組完成率 − 沒貼士組完成率
+              = 55.3% − 62.6%
+              = −1.9pp（即 −1.9%）
+
+新增完成 = 有貼士訂單數 × 調整後完成率差距
+        = 1,255 × (−1.9%)
+        ≈ −24（負數，即沒有證據顯示多完成了訂單）</pre>
+    算出來 ≤ 0，即<b class="hl-bad">未見新增完成</b>。
+  </div>
+  <div class="box warn">因為未觀察到新增完成訂單（估計值 −58 至 −117，95% 信賴區間跨 0），「每救一單成本」算不出來，「浪費率」只能保守暫估為 100%（即現階段看不到任何可證明的有效貼士支出）。要有可靠的 ROI 與 Wastage，先要用 pre-treatment matching 或 A/B 確認有貼士組完成率確實高於沒有貼士組（見 ⑤ 的建議做法）。</div>
 
   <p style="font-size:13.5px;color:var(--ink2);margin:22px 0 4px"><b>另一角度：這批單的現金總帳</b>（平台實收 = 佣金 + premium，取自 <code>order_master_table_hk</code>）</p>
   <div class="kpi">
@@ -249,16 +262,16 @@
 
   <!-- ⑤ 下一步 -->
   <h2>⑤ 下一步：要怎樣才能真正知道貼士有沒有用？</h2>
-  <div class="box"><b>這份分析可以說：</b>未觀察到加貼士能提升完成率；而且可以確認一件事——<b>Add-Tips 傾向派給較難完成的訂單</b>（條件相近時，有貼士組的 Backlog 都更高）。<br><b>但不能直接說「貼士沒用」。</b>因為還有一些會影響難度的條件沒有完全控制，例如 Region（地區）、車型、落單分鐘、當下的司機供給。</div>
-  <div class="box good"><b>如果要回答「Add-Tips 值不值得加 Budget」，建議改用以下方法：</b>
+  <div class="box"><b>可以講：</b>未見到加貼士提升完成率；而且加咗貼士嗰批單，本身就比較難派（積壓更高）。<br><b>但唔可以講死「貼士完全冇用」</b>——地區、車型、落單時間、司機供給呢啲都未完全對齊，仍有機會影響結果。</div>
+  <div class="box good"><b>要答「值唔值得加 Budget」，建議：</b>
     <ul class="plain" style="margin:8px 0 0">
-      <li><b>Pre-treatment Matching</b>（事前條件配對）——只用派單前就已存在的條件來配對訂單（Backlog、車費、車型、地區、落單分鐘），<b>不要用等候時間</b>（等候時間是派單後才出現的結果，會混淆比較）。</li>
-      <li>或做 <b>A/B Test</b>（隨機分組實驗）——最乾淨，能真正看出加貼士有沒有提升完成率。</li>
+      <li>用派單<b>之前</b>已知嘅條件（積壓、車費、車型、地區、落單時間）去配對比較，<b>唔好用等候時間</b>——等候時間係派單之後先出現，攞嚟配對會扭曲結果。</li>
+      <li>或者直接做 <b>A/B 實驗</b>（隨機分組）——最乾淨，可以睇真加貼士有冇提升完成率。</li>
     </ul>
   </div>
 
   <p class="foot">
-    來源：<code>gogox-ba-sandbox.analytics.mart_ops_add_tips_campaign_orders</code>、<code>order_master_table_hk</code>（2026-07-10 實查，6 個 campaign 日繁忙時段，香港時間）。範圍：PlatformOD 個人客 · Van · ASAP · 車費 &lt; HK$200。有貼士 = <code>company_paid_incentive &gt; 0</code>；貼士只在完成單支付。完成率 = <code>is_completed</code>；Δpp = 有貼士完成率 − 沒貼士完成率。
+    來源：<code>gogox-ba-sandbox.analytics.mart_ops_add_tips_campaign_orders</code>、<code>order_master_table_hk</code>（2026-07-08 實查，6 個 campaign 日繁忙時段，香港時間）。範圍：PlatformOD 個人客 · Van · ASAP · 車費 &lt; HK$200。有貼士 = <code>company_paid_incentive &gt; 0</code>；貼士只在完成單支付。完成率 = <code>is_completed</code>；Δpp = 有貼士完成率 − 沒貼士完成率。
   </p>
 
 </div>
