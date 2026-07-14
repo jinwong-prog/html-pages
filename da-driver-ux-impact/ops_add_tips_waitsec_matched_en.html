@@ -82,7 +82,7 @@
 
   <div class="answer">
     <span class="big">No evidence so far that the subsidy works.</span><br>
-    After progressively matching fare, wait, date/time, and backlog, the <b>subsidized group still completes at a lower rate</b> than the no-subsidy group (triple alignment gap: −5.7 percentage points). Subsidy paid: $7,120 (679/1,255 completed orders), but <b>no incremental completions can be proven</b>. Current data does not support increasing the subsidy budget.
+    After progressively matching fare, wait, date/time, and backlog, the <b>subsidized group still completes at a lower rate</b> than the no-subsidy group (triple alignment gap: −4.7 percentage points). Subsidy paid: $4,945 (529/1,050 completed orders), but <b>no incremental completions can be proven</b>. Current data does not support increasing the subsidy budget.
   </div>
 
   <div class="card">
@@ -95,24 +95,24 @@
       <th>Gap Δpp</th>
       <th style="text-align:left">Day-by-day gap (6 campaign days)</th>
     </tr></thead>
-    <tbody>
+        <tbody>
       <tr><td style="text-align:left">Fare × Wait</td>
-        <td class="trt"><span class="trt-val">50.4%</span> <span class="n">(529/1,050)</span></td>
-        <td class="ctrl"><span class="ctrl-val">58.1%</span> <span class="n">(610/1,050)</span></td>
-        <td class="diff lose">−7.7</td>
-        <td rowspan="4" style="text-align:left;vertical-align:middle;font-size:13px;color:var(--ink2)">Tue −12.1 ｜ Fri −2.7 ｜ Mon −7.3<br>Thu −10.7 ｜ Mon −25.8 ｜ Fri −3.4<br><b class="hl-bad">all six days show the subsidized group lower</b></td></tr>
+        <td class="trt"><span class="trt-val">51.6%</span> <span class="n">(529/1,026)</span></td>
+        <td class="ctrl"><span class="ctrl-val">58.3%</span> <span class="n">(598/1,026)</span></td>
+        <td class="diff lose">−6.7</td>
+        <td rowspan="4" style="text-align:left;vertical-align:middle;font-size:13px;color:var(--ink2)">Tue −10.4 ｜ Fri −1.2 ｜ Mon −7.5<br>Thu −9.2 ｜ Mon −24.8 ｜ Fri −3.5<br><b class="hl-bad">All six days: subsidized group lower</b></td></tr>
       <tr><td style="text-align:left">＋ Date × Time period</td>
-        <td class="trt"><span class="trt-val">50.4%</span> <span class="n">(525/1,042)</span></td>
-        <td class="ctrl"><span class="ctrl-val">58.1%</span> <span class="n">(605/1,042)</span></td>
-        <td class="diff lose">−7.7</td></tr>
-      <tr><td style="text-align:left">Only groups with 20+ subsidized orders<br><span style="font-size:12px;color:var(--muted)">(exclude tiny cells so a handful of orders do not sway the result)</span></td>
-        <td class="trt"><span class="trt-val">51.3%</span> <span class="n">(512/999)</span></td>
-        <td class="ctrl"><span class="ctrl-val">57.5%</span> <span class="n">(574/999)</span></td>
-        <td class="diff lose">−6.2</td></tr>
+        <td class="trt"><span class="trt-val">51.6%</span> <span class="n">(525/1,018)</span></td>
+        <td class="ctrl"><span class="ctrl-val">58.4%</span> <span class="n">(594/1,018)</span></td>
+        <td class="diff lose">−6.8</td></tr>
+      <tr><td style="text-align:left">Only groups with 20+ subsidized orders<br><span style="font-size:12px;color:var(--muted)">(drop thin cells)</span></td>
+        <td class="trt"><span class="trt-val">52.5%</span> <span class="n">(511/974)</span></td>
+        <td class="ctrl"><span class="ctrl-val">57.6%</span> <span class="n">(561/974)</span></td>
+        <td class="diff lose">−5.2</td></tr>
       <tr><td style="text-align:left"><b>＋ Backlog (triple alignment) ★</b></td>
-        <td class="trt"><span class="trt-val">50.4%</span> <span class="n">(529/1,050)</span></td>
-        <td class="ctrl"><span class="ctrl-val">56.1%</span> <span class="n">(589/1,050)</span></td>
-        <td class="diff lose"><b>−5.7</b></td></tr>
+        <td class="trt"><span class="trt-val">51.6%</span> <span class="n">(529/1,026)</span></td>
+        <td class="ctrl"><span class="ctrl-val">56.2%</span> <span class="n">(577/1,026)</span></td>
+        <td class="diff lose"><b>−4.7</b></td></tr>
     </tbody>
   </table>
   </div>
@@ -183,7 +183,16 @@
     </tbody>
   </table>
   </div>
-  <div class="box bad"><b>Both "higher" groups are unreliable:</b> "&lt;$85 × 120–180" has only <b>6 subsidized orders</b> across the whole period (see day-by-day below); "$150–199 × 180–400" is inconsistent in direction once broken down by day (see below). So there is not enough evidence to support "Subsidy works".</div>
+  <h2 style="font-size:18px;margin-top:36px">②b Long-wait orders (why they cancel, and where with-subsidy vs without-subsidy differ)</h2>
+  <p>To see the details: <b>click that row</b> in the main table (including the key points for the two $150–199 cells). Numbers are from 6 campaign days, HK PlatformOD, Van ASAP, fare under $200. (2026-07-14 actual query result)</p>
+
+  <div class="box bad"><b>Note: Individual green cells do not mean add-tips succeeded overall.</b>
+    <ul class="plain" style="margin:8px 0 0">
+      <li>One cell looks good (+15.4), but the with-subsidy side has only <b>6 orders</b> — not reliable.</li>
+      <li>The $150–199 cell with about 3–7 minutes wait has a slight signal, but the overall cell is only +3 percentage points, and the direction differs day by day.</li>
+    </ul>
+    <p style="margin:8px 0 0">Official conclusion unchanged: after alignment, with-subsidy completion rate is still <b>4.7 percentage points</b> lower.</p>
+  </div>
 
   <div class="card">
   <table class="cmp small">
@@ -242,7 +251,7 @@
   </table>
   </div>
 
-  <p><b>So what if Backlog is also matched to the same level?</b> The completion-rate gap narrows from <b>−7.7 percentage points</b> (fare × wait) to <b>−5.7 percentage points</b> (triple alignment). Backlog does explain part of the gap, <b class="hl-bad">but the subsidized group's completion rate is still lower than the no-subsidy group's</b>. See the headline table at the top for all four layers; day by day, all six campaign days show the subsidized group lower (Tue −12.1 through Mon −25.8).</p>
+  <p><b>So what if Backlog is also matched to the same level?</b> The completion-rate gap narrows from <b>−6.7 percentage points</b> (fare × wait) to <b>−4.7 percentage points</b> (triple alignment). Backlog does explain part of the gap, <b class="hl-bad">but the subsidized group's completion rate is still lower than the no-subsidy group's</b>. See the headline table at the top for all four layers; day by day, all six campaign days show the subsidized group lower (Tue −10.4 through Mon −24.8).</p>
 
   <!-- ④ ROI -->
   <h2>④ ROI: cost is confirmable, effect is not</h2>
@@ -250,11 +259,11 @@
   <table>
     <thead><tr><th style="text-align:left">Item</th><th>Value</th><th style="text-align:left">Note</th></tr></thead>
     <tbody>
-      <tr><td style="text-align:left">Subsidies paid</td><td>$7,120</td><td style="text-align:left">paid only on the 679 completed orders (committed $13,005, cancelled orders' $5,885 not paid)</td></tr>
-      <tr><td style="text-align:left">Subsidized orders</td><td>1,255</td><td style="text-align:left">679 completed (54.1%)</td></tr>
+      <tr><td style="text-align:left">Subsidies paid</td><td>$4,945</td><td style="text-align:left">paid only on the 529 completed orders (filter: <code>pass_sheet_price_lt_200</code>)</td></tr>
+      <tr><td style="text-align:left">Subsidized orders</td><td>1,050</td><td style="text-align:left">529 completed (50.4%); matched denom 1,026 (excludes null wait_sec)</td></tr>
       <tr><td style="text-align:left">Extra orders rescued</td><td class="lose">none (−117 to −58)</td><td style="text-align:left">because the subsidized group's completion rate is lower, the result is negative, i.e. no extra orders were rescued</td></tr>
       <tr><td style="text-align:left">Cost per order rescued</td><td class="lose">cannot be computed</td><td style="text-align:left">no extra orders rescued, so cost per order cannot be computed</td></tr>
-      <tr><td style="text-align:left">Wastage</td><td class="lose">100% (est.)</td><td style="text-align:left">Wastage = the share of paid subsidies that "bought no provable incremental completion" = (paid − effective subsidies)/paid; effective subsidies = incremental completions × subsidy per order. Since incremental completions ≤ 0 (none observed), effective subsidies = $0, so = $7,120 ÷ $7,120 = 100%. Capped at 100% (you cannot spend negative money); the point estimate being negative suggests harder orders were selected — a selection bias, see ③</td></tr>
+      <tr><td style="text-align:left">Wastage</td><td class="lose">100% (est.)</td><td style="text-align:left">Wastage = the share of paid subsidies that "bought no provable incremental completion" = (paid − effective subsidies)/paid; effective subsidies = incremental completions × subsidy per order. Since incremental completions ≤ 0 (none observed), effective subsidies = $0, so = $4,945 ÷ $4,945 = 100%. Capped at 100% (you cannot spend negative money); the point estimate being negative suggests harder orders were selected — a selection bias, see ③</td></tr>
     </tbody>
   </table>
   </div>
@@ -268,19 +277,19 @@
                              = −1.9pp (i.e. −1.9%)
 
 Incremental completions = subsidized orders × adjusted completion-rate gap
-                        = 1,255 × (−1.9%)
+                        = 1,050 × (adjusted gap; triple aligned ≈ −4.7pp)
                         ≈ −24 (negative, i.e. no evidence of extra completions)</pre>
     The result is ≤ 0, i.e. <b class="hl-bad">no incremental completions observed</b>.
   </div>
   <div class="box warn">Because no incremental completions were observed (estimate −58 to −117, with a 95% confidence interval crossing 0), "cost per order rescued" cannot be computed, and "wastage" can only be conservatively estimated at 100% (i.e. at this stage no provable effective subsidy spend can be seen). For a reliable ROI and Wastage, we first need pre-treatment matching or an A/B test to confirm that the subsidized group's completion rate is genuinely higher than the no-subsidy group's (see the recommended approach in ⑤).</div>
 
-  <p style="font-size:13.5px;color:var(--ink2);margin:22px 0 4px"><b>Another angle: the cash ledger for this batch of orders</b> (platform net take = commission + premium, from <code>order_master_table_hk</code>)</p>
+  <p style="font-size:13.5px;color:var(--ink2);margin:22px 0 4px"><b>Another angle: cash summary for tip completions in this filter</b> (GTV / paid from mart; same <code>pass_sheet_price_lt_200</code> as headline)</p>
   <div class="kpi">
-    <div class="k"><div class="lbl">Platform net take</div><div class="val hl-good">$13,394</div><div class="sub">679 completed orders: commission $9,999 + premium $3,395</div></div>
-    <div class="k"><div class="lbl">Subsidies actually paid</div><div class="val">−$7,120</div><div class="sub">completed-order GTV totals $102,615</div></div>
-    <div class="k"><div class="lbl">Net cash</div><div class="val hl-good">+$6,274</div><div class="sub">positive on paper (take rate 13.1% &gt; break-even 6.9%)</div></div>
+    <div class="k"><div class="lbl">Tip completed GTV</div><div class="val">$65,904</div><div class="sub">529 completed · <code>pass_sheet_price_lt_200</code></div></div>
+    <div class="k"><div class="lbl">Subsidies actually paid</div><div class="val">−$4,945</div><div class="sub">completed orders only</div></div>
+    <div class="k"><div class="lbl">Tip CR (raw)</div><div class="val">50.4%</div><div class="sub">529/1,050; matched rates in headline table</div></div>
   </div>
-  <div class="box bad"><b>But making money on paper ≠ subsidies being well spent:</b> the 679 completed orders <b>mostly would have completed anyway</b> (see ②), so these subsidies are incremental wastage, not money earned thanks to subsidies. So the "$6,274 profit" cannot be used as a reason to increase Budget.</div>
+  <div class="box bad"><b>But making money on paper ≠ subsidies being well spent:</b> the 529 completed orders <b>mostly would have completed anyway</b> (see ②), so these subsidies are incremental wastage. Platform take is not re-estimated here; use the headline matched completion rates — not cash-on-paper — for Budget decisions.</div>
 
   <!-- ⑤ Next steps -->
   <h2>⑤ Next steps: how can we actually know whether subsidies work?</h2>
@@ -294,7 +303,7 @@ Incremental completions = subsidized orders × adjusted completion-rate gap
 
   <p class="foot">
     Method: orders with similar <b>fare, wait time and order backlog</b> are compared side by side, and the subsidy cost per completed order and the wastage rate (the share of subsidies that did not lead to an additional completion) are estimated.<br>
-    Sources: <code>gogox-ba-sandbox.analytics.mart_ops_add_tips_campaign_orders</code>, <code>order_master_table_hk</code> (queried 2026-07-08, peak periods of 6 campaign days, Hong Kong time). Scope: PlatformOD individual customers · Van · ASAP · fare &lt; HK$200. Subsidized = <code>company_paid_incentive &gt; 0</code>; subsidies paid only on completed orders. Completion rate = <code>is_completed</code>; Δpp = subsidized completion rate − no-subsidy completion rate.
+    Sources: <code>gogox-ba-sandbox.analytics.mart_ops_add_tips_campaign_orders</code> (queried 2026-07-14, peak periods of 6 campaign days, Hong Kong time). Scope: PlatformOD · Van · ASAP · fare &lt; HK$200 · <code>pass_sheet_price_lt_200</code>. Tip = <code>has_incentive</code>; matched denom requires non-null <code>wait_sec</code>. Paid only on completed orders. Completion rate = <code>is_completed</code>; Δpp = tip-weighted ATT. Regenerated via <code>export_waitsec_layer_lift.py</code>.
   </p>
 
 </div>
