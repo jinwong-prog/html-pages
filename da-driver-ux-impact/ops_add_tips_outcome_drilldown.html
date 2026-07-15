@@ -855,8 +855,11 @@ const REPORT_DATA = {"meta": {"query_date": "2026-07-15", "scope": "HK PlatformO
           ]},
         options:{responsive:true,maintainAspectRatio:false,
           plugins:{legend:{display:false}},
-          scales:{y:{...gridCfg,title:{display:true,text:'訂單數',color:INK2}},
-            x:{...gridCfg,ticks:{maxRotation:45,minRotation:0}}}
+          scales:{
+            y:{...gridCfg,title:{display:true,text:'訂單數',color:INK2}},
+            x:{...gridCfg,ticks:{maxRotation:45,minRotation:0}}
+          }
+        }
       });
       return;
     }
@@ -872,7 +875,11 @@ const REPORT_DATA = {"meta": {"query_date": "2026-07-15", "scope": "HK PlatformO
         plugins:{legend:{display:false},tooltip:{callbacks:{label:(c)=>{
           const o=c.dataset._nn[c.dataIndex];
           return o.cr==null?`${c.dataset.label}: 樣本不足`:`${c.dataset.label}: ${o.cr}% (${nf(o.comp)}/${nf(o.n)})`;}}}},
-        scales:{y:{...gridCfg,title:{display:true,text:'完成率 %',color:INK2},min:0,max:100},x:{...gridCfg}}}
+        scales:{
+          y:{...gridCfg,title:{display:true,text:'完成率 %',color:INK2},min:0,max:100},
+          x:{...gridCfg}
+        }
+      }
     });
   }
   function drillTable(r,dim){
