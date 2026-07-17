@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Subsidy Effectiveness &amp; Wastage Assessment (Fare × Wait × Backlog Matched Comparison)</title>
+<title>Did the subsidy help more orders finish? (same fare, wait time, and orders still waiting for a driver)</title>
 <style>
   :root{
     --plane:#f9f9f7; --surface:#fcfcfb;
@@ -158,66 +158,66 @@
 <body>
 <div class="wrap">
 
-  <h1>Subsidy Effectiveness &amp; Wastage Assessment (Fare × Wait × Backlog Matched Comparison)</h1>
-  <p class="meta">香港 PlatformOD · Van · ASAP · Fare &lt; HK$200，共 6 個 campaign 日繁忙時段 ｜（2026-07-16 actual query result，香港時間，6 campaign 日 2026-05-26 至 2026-07-03；資格 <code>pass_sheet_static_eligibility</code>）｜ 數字全部由 BigQuery 產出</p>
+  <h1>Did the subsidy help more orders finish? (same fare, wait time, and orders still waiting for a driver)</h1>
+  <p class="meta">Hong Kong · Platform personal customers (PlatformOD) · Van · ASAP · fare &lt; HK$200 · peak hours on 6 campaign days ｜ (queried 2026-07-16, Hong Kong time, campaign days 2026-05-26 to 2026-07-03; eligibility <code>pass_sheet_static_eligibility</code>) ｜ all numbers from BigQuery</p>
 
   <div class="answer">
-    <span class="big">No evidence so far that the subsidy works.</span><br>
-    逐層拉齊Fare、等候、Date時段與積壓後，<b>Subsidized completion仍低於No-subsidy group</b>（triple (fare × wait × backlog)差距 −4.8 個百分點）。已付補貼 $4,880（523/1,039 張完成單），但<b>無法證明多救回訂單</b>。現有數據不足以支持增加補貼預算。
+    <span class="big">So far, the data does not show that the subsidy works.</span><br>
+    After we only compare orders with the same fare, wait time, date/time, and number of orders still waiting for a driver at 120 seconds, <b>orders with subsidy still finish less often</b> than orders with no subsidy (gap −4.8 percentage points under the strictest fair comparison). Subsidy already paid: $4,880 (523/1,039 completed orders), but <b>we cannot prove any extra orders were rescued</b>. This data does not support raising the subsidy budget.
   </div>
 
   <div class="card">
   <table class="cmp small">
-    <caption><b>主結論 · 逐層拉齊後兩組Completion差距</b>（負數＝Subsidized group較低；★ 為最嚴格公平比較；無補貼組括號內為同格加權等價完成數）｜（2026-07-16 actual query result，HK PlatformOD Van，6 campaign 日，Fare &lt; $200；<code>pass_sheet_static_eligibility</code>；配對分母＝有 <code>wait_sec</code> 且對上對照的Subsidized orders；來源 <code>mart_ops_add_tips_campaign_orders</code>）</caption>
+    <caption><b>Main result · completion rate difference after making conditions similar</b> (negative = orders with subsidy finish less often; ★ = strictest fair comparison; for orders with no subsidy, the count in brackets is a same-cell weighted equivalent) ｜ (queried 2026-07-16, HK PlatformOD Van, 6 campaign days, fare &lt; $200; <code>pass_sheet_static_eligibility</code>; only orders with subsidy that have <code>wait_sec</code> and a matching comparison cell; source <code>mart_ops_add_tips_campaign_orders</code>)</caption>
     <thead><tr>
-      <th style="text-align:left">Matched on</th>
-      <th class="trt">Subsidized completion</th>
-      <th class="ctrl">No-subsidy completion</th>
-      <th>Gap Δpp</th>
-      <th style="text-align:left">Day-by-day gap (6 campaign days)</th>
+      <th style="text-align:left">What we kept the same</th>
+      <th class="trt">Completion rate · orders with subsidy</th>
+      <th class="ctrl">Completion rate · orders with no subsidy</th>
+      <th>Completion rate difference (percentage points)</th>
+      <th style="text-align:left">Difference on each of the 6 campaign days</th>
     </tr></thead>
-                                        <tbody>
-      <tr><td style="text-align:left">只按Fare<br><span style="font-size:12px;color:var(--muted)">（&lt;$85 ｜ $85–149 ｜ $150–199；未控等候）</span></td>
+                                                    <tbody>
+      <tr><td style="text-align:left">Same fare only<br><span style="font-size:12px;color:var(--muted)">(&lt;$85 | $85–149 | $150–199; wait time not kept the same)</span></td>
         <td class="trt"><span class="trt-val">50.3%</span> <span class="n">(523/1,039)</span></td>
         <td class="ctrl"><span class="ctrl-val">83.0%</span> <span class="n">(862/1,039)</span></td>
         <td class="diff lose">−32.6</td></tr>
-      <tr><td style="text-align:left">Fare × Wait</td>
+      <tr><td style="text-align:left">Same fare + wait time</td>
         <td class="trt"><span class="trt-val">51.5%</span> <span class="n">(523/1,015)</span></td>
         <td class="ctrl"><span class="ctrl-val">58.4%</span> <span class="n">(593/1,015)</span></td>
         <td class="diff lose">−6.9</td>
-        <td rowspan="4" style="text-align:left;vertical-align:middle;font-size:13px;color:var(--ink2)">Tue −8.7 ｜ Fri −1.7 ｜ Mon −9.8<br>Thu −11.9 ｜ Mon −22.9 ｜ Fri −6.4<br><b class="hl-bad">All six days: subsidized group lower</b></td></tr>
-      <tr><td style="text-align:left">＋ Date × Time period</td>
+        <td rowspan="4" style="text-align:left;vertical-align:middle;font-size:13px;color:var(--ink2)">Tue −8.7 ｜ Fri −1.7 ｜ Mon −9.8<br>Thu −11.9 ｜ Mon −22.9 ｜ Fri −6.4<br><b class="hl-bad">On all six days, orders with subsidy finished less often</b></td></tr>
+      <tr><td style="text-align:left">+ same date + hour of day</td>
         <td class="trt"><span class="trt-val">50.6%</span> <span class="n">(489/966)</span></td>
         <td class="ctrl"><span class="ctrl-val">61.0%</span> <span class="n">(589/966)</span></td>
         <td class="diff lose">−10.4</td></tr>
-      <tr><td style="text-align:left">Only groups with 20+ subsidized orders<br><span style="font-size:12px;color:var(--muted)">(exclude thin groups so a few orders do not drive the result)</span></td>
+      <tr><td style="text-align:left">Only groups with 20+ orders with subsidy<br><span style="font-size:12px;color:var(--muted)">(drop tiny groups)</span></td>
         <td class="trt"><span class="trt-val">52.5%</span> <span class="n">(492/938)</span></td>
         <td class="ctrl"><span class="ctrl-val">57.2%</span> <span class="n">(536/938)</span></td>
         <td class="diff lose">−4.7</td></tr>
-      <tr><td style="text-align:left"><b>Triple = fare × wait × backlog ★</b>
-        <br><span style="font-size:12px;color:var(--muted)">（三軸：Fare、等候、積壓；主結論）</span></td>
+      <tr><td style="text-align:left"><b>Strictest fair comparison = same fare + wait + orders still waiting for a driver ★</b>
+        <br><span style="font-size:12px;color:var(--muted)">(this is the main result)</span></td>
         <td class="trt"><span class="trt-val">51.5%</span> <span class="n">(523/1,015)</span></td>
         <td class="ctrl"><span class="ctrl-val">56.3%</span> <span class="n">(572/1,015)</span></td>
         <td class="diff lose"><b>−4.8</b></td></tr>
     </tbody>
   </table>
   </div>
-  <p style="font-size:13.5px;color:var(--ink2)">How to read: headline table above has the core finding → <b>click 181–400 / 400+ rows to expand / collapse</b>; why not → ③; next steps → ⑤.</p>
+  <p style="font-size:13.5px;color:var(--ink2)">How to read: the table above is the main answer → <b>click rows 181–400 / 400+ to open details</b>; why → section ③; what to do next → section ⑤.</p>
 
   <!-- ① factors controlled -->
-  <h2>① Which factors were controlled in this comparison?</h2>
-  <p>For a fair comparison, only <b>orders with similar conditions</b> are put together: within the same group, the completion rate of the <b>subsidized group</b> is compared with the <b>no-subsidy group (Control)</b>.</p>
+  <h2>① What did we keep the same when comparing?</h2>
+  <p>For a fair comparison, we only put <b>similar orders</b> in the same group, then compare the completion rate of <b>orders with subsidy</b> vs <b>orders with no subsidy</b>.</p>
   <div class="card">
   <table>
-    <thead><tr><th>Factor controlled</th><th style="text-align:left">BQ column</th><th style="text-align:left">Grouping method</th></tr></thead>
+    <thead><tr><th>What we kept the same</th><th style="text-align:left">BigQuery column</th><th style="text-align:left">How we grouped</th></tr></thead>
     <tbody>
       <tr><td>Fare</td><td style="text-align:left"><code>gross_transaction_value</code></td><td style="text-align:left">&lt;$85 ｜ $85–149 ｜ $150–199 (&ge;$200 not eligible for subsidies, already excluded)</td></tr>
-      <tr><td>Wait</td><td style="text-align:left"><code>wait_sec</code></td><td style="text-align:left">0–60（&lt;60）｜60–120 ｜ 121–180 ｜ 181–400 ｜ 400+ 秒（互不重疊；2026-07-15 BQ actual query result）</td></tr>
-      <tr><td>Backlog</td><td style="text-align:left"><code>backlog_at_120</code></td><td style="text-align:left">&lt;40 / 40–80 / 80–120 / 120–160 / 160+ (additional test, see ③)</td></tr>
+      <tr><td>Wait time (seconds until a driver is assigned)</td><td style="text-align:left"><code>wait_sec</code></td><td style="text-align:left">0–60 (&lt;60)｜60–120 ｜ 121–180 ｜ 181–400 ｜ 400+ sec (non-overlapping; queried 2026-07-15 in BigQuery)</td></tr>
+      <tr><td>Orders still waiting for a driver (count at 120 seconds after order placed)</td><td style="text-align:left"><code>backlog_at_120</code></td><td style="text-align:left">&lt;40 / 40–80 / 80–120 / 120–160 / 160+ (additional test, see ③)</td></tr>
       <tr><td>Campaign date / weekday</td><td style="text-align:left"><code>campaign_date</code></td><td style="text-align:left">aligned day by day across 6 days; date locks the weekday</td></tr>
-      <tr><td>Peak period / Time</td><td style="text-align:left"><code>created_at</code></td><td style="text-align:left">aligned by order-placement hour (see table below)</td></tr>
-      <tr><td>Customer type / Segment</td><td style="text-align:left"><code>business_segment</code></td><td style="text-align:left">all PlatformOD individual customers</td></tr>
-      <tr><td>Order status</td><td style="text-align:left"><code>status</code></td><td style="text-align:left">this filter: 11,421 orders — completed (9,062), incomplete (2,359, incl. cancelled; active rare); subsidized raw 1,050, of which 24 with null wait_sec are excluded from matched denom</td></tr>
+      <tr><td>Peak period / hour of day</td><td style="text-align:left"><code>created_at</code></td><td style="text-align:left">aligned by order-placement hour (see table below)</td></tr>
+      <tr><td>Customer type</td><td style="text-align:left"><code>business_segment</code></td><td style="text-align:left">all PlatformOD individual customers</td></tr>
+      <tr><td>Order status</td><td style="text-align:left"><code>status</code></td><td style="text-align:left">this filter: 11,421 orders — completed (9,062), incomplete (2,359, incl. cancelled; active rare); orders with subsidy (raw) 1,050, of which 24 with null wait_sec are excluded from fair-comparison count</td></tr>
     </tbody>
   </table>
   </div>
@@ -237,14 +237,14 @@
   </div>
 
   <!-- ② results -->
-  <h2>② Result: the subsidized group still has a lower completion rate</h2>
-  <p>Orders are split into 15 groups with similar conditions. <b class="hl-bad">In 13 of these groups, the subsidized group has a lower completion rate than the no-subsidy group</b>. In compact view, all six long-wait rows can be clicked: under the row a <b>time-bucket key-insight card</b> appears first (collapsed until click), then full buckets / tail orders. "&lt;$85 × 121–180" appears only in Full view and n=6 — treat as noise.</p>
+  <h2>② Result: orders with subsidy still finish less often</h2>
+  <p>Orders are split into 15 groups with similar conditions. <b class="hl-bad">In 13 of these groups, orders with subsidy finish less often than orders with no subsidy</b>. In the simple view, click any long-wait row: a short key-insight card opens first, then full detail. The cell "&lt;$85 × 121–180" only appears in Full detail and has only 6 orders with subsidy — treat as noise.</p>
   <div class="legend">
-    <span class="it"><span class="chip ctrl"></span> No-subsidy group</span>
-    <span class="it"><span class="chip trt"></span> Subsidized group</span>
+    <span class="it"><span class="chip ctrl"></span> Orders with no subsidy</span>
+    <span class="it"><span class="chip trt"></span> Orders with subsidy</span>
     <span class="waitsec-view-toggle" role="group" aria-label="Main table detail level">
-      <button type="button" class="active" data-view="compact" aria-pressed="true">Compact</button>
-      <button type="button" data-view="full" aria-pressed="false">Full</button>
+      <button type="button" class="active" data-view="compact" aria-pressed="true">Simple view</button>
+      <button type="button" data-view="full" aria-pressed="false">Full detail</button>
     </span>
   </div>
   <div class="card">
@@ -254,67 +254,67 @@
       <col style="width:11%"><col style="width:15%"><col style="width:12%">
     </colgroup>
     <thead><tr>
-      <th>Fare</th><th>Wait (sec)</th>
-      <th class="ctrl">No-subsidy n</th><th class="ctrl">Completion</th>
-      <th class="trt">Subsidized n</th><th class="trt">Completion</th><th>Gap Δpp</th>
+      <th>Fare</th><th>Wait time (sec)</th>
+      <th class="ctrl">Orders with no subsidy (count)</th><th class="ctrl">Completion rate</th>
+      <th class="trt">Orders with subsidy (count)</th><th class="trt">Completion rate</th><th>Completion rate difference (percentage points)</th>
     </tr></thead>
     <tbody>
       <tr class="waitsec-static-row"><td>&lt;$85</td><td>0–60</td><td class="ctrl n">613</td><td class="ctrl"><span class="ctrl-val">90.9%</span></td><td class="trt n">2</td><td class="trt"><span class="trt-val">0.0%</span></td><td class="diff lose">−90.9</td></tr>
       <tr class="waitsec-static-row"><td>&lt;$85</td><td>60–120</td><td class="ctrl n">119</td><td class="ctrl"><span class="ctrl-val">75.6%</span></td><td class="trt n">0</td><td class="trt">—</td><td class="diff">—</td></tr>
-      <tr class="waitsec-static-row pos" title="Full view only｜subsidized n=6; not counted as a real win"><td>&lt;$85</td><td>121–180</td><td class="ctrl n">78</td><td class="ctrl"><span class="ctrl-val">67.9%</span></td><td class="trt n">6</td><td class="trt"><span class="trt-val">83.3%</span></td><td class="diff win">+15.4 <span class="lift-tag lift-flat" title="Full view only; only 6 subsidized orders — noise, not a real win">n=6·ignore</span></td></tr>
+      <tr class="waitsec-static-row pos" title="Full view only｜orders with subsidy count=6; not counted as a real win"><td>&lt;$85</td><td>121–180</td><td class="ctrl n">78</td><td class="ctrl"><span class="ctrl-val">67.9%</span></td><td class="trt n">6</td><td class="trt"><span class="trt-val">83.3%</span></td><td class="diff win">+15.4 <span class="lift-tag lift-flat" title="Full view only; only 6 subsidized orders — noise, not a real win">n=6·ignore</span></td></tr>
       <tr class="drill-row" data-drill-key="&lt;$85|181-400" title="Click to expand / collapse"><td>&lt;$85</td><td>181–400</td><td class="ctrl n">130</td><td class="ctrl"><span class="ctrl-val">59.2%</span></td><td class="trt n">19</td><td class="trt"><span class="trt-val">47.4%</span></td><td class="diff lose">−11.8</td></tr>
       <tr class="key-insight-row lose" hidden><td colspan="7"><div class="key-insight-inner">
-        <b class="k">Cell focus: parent −11.8pp → subsidized loses (subsidized n=19, small)</b>
+        <b class="k">Cell focus: parent −11.8pp → orders with subsidy finish less often (orders with subsidy count=19, small)</b>
         <ul>
           <li><b>Completion duration</b>：301-420s —</li><li><b>Completion duration</b>：181-300s —</li><li><b>Cancel death time</b>：301-420s —</li><li><b>Cancel death time</b>：181-300s —</li>
         </ul>
-        <span class="muted-cap">Parent cell: subsidized 47.4% (9/19) vs no-subsidy 59.2% (77/130). 下方為完整分桶／盡頭單。（2026-07-16 actual query result）</span>
+        <span class="muted-cap">This group: orders with subsidy 47.4% (9/19) vs orders with no subsidy 59.2% (77/130). Full detail and extreme orders below. (queried 2026-07-16)</span>
       </div></td></tr>
       <tr class="drill-row" data-drill-key="&lt;$85|400+" title="Click to expand / collapse"><td>&lt;$85</td><td>400+</td><td class="ctrl n">131</td><td class="ctrl"><span class="ctrl-val">51.1%</span></td><td class="trt n">56</td><td class="trt"><span class="trt-val">33.9%</span></td><td class="diff lose">−17.2</td></tr>
       <tr class="key-insight-row lose" hidden><td colspan="7"><div class="key-insight-inner">
-        <b class="k">Cell focus: parent −17.2pp → subsidized loses; watch time buckets 400–519 vs 760–999</b>
+        <b class="k">Cell focus: parent −17.2pp → orders with subsidy finish less often; watch time buckets 400–519 vs 760–999</b>
         <ul>
           <li><b>Cancel death time</b>：400-519s —</li><li><b>Cancel death time</b>：520-639s —</li><li><b>Cancel death time</b>：880-999s —</li><li><b>Cancel death time</b>：3600+s —</li><li><b>Completion duration</b>：400-519s —</li><li><b>Completion duration</b>：760-879s —</li>
         </ul>
-        <span class="muted-cap">Parent cell: subsidized 33.9% (19/56) vs no-subsidy 51.1% (67/131). 下方為完整分桶／盡頭單。（2026-07-16 actual query result）</span>
+        <span class="muted-cap">This group: orders with subsidy 33.9% (19/56) vs orders with no subsidy 51.1% (67/131). Full detail and extreme orders below. (queried 2026-07-16)</span>
       </div></td></tr>
       <tr class="waitsec-static-row"><td>$85–149</td><td>0–60</td><td class="ctrl n">3989</td><td class="ctrl"><span class="ctrl-val">92.7%</span></td><td class="trt n">4</td><td class="trt"><span class="trt-val">0.0%</span></td><td class="diff lose">−92.7</td></tr>
       <tr class="waitsec-static-row"><td>$85–149</td><td>60–120</td><td class="ctrl n">784</td><td class="ctrl"><span class="ctrl-val">78.3%</span></td><td class="trt n">8</td><td class="trt"><span class="trt-val">12.5%</span></td><td class="diff lose">−65.8</td></tr>
       <tr class="waitsec-static-row"><td>$85–149</td><td>121–180</td><td class="ctrl n">508</td><td class="ctrl"><span class="ctrl-val">78.0%</span></td><td class="trt n">25</td><td class="trt"><span class="trt-val">52.0%</span></td><td class="diff lose">−26.0</td></tr>
       <tr class="drill-row" data-drill-key="$85-149|181-400" title="Click to expand / collapse"><td>$85–149</td><td>181–400</td><td class="ctrl n">792</td><td class="ctrl"><span class="ctrl-val">68.2%</span></td><td class="trt n">201</td><td class="trt"><span class="trt-val">65.2%</span></td><td class="diff lose">−3.0</td></tr>
       <tr class="key-insight-row lose" hidden><td colspan="7"><div class="key-insight-inner">
-        <b class="k">Cell focus: parent −3.0pp → subsidized loses; same time-bucket focus on 301–420s</b>
+        <b class="k">Cell focus: parent −3.0pp → orders with subsidy finish less often; same time-bucket focus on 301–420s</b>
         <ul>
           <li><b>Completion duration</b>：301-420s —</li><li><b>Completion duration</b>：181-300s —</li><li><b>Cancel death time</b>：301-420s —</li><li><b>Cancel death time</b>：181-300s —</li>
         </ul>
-        <span class="muted-cap">Parent cell: subsidized 65.2% (131/201) vs no-subsidy 68.2% (540/792). 下方為完整分桶／盡頭單。（2026-07-16 actual query result）</span>
+        <span class="muted-cap">This group: orders with subsidy 65.2% (131/201) vs orders with no subsidy 68.2% (540/792). Full detail and extreme orders below. (queried 2026-07-16)</span>
       </div></td></tr>
       <tr class="drill-row" data-drill-key="$85-149|400+" title="Click to expand / collapse"><td>$85–149</td><td>400+</td><td class="ctrl n">496</td><td class="ctrl"><span class="ctrl-val">56.2%</span></td><td class="trt n">417</td><td class="trt"><span class="trt-val">54.0%</span></td><td class="diff lose">−2.2</td></tr>
       <tr class="key-insight-row lose" hidden><td colspan="7"><div class="key-insight-inner">
-        <b class="k">Cell focus: parent −2.2pp → subsidized loses; watch time buckets 400–519 vs 760+</b>
+        <b class="k">Cell focus: parent −2.2pp → orders with subsidy finish less often; watch time buckets 400–519 vs 760+</b>
         <ul>
           <li><b>Cancel death time</b>：400-519s —</li><li><b>Cancel death time</b>：1120-1239s —</li><li><b>Cancel death time</b>：3600+s —</li><li><b>Completion duration</b>：400-519s —</li><li><b>Completion duration</b>：760-879s —</li>
         </ul>
-        <span class="muted-cap">Parent cell: subsidized 54.0% (225/417) vs no-subsidy 56.2% (279/496). 下方為完整分桶／盡頭單。（2026-07-16 actual query result）</span>
+        <span class="muted-cap">This group: orders with subsidy 54.0% (225/417) vs orders with no subsidy 56.2% (279/496). Full detail and extreme orders below. (queried 2026-07-16)</span>
       </div></td></tr>
       <tr class="waitsec-static-row"><td>$150–199</td><td>0–60</td><td class="ctrl n">1733</td><td class="ctrl"><span class="ctrl-val">91.2%</span></td><td class="trt n">4</td><td class="trt"><span class="trt-val">0.0%</span></td><td class="diff lose">−91.2</td></tr>
       <tr class="waitsec-static-row"><td>$150–199</td><td>60–120</td><td class="ctrl n">241</td><td class="ctrl"><span class="ctrl-val">65.1%</span></td><td class="trt n">2</td><td class="trt"><span class="trt-val">0.0%</span></td><td class="diff lose">−65.1</td></tr>
       <tr class="waitsec-static-row"><td>$150–199</td><td>121–180</td><td class="ctrl n">184</td><td class="ctrl"><span class="ctrl-val">65.8%</span></td><td class="trt n">7</td><td class="trt"><span class="trt-val">42.9%</span></td><td class="diff lose">−22.9</td></tr>
       <tr class="drill-row pos" data-drill-key="$150-199|181-400" title="Click to expand full buckets / tail orders"><td>$150–199</td><td>181–400</td><td class="ctrl n">334</td><td class="ctrl"><span class="ctrl-val">54.8%</span></td><td class="trt n">83</td><td class="trt"><span class="trt-val">57.8%</span></td><td class="diff win">+3.0</td></tr>
       <tr class="key-insight-row" hidden><td colspan="7"><div class="key-insight-inner">
-        <b class="k">Cell focus: time bucket 301–420s · higher subsidized share = Win</b>
+        <b class="k">Cell focus: time bucket 301–420s · higher share of orders with subsidy = Win</b>
         <ul>
           <li><b>Completion duration</b>：301-420s —</li><li><b>Completion duration</b>：181-300s —</li><li><b>Cancel death time</b>：301-420s —</li><li><b>Cancel death time</b>：181-300s —</li>
         </ul>
-        <span class="muted-cap">Parent completion +3.0pp (57.8% 48/83 vs 54.8% 183/334). 下方為完整分桶／盡頭單。（2026-07-16 actual query result）</span>
+        <span class="muted-cap">Parent completion +3.0pp (57.8% 48/83 vs 54.8% 183/334). Full detail and extreme orders below. (queried 2026-07-16)</span>
       </div></td></tr>
       <tr class="drill-row" data-drill-key="$150-199|400+" title="Click to expand / collapse"><td>$150–199</td><td>400+</td><td class="ctrl n">238</td><td class="ctrl"><span class="ctrl-val">50.0%</span></td><td class="trt n">192</td><td class="trt"><span class="trt-val">39.1%</span></td><td class="diff lose">−10.9</td></tr>
       <tr class="key-insight-row lose" hidden><td colspan="7"><div class="key-insight-inner">
-        <b class="k">Cell focus: parent completion −10.9pp → subsidized loses; watch time buckets 400–639 vs 760–1479</b>
+        <b class="k">Cell focus: parent completion −10.9pp → orders with subsidy finish less often; watch time buckets 400–639 vs 760–1479</b>
         <ul>
           <li><b>Cancel death time</b>：400-519s —</li><li><b>Cancel death time</b>：880-999s —</li><li><b>Completion duration</b>：400-519s —</li><li><b>Completion duration</b>：520–999s several buckets: higher subsidized share → ↑ Win</li>
         </ul>
-        <span class="muted-cap">Parent cell: subsidized 39.1% (75/192) vs no-subsidy 50.0% (119/238). 下方為完整分桶／盡頭單。（2026-07-16 actual query result）</span>
+        <span class="muted-cap">This group: orders with subsidy 39.1% (75/192) vs orders with no subsidy 50.0% (119/238). Full detail and extreme orders below. (queried 2026-07-16)</span>
       </div></td></tr>
 
     </tbody>
@@ -322,20 +322,20 @@
   </div>
 
 <h2 style="font-size:18px;margin-top:36px">②b Long-wait orders (why they cancel, and where with-subsidy vs without-subsidy differ)</h2>
-  <p>想看細節：在主表<b>點那一列</b>就會出來（含 $150–199 那兩格的重點）。數字是 6 個 campaign 日、HK 平台散客、Van ASAP、Fare低於 $200。（2026-07-15 實際查詢結果）</p>
+  <p>For details: <b>click that row</b> in the main table (including the two $150–199 cells). Numbers cover 6 campaign days, Hong Kong Platform personal customers, Van ASAP, fare under $200. (queried 2026-07-15)</p>
 
-  <div class="box bad"><b>Note: Individual green cells do not mean add-tips succeeded overall.</b>
+  <div class="box bad"><b>Note: one green cell does not mean the subsidy worked overall.</b>
     <ul class="plain" style="margin:8px 0 0">
       <li>One cell looks good (+15.4), but the with-subsidy side has only <b>6 orders</b> — not reliable.</li>
       <li>The $150–199 cell with about 3–7 minutes wait has a slight signal, but the overall cell is only +3 percentage points, and the direction differs day by day.</li>
     </ul>
-    <p style="margin:8px 0 0">Official conclusion unchanged: after alignment, with-subsidy completion rate is still <b>4.7 percentage points</b> lower.</p>
+    <p style="margin:8px 0 0">Main conclusion unchanged: after making conditions similar, orders with subsidy still finish <b>4.7 percentage points</b> less often.</p>
   </div>
 
 <div class="card">
   <table class="cmp small">
-    <caption><b>Breakdown 1 · &lt;$85 × 121–180 (+15.4)</b>: main-table Full-view green row; subsidized n=6 → noise</caption>
-    <thead><tr><th>Date</th><th>Weekday</th><th class="ctrl">No-subsidy n</th><th class="ctrl">Completion</th><th class="trt">Subsidized n</th><th class="trt">Completion</th></tr></thead>
+    <caption><b>Breakdown 1 · &lt;$85 × 121–180 (+15.4)</b>: main-table Full-view green row; orders with subsidy count=6 → noise</caption>
+    <thead><tr><th>Date</th><th>Weekday</th><th class="ctrl">Orders with no subsidy (count)</th><th class="ctrl">Completion rate</th><th class="trt">Orders with subsidy (count)</th><th class="trt">Completion rate</th></tr></thead>
     <tbody>
       <tr><td>2026-05-26</td><td>Tue</td><td class="ctrl n">11</td><td class="ctrl"><span class="ctrl-val">63.6%</span></td><td class="trt n">0</td><td class="trt">—</td></tr>
       <tr><td>2026-05-29</td><td>Fri</td><td class="ctrl n">18</td><td class="ctrl"><span class="ctrl-val">72.2%</span></td><td class="trt n">0</td><td class="trt">—</td></tr>
@@ -349,7 +349,7 @@
   <div class="card">
   <table class="cmp small">
     <caption><b>Breakdown 2 · $150–199 × 181–400 (+3.0)</b>: parent cell differs by day; time-bucket focus after expand is still <b>301–420s</b></caption>
-    <thead><tr><th>Date</th><th>Weekday</th><th class="ctrl">No-subsidy n / Completion / backlog</th><th class="trt">Subsidized n / Completion / backlog</th><th>Direction</th></tr></thead>
+    <thead><tr><th>Date</th><th>Weekday</th><th class="ctrl">Orders with no subsidy · count / completion rate / still waiting @120s</th><th class="trt">Orders with subsidy · count / completion rate / still waiting @120s</th><th>Direction</th></tr></thead>
     <tbody>
       <tr><td>2026-05-26</td><td>Tue</td><td class="ctrl"><span class="ctrl-val">53 · 47.2% · 161</span></td><td class="trt"><span class="trt-val">16 · 43.8% · 206</span></td><td class="lose">Lose</td></tr>
       <tr><td>2026-05-29</td><td>Fri</td><td class="ctrl"><span class="ctrl-val">77 · 53.2% · 112</span></td><td class="trt"><span class="trt-val">7 · 71.4% · 136</span></td><td class="win">Win (n=7)</td></tr>
@@ -365,11 +365,11 @@
   <p>Orders waiting over 400 sec are the hardest to dispatch and most in need of rescue. But in all three fare bands <b class="hl-bad">the subsidized group still has a lower completion rate</b> (&lt;$85 lower by 17.2 percentage points, $150–199 lower by 10.9, $85–149 lower by 2.3). Even for the hardest-to-dispatch orders, subsidies did not help.</p>
 
   <!-- ③ why -->
-  <h2>③ Why is this happening? — Subsidies are given to harder orders in the first place</h2>
-  <p>It is not that subsidies are necessarily useless, but that <b>subsidized orders are inherently harder to dispatch</b>. Here we use Backlog (order backlog: the number of orders competing for drivers at the moment of dispatch; higher means harder to dispatch) to see this: even at the same wait time, <b class="hl-bad">the subsidized group has a higher Backlog in every group</b>. That is, the actual difficulty of the two groups is not the same, and comparing completion rates directly is unfair to the subsidized group.</p>
+  <h2>③ Why? — Subsidy tends to go to harder orders first</h2>
+  <p>This does not prove the subsidy is useless. It shows that <b>orders that got a subsidy were already harder to assign</b>. We look at orders still waiting for a driver at 120 seconds after the order was placed (column <code>backlog_at_120</code>: how many Hong Kong TRANSPORT orders were still waiting and not cancelled at that moment; higher = harder). Even at the same wait time, <b class="hl-bad">orders with subsidy have a higher waiting-order count in every group</b>. So comparing completion rates without this is unfair to orders with subsidy.</p>
   <div class="card">
   <table class="cmp">
-    <thead><tr><th>Fare</th><th>Wait (sec)</th><th class="ctrl">No-subsidy Backlog</th><th class="trt">Subsidized Backlog</th><th>Δ (subsidized higher = harder)</th></tr></thead>
+    <thead><tr><th>Fare</th><th>Wait time (sec)</th><th class="ctrl">Orders with no subsidy<br>still waiting for a driver @120s</th><th class="trt">Orders with subsidy<br>still waiting for a driver @120s</th><th>Difference (higher for subsidy = harder)</th></tr></thead>
     <tbody>
       <tr><td>&lt;$85</td><td>0–60</td><td class="ctrl"><span class="ctrl-val">103.2</span></td><td class="trt"><span class="trt-val">138.0</span></td><td class="diff lose">+34.8</td></tr>
       <tr><td>&lt;$85</td><td>121–180</td><td class="ctrl"><span class="ctrl-val">110.9</span></td><td class="trt"><span class="trt-val">138.8</span></td><td class="diff lose">+27.9</td></tr>
@@ -389,19 +389,19 @@
   </table>
   </div>
 
-  <p><b>那把 Backlog 也拉到一樣呢？</b>兩組Completion的差距由 <b>−6.9 個百分點</b>（Fare×等候）收窄到 <b>−4.8 個百分點</b>（Triple = fare × wait × backlog）。Backlog 的確解釋了一部分差距，<b class="hl-bad">但Subsidized completion仍然低於No-subsidy group</b>。完整四層數字見頁首主表；逐日拆開，All six days: subsidized group lower（Tue −8.7 至 Mon −22.9））。Backlog 的確解釋了一部分差距，<b class="hl-bad">但Subsidized completion仍然低於No-subsidy group</b>。完整四層數字見頁首主表；逐日拆開，All six days: subsidized group lower（Tue −8.7 至 Mon −22.9）。</p>
+  <p><b>What if we also keep “orders still waiting for a driver at 120 seconds” the same?</b> The completion-rate gap narrows from <b>−6.9 percentage points</b> (same fare + wait) to <b>−4.8 percentage points</b> (strictest fair comparison). Orders still waiting for a driver explain part of the gap, <b class="hl-bad">but orders with subsidy still finish less often than orders with no subsidy</b>. See the main table at the top; on every campaign day, orders with subsidy finished less often (Tue −8.7 through Mon −22.9).</p>
 
   <!-- ④ ROI -->
-  <h2>④ ROI: cost is confirmable, effect is not</h2>
+  <h2>④ Money spent can be confirmed; extra completed orders cannot</h2>
   <div class="card">
   <table>
     <thead><tr><th style="text-align:left">Item</th><th>Value</th><th style="text-align:left">Note</th></tr></thead>
     <tbody>
-      <tr><td style="text-align:left">已支付補貼</td><td>$4,945</td><td style="text-align:left">只在完成的 529 張支付（計算範圍：<code>pass_sheet_static_eligibility</code>；完成單 <code>company_paid_incentive</code> 加總）</td></tr>
-      <tr><td style="text-align:left">Subsidized orders</td><td>1,050</td><td style="text-align:left">529 completed (50.4%); matched denom 1,026 (excludes null wait_sec)</td></tr>
+      <tr><td style="text-align:left">Subsidy already paid</td><td>$4,945</td><td style="text-align:left">paid only on 529 completed orders (filter: <code>pass_sheet_static_eligibility</code>; sum of <code>company_paid_incentive</code> on completed orders)</td></tr>
+      <tr><td style="text-align:left">Orders with subsidy</td><td>1,050</td><td style="text-align:left">529 completed (50.4%); fair-comparison count 1,026 (excludes null wait_sec)</td></tr>
       <tr><td style="text-align:left">Extra orders rescued</td><td class="lose">none (−117 to −58)</td><td style="text-align:left">because the subsidized group's completion rate is lower, the result is negative, i.e. no extra orders were rescued</td></tr>
       <tr><td style="text-align:left">Cost per order rescued</td><td class="lose">cannot be computed</td><td style="text-align:left">no extra orders rescued, so cost per order cannot be computed</td></tr>
-      <tr><td style="text-align:left">Wastage</td><td class="lose">100%（暫估）</td><td style="text-align:left">Wastage＝已付補貼中「買不到可證明的新增完成」的比例＝(已付 − 有效補貼)/已付；有效補貼＝新增完成 × 每張補貼，因新增完成 ≤ 0（未見新增完成），有效補貼＝$0，故 = $4,880 ÷ $4,880 = 100%。上限封頂 100%（花不到負錢）；point estimate 為負，代表可能揀了更難的單，此為 selection bias，另見 ③</td></tr>
+      <tr><td style="text-align:left">Share of subsidy spend with no proven extra completions</td><td class="lose">100% (conservative estimate)</td><td style="text-align:left">This is the share of already-paid subsidy that bought no proven extra completed orders = (already paid − proven-effective subsidy) / already paid. Proven-effective subsidy = extra completed orders × subsidy per order. Because extra completed orders ≤ 0, proven-effective subsidy = $0, so = $4,880 ÷ $4,880 = 100%. Capped at 100%. A negative point estimate likely means harder orders were selected first — see section ③.</td></tr>
     </tbody>
   </table>
   </div>
@@ -409,38 +409,38 @@
     <b>What is "extra orders rescued (incremental completions)"?</b>
     Among this batch, how many would have cancelled without subsidy but completed because of subsidy — i.e. orders <b>truly rescued by the subsidy</b>.
     <br>"Incremental completions" <b>cannot be counted directly in reality</b> (no one can name which order "would have cancelled without subsidy"); they are estimated from the adjusted completion-rate gap:
-    <pre style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:13.5px;overflow-x:auto;margin:10px 0">Adjusted completion-rate gap = after matching fare/wait/backlog, subsidized completion − no-subsidy completion
+    <pre style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:13.5px;overflow-x:auto;margin:10px 0">Completion-rate difference after fair comparison = after keeping fare / wait / orders still waiting @120s the same, completion rate of orders with subsidy − completion rate of orders with no subsidy
               = 55.3% − 62.6%
-              = −1.9pp (i.e. −1.9%)
+              = −1.9 percentage points (i.e. −1.9%)
 
 Incremental completions = subsidized order count × adjusted completion-rate gap
-        = 1,050 ×（調整後Completion差距；本頁三重對齊約 −4.9pp）
+        = 1,039 × (completion-rate difference after strictest fair comparison ≈ −4.8 percentage points)
         ≈ −24 (negative — no evidence of extra completions)</pre>
-    Result ≤ 0, i.e. <b class="hl-bad">no incremental completions observed</b>.
+    Result ≤ 0, i.e. <b class="hl-bad">no extra completed orders observed</b>.
   </div>
   <div class="box warn">Because no incremental completions were observed (estimate −58 to −117; 95% CI crosses 0), "cost per order rescued" cannot be computed, and wastage can only be conservatively put at 100% for now (no proven effective subsidy spend yet). For reliable ROI and Wastage, first confirm with pre-treatment matching or A/B that subsidized completion is truly higher than no-subsidy (see ⑤).</div>
 
-  <p style="font-size:13.5px;color:var(--ink2);margin:22px 0 4px"><b>另一角度：本 filter 有補貼完成單的現金摘要</b>（GTV／已付來自 mart；與頁首同一 <code>pass_sheet_static_eligibility</code>）</p>
+  <p style="font-size:13.5px;color:var(--ink2);margin:22px 0 4px"><b>Another view: cash summary for completed orders with subsidy in this filter</b> (GTV / already paid from mart; same <code>pass_sheet_static_eligibility</code> as the main table)</p>
   <div class="kpi">
-    <div class="k"><div class="lbl">Subsidized completed GTV</div><div class="val">$65,904</div><div class="sub">完成 529 張 · <code>pass_sheet_static_eligibility</code></div></div>
-    <div class="k"><div class="lbl">Subsidy paid</div><div class="val">−$4,945</div><div class="sub">deducted on completed orders only</div></div>
-    <div class="k"><div class="lbl">Subsidized completion (raw)</div><div class="val">50.4%</div><div class="sub">529/1,050; matched view in headline table</div></div>
+    <div class="k"><div class="lbl">GTV from completed orders with subsidy</div><div class="val">$65,904</div><div class="sub">529 completed · <code>pass_sheet_static_eligibility</code></div></div>
+    <div class="k"><div class="lbl">Subsidy already paid</div><div class="val">−$4,945</div><div class="sub">deducted on completed orders only</div></div>
+    <div class="k"><div class="lbl">Completion rate · orders with subsidy (raw)</div><div class="val">50.4%</div><div class="sub">529/1,050; fair-comparison rates in the main table</div></div>
   </div>
-  <div class="box bad"><b>But book profit ≠ correctly spent subsidy:</b> most of the 529 completed orders <b>would have completed anyway</b> (see ②); this spend is incremental wastage, not revenue earned by the tip. Platform take is not re-computed here; decide from the headline matched completion rates — not a reason to raise Budget.</div>
+  <div class="box bad"><b>Book profit ≠ correctly spent subsidy:</b> most of the 529 completed orders <b>would have completed anyway</b> (see ②). This spend is mostly money without proven extra completions. Use the main-table fair-comparison completion rates — not cash-on-paper — for budget decisions.</div>
 
   <!-- ⑤ next steps -->
   <h2>⑤ Next steps: how to truly know whether the subsidy works?</h2>
-  <div class="box"><b>We can say:</b> no lift in completion from subsidy was seen; and orders that got subsidy were harder to dispatch (higher backlog).<br><b>We cannot claim "subsidy is completely useless"</b> — region, vehicle type, order time, and driver supply are not fully matched and may still affect results.</div>
-  <div class="box good"><b>To answer "whether Budget should increase", recommend:</b>
+  <div class="box"><b>We can say:</b> we do not see a higher completion rate from subsidy; and orders that got subsidy were already harder to assign (more orders still waiting for a driver @120s).<br><b>We cannot claim "subsidy is completely useless"</b> — region, vehicle type, order-placement time, and driver supply are not fully aligned and may still matter.</div>
+  <div class="box good"><b>To answer whether the budget should increase, we recommend:</b>
     <ul class="plain" style="margin:8px 0 0">
-      <li>Match on conditions known <b>before</b> dispatch (backlog, fare, vehicle type, region, order time); <b>do not use wait time</b> — wait appears after dispatch and using it for matching distorts results.</li>
-      <li>Or run an <b>A/B experiment</b> (random assignment) — cleanest way to test whether subsidy lifts completion.</li>
+      <li>Match on conditions known <b>before</b> dispatch (orders still waiting for a driver @120s, fare, vehicle type, region, order-placement time); <b>do not use wait time</b> — wait time appears after dispatch and distorts the comparison.</li>
+      <li>Or run an <b>A/B experiment</b> (random assignment) — the cleanest way to test whether subsidy raises completion rate.</li>
     </ul>
   </div>
 
   <p class="foot">
-    Method: compare orders with similar <b>fare, wait time, and backlog</b>; estimate subsidy cost per completed order and wastage (share of subsidy that bought no incremental completion).<br>
-    來源：<code>gogox-ba-sandbox.analytics.mart_ops_add_tips_campaign_orders</code>（2026-07-15 actual query result，6 個 campaign 日繁忙時段，香港時間）。範圍：PlatformOD 個人客 · Van · ASAP · Fare &lt; HK$200 · <code>pass_sheet_static_eligibility</code>。subsidized = <code>has_incentive</code>；配對分母須 <code>wait_sec</code> 非空。補貼只在完成單支付。Completion = <code>is_completed</code>；Δpp = Subsidized completion − No-subsidy completion（tip-weighted ATT）。數字由 <code>export_waitsec_layer_lift.py</code> 重生成。
+    Method: compare orders with similar <b>fare, wait time, and orders still waiting for a driver (at 120 seconds)</b>, then estimate subsidy cost per completed order and the share of subsidy spend with no proven extra completions.<br>
+    Source: <code>gogox-ba-sandbox.analytics.mart_ops_add_tips_campaign_orders</code> (queried 2026-07-15, peak hours on 6 campaign days, Hong Kong time). Scope: PlatformOD personal customers · Van · ASAP · fare &lt; HK$200 · <code>pass_sheet_static_eligibility</code>. Orders with subsidy = <code>has_incentive</code>; fair comparison needs non-null <code>wait_sec</code>. Subsidy is paid only on completed orders. Completion = <code>is_completed</code>. Completion-rate difference = orders with subsidy − orders with no subsidy. Numbers regenerated by <code>export_waitsec_layer_lift.py</code>.
   </p>
 
 </div>
@@ -5053,7 +5053,7 @@ Incremental completions = subsidized order count × adjusted completion-rate gap
   },
   "headline": {
     "lift_pp": -4.8,
-    "label": "三重＝車費×等候×積壓",
+    "label": "三重＝Fare×等候×orders still waiting for a driver @120s",
     "tip_cr_fmt": "51.5% (523/1,015)",
     "ctrl_cr_fmt": "56.3% (572/1,015)"
   },
@@ -5131,7 +5131,7 @@ Incremental completions = subsidized order count × adjusted completion-rate gap
     "tip_completed_platform_revenue": 9376.0,
     "tip_net_vs_subsidy": 4496.0,
     "revenue_def_zh": "平台收益＝driver_commission + premium_platform_support（prod order_master），非 GTV",
-    "note_zh": "僅 pass_sheet_static_eligibility（Van∧ASAP∧Personal∧Fare<$200）；已付＝完成單 company_paid_incentive 加總；收益＝完成單 commission+premium 加總"
+    "note_zh": "僅 pass_sheet_static_eligibility（Van∧ASAP∧Personal∧Fare<$200）；already paid＝完成單 company_paid_incentive 加總；收益＝完成單 commission+premium 加總"
   },
   "rows": [
     {
@@ -42086,7 +42086,7 @@ Incremental completions = subsidized order count × adjusted completion-rate gap
   const dimOptionsCancelled = [
     ["death_buckets", "Wait before cancel (buckets)"],
     ["death_summary", "Wait before cancel: overall distribution"],
-    ["backlog", "Backlog at dispatch (how hard to assign)"],
+    ["backlog", "Orders still waiting for a driver (count at 120 seconds after order placed)（越多越難派）"],
     ["region", "Pickup region"],
     ["release", "Release count"],
     ["campaign_date", "Day-by-day across 6 campaign days"],
@@ -42095,7 +42095,7 @@ Incremental completions = subsidized order count × adjusted completion-rate gap
   const dimOptionsCompleted = [
     ["death_buckets", "End-to-end completion duration (buckets)"],
     ["death_summary", "Completion duration: overall distribution"],
-    ["backlog", "Backlog at dispatch (how hard to assign)"],
+    ["backlog", "Orders still waiting for a driver (count at 120 seconds after order placed)（越多越難派）"],
     ["region", "Pickup region"],
     ["release", "Release count"],
     ["campaign_date", "Day-by-day across 6 campaign days"],
@@ -42322,13 +42322,13 @@ Incremental completions = subsidized order count × adjusted completion-rate gap
     const rangeNote = minS >= 400 ? "from 400s" : (minS >= 181 ? "from 181s" : "from 180s");
     const outcomeNote = "Share% denominator = all orders in cell (completed + cancelled)";
     const winNote = completed
-      ? "Win/Lose = subsidized % of all cell orders vs no-subsidy (completion buckets: higher = Win)"
-      : "Win/Lose = subsidized % of all cell orders vs no-subsidy (death buckets: lower = Win, fewer orders cancelled in that window)";
+      ? "Win/Lose = subsidized % of all cell orders vs orders with no subsidy (completion buckets: higher = Win)"
+      : "Win/Lose = subsidized % of all cell orders vs orders with no subsidy (death buckets: lower = Win, fewer orders cancelled in that window)";
     const caption = (completed
       ? "Completion-duration buckets (completed only; final_response_time; bucket width 120s; " + rangeNote + "; " + outcomeNote + ")"
       : "Death-time buckets (cancelled only; cancelled_at−created_at; bucket width 120s; " + rangeNote + "; " + outcomeNote + ")") +
       "· <span class='muted-cap'>Click column headers to sort. " + winNote + "</span>";
-    const head = [timeLabel, "No-subsidy n", "Subsidized n", "Share of cell·ctrl", "Share of cell·tip (Win/Lose)", "P75·ctrl", "P75·tip", "P85·ctrl", "P85·tip", "P99·ctrl", "P99·tip", "max·ctrl", "max·tip"];
+    const head = [timeLabel, "Orders with no subsidy (count)", "Orders with subsidy (count)", "Share of cell·ctrl", "Share of cell·tip (Win/Lose)", "P75·ctrl", "P75·tip", "P85·ctrl", "P85·tip", "P99·ctrl", "P99·tip", "max·ctrl", "max·tip"];
     const body = buckets.map((b) => {
       const p75c = bucketVal(b, "ctrl", 75), p75t = bucketVal(b, "trt", 75);
       const p85c = bucketVal(b, "ctrl", 85), p85t = bucketVal(b, "trt", 85);
@@ -42383,7 +42383,7 @@ Incremental completions = subsidized order count × adjusted completion-rate gap
     const items = (row.dimensions && row.dimensions[dimKey]) || [];
     const completed = mode === "completed";
     const timeHdr = completed ? "Completion duration P75/P85/P99 (ctrl/tip)" : "Cancel death P75/P85/P99 (ctrl/tip)";
-    const head = ["Group", "No-subsidy n", "No-subsidy completion", "No-subsidy cancel rate", "Subsidized n", "Subsidized completion", "Subsidized cancel rate", "Δ Completion pp", timeHdr];
+    const head = ["Group", "Orders with no subsidy (count)", "No-subsidy completion", "No-subsidy cancel rate", "Orders with subsidy (count)", "Subsidized completion", "Subsidized cancel rate", "Δ Completion pp", timeHdr];
     const body = items.map((it) => {
       const c = it.ctrl || {}, t = it.trt || {};
       const dcls = it.delta_pp > 0 ? "win" : it.delta_pp < 0 ? "lose" : "";
@@ -42416,7 +42416,7 @@ Incremental completions = subsidized order count × adjusted completion-rate gap
       return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/'/g, "&#39;").replace(/"/g, "&quot;");
     }
     function tailTable(label, orders) {
-      const head = ["order_id", secLabel, "Past 120(s)", "Wait(s)", "Backlog", "Releases", "Region", "Date"];
+      const head = ["order_id", secLabel, "過120(s)", "等候(s)", "orders still waiting for a driver @120s", "放單", "region", "Date"];
       const body = (orders || []).map((o) => {
         const sec = o.outcome_sec != null ? o.outcome_sec : o.death_sec;
         const wait = o.wait_sec;
@@ -42501,7 +42501,7 @@ Incremental completions = subsidized order count × adjusted completion-rate gap
     let tablePart = "";
     if (dim === "death_buckets") tablePart = renderDeathBuckets(row, mode);
     else if (dim === "death_summary") tablePart = renderDeathSummary(row, mode);
-    else if (dim === "backlog") tablePart = renderDim(row, "backlog", "Backlog at dispatch", mode);
+    else if (dim === "backlog") tablePart = renderDim(row, "backlog", "Orders still waiting for a driver (count at 120 seconds after order placed)", mode);
     else if (dim === "region") tablePart = renderDim(row, "region", "Pickup region", mode);
     else if (dim === "release") tablePart = renderDim(row, "release", "Release count", mode);
     else if (dim === "campaign_date") tablePart = renderDim(row, "campaign_date", "Day-by-day across 6 campaign days", mode);
