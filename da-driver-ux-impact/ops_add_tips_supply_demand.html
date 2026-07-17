@@ -64,7 +64,7 @@
   <p class="meta" id="metaLine"></p>
 
   <div class="answer" id="answerBox"></div>
-  <p class="readmap">閱讀順序：<b>Q2 最難 20%</b>（主證明）→ Q4 tip 金額 → Q1 總覽 → Q3 積壓／供應分開 → Q5 地區（上車／下車／O-D 可切換）。
+  <p class="readmap">閱讀順序：<b>Q2 最難 20%</b>（主證明）→ Q4 tip 金額 → Q1 總覽 → Q3 積壓／供應分開 → Q5（<code>pickup_location_region</code>／<code>destination_location_region</code>／O-D 可切換）。
     配對 outcome 報告見 <a href="ops-add-tips-outcome-drilldown.html">Outcome Drill-down</a>。</p>
 
   <nav class="navbar" aria-label="章節">
@@ -126,11 +126,11 @@
     </div>
   </div>
 
-  <h2 id="sec-q5"><span id="q5Title">Q5 · 上車地區全名</span>（無補 n≥30 錨定，不併「其他」）</h2>
+  <h2 id="sec-q5"><span id="q5Title">Q5 · pickup_location_region</span>（無補 n≥30 錨定，不併「其他」）</h2>
   <div class="card">
     <div class="q5-toggle" id="q5Toggle" role="group" aria-label="地區維度切換">
-      <button type="button" class="active" data-view="pickup">上車地區</button>
-      <button type="button" data-view="dest">下車地區</button>
+      <button type="button" class="active" data-view="pickup">pickup_location_region</button>
+      <button type="button" data-view="dest">destination_location_region</button>
       <button type="button" data-view="od">路線 O-D</button>
       <button type="button" class="outside-toggle" id="q5OutsideToggle" aria-pressed="false"
         title="預設只顯示無補 (C) 單量前 18 區／路線；其餘長尾地區可展開">18區以外（收起）</button>
@@ -138,7 +138,7 @@
     <p class="cap" id="q5Cap">每區 C/T 並排；稀疏地區直接不列出。點欄標題 <b>⇅</b> 可升／降序排序（↑ 少→多、↓ 多→少）。</p>
     <table class="data compact sortable" id="tableQ5">
       <thead><tr>
-        <th class="sort-th" id="q5ColDim">上車地區</th>
+        <th class="sort-th" id="q5ColDim">pickup_location_region</th>
         <th class="sort-th ctrl" title="無補組總單數（大 N）">無補 n</th>
         <th class="sort-th ctrl">無補 CR</th>
         <th class="sort-th trt" title="有補組總單數（大 N）">有補 n</th>
@@ -379,14 +379,14 @@ const D = {"meta": {"query_date": "2026-07-16", "scope": "HK PlatformOD Van · p
 
   const Q5_VIEWS = {
     pickup: {
-      title: '上車地區全名',
-      col: '上車地區',
-      cap: '按 <code>pickup_location_region</code> 分區；每區 C/T 並排。',
+      title: 'pickup_location_region',
+      col: 'pickup_location_region',
+      cap: '按 <code>pickup_location_region</code> 分區（細地名；非港島／九龍／新界大區）；每區 C/T 並排。',
       rows: () => D.q5_chart || [],
     },
     dest: {
-      title: '下車地區全名',
-      col: '下車地區',
+      title: 'destination_location_region',
+      col: 'destination_location_region',
       cap: '按 <code>destination_location_region</code> 分區；每區 C/T 並排。',
       rows: () => D.q5_chart_dest || [],
     },
