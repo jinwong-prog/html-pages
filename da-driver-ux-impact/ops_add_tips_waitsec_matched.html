@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>補貼效益與浪費評估（車費 × 等候 × 積壓 拉齊比較）</title>
+<title>補貼效益與浪費評估（車費 × 等候 × 還未有司機接的單@120秒 拉齊比較）</title>
 <style>
   :root{
     --plane:#f9f9f7; --surface:#fcfcfb;
@@ -158,12 +158,12 @@
 <body>
 <div class="wrap">
 
-  <h1>補貼效益與浪費評估（車費 × 等候 × 積壓 拉齊比較）</h1>
+  <h1>補貼效益與浪費評估（車費 × 等候 × 還未有司機接的單@120秒 拉齊比較）</h1>
   <p class="meta">香港 PlatformOD · Van · ASAP · 車費 &lt; HK$200，共 6 個 campaign 日繁忙時段 ｜（2026-07-16 實查，香港時間，6 campaign 日 2026-05-26 至 2026-07-03；資格 <code>pass_sheet_static_eligibility</code>）｜ 數字全部由 BigQuery 產出</p>
 
   <div class="answer">
     <span class="big">目前未見補貼有效。</span><br>
-    逐層拉齊車費、等候、日期時段與積壓後，<b>有補貼組完成率仍低於沒有補貼組</b>（三重（車費×等候×積壓）差距 −4.8 個百分點）。已付補貼 $4,880（523/1,039 張完成單），但<b>無法證明多救回訂單</b>。現有數據不足以支持增加補貼預算。
+    逐層拉齊車費、等候、日期時段與還未有司機接的單@120秒後，<b>有補貼組完成率仍低於沒有補貼組</b>（三重（車費×等候×還未有司機接的單@120秒）差距 −4.8 個百分點）。已付補貼 $4,880（523/1,039 張完成單），但<b>無法證明多救回訂單</b>。現有數據不足以支持增加補貼預算。
   </div>
 
   <div class="card">
@@ -194,8 +194,8 @@
         <td class="trt"><span class="trt-val">52.5%</span> <span class="n">(492/938)</span></td>
         <td class="ctrl"><span class="ctrl-val">57.2%</span> <span class="n">(536/938)</span></td>
         <td class="diff lose">−4.7</td></tr>
-      <tr><td style="text-align:left"><b>三重＝車費×等候×積壓 ★</b>
-        <br><span style="font-size:12px;color:var(--muted)">（三軸：車費、等候、積壓；主結論）</span></td>
+      <tr><td style="text-align:left"><b>三重＝車費×等候×還未有司機接的單@120秒 ★</b>
+        <br><span style="font-size:12px;color:var(--muted)">（三軸：車費、等候、還未有司機接的單@120秒；主結論）</span></td>
         <td class="trt"><span class="trt-val">51.5%</span> <span class="n">(523/1,015)</span></td>
         <td class="ctrl"><span class="ctrl-val">56.3%</span> <span class="n">(572/1,015)</span></td>
         <td class="diff lose"><b>−4.8</b></td></tr>
@@ -213,7 +213,7 @@
     <tbody>
       <tr><td>車費 Fare</td><td style="text-align:left"><code>gross_transaction_value</code></td><td style="text-align:left">&lt;$85 ｜ $85–149 ｜ $150–199（&ge;$200 不符補貼資格，已排除）</td></tr>
       <tr><td>等候時間 Wait</td><td style="text-align:left"><code>wait_sec</code></td><td style="text-align:left">0–60（&lt;60）｜60–120 ｜ 121–180 ｜ 181–400 ｜ 400+ 秒（互不重疊；2026-07-15 BQ 實查）</td></tr>
-      <tr><td>訂單積壓 Backlog</td><td style="text-align:left"><code>backlog_at_120</code></td><td style="text-align:left">&lt;40 / 40–80 / 80–120 / 120–160 / 160+（額外測試，見 ③）</td></tr>
+      <tr><td>還未有司機接的單（落單後 120 秒）</td><td style="text-align:left"><code>backlog_at_120</code></td><td style="text-align:left">&lt;40 / 40–80 / 80–120 / 120–160 / 160+（額外測試，見 ③）</td></tr>
       <tr><td>Campaign 日期 / 星期</td><td style="text-align:left"><code>campaign_date</code></td><td style="text-align:left">6 日逐日對齊；日期已鎖定星期幾</td></tr>
       <tr><td>繁忙時段 Time</td><td style="text-align:left"><code>created_at</code></td><td style="text-align:left">按落單小時對齊（見下表）</td></tr>
       <tr><td>客戶類型 Segment</td><td style="text-align:left"><code>business_segment</code></td><td style="text-align:left">全部 PlatformOD 個人客</td></tr>
@@ -349,7 +349,7 @@
   <div class="card">
   <table class="cmp small">
     <caption><b>拆解 2 · $150–199 × 181–400（+3.0）</b>：母格差日；時間桶重點仍是展開後的 <b>301–420s</b></caption>
-    <thead><tr><th>日期</th><th>星期</th><th class="ctrl">無補貼 n / 完成率 / backlog</th><th class="trt">有補貼 n / 完成率 / backlog</th><th>方向</th></tr></thead>
+    <thead><tr><th>日期</th><th>星期</th><th class="ctrl">無補貼 n / 完成率 / 還未有司機接的單@120秒</th><th class="trt">有補貼 n / 完成率 / 還未有司機接的單@120秒</th><th>方向</th></tr></thead>
     <tbody>
       <tr><td>2026-05-26</td><td>週二</td><td class="ctrl"><span class="ctrl-val">53 · 47.2% · 161</span></td><td class="trt"><span class="trt-val">16 · 43.8% · 206</span></td><td class="lose">輸</td></tr>
       <tr><td>2026-05-29</td><td>週五</td><td class="ctrl"><span class="ctrl-val">77 · 53.2% · 112</span></td><td class="trt"><span class="trt-val">7 · 71.4% · 136</span></td><td class="win">勝(n=7)</td></tr>
@@ -366,10 +366,10 @@
 
   <!-- ③ 為什麼 -->
   <h2>③ 為什麼會這樣？——補貼本身派給更難的單</h2>
-  <p>不是補貼一定沒用，而是<b>有補貼的訂單本身就比較難派</b>。這裡用 Backlog（訂單積壓：派單當下同時在搶司機的訂單數，越多代表越難派）來看：就算等候時間一樣，<b class="hl-bad">有補貼組每一組的 Backlog 都更高</b>。即兩組的實際難度並不一樣，直接比完成率，對有補貼組不公平。</p>
+  <p>不是補貼一定沒用，而是<b>有補貼的訂單本身就比較難派</b>。這裡用「還未有司機接的單（落單後 120 秒）」來看（欄位 <code>backlog_at_120</code>：該單落單後滿 120 秒當刻，全港 TRANSPORT 還未有司機接、未取消的單數；越多越難派）：就算等候時間一樣，<b class="hl-bad">有補貼組每一組的「還未有司機接的單」都更高</b>。即兩組的實際難度並不一樣，直接比完成率，對有補貼組不公平。</p>
   <div class="card">
   <table class="cmp">
-    <thead><tr><th>車費</th><th>等候(秒)</th><th class="ctrl">無補貼 Backlog</th><th class="trt">有補貼 Backlog</th><th>Δ（有補貼更高＝更難）</th></tr></thead>
+    <thead><tr><th>車費</th><th>等候(秒)</th><th class="ctrl">無補貼<br>還未有司機接的單@120秒</th><th class="trt">有補貼<br>還未有司機接的單@120秒</th><th>Δ（有補更高＝更難）</th></tr></thead>
     <tbody>
       <tr><td>&lt;$85</td><td>0–60</td><td class="ctrl"><span class="ctrl-val">103.2</span></td><td class="trt"><span class="trt-val">138.0</span></td><td class="diff lose">+34.8</td></tr>
       <tr><td>&lt;$85</td><td>121–180</td><td class="ctrl"><span class="ctrl-val">110.9</span></td><td class="trt"><span class="trt-val">138.8</span></td><td class="diff lose">+27.9</td></tr>
@@ -389,7 +389,7 @@
   </table>
   </div>
 
-  <p><b>那把 Backlog 也拉到一樣呢？</b>兩組完成率的差距由 <b>−6.9 個百分點</b>（車費×等候）收窄到 <b>−4.8 個百分點</b>（三重＝車費×等候×積壓）。Backlog 的確解釋了一部分差距，<b class="hl-bad">但有補貼組完成率仍然低於沒有補貼組</b>。完整四層數字見頁首主表；逐日拆開，六日都是有補貼組較低（週二 −8.7 至 週一 −22.9）。</p>
+  <p><b>那把「還未有司機接的單@120秒」也拉到一樣呢？</b>兩組完成率的差距由 <b>−6.9 個百分點</b>（車費×等候）收窄到 <b>−4.8 個百分點</b>（三重＝車費×等候×還未有司機接的單@120秒）。「還未有司機接的單」的確解釋了一部分差距，<b class="hl-bad">但有補貼組完成率仍然低於沒有補貼組</b>。完整四層數字見頁首主表；逐日拆開，六日都是有補貼組較低（週二 −8.7 至 週一 −22.9）。</p>
 
   <!-- ④ ROI -->
   <h2>④ ROI：成本可確認，效果不能</h2>
@@ -409,12 +409,12 @@
     <b>「多救回的訂單（新增完成）」是什麼？</b>
     假設沒有有補貼，這批單裡面有多少張本來會取消、但因為加了補貼才完成——也就是<b>「補貼真正拯救回來」的訂單</b>。
     <br>「新增完成」<b>不是現實中能直接數出來的數字</b>（沒有人能確定哪一張單「如果沒有補貼就會取消」），是用調整後完成率差距這個統計方法估算出來的：
-    <pre style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:13.5px;overflow-x:auto;margin:10px 0">調整後完成率差距 = 控制車費/等候/積壓後，有補貼組完成率 − 沒補貼組完成率
+    <pre style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:13.5px;overflow-x:auto;margin:10px 0">調整後完成率差距 = 控制車費/等候/還未有司機接的單@120秒後，有補貼組完成率 − 沒補貼組完成率
               = 55.3% − 62.6%
               = −1.9pp（即 −1.9%）
 
 新增完成 = 有補貼訂單數 × 調整後完成率差距
-        = 1,039 ×（調整後完成率差距；本頁三重＝車費×等候×積壓約 −4.8pp）
+        = 1,039 ×（調整後完成率差距；本頁三重＝車費×等候×還未有司機接的單@120秒約 −4.8pp）
         ≈ −24（負數，即沒有證據顯示多完成了訂單）</pre>
     算出來 ≤ 0，即<b class="hl-bad">未見新增完成</b>。
   </div>
@@ -430,16 +430,16 @@
 
   <!-- ⑤ 下一步 -->
   <h2>⑤ 下一步：要怎樣才能真正知道補貼有沒有用？</h2>
-  <div class="box"><b>可以講：</b>未見到有補貼提升完成率；而且加了補貼的那批單，本身就比較難派（積壓更高）。<br><b>但不能講死「補貼完全沒用」</b>——地區、車型、落單時間、司機供給這些都未完全對齊，仍有可能影響結果。</div>
+  <div class="box"><b>可以講：</b>未見到有補貼提升完成率；而且加了補貼的那批單，本身就比較難派（還未有司機接的單@120秒更高）。<br><b>但不能講死「補貼完全沒用」</b>——地區、車型、落單時間、司機供給這些都未完全對齊，仍有可能影響結果。</div>
   <div class="box good"><b>要答「值不值得加 Budget」，建議：</b>
     <ul class="plain" style="margin:8px 0 0">
-      <li>用派單<b>之前</b>已知的條件（積壓、車費、車型、地區、落單時間）去配對比較，<b>不要用等候時間</b>——等候時間是派單之後才出現，拿來配對會扭曲結果。</li>
+      <li>用派單<b>之前</b>已知的條件（還未有司機接的單@120秒、車費、車型、地區、落單時間）去配對比較，<b>不要用等候時間</b>——等候時間是派單之後才出現，拿來配對會扭曲結果。</li>
       <li>或者直接做 <b>A/B 實驗</b>（隨機分組）——最乾淨，可以驗證補貼是否提升完成率。</li>
     </ul>
   </div>
 
   <p class="foot">
-    方法：把<b>車費、等待時間、訂單積壓</b>相近的訂單放在一起比較，估算每完成一張訂單的補貼成本與浪費率（未帶來額外完成的補貼比例）。<br>
+    方法：把<b>車費、等待時間、還未有司機接的單（落單後 120 秒）</b>相近的訂單放在一起比較，估算每完成一張訂單的補貼成本與浪費率（未帶來額外完成的補貼比例）。<br>
     來源：<code>gogox-ba-sandbox.analytics.mart_ops_add_tips_campaign_orders</code>（2026-07-15 實查，6 個 campaign 日繁忙時段，香港時間）。範圍：PlatformOD 個人客 · Van · ASAP · 車費 &lt; HK$200 · <code>pass_sheet_static_eligibility</code>。有補貼 = <code>has_incentive</code>；配對分母須 <code>wait_sec</code> 非空。補貼只在完成單支付。完成率 = <code>is_completed</code>；Δpp = 有補貼完成率 − 沒補貼完成率（tip-weighted ATT）。數字由 <code>export_waitsec_layer_lift.py</code> 重生成。
   </p>
 
@@ -5053,7 +5053,7 @@
   },
   "headline": {
     "lift_pp": -4.8,
-    "label": "三重＝車費×等候×積壓",
+    "label": "三重＝車費×等候×還未有司機接的單@120秒",
     "tip_cr_fmt": "51.5% (523/1,015)",
     "ctrl_cr_fmt": "56.3% (572/1,015)"
   },
@@ -42086,7 +42086,7 @@
   const dimOptionsCancelled = [
     ["death_buckets", "取消前等了多久（分段）"],
     ["death_summary", "取消前等候：整體分布"],
-    ["backlog", "派單當時積壓（多難派）"],
+    ["backlog", "還未有司機接的單（落單後 120 秒）（越多越難派）"],
     ["region", "上車地區"],
     ["release", "重新派單次數"],
     ["campaign_date", "六個活動日逐日比"],
@@ -42095,7 +42095,7 @@
   const dimOptionsCompleted = [
     ["death_buckets", "完成全程耗時（分段）"],
     ["death_summary", "完成耗時：整體分布"],
-    ["backlog", "派單當時積壓（多難派）"],
+    ["backlog", "還未有司機接的單（落單後 120 秒）（越多越難派）"],
     ["region", "上車地區"],
     ["release", "重新派單次數"],
     ["campaign_date", "六個活動日逐日比"],
@@ -42416,7 +42416,7 @@
       return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/'/g, "&#39;").replace(/"/g, "&quot;");
     }
     function tailTable(label, orders) {
-      const head = ["order_id", secLabel, "過120(s)", "等候(s)", "積壓", "放單", "地區", "日期"];
+      const head = ["order_id", secLabel, "過120(s)", "等候(s)", "還未有司機接的單@120秒", "放單", "地區", "日期"];
       const body = (orders || []).map((o) => {
         const sec = o.outcome_sec != null ? o.outcome_sec : o.death_sec;
         const wait = o.wait_sec;
@@ -42501,7 +42501,7 @@
     let tablePart = "";
     if (dim === "death_buckets") tablePart = renderDeathBuckets(row, mode);
     else if (dim === "death_summary") tablePart = renderDeathSummary(row, mode);
-    else if (dim === "backlog") tablePart = renderDim(row, "backlog", "派單當時積壓", mode);
+    else if (dim === "backlog") tablePart = renderDim(row, "backlog", "還未有司機接的單（落單後 120 秒）", mode);
     else if (dim === "region") tablePart = renderDim(row, "region", "上車地區", mode);
     else if (dim === "release") tablePart = renderDim(row, "release", "重新派單次數", mode);
     else if (dim === "campaign_date") tablePart = renderDim(row, "campaign_date", "六個活動日逐日比", mode);
