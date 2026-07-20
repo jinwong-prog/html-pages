@@ -86,6 +86,12 @@
   ul.plain{padding-left:20px;max-width:84ch} ul.plain li{margin:8px 0}
   .win{color:var(--good);font-weight:700} .lose{color:var(--bad);font-weight:700}
   .foot{color:var(--muted);font-size:12px;margin-top:48px;border-top:1px solid var(--grid);padding-top:14px;max-width:92ch}
+  details.cmp-criteria{margin:28px 0 12px;border:1px solid var(--border);border-radius:12px;background:var(--surface);padding:0 16px 12px}
+  details.cmp-criteria>summary{cursor:pointer;list-style:none;font-size:20px;font-weight:700;letter-spacing:-.01em;padding:16px 0 8px;user-select:none}
+  details.cmp-criteria>summary::-webkit-details-marker{display:none}
+  details.cmp-criteria>summary::before{content:"▸ ";color:var(--muted);font-weight:400}
+  details.cmp-criteria[open]>summary::before{content:"▾ "}
+  details.cmp-criteria>summary .hint{font-size:13px;font-weight:500;color:var(--muted);margin-left:8px}
   @media(max-width:640px){.kpi{grid-template-columns:1fr}}
   tr.drill-row{cursor:pointer;user-select:none}
   tr.drill-row:hover:not(.pos) td{background:color-mix(in srgb,var(--ctrl) 6%,transparent)}
@@ -199,11 +205,11 @@
   </div>
   <p style="font-size:13.5px;color:var(--ink2)">閱讀建議：主表已涵蓋核心結論 → <b>181–400 / 400+ 列點擊展開／收合</b>；為何沒有 → ③；下一步 → ⑤。</p>
 
-  <!-- ① 控制了哪些因素 -->
-  <h2>① 這次比較控制了哪些因素？</h2>
-  <p>為了公平比較，只把<b>條件相近</b>的訂單放在一起比：同一組內，比較<b>有補貼組</b>與<b>沒有補貼組</b>的完成率。</p>
-  <p class="meta"><b>BigQuery source:</b> <code>gogox-ba-sandbox.analytics.mart_ops_add_tips_campaign_orders</code>（主表；<code>pending_orders_at_120s</code> 來自 <code>order_master_table_hk</code>）。</p>
-  <div class="card">
+  <!-- ① Comparison criteria -->
+  <details class="cmp-criteria">
+  <summary>① 比較條件 <span class="hint">點擊展開／收合</span></summary>
+  <p class="meta"><b>BigQuery source:</b> <code>gogox-ba-sandbox.analytics.mart_ops_add_tips_campaign_orders</code>（<code>pending_orders_at_120s</code> 來自 <code>order_master_table_hk</code>）</p>
+  <div class="card" style="border:0;padding:0;margin:8px 0 0">
   <table>
     <thead><tr>
       <th style="text-align:left">What</th>
@@ -244,6 +250,7 @@
     </tbody>
   </table>
   </div>
+  </details>
 
   <!-- ② 結果 -->
   <h2>② 結果：有補貼組完成率仍然較低</h2>
