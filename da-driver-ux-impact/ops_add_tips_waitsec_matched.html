@@ -384,7 +384,7 @@
   <p>不是補貼一定沒用，而是<b>有補貼的訂單本身就比較難派</b>。這裡用 pending（<code>pending_orders_at_120s</code>：落單後約 120 秒時還有多少張單在等司機）來看：就算 response time 一樣，<b class="hl-bad">有補貼組每一組的 pending 都更高</b>。即兩組的實際難度並不一樣，直接比完成率，對有補貼組不公平。</p>
   <div class="card">
   <table class="cmp">
-    <thead><tr><th>車費</th><th>等候(秒)</th><th class="ctrl">無補貼 Backlog</th><th class="trt">有補貼 Backlog</th><th>Δ（有補貼更高＝更難）</th></tr></thead>
+    <thead><tr><th>車費</th><th>等候(秒)</th><th class="ctrl th-2line">無補貼<br>pending（等司機訂單數）</th><th class="trt th-2line">有補貼<br>pending（等司機訂單數）</th><th class="th-2line">差距<br>（有補貼更高＝更難）</th></tr></thead>
     <tbody>
       <tr><td>&lt;$85</td><td>0–60</td><td class="ctrl"><span class="ctrl-val">103.2</span></td><td class="trt"><span class="trt-val">138.0</span></td><td class="diff lose">+34.8</td></tr>
       <tr><td>&lt;$85</td><td>121–180</td><td class="ctrl"><span class="ctrl-val">110.9</span></td><td class="trt"><span class="trt-val">138.8</span></td><td class="diff lose">+27.9</td></tr>
@@ -453,10 +453,6 @@
     </ul>
   </div>
 
-  <p class="foot">
-    方法：把<b>GTV、response time（<code>final_response_time</code>（沒有則用 <code>first_response_time</code>））、pending（<code>pending_orders_at_120s</code>）</b>相近的訂單放在一起比較，估算每完成一張訂單的補貼成本與浪費率（未帶來額外完成的補貼比例）。<br>
-    來源：<code>gogox-ba-sandbox.analytics.mart_ops_add_tips_campaign_orders</code>（2026-07-14 實查，6 個 campaign 日繁忙時段，香港時間）。範圍：PlatformOD 個人客 · Van · ASAP · 車費 &lt; HK$200 · <code>pass_sheet_price_lt_200</code>。有補貼 = <code>has_incentive</code>；配對分母須 <code>wait_sec</code> 非空。補貼只在完成單支付。完成率 = <code>is_completed</code>；Δpp = 有補貼完成率 − 沒補貼完成率（tip-weighted ATT）。數字由 <code>export_waitsec_layer_lift.py</code> 重生成。
-  </p>
 
 </div>
 
