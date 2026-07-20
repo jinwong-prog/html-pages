@@ -211,7 +211,7 @@
     <tbody>
       <tr><td>GTV</td><td style="text-align:left"><code>gross_transaction_value</code></td><td style="text-align:left">&lt;$85 ｜ $85–149 ｜ $150–199 (&ge;$200 not eligible for subsidies, already excluded)</td></tr>
       <tr><td>Response time</td><td style="text-align:left"><code>COALESCE(final_response_time, first_response_time)</code> (raw; not <code>wait_sec</code>)</td><td style="text-align:left">0–60s (&lt;60)｜60–120s ｜ 121–180s ｜ 181–400s ｜ 400s+ (non-overlapping; 2026-07-14 BQ queried)</td></tr>
-      <tr><td>Pending orders (≥40pcs gate)</td><td style="text-align:left"><code>pending_orders_at_120s</code></td><td style="text-align:left">&lt;40pcs / 40–80pcs / 80–120pcs / 120–160pcs / 160+pcs (count of orders still waiting; not seconds; extra check in ③)</td></tr>
+      <tr><td>Pending orders (≥40 orders gate)</td><td style="text-align:left"><code>pending_orders_at_120s</code></td><td style="text-align:left">&lt;40 orders / 40–80 orders / 80–120 orders / 120–160 orders / 160+ orders (count of orders still waiting; not seconds; extra check in ③)</td></tr>
       <tr><td>Campaign date / weekday</td><td style="text-align:left"><code>campaign_date</code></td><td style="text-align:left">aligned day by day across 6 days; date locks the weekday</td></tr>
       <tr><td>Peak period / hour of day</td><td style="text-align:left"><code>created_at</code></td><td style="text-align:left">aligned by order-placement hour (see table below)</td></tr>
       <tr><td>Customer type</td><td style="text-align:left"><code>business_segment</code></td><td style="text-align:left">all PlatformOD individual customers</td></tr>
@@ -222,9 +222,9 @@
   <div class="box warn">
     <b>Orders with subsidy · 3 trigger buckets</b>（queried 2026-07-20，6 Peak days，<code>pass_sheet_static_eligibility</code>；response = <code>COALESCE(final_response_time, first_response_time)</code>；pending = <code>pending_orders_at_120s</code>）
     <ul class="plain" style="margin:8px 0 0">
-      <li><b>1) Both</b>：response_time ≥ <b>120s</b> <b>AND</b> pending ≥ <b>40pcs</b> — <b>769</b> / 1,039（74.0%）</li>
-      <li><b>2) Pending ≥40pcs only</b>（response &lt;120s or null）— <b>270</b> / 1,039（26.0%）</li>
-      <li><b>3) Response ≥120s only</b>（pending &lt;40pcs）— <b>0</b> / 1,039（0%）</li>
+      <li><b>1) Both</b>：response_time ≥ <b>120s</b> <b>AND</b> pending ≥ <b>40 orders</b> — <b>769</b> / 1,039（74.0%）</li>
+      <li><b>2) Pending ≥40 orders only</b>（response &lt;120s or null）— <b>270</b> / 1,039（26.0%）</li>
+      <li><b>3) Response ≥120s only</b>（pending &lt;40 orders）— <b>0</b> / 1,039（0%）</li>
     </ul>
   </div>
   <div class="card">
