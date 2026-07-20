@@ -870,54 +870,12 @@ FROM reorder_pairs p;</code></pre>
             </tbody>
           </table>
 
-          <h5 class="term-part">③ 「附加費」是指哪個 BQ 欄位？是不是 surge？</h5>
-          <p>這裡的「附加費」直接對應 BQ 欄位 <code>quoted_surcharges</code>（型別 FLOAT64，位於 <code class="bq-table-path">order_master_table_hk</code>）。</p>
-          <table class="term-mini-table">
-            <thead><tr><th>項目</th><th>BQ 實況</th></tr></thead>
-            <tbody>
-              <tr><td>BQ 欄位名（header）</td><td><code>quoted_surcharges</code></td></tr>
-              <tr><td>型別</td><td>FLOAT64</td></tr>
-              <tr><td>BQ 官方欄位說明</td><td><strong>無</strong>（<code>INFORMATION_SCHEMA</code> 的 description 為 <code>NULL</code>，2026-06-26 查證）</td></tr>
-              <tr><td>是不是 surge？</td><td><strong>不是單一 surge。</strong>它是訂單<strong>報價附加費的合計</strong>；surge（動態加成）只是其中一個可能組成項目</td></tr>
-            </tbody>
-          </table>
-          <p>HK 另有獨立來源表分別記錄各類附加費，可見 <code>quoted_surcharges</code> 是把它們加總後的報價值，而非只有 surge：</p>
-          <table class="term-mini-table">
-            <thead><tr><th>附加費來源</th><th>BQ 表</th></tr></thead>
-            <tbody>
-              <tr><td>動態加成（surge）</td><td><code class="bq-table-path">gogox-data-science-non-prod.raw.dynamic_surcharge</code></td></tr>
-              <tr><td>時段附加費</td><td><code class="bq-table-path">gogox-data-science-non-prod.raw.hk_db_streaming_time_based_surcharges</code></td></tr>
-            </tbody>
-          </table>
-          <p><strong>為什麼不當作信號：</strong>同一張訂單在重新下單前後，<code>quoted_surcharges</code> 只變動 <strong>+$0.67，幾乎沒變</strong>；它由平台收取、依時段／路線規則計算，司機無法操控，因此不作為操縱證據。新訂單 GTV 的升幅（+$13.77）是落入<strong>後來接單的司機</strong>，並非原本放單的司機得益。</p>
-
-          <h5 class="term-part">④ Peak period × surge：繁忙時段「放單催 surge」動機成不成立？</h5>
-          <p>有人會問：surge 是繁忙時段才出現，那 cheat driver 會不會在 peak 故意放單、等 surge 升再接？先看 BQ 實況——<strong>surge 高峰其實在深夜，不是日間通勤時段</strong>：</p>
-          <table class="term-mini-table">
-            <thead><tr><th>時段</th><th>平均 <code>quoted_surcharges</code></th><th>單量</th><th>解讀</th></tr></thead>
-            <tbody>
-              <tr><td>深夜 00–05</td><td><strong>約 $88–95（最高）</strong></td><td>低（每小時 350–1,340）</td><td>司機稀缺 → 高 surge</td></tr>
-              <tr><td>日間 08–18</td><td>約 $8–17（最低）</td><td>高（每小時 2–4.5 萬）</td><td>高「單量」峰，非高 surge</td></tr>
-              <tr><td>晚間 20–23</td><td>約 $27–42（回升）</td><td>中</td><td>需求回落、供給轉緊</td></tr>
-            </tbody>
-          </table>
-          <p>再把重落配對按時段切開，看 surge 在放單前後到底有沒有升：</p>
-          <table class="term-mini-table">
-            <thead><tr><th>時段</th><th>配對數</th><th>surge 放單前後變動</th><th>GTV 變動</th></tr></thead>
-            <tbody>
-              <tr><td>Peak（通勤高量 7–10、17–20）</td><td>13,946</td><td><strong>+$0.99 ≈ 無變</strong></td><td>+$22.33</td></tr>
-              <tr><td>Off-peak（其餘時段）</td><td>12,838</td><td><strong>+$0.49 ≈ 無變</strong></td><td>+$15.75</td></tr>
-            </tbody>
-          </table>
-          <p><strong>結論：動機不成立。</strong></p>
-          <ul>
-            <li><strong>無論 peak 還是深夜 surge 高峰，同一張單放單前後 surge 都只動 ~$0.5–1.0 ≈ 無變</strong>——單一司機放一張單，撼不動由整體供需決定的系統 surge。「放單催 surge 再接回」不成立。</li>
-            <li>深夜 surge 高，是<strong>真實司機稀缺</strong>的結果，不是誰放單造出來的。</li>
-            <li>就算 cherry-pick 高 surge 的深夜單：surge 由平台收、按規則定，司機改不到；放單那位也拿不到重落新單的 GTV 升幅（落入後續接單司機）。所以頂多是「<strong>偏好高 surge 單</strong>」的挑單背景，不是操縱信號。</li>
-            <li>真正動機仍是：<strong>避開不划算的單</strong> + <strong>同一司機閉環自肥</strong>（接回用戶加價重落的新單）。</li>
-          </ul>
-
-          <p style="font-size:12px;color:#8a8f98;">※ 由於 BQ 沒有官方欄位說明，以上對 <code>quoted_surcharges</code> 內容的解讀來自本專案 schema 字典與來源表名推斷，非 BQ 原生描述。時段分佈為 2026-05-31 實查、30 天滾動；重落配對 surge／GTV 變動為 90 天窗口（HK TRANSPORT）。</p>
+          <div class="callout neutral">
+            <h5 class="term-part">③ 附加費／surge — 不作 cheat 偵測</h5>
+            <p><strong>唔用。</strong> <code>quoted_surcharges</code>（報價附加費合計，含時段／動態加成等）由平台規則決定，司機操控唔到；reorder 前後只 <strong>+$0.96 ≈ 無變</strong>（2026-06-26 BQ 實查，HK TRANSPORT B2C，30 天）。</p>
+            <p>外掛 App「急車費偏好」只係<strong>篩選背景</strong>，<strong>唔係</strong>偵測條件。Peak 時段「放單催 surge」動機<strong>不成立</strong>（FA-08b 已驗）。</p>
+            <p>偵測用：release、cherry-pick（<code>cherry_pick_score</code>）、流局重落（<code>reorder_gtv_uplift</code>）、grab-drop 閉環 — <strong>唔用 surcharge。</strong></p>
+          </div>
 
           <div class="term-note-warn">
             <h5>口徑限制（誠實說明）</h5>
@@ -1133,13 +1091,12 @@ FROM reorder_pairs p;</code></pre>
               <tr><td>放單 release（過程）</td><td><code>event_type_cd=4</code> + <code>actor_type='Driver'</code></td><td class="bq-table-path"><code>gogox-data-science-non-prod.raw.hk_db_streaming_order_request_events</code></td></tr>
               <tr><td>drop／Grace Drop（過程）</td><td><code>event_type_cd=21</code> + <code>actor_type='Driver'</code></td><td class="bq-table-path"><code>gogox-data-science-non-prod.raw.hk_db_streaming_order_request_events</code></td></tr>
               <tr><td>訂單總值</td><td><code>gross_transaction_value</code> (FLOAT)</td><td class="bq-table-path"><code>gogox-data-science-non-prod.analytics_prod_master.order_master_table_hk</code></td></tr>
-              <tr><td>平台附加費（背景，非訊號）</td><td><code>quoted_surcharges</code> (FLOAT64，BQ 無官方欄位描述) — <strong>⚠️</strong> 報價附加費合計（含時段／動態加成 surge 等），deterministic，約 60% 單都有；surge 只係其中一項，與 cheat app 無直接關係，唔作異常指標</td><td class="bq-table-path"><code>gogox-data-science-non-prod.analytics_prod_master.order_master_table_hk</code></td></tr>
               <tr><td>額外加錢（司機議價）</td><td><code>driver_amendments</code> (FLOAT) — 司機發起、客同意後加價。<strong>⚠️</strong> 非純用戶小費，係 driver-initiated 議價（實查見下方）</td><td class="bq-table-path"><code>gogox-data-science-non-prod.analytics_prod_master.order_master_table_hk</code></td></tr>
               <tr><td>取貨地區</td><td><code>pickup_location_region</code>（如 <code>'機場'</code>／<code>'東涌'</code>…）</td><td class="bq-table-path"><code>gogox-data-science-non-prod.analytics_prod_master.order_master_table_hk</code></td></tr>
               <tr><td>落車地區</td><td><code>destination_location_region</code></td><td class="bq-table-path"><code>gogox-data-science-non-prod.analytics_prod_master.order_master_table_hk</code></td></tr>
               <tr><td>單型（即時／今日／預約）</td><td><code>booking_type IN ('On Demand','Same Day','Next Day')</code></td><td class="bq-table-path"><code>gogox-data-science-non-prod.analytics_prod_master.order_master_table_hk</code></td></tr>
               <tr><td>cherry-pick（計算）⚙️</td><td><code>cherry_pick_score</code>；events ⋈ master ON <code>order_request_id</code> = <code>system_order_request_id</code>，以 <code>gtv_per_km</code>（性價比）為主軸分桶，輔以 <code>driver_amendments</code>；❌ 不再用 <code>quoted_surcharges</code> 分桶</td><td class="bq-table-path"><code>gogox-data-science-non-prod.raw.hk_db_streaming_order_request_events</code><br><code>gogox-data-science-non-prod.analytics_prod_master.order_master_table_hk</code></td></tr>
-              <tr><td>流局後用戶加價重落新單（計算）⚙️</td><td><code>reorder_gtv_uplift</code>；原單流局後用 <code>reorder_next_order_request_id</code> 追新單，<code>new_gtv − orig_gtv &gt; 0</code>（實查 +9.2%）；輔以 <code>driver_amendments</code> 差。❌ 取代已棄用 <code>reaccept_with_amendment</code>（同單同司機重接係雜訊）／<code>quoted_surcharges</code> 差（+$0.67≈無變）</td><td class="bq-table-path"><code>gogox-data-science-non-prod.raw.hk_db_streaming_order_request_events</code><br><code>gogox-data-science-non-prod.analytics_prod_master.order_master_table_hk</code></td></tr>
+              <tr><td>流局後用戶加價重落新單（計算）⚙️</td><td><code>reorder_gtv_uplift</code>；原單流局後用 <code>reorder_next_order_request_id</code> 追新單，<code>new_gtv − orig_gtv &gt; 0</code>（實查 +9.2%）；輔以 <code>driver_amendments</code> 差。❌ 已棄用 <code>reaccept_with_amendment</code>（同單同司機重接係雜訊）／<code>quoted_surcharges</code> 差（+$0.96≈無變，不作偵測）</td><td class="bq-table-path"><code>gogox-data-science-non-prod.raw.hk_db_streaming_order_request_events</code><br><code>gogox-data-science-non-prod.analytics_prod_master.order_master_table_hk</code></td></tr>
               <tr><td>每公里值（計算）⚠️</td><td><code>gtv_per_km</code> = <code>gross_transaction_value</code> ÷ <code>estimated_distance</code>（估計值；join key 待確認）</td><td class="bq-table-path"><code>gogox-data-science-non-prod.analytics_prod_master.order_master_table_hk</code><br><code>gogox-analytics-prod.features.osm_route_estimates</code></td></tr>
               <tr><td>同組基準</td><td><code>membership_tier</code> × <code>vehicle_type</code>；排除 <code>oa_driver=TRUE</code>（司機層）；<code>has_auto_accept</code> ⚠️ 衍生</td><td class="bq-table-path"><code>gogox-data-science-non-prod.analytics_prod_master.driver_master_table_hk</code><br><code>gogox-data-science-non-prod.raw.hk_db_streaming_driver_subscriptions</code></td></tr>
             </tbody>
@@ -1151,7 +1108,7 @@ FROM reorder_pairs p;</code></pre>
           </blockquote>
           <p><strong>偵測方向：</strong><code>event_type_cd=4</code>（release）、<code>event_type_cd=21</code>（drop，Driver）係<strong>過程信號</strong>；重點驗證 cherry-pick <strong>結果</strong> — 相對同組（<code>membership_tier</code> × <code>vehicle_type</code>，排除 <code>oa_driver=TRUE</code> 及 <code>has_auto_accept</code> ⚠️）是否異常：</p>
           <ol>
-            <li><strong>高性價比：</strong><code>gtv_per_km</code> ⚠️ 偏高（短途高值，唔單看 <code>gross_transaction_value</code> 絕對額）。❌ 移除 <code>quoted_surcharges</code> — 佢隨繁忙時段自然升，唔代表 cherry-pick</li>
+            <li><strong>高性價比：</strong><code>gtv_per_km</code> ⚠️ 偏高（短途高值，唔單看 <code>gross_transaction_value</code> 絕對額）。❌ 唔用 <code>quoted_surcharges</code>（平台規則、不可控、已棄用）</li>
             <li><strong>額外加錢：</strong><code>driver_amendments</code> 偏高（司機集中接「客肯加錢」嘅單）</li>
             <li><strong>路線集中：</strong><code>pickup_location_region</code>／<code>destination_location_region</code> 集中於 <code>'機場'</code>、<code>'東涌'</code> 等長途點</li>
             <li><strong>系統性避低價：</strong><code>cherry_pick_score</code> ⚙️ 顯著為正</li>
@@ -1159,7 +1116,7 @@ FROM reorder_pairs p;</code></pre>
           </ol>
           <p><strong>誠實提示：</strong></p>
           <ul>
-            <li><code>quoted_surcharges</code> 係平台繁忙／動態定價，全市場司機都見到，唔係 plugin 可操控嘅變數；真正可被 cherry-pick 嘅係相對性價比（<code>gtv_per_km</code>）、路線選擇、同客方加錢（<code>driver_amendments</code>）</li>
+            <li><strong><code>quoted_surcharges</code>／surge 唔用作 cheat 偵測</strong>（2026-06-26 已棄用）；真正可被 cherry-pick 嘅係相對性價比（<code>gtv_per_km</code>）、路線選擇、同客方加錢（<code>driver_amendments</code>）</li>
             <li><strong>⚠️</strong> <code>driver_amendments</code> 名義上係司機發起議價，非乾淨「用戶小費」；admin panel「BONUS (PAID BY CUSTOMER)」喺 <code>order_master</code> 暫無對應欄位，如要精準追用戶加錢需另尋資料源。改價分佈有極端離群（見上方實查），司機層比較宜用 p90／median，唔好單靠平均數</li>
             <li><code>pickup_location_region</code> 係平台地名 mapping（短地名、非官方 18 區）— 外掛 UI「機場／東涌」要對返欄位<strong>實際值域</strong></li>
             <li><code>gtv_per_km</code> 依賴 <code>gogox-analytics-prod.features.osm_route_estimates.estimated_distance</code>（估計值，非實際 GPS）</li>
@@ -1168,7 +1125,7 @@ FROM reorder_pairs p;</code></pre>
           <table class="term-mini-table">
             <thead><tr><th>App 功能（UI 文案）</th><th>BQ 概念</th><th>欄位／條件</th><th>表（全名）</th></tr></thead>
             <tbody>
-              <tr><td>「急車費／surge」</td><td>平台側 deterministic 加成（偏好背景）</td><td><code>quoted_surcharges</code> — 列作司機偏好背景，唔作 cheat 偵測條件</td><td class="bq-table-path"><code>gogox-data-science-non-prod.analytics_prod_master.order_master_table_hk</code></td></tr>
+              <tr><td>「急車費／surge」</td><td>App 篩選偏好（<strong>唔用作偵測</strong>）</td><td>❌ 唔用 <code>quoted_surcharges</code> 作 cheat 條件；見 impact-method ③</td><td>—</td></tr>
               <tr><td>「6秒公海」</td><td>Grace Drop 試單窗口</td><td><code>event_type_cd=21</code> + <code>actor_type='Driver'</code></td><td class="bq-table-path"><code>gogox-data-science-non-prod.raw.hk_db_streaming_order_request_events</code></td></tr>
               <tr><td>「搶輸左的訂單」</td><td>App UI 文案 ⚙️（機制存疑）</td><td><strong>⚠️ BQ 實查：release 後同單重派去<em>不同</em>司機，平台不容同一司機 release 後再接同一 <code>order_request_id</code>。</strong>真正可追蹤嘅係用戶重落<em>新單</em>（<code>reorder_next_order_request_id</code>），非同單同司機重接</td><td class="bq-table-path"><code>gogox-data-science-non-prod.raw.hk_db_streaming_order_request_events</code></td></tr>
               <tr><td>「放單退點」</td><td>release 試單（過程）</td><td><code>event_type_cd=4</code> + <code>actor_type='Driver'</code></td><td class="bq-table-path"><code>gogox-data-science-non-prod.raw.hk_db_streaming_order_request_events</code></td></tr>
@@ -1195,7 +1152,7 @@ FROM reorder_pairs p;</code></pre>
         lead: "標題 <strong>「cd=4」</strong> = SSOT Admin Panel <strong>released the order</strong>（司機放單回公海）。<strong>做司機篩選閘必須加 <code>actor_type='Driver'</code></strong>，否則會撈埋 AdminUser／系統 release，高估司機「壞行為」<strong>6%–52%</strong>（SSOT 已印證）。",
         htmlBody: `
           <ul>
-            <li>訂單回到公海，附加費可能上升，其他司機可以再接。</li>
+            <li>訂單回到公海，其他司機可以再接。<strong>唔用</strong> <code>quoted_surcharges</code>／surge 變動作 cheat 證據（已棄用）。</li>
             <li>入池要 <strong>cd=4 + <code>actor_type='Driver'</code> ≥ 1 次</strong>：確認有<strong>司機自發</strong>棄單行為先值得評分。</li>
             <li>棄單率分子 = cd=4（Driver）；分母 = cd=2 已派單。</li>
             <li><strong>口徑邊界：</strong>cd=25 <code>soft_released</code>（Admin 指定派單，30 天約 146 events）<strong>唔計</strong>；cd=21 <code>driver_drops_order</code>（Grace Drop）係<strong>另一個信號</strong>，<strong>cd=21 ≠ cd=4</strong>，唔可以當「drop = release」撈埋計。</li>

@@ -231,7 +231,7 @@
     </tr></thead>
     <tbody>
       <tr><td>GTV</td><td style="text-align:left"><code>mart_ops_add_tips_campaign_orders</code></td><td style="text-align:left"><code>gross_transaction_value</code></td></tr>
-      <tr><td>Final response time</td><td style="text-align:left"><code>mart_ops_add_tips_campaign_orders</code></td><td style="text-align:left"><code>final_response_time</code> (or <code>first_response_time</code> if unavailable)</td></tr>
+      <tr><td>Final response time</td><td style="text-align:left"><code>mart_ops_add_tips_campaign_orders</code></td><td style="text-align:left"><code>final_response_time</code> (or <code>first_response_time</code> if unavailable) — seconds until a driver is officially assigned to / accepts this order</td></tr>
       <tr><td>Pending orders</td><td style="text-align:left"><code>order_master_table_hk</code>*</td><td style="text-align:left"><code>pending_orders_at_120s</code></td></tr>
       <tr><td>Campaign date</td><td style="text-align:left"><code>mart_ops_add_tips_campaign_orders</code></td><td style="text-align:left"><code>campaign_date</code></td></tr>
       <tr><td>Order hour</td><td style="text-align:left"><code>mart_ops_add_tips_campaign_orders</code></td><td style="text-align:left"><code>created_at</code></td></tr>
@@ -269,6 +269,7 @@
   <h2>② Completion rate by final response time</h2>
   <p>Orders are grouped by <b>final response time</b> (within the same GTV). Compare the completion rates of subsidy and non-subsidy orders.</p>
   <p>Orders were split into 15 comparable groups. In <b class="hl-bad">13 groups</b>, subsidy orders had a lower completion rate than non-subsidy orders.</p>
+  <p class="meta">(queried 2026-07-17, HK PlatformOD Van ASAP Personal GTV &lt;$200, 6 Peak mornings 2026-05-26, 05-29, 06-08, 06-18, 06-22, 07-03, order time 09:30–11:00 HKT)</p>
   <div class="legend">
     <span class="it"><span class="chip ctrl"></span> Non-subsidy orders</span>
     <span class="it"><span class="chip trt"></span> Subsidy orders</span>

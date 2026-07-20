@@ -231,7 +231,7 @@
     </tr></thead>
     <tbody>
       <tr><td>GTV</td><td style="text-align:left"><code>mart_ops_add_tips_campaign_orders</code></td><td style="text-align:left"><code>gross_transaction_value</code></td></tr>
-      <tr><td>Final response time</td><td style="text-align:left"><code>mart_ops_add_tips_campaign_orders</code></td><td style="text-align:left"><code>final_response_time</code>（沒有則用 <code>first_response_time</code>）</td></tr>
+      <tr><td>Final response time</td><td style="text-align:left"><code>mart_ops_add_tips_campaign_orders</code></td><td style="text-align:left"><code>final_response_time</code>（沒有則用 <code>first_response_time</code>）— 落單後幾秒才有司機被正式派到／接上這張單</td></tr>
       <tr><td>Pending orders</td><td style="text-align:left"><code>order_master_table_hk</code>*</td><td style="text-align:left"><code>pending_orders_at_120s</code></td></tr>
       <tr><td>Campaign date</td><td style="text-align:left"><code>mart_ops_add_tips_campaign_orders</code></td><td style="text-align:left"><code>campaign_date</code></td></tr>
       <tr><td>Order hour</td><td style="text-align:left"><code>mart_ops_add_tips_campaign_orders</code></td><td style="text-align:left"><code>created_at</code></td></tr>
@@ -269,6 +269,7 @@
   <h2>② 完成率（按 final response time 分組）</h2>
   <p>訂單按 <b>final response time</b> 分組（同一 GTV 內）。比較有補貼與無補貼訂單的完成率。</p>
   <p>把訂單分成 15 個條件相近的分組。<b class="hl-bad">其中 13 個分組，有補貼組完成率低於沒有補貼組</b>。</p>
+  <p class="meta">（2026-07-17 實查，HK PlatformOD Van ASAP Personal GTV &lt;$200，6 個 Peak 早峰日 2026-05-26、05-29、06-08、06-18、06-22、07-03，落單時間 09:30–11:00 HKT）</p>
   <div class="legend">
     <span class="it"><span class="chip ctrl"></span> 沒有補貼組</span>
     <span class="it"><span class="chip trt"></span> 有補貼組</span>
