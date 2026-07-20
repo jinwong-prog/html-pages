@@ -382,24 +382,26 @@
   <!-- ③ 為什麼 -->
   <h2>③ 為什麼會這樣？——補貼本身派給更難的單</h2>
   <p>不是補貼一定沒用，而是<b>有補貼的訂單本身就比較難派</b>。這裡用 pending（<code>pending_orders_at_120s</code>：落單後約 120 秒時還有多少張單在等司機）來看：就算 response time 一樣，<b class="hl-bad">有補貼組每一組的 pending 都更高</b>。即兩組的實際難度並不一樣，直接比完成率，對有補貼組不公平。</p>
+  <p class="meta">下表數字 = 各組 <code>AVG(pending_orders_at_120s)</code>（按 GTV × response time 分箱）（2026-07-20 實查，HK PlatformOD Van ASAP 車費 &lt; $200，<code>pass_sheet_static_eligibility</code>；單位＝張訂單；不是中位數）</p>
+
   <div class="card">
   <table class="cmp">
     <thead><tr><th>車費</th><th>等候(秒)</th><th class="ctrl th-2line">無補貼<br>平均 pending 訂單數（張）</th><th class="trt th-2line">有補貼<br>平均 pending 訂單數（張）</th><th class="th-2line">差距<br>（張；有補貼更高＝更難）</th></tr></thead>
     <tbody>
-      <tr><td>&lt;$85</td><td>0–60</td><td class="ctrl"><span class="ctrl-val">103.2</span></td><td class="trt"><span class="trt-val">138.0</span></td><td class="diff lose">+34.8</td></tr>
-      <tr><td>&lt;$85</td><td>121–180</td><td class="ctrl"><span class="ctrl-val">110.9</span></td><td class="trt"><span class="trt-val">138.8</span></td><td class="diff lose">+27.9</td></tr>
-      <tr><td>&lt;$85</td><td>181–400</td><td class="ctrl"><span class="ctrl-val">110.0</span></td><td class="trt"><span class="trt-val">149.2</span></td><td class="diff lose">+39.2</td></tr>
-      <tr><td>&lt;$85</td><td>400+</td><td class="ctrl"><span class="ctrl-val">104.0</span></td><td class="trt"><span class="trt-val">143.4</span></td><td class="diff lose">+39.4</td></tr>
-      <tr><td>$85–149</td><td>0–60</td><td class="ctrl"><span class="ctrl-val">105.5</span></td><td class="trt"><span class="trt-val">173.5</span></td><td class="diff lose">+68.0</td></tr>
-      <tr><td>$85–149</td><td>60–120</td><td class="ctrl"><span class="ctrl-val">123.4</span></td><td class="trt"><span class="trt-val">165.6</span></td><td class="diff lose">+42.2</td></tr>
-      <tr><td>$85–149</td><td>121–180</td><td class="ctrl"><span class="ctrl-val">123.7</span></td><td class="trt"><span class="trt-val">140.0</span></td><td class="diff lose">+16.3</td></tr>
-      <tr><td>$85–149</td><td>181–400</td><td class="ctrl"><span class="ctrl-val">130.0</span></td><td class="trt"><span class="trt-val">156.1</span></td><td class="diff lose">+26.1</td></tr>
-      <tr><td>$85–149</td><td>400+</td><td class="ctrl"><span class="ctrl-val">122.0</span></td><td class="trt"><span class="trt-val">163.5</span></td><td class="diff lose">+41.5</td></tr>
-      <tr><td>$150–199</td><td>0–60</td><td class="ctrl"><span class="ctrl-val">109.6</span></td><td class="trt"><span class="trt-val">199.3</span></td><td class="diff lose">+89.7</td></tr>
-      <tr><td>$150–199</td><td>60–120</td><td class="ctrl"><span class="ctrl-val">128.8</span></td><td class="trt"><span class="trt-val">157.5</span></td><td class="diff lose">+28.7</td></tr>
-      <tr><td>$150–199</td><td>121–180</td><td class="ctrl"><span class="ctrl-val">121.3</span></td><td class="trt"><span class="trt-val">148.0</span></td><td class="diff lose">+26.7</td></tr>
-      <tr><td>$150–199</td><td>181–400</td><td class="ctrl"><span class="ctrl-val">141.5</span></td><td class="trt"><span class="trt-val">161.3</span></td><td class="diff lose">+19.8</td></tr>
-      <tr><td>$150–199</td><td>400+</td><td class="ctrl"><span class="ctrl-val">128.7</span></td><td class="trt"><span class="trt-val">170.6</span></td><td class="diff lose">+41.9</td></tr>
+      <tr><td>&lt;$85</td><td>0–60</td><td class="ctrl"><span class="ctrl-val">105.6</span></td><td class="trt"><span class="trt-val">138.0</span></td><td class="diff lose">+32.4</td></tr>
+      <tr><td>&lt;$85</td><td>121–180</td><td class="ctrl"><span class="ctrl-val">113.2</span></td><td class="trt"><span class="trt-val">143.0</span></td><td class="diff lose">+29.8</td></tr>
+      <tr><td>&lt;$85</td><td>181–400</td><td class="ctrl"><span class="ctrl-val">110.0</span></td><td class="trt"><span class="trt-val">153.8</span></td><td class="diff lose">+43.8</td></tr>
+      <tr><td>&lt;$85</td><td>400+</td><td class="ctrl"><span class="ctrl-val">103.9</span></td><td class="trt"><span class="trt-val">145.3</span></td><td class="diff lose">+41.4</td></tr>
+      <tr><td>$85–149</td><td>0–60</td><td class="ctrl"><span class="ctrl-val">107.3</span></td><td class="trt"><span class="trt-val">167.6</span></td><td class="diff lose">+60.3</td></tr>
+      <tr><td>$85–149</td><td>60–120</td><td class="ctrl"><span class="ctrl-val">122.9</span></td><td class="trt"><span class="trt-val">165.6</span></td><td class="diff lose">+42.7</td></tr>
+      <tr><td>$85–149</td><td>121–180</td><td class="ctrl"><span class="ctrl-val">124.2</span></td><td class="trt"><span class="trt-val">141.3</span></td><td class="diff lose">+17.1</td></tr>
+      <tr><td>$85–149</td><td>181–400</td><td class="ctrl"><span class="ctrl-val">129.6</span></td><td class="trt"><span class="trt-val">157.9</span></td><td class="diff lose">+28.3</td></tr>
+      <tr><td>$85–149</td><td>400+</td><td class="ctrl"><span class="ctrl-val">123.8</span></td><td class="trt"><span class="trt-val">163.1</span></td><td class="diff lose">+39.3</td></tr>
+      <tr><td>$150–199</td><td>0–60</td><td class="ctrl"><span class="ctrl-val">110.2</span></td><td class="trt"><span class="trt-val">183.9</span></td><td class="diff lose">+73.7</td></tr>
+      <tr><td>$150–199</td><td>60–120</td><td class="ctrl"><span class="ctrl-val">130.2</span></td><td class="trt"><span class="trt-val">157.5</span></td><td class="diff lose">+27.3</td></tr>
+      <tr><td>$150–199</td><td>121–180</td><td class="ctrl"><span class="ctrl-val">124.7</span></td><td class="trt"><span class="trt-val">153.1</span></td><td class="diff lose">+28.4</td></tr>
+      <tr><td>$150–199</td><td>181–400</td><td class="ctrl"><span class="ctrl-val">140.6</span></td><td class="trt"><span class="trt-val">162.3</span></td><td class="diff lose">+21.7</td></tr>
+      <tr><td>$150–199</td><td>400+</td><td class="ctrl"><span class="ctrl-val">131.3</span></td><td class="trt"><span class="trt-val">168.7</span></td><td class="diff lose">+37.4</td></tr>
     </tbody>
   </table>
   </div>
