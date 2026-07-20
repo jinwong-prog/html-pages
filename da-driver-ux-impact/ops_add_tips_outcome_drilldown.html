@@ -534,25 +534,27 @@
     </div>
 
     <div class="card chart-distribution" style="grid-column:1/-1">
-      <h3>派單失敗救回率：補貼能否救回卡住的訂單？</h3>
-      <p class="cap"><b>問題：</b>訂單等待 <b>t</b> 秒仍未成功派到司機、也尚未取消，最後有多少比例能完成訂單（救回率）？<br><br>
-救回率＝該時刻仍在等待派單的訂單中，最終完成的比例。等待時間越長，通常越難成功派單，因此救回率會逐漸下降。<br><br>
-比較有補貼與無補貼：<br>
-• <b>有補貼較高</b>：表示補貼有助於提高卡單的完成率。<br>
-• <b>兩者相近或更低</b>：表示補貼未明顯改善卡單，問題可能來自司機供給或派單效率，而非補貼不足。<br><br>
-僅納入符合補貼資格的訂單分析；等待中的訂單數低於門檻時不顯示結果。此為觀察性分析，不代表因果關係。</p>
+      <h3>Can subsidies rescue stuck orders?</h3>
+      <p class="cap"><b>Question:</b> If an order has been waiting <b>t</b> seconds without a driver assigned and has not been cancelled yet, what share of those orders eventually get completed (the <b>rescue rate</b>)?</p>
+      <p class="cap"><b>Rescue rate</b> = among orders still waiting for a driver at that moment, the share that eventually complete. The longer an order waits, the harder it usually is to assign a driver, so the rescue rate tends to fall over time.</p>
+      <p class="cap">Comparing with subsidy vs without subsidy:</p>
+      <ul class="cap" style="margin:0 0 12px;padding-left:1.4em">
+        <li><b>With subsidy higher</b> — subsidy may help stuck orders complete.</li>
+        <li><b>Similar or lower</b> — subsidy does not clearly improve stuck orders; the issue may be driver supply or dispatch efficiency, not subsidy level.</li>
+      </ul>
+      <p class="cap">Only orders eligible for subsidy are included. Results are hidden when too few orders are still waiting at that time. This is observational — it does not prove cause and effect.</p>
       <div class="legend hazard-legend" id="rescueLegend">
-        <span data-ds="0" role="button" tabindex="0"><span class="chip ctrl"></span>無補 · 救回率</span>
-        <span data-ds="1" role="button" tabindex="0"><span class="chip trt"></span>有補 · 救回率</span>
+        <span data-ds="0" role="button" tabindex="0"><span class="chip ctrl"></span>No subsidy · rescue rate</span>
+        <span data-ds="1" role="button" tabindex="0"><span class="chip trt"></span>With subsidy · rescue rate</span>
       </div>
-      <p class="cap mini" style="margin:2px 0 6px">點圖例可開／關對應線（再點還原）。</p>
+      <p class="cap mini" style="margin:2px 0 6px">Click a legend to hide or show a line.</p>
       <div class="chart-box" style="height:320px"><canvas id="rescueCurve"></canvas></div>
-      <p class="cap mini"><b>⚠️ 灰底（&lt;120 秒）</b><br>
-<b>前 120 秒兩組不具可比性。</b> 此時「仍在等待派單」幾乎包含所有訂單；無補貼組混有大量容易完成的訂單，而有補貼組主要是較難派的訂單，因此早期差距主要反映訂單組成不同，而非補貼效果。<b>請以 120 秒後的結果為主。</b></p>
-      <p class="cap mini"><b>解讀</b><br>
-<b>120 秒後，兩組救回率逐漸接近，未見補貼提高卡住訂單的完成率。</b> 若訂單長時間仍未成功派到司機，問題較可能來自司機供給或派單效率，而非補貼不足。</p>
-      <p class="cap mini" style="color:var(--ink2)"><b>穩健性</b><br>
-<b>陰影為 95% 信賴區間。</b> 等待中的訂單越少，不確定性越高，因此當樣本數少於 50 筆時不再顯示。尾段兩組信賴區間大幅重疊，表示差異沒有明顯統計證據。</p>
+      <p class="cap mini"><b>⚠️ Grey area (&lt;120 seconds)</b><br>
+<b>The first 120 seconds are not comparable between groups.</b> Almost all orders are still waiting then; the no-subsidy group mixes in many easy-to-complete orders, while the with-subsidy group is mostly harder-to-dispatch orders. Early gaps mainly reflect different order mix, not subsidy effect. <b>Focus on results after 120 seconds.</b></p>
+      <p class="cap mini"><b>What we see</b><br>
+<b>After 120 seconds, the two rescue rates move closer together — subsidy does not clearly raise completion for stuck orders.</b> If orders stay unmatched for a long time, the problem is more likely driver supply or dispatch efficiency than insufficient subsidy.</p>
+      <p class="cap mini" style="color:var(--ink2)"><b>Reliability</b><br>
+<b>Shaded bands are 95% confidence intervals.</b> Fewer orders still waiting means more uncertainty, so we stop showing points when fewer than 50 orders remain in the pool. At the tail, the two bands overlap heavily, so there is no clear statistical evidence of a difference.</p>
     </div>
   </div>
 
@@ -1869,8 +1871,8 @@ const REPORT_DATA = {"meta": {"query_date": "2026-07-17", "scope": "HK PlatformO
       ]; };
     const ctrlCI = ciOf(R.ctrl.rescued, R.ctrl.pool), trtCI = ciOf(R.trt.rescued, R.trt.pool);
     const SERIES = [
-      {name:'無補·救回率', arr:gate(R.ctrl.rescue_pct, R.ctrl.pool), color:CTRL, side:'ctrl'},
-      {name:'有補·救回率', arr:gate(R.trt.rescue_pct, R.trt.pool), color:TRT, side:'trt'},
+      {name:'No subsidy · rescue rate', arr:gate(R.ctrl.rescue_pct, R.ctrl.pool), color:CTRL, side:'ctrl'},
+      {name:'With subsidy · rescue rate', arr:gate(R.trt.rescue_pct, R.trt.pool), color:TRT, side:'trt'},
     ];
     const midLabelIdx = (arr)=>{ const idx=arr.map((v,i)=>v==null?-1:i).filter(i=>i>=0); return idx.length?idx[Math.floor(idx.length*0.45)]:-1; };
     const rescueChart = new Chart(el,{
@@ -1883,20 +1885,20 @@ const REPORT_DATA = {"meta": {"query_date": "2026-07-17", "scope": "HK PlatformO
         interaction:{mode:'index',intersect:false},
         plugins:{legend:{display:false}, annotation:{annotations:{}},
           tooltip:{filter:(it)=>!it.dataset._band, callbacks:{
-            title:(items)=>`到 ${items[0].label} 仍卡住`,
+            title:(items)=>`Still waiting at ${items[0].label}`,
             label:(c)=>c.parsed.y==null?null:`${c.dataset.label}: ${c.parsed.y}%`,
             afterBody:(items)=>{
               const i=items[0].dataIndex, s=R[items[0].datasetIndex===0?'ctrl':'trt'];
-              return `still-waiting ${nf(s.pool[i])}｜最終完成 ${nf(s.rescued[i])}`;
+              return `Still waiting: ${nf(s.pool[i])} · Eventually completed: ${nf(s.rescued[i])}`;
             }
           }}},
         scales:{
-          y:{...gridCfg,title:{display:true,text:'最終完成率 %（救回）',color:INK2},
+          y:{...gridCfg,title:{display:true,text:'% eventually completed (rescue rate)',color:INK2},
              ticks:{...(gridCfg.ticks||{}),callback:(v)=>v+'%'}},
-          x:{...gridCfg,title:{display:true,text:'仍卡住（未揭單未取消）的秒數 t',color:INK2}}
+          x:{...gridCfg,title:{display:true,text:'Seconds still waiting (no driver, not cancelled)',color:INK2}}
         }}
     });
-    // <120s 非可比區（選擇偏差）：灰底 + 標註
+    // Grey zone <120s (selection bias): shaded + label
     const cutIdx = R.edges.indexOf(120);
     const buildAnn = ()=>{
       const ann={};
@@ -1904,7 +1906,7 @@ const REPORT_DATA = {"meta": {"query_date": "2026-07-17", "scope": "HK PlatformO
         ann['ncmp']={type:'box', xMin:-0.5, xMax:cutIdx-0.5,
           backgroundColor:'rgba(120,120,120,0.10)', borderWidth:0, drawTime:'beforeDatasetsDraw'};
         ann['ncmpL']={type:'label', xValue:xlab[0], yValue:'max', position:{x:'start',y:'start'},
-          content:['非可比區','(選擇偏差)'], color:INK2, font:{size:10,weight:'600'},
+          content:['Not comparable','(selection bias)'], color:INK2, font:{size:10,weight:'600'},
           backgroundColor:'rgba(255,255,255,0.7)', padding:{x:4,y:2}, xAdjust:34, yAdjust:12};
       }
       SERIES.forEach((s,k)=>{
