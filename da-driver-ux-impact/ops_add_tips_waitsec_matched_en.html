@@ -413,51 +413,66 @@
   </div>
 
   <!-- ④ ROI -->
-  <h2>④ Money spent can be confirmed; extra completed orders cannot</h2>
-  <div class="card">
-  <table>
-    <thead><tr><th style="text-align:left">Item</th><th>Value</th><th style="text-align:left">Note</th></tr></thead>
-    <tbody>
-      <tr><td style="text-align:left">Subsidies paid</td><td>$4,945</td><td style="text-align:left">paid only on the 529 completed orders (filter: <code>pass_sheet_price_lt_200</code>; sum of completed <code>company_paid_incentive</code>)</td></tr>
-      <tr><td style="text-align:left">Orders with subsidy</td><td>1,050</td><td style="text-align:left">529 completed (50.4%); fair-comparison count 1,026 (excludes null wait_sec)</td></tr>
-      <tr><td style="text-align:left">Extra orders rescued</td><td class="lose">none (−117 to −58)</td><td style="text-align:left">because the orders with subsidy group's completion rate is lower, the result is negative, i.e. no extra orders were rescued</td></tr>
-      <tr><td style="text-align:left">Cost per order rescued</td><td class="lose">cannot be computed</td><td style="text-align:left">no extra orders rescued, so cost per order cannot be computed</td></tr>
-      <tr><td style="text-align:left">Share of subsidy spend with no proven extra completions</td><td class="lose">100% (est.)</td><td style="text-align:left">share of subsidy spend with no proven extra completions = share of paid subsidies that bought no proven incremental completion = (paid − effective subsidy)/paid; effective subsidy = incremental completions × subsidy per order. Since incremental completions ≤ 0 (none observed), effective subsidy = $0, so = $4,945 ÷ $4,945 = 100%. Capped at 100% (cannot spend negative money); a negative point estimate may mean harder orders were selected — selection bias, see ③</td></tr>
-    </tbody>
-  </table>
-  </div>
+  <h2>④ Did the subsidy increase completed orders?</h2>
+  <p>We cannot know which individual orders were completed because of the subsidy. Instead, we compare <b>similar orders</b> (same fare, response time, and dispatch difficulty) with and without subsidies.</p>
+
+  <h3 style="font-size:18px;margin:20px 0 8px">Result</h3>
+  <p>After matching similar orders:</p>
+  <ul class="plain">
+    <li><b>With subsidy:</b> <b>55.3%</b> completed</li>
+    <li><b>Without subsidy:</b> <b>62.6%</b> completed</li>
+  </ul>
+  <p><b>Result:</b> We found <b class="hl-bad">no evidence that the subsidy increased completed orders.</b></p>
+  <p>Estimated extra completed orders:</p>
+  <div class="box bad" style="font-size:20px;font-weight:800;text-align:center">0 orders</div>
+
   <div class="box">
-    <b>What is "extra orders rescued (incremental completions)"?</b>
-    Among this batch, how many would have cancelled without subsidy but completed because of subsidy — i.e. orders <b>truly rescued by the subsidy</b>.
-    <br>"Incremental completions" <b>cannot be counted directly in reality</b> (no one can name which order "would have cancelled without subsidy"); they are estimated from the adjusted completion-rate gap:
-    <pre style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:13.5px;overflow-x:auto;margin:10px 0">Adjusted completion-rate gap = after matching fare / response time / pending_orders_at_120s, orders with subsidy completion − orders with no subsidy completion
+    <b>How we estimate “extra completed orders”:</b>
+    We cannot point to any single order and say “this one finished only because of the subsidy.”
+    So we estimate from the completion-rate gap after matching similar orders:
+    <pre style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:13.5px;overflow-x:auto;margin:10px 0">Completion-rate gap after matching = completion rate (orders with subsidy) − completion rate (orders with no subsidy)
               = 55.3% − 62.6%
               = −1.9 percentage points (i.e. −1.9%)
 
-Incremental completions = orders with subsidy order count × adjusted completion-rate gap
-        = 1,050 × (adjusted gap; triple aligned ≈ −4.7pp)
-        ≈ −24 (negative — no evidence of extra completions)</pre>
-    Result ≤ 0, i.e. <b class="hl-bad">no extra completed orders observed</b>.
+Extra completed orders ≈ number of orders with subsidy × completion-rate gap
+        = 1,050 × (strictest fair comparison ≈ −4.7 percentage points)
+        ≈ −24 (negative — no evidence of extra completed orders)</pre>
+    Result ≤ 0, i.e. <b class="hl-bad">no proven extra completed orders</b>.
   </div>
-  <div class="box warn">Because no incremental completions were observed (estimate −58 to −117; 95% CI crosses 0), "cost per order rescued" cannot be computed, and wastage can only be conservatively put at 100% for now (no proven effective subsidy spend yet). For reliable ROI and share of subsidy spend with no proven extra completions, first confirm with pre-treatment matching or A/B that orders with subsidy completion is truly higher than orders with no subsidy (see ⑤).</div>
 
-  <p style="font-size:13.5px;color:var(--ink2);margin:22px 0 4px"><b>Another view: cash summary of orders with subsidy completed orders in this filter</b> (GTV / paid from mart; same <code>pass_sheet_price_lt_200</code> as headline)</p>
+  <h3 style="font-size:18px;margin:28px 0 8px">What does this mean?</h3>
+  <p>Because we found <b>no proven increase in completed orders</b>, we <b>cannot calculate</b>:</p>
+  <ul class="plain">
+    <li>Cost per extra completed order</li>
+    <li>Subsidy ROI</li>
+  </ul>
+  <p>Based on the current data, <b class="hl-bad">there is no evidence that the subsidy budget generated additional completed orders.</b></p>
+
+  <h3 style="font-size:18px;margin:28px 0 8px">Cash summary</h3>
+  <p>During this period（2026-07-14 queried，HK · <code>pass_sheet_price_lt_200</code> · 6 campaign days）:</p>
   <div class="kpi">
-    <div class="k"><div class="lbl">GTV from completed orders with subsidy</div><div class="val">$65,904</div><div class="sub">529 completed · <code>pass_sheet_price_lt_200</code></div></div>
-    <div class="k"><div class="lbl">Subsidy already paid</div><div class="val">−$4,945</div><div class="sub">deducted on completed orders only</div></div>
-    <div class="k"><div class="lbl">Completion rate · orders with subsidy (raw)</div><div class="val">50.4%</div><div class="sub">529/1,050; fair-comparison rates in the main table</div></div>
+    <div class="k"><div class="lbl">Subsidized orders completed</div><div class="val">529</div><div class="sub">orders with subsidy that finished</div></div>
+    <div class="k"><div class="lbl">GTV generated</div><div class="val">$65,904</div><div class="sub">from those completed orders</div></div>
+    <div class="k"><div class="lbl">Subsidies paid</div><div class="val">$4,945</div><div class="sub">paid on completed orders only</div></div>
   </div>
-  <div class="box bad"><b>Book profit ≠ correctly spent subsidy:</b> most of the 529 completed orders <b>would have completed anyway</b> (see ②). This spend is mostly money without proven extra completions. Use the main-table fair-comparison completion rates — not cash-on-paper — for budget decisions.</div>
+  <div class="box bad">However, <b>most of these completed orders would likely have been completed even without the subsidy</b>（see section ②）.<br>
+    This means the subsidy spending <b>has not been shown to create additional completed orders.</b></div>
 
   <!-- ⑤ next steps -->
-  <h2>⑤ Next steps: how to truly know whether the subsidy works?</h2>
-  <div class="box"><b>We can say:</b> no lift in completion from subsidy was seen; and orders that got subsidy were harder to dispatch (higher Orders waiting for a driver).<br><b>We cannot claim "subsidy is completely useless"</b> — region, vehicle type, order time, and driver supply are not fully matched and may still affect results.</div>
-  <div class="box good"><b>To answer whether the budget should increase, we recommend:</b>
-    <ul class="plain" style="margin:8px 0 0">
-      <li>Match on conditions known <b>before</b> dispatch (Orders waiting for a driver, GTV, vehicle type, region, order time); <b>do not use response time</b> — wait appears after dispatch and using it for matching distorts results.</li>
-      <li>Or run an <b>A/B experiment</b> (random assignment) — the cleanest way to test whether subsidy raises completion rate.</li>
-    </ul>
+  <h2>⑤ Next steps: How can we tell if the subsidy really works?</h2>
+  <p>From this analysis, we can say:</p>
+  <ul class="plain">
+    <li>We found <b>no evidence that subsidies increased the completion rate.</b></li>
+    <li>Orders that received subsidies were <b>harder to dispatch</b>（more orders were waiting for a driver）.</li>
+  </ul>
+  <p>However, <b>this does not prove that subsidies are ineffective.</b> Other factors, such as <b>region, vehicle type, order time, and driver supply</b>, may still affect the results.</p>
+  <div class="box good"><b>To measure the true impact of subsidies, we recommend:</b>
+    <ol class="plain" style="margin:8px 0 0">
+      <li><b>Compare orders with the same starting conditions</b>, including: orders waiting for a driver, GTV, vehicle type, region, and order time.</li>
+      <li><b>Run an A/B test</b>, where similar orders are randomly assigned to receive a subsidy or not. This is the most reliable way to determine whether subsidies increase completed orders.</li>
+    </ol>
   </div>
+
 
 </div>
 
