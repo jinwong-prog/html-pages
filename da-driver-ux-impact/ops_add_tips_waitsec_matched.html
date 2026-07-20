@@ -180,12 +180,12 @@
 <div class="wrap">
 
   <h1>補貼有沒有提高完成率？（拉齊 GTV、final response time、pending）</h1>
-  <p class="meta">香港 PlatformOD · Van · 車費 &lt; HK$200，共 6 個 campaign 日繁忙時段 ｜（2026-07-14 實查，香港時間，6 campaign 日 2026-05-26 至 2026-07-03；資格 <code>pass_sheet_price_lt_200</code>）｜ 數字全部由 BigQuery 產出</p>
+  <p class="meta">香港 PlatformOD · Van · 車費 &lt; HK$200，共 6 個 Peak 早峰日 ｜（2026-07-14 實查，香港時間，6 Peak 早峰日 2026-05-26 至 2026-07-03；資格 <code>pass_sheet_price_lt_200</code>）｜ 數字全部由 BigQuery 產出</p>
   <p class="meta"><b>Pending 訂單數</b> = <code>pending_orders_at_120s</code>（落單後約 120 秒時，還有多少張單在等司機；不是 final response time）</p>
 
   <div class="answer">
     <span class="big">補貼無效。</span><br>
-    逐層拉齊車費、final response time、日期時段與積壓後，<b>有補貼組完成率仍低於沒有補貼組</b>（三重對齊差距 −4.7 個百分點）。已付補貼 $4,945（529/1,050 張完成單），但<b>無法證明多救回訂單</b>。現有數據不足以支持增加補貼預算。
+    逐層拉齊車費、final response time、日期時段與 pending 後，<b>有補貼組完成率仍低於沒有補貼組</b>（三重對齊差距 −4.7 個百分點）。已付補貼 $4,945（529/1,050 張完成單），但<b>無法證明多救回訂單</b>。現有數據不足以支持增加補貼預算。
   </div>
 
   <div class="card">
@@ -209,7 +209,7 @@
         <td class="trt"><span class="trt-val">52.5%</span> <span class="n">(511/974)</span></td>
         <td class="ctrl"><span class="ctrl-val">57.6%</span> <span class="n">(561/974)</span></td>
         <td class="diff lose">−5.2pp</td></tr>
-      <tr><td style="text-align:left"><b>＋ Backlog（三重對齊）★</b></td>
+      <tr><td style="text-align:left"><b>＋ pending（三重對齊）★</b></td>
         <td class="trt"><span class="trt-val">51.6%</span> <span class="n">(529/1,026)</span></td>
         <td class="ctrl"><span class="ctrl-val">56.2%</span> <span class="n">(577/1,026)</span></td>
         <td class="diff lose"><b>−4.7pp</b></td></tr>
@@ -233,7 +233,7 @@
       <tr><td>GTV</td><td style="text-align:left"><code>mart_ops_add_tips_campaign_orders</code></td><td style="text-align:left"><code>gross_transaction_value</code></td></tr>
       <tr><td>Final response time</td><td style="text-align:left"><code>mart_ops_add_tips_campaign_orders</code></td><td style="text-align:left"><code>final_response_time</code>（沒有則用 <code>first_response_time</code>）— 落單後幾秒才有司機被正式派到／接上這張單</td></tr>
       <tr><td>Pending orders</td><td style="text-align:left"><code>order_master_table_hk</code>*</td><td style="text-align:left"><code>pending_orders_at_120s</code></td></tr>
-      <tr><td>Campaign date</td><td style="text-align:left"><code>mart_ops_add_tips_campaign_orders</code></td><td style="text-align:left"><code>campaign_date</code></td></tr>
+      <tr><td>Peak 早峰日</td><td style="text-align:left"><code>mart_ops_add_tips_campaign_orders</code></td><td style="text-align:left"><code>campaign_date</code>（BQ header；Peak 早峰日）</td></tr>
       <tr><td>Order hour</td><td style="text-align:left"><code>mart_ops_add_tips_campaign_orders</code></td><td style="text-align:left"><code>created_at</code></td></tr>
       <tr><td>Customer type</td><td style="text-align:left"><code>mart_ops_add_tips_campaign_orders</code></td><td style="text-align:left"><code>business_segment</code></td></tr>
       <tr><td>Order status</td><td style="text-align:left"><code>mart_ops_add_tips_campaign_orders</code></td><td style="text-align:left"><code>status</code></td></tr>
@@ -242,17 +242,31 @@
   <p class="meta" style="margin:10px 0 0">* <code>pending_orders_at_120s</code> 已在 <code>mart_ops_add_tips_campaign_orders</code> 露出，來源是 <code>order_master_table_hk</code>。</p>
   </div>
   <div class="box warn">
-    <b>有補貼訂單 · 三組觸發拆解</b>（2026-07-20 實查，6 Peak 日，<code>pass_sheet_static_eligibility</code>；response = <code>final_response_time</code>（沒有則用 <code>first_response_time</code>）；pending = <code>pending_orders_at_120s</code>）
+    <b>有補貼訂單 · 三組觸發拆解</b>（2026-07-20 實查，6 Peak 早峰日，<code>pass_sheet_static_eligibility</code>；response = <code>final_response_time</code>（沒有則用 <code>first_response_time</code>）；pending = <code>pending_orders_at_120s</code>）
     <ul class="plain" style="margin:8px 0 0">
       <li><b>1) Both</b>：response_time ≥ <b>120s</b> <b>且</b> pending ≥ <b>40 orders</b> — <b>769</b>／1,039（74.0%）</li>
       <li><b>2) Pending ≥40 orders only</b>（response &lt;120s 或 null）— <b>270</b>／1,039（26.0%）</li>
       <li><b>3) Response ≥120s only</b>（pending &lt;40 orders）— <b>0</b>／1,039（0%）</li>
     </ul>
   </div>
+  <div class="box" style="background:#f8fafc;border:1px solid #cbd5e1;margin-top:12px">
+    <b>公平比較做到哪裡（apple-to-apple）</b>
+    <p style="margin:8px 0 0">只比較相似的訂單：同一 GTV、同一 final response time（等多久才有司機正式接上）、同一 pending（當時有多少單在等）。</p>
+    <p style="margin:8px 0 0">然後問：有補貼訂單會不會比無補貼訂單更常完成？</p>
+    <p style="margin:8px 0 0"><b>對齊到哪一步：</b></p>
+    <ol style="margin:6px 0 0;padding-left:1.25rem">
+      <li>同一 GTV + 同一 final response time</li>
+      <li>再加同一日 + 同一時段</li>
+      <li>丟掉太細的分組（有補貼須 ≥20 張）</li>
+      <li><b>最嚴：</b>再加同一 pending — 這是主結論（−4.7 個百分點）</li>
+    </ol>
+    <p style="margin:8px 0 0">我們<b>沒有</b>證明補貼「造成」結果；只是在 6 個 Peak 早峰日（落單約 09:30–11:00 HKT）比較相似訂單。</p>
+    <p style="margin:8px 0 0"><b>注意：</b>Sheet 規則是 wait ≥120s <b>且</b> pending ≥40，但 BQ 沒有「剛好觸發補貼那一秒」的 log。所以這裡的 wait／pending 是 proxy，不是觸發當刻真值。</p>
+  </div>
   <div class="card">
   <table class="small">
-    <caption>6 個 campaign 日的繁忙時段（香港時間；時間指落單時間 created_at）</caption>
-    <thead><tr><th>日期</th><th>星期</th><th>訂單數</th><th>最早落單</th><th>最遲落單</th><th>有補貼單</th></tr></thead>
+    <caption>6 個 Peak 早峰日的繁忙時段（香港時間；時間指落單時間 created_at）</caption>
+    <thead><tr><th>日期</th><th>星期</th><th>訂單數</th><th>最早落單</th><th>最遲落單</th><th>有補貼訂單</th></tr></thead>
     <tbody>
       <tr><td>2026-05-26</td><td>週二</td><td>1,918</td><td>09:36</td><td>10:59</td><td>189</td></tr>
       <tr><td>2026-05-29</td><td>週五</td><td>2,168</td><td>09:30</td><td>10:59</td><td>106</td></tr>
