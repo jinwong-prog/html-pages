@@ -715,33 +715,26 @@
     const s = row.summary || {};
     const denomCtrl = s.ctrl && s.ctrl.n;
     const denomTrt = s.trt && s.trt.n;
-    const timeLabel = completed ? "落單到完成（分段）" : "落單到取消（分段）";
+    const timeLabel = completed ? "完成時間" : "取消時間";
     const rangeNote = minS >= 400 ? "自 400s 起" : (minS >= 181 ? "自 181s 起" : "自 180s 起");
     const outcomeNote = "佔比% 分母＝該格全部訂單（完成+取消）";
-    const winNote = completed
-      ? "有補貼較好／較差＝有補貼佔全組% 對比無補貼（完成時間：佔比較高＝較好）"
-      : "有補貼較好／較差＝有補貼佔全組% 對比無補貼（取消時間：佔比較低＝較好，較少單在該時段取消）";
     const caption = (completed
-      ? "落單到完成分桶（僅 status=completed；final_response_time；桶寬 120s；" + rangeNote + "；" + outcomeNote + "）"
-      : "落單到取消分桶（僅 status=cancelled；cancelled_at−created_at；桶寬 120s；" + rangeNote + "；" + outcomeNote + "）") +
-      "· <span class='muted-cap'>點欄標題可排序。" + winNote + "</span>";
-    const head = [timeLabel, "無補貼訂單（筆數）", "有補貼訂單（筆數）", "佔全組% · 無補貼", "佔全組% · 有補貼（較好／較差）", "P75 · 無補貼", "P75 · 有補貼", "P85 · 無補貼", "P85 · 有補貼", "P99 · 無補貼", "P99 · 有補貼", "max · 無補貼", "max · 有補貼"];
+      ? "完成時間分桶（僅 status=completed；final_response_time；桶寬 120s；" + rangeNote + "；" + outcomeNote + "）"
+      : "取消時間分桶（僅 status=cancelled；cancelled_at−created_at；桶寬 120s；" + rangeNote + "；" + outcomeNote + "）") +
+      "· <span class='muted-cap'>點欄標題可排序</span>";
+    const head = [timeLabel, "無補貼訂單（n）", "有補貼訂單（n）", "無補貼訂單佔比", "有補貼訂單佔比", "P75（無補貼）", "P75（有補貼）", "P85（無補貼）", "P85（有補貼）", "P99（無補貼）", "P99（有補貼）", "Max（無補貼）", "Max（有補貼）"];
     const body = buckets.map((b) => {
       const p75c = bucketVal(b, "ctrl", 75), p75t = bucketVal(b, "trt", 75);
       const p85c = bucketVal(b, "ctrl", 85), p85t = bucketVal(b, "trt", 85);
       const p99c = bucketVal(b, "ctrl", 99), p99t = bucketVal(b, "trt", 99);
       const maxC = bucketMax(b, "ctrl"), maxT = bucketMax(b, "trt");
-      const shareCls = shareCompareCls(b.trt_n, b.ctrl_n, denomTrt, denomCtrl, b.bucket, completed, buckets);
-      const trtShare = shareRate(b.trt_n, denomTrt);
-      const ctrlShare = shareRate(b.ctrl_n, denomCtrl);
       const ctrlSharePct = denomCtrl ? Math.round((b.ctrl_n / denomCtrl) * 1000) / 10 : null;
       const trtSharePct = denomTrt ? Math.round((b.trt_n / denomTrt) * 1000) / 10 : null;
-      const shareMode = completed ? "share_hi" : "death_bucket";
       return "<tr><td style='text-align:left;vertical-align:middle' data-sort='" + bucketStart(b.bucket) + "'>" + b.bucket + "s</td>" +
       "<td class='ctrl n' style='vertical-align:middle' data-sort='" + (b.ctrl_n || 0) + "'>" + fmt(b.ctrl_n) + "</td>" +
       "<td class='trt n' style='vertical-align:middle' data-sort='" + (b.trt_n || 0) + "'>" + fmt(b.trt_n) + "</td>" +
       "<td class='ctrl' style='vertical-align:middle' data-sort='" + (ctrlSharePct == null ? "" : ctrlSharePct) + "'>" + sharePct(b.ctrl_n, denomCtrl) + "</td>" +
-      "<td class='" + cellCls("trt", shareCls) + "' style='vertical-align:middle' data-sort='" + (trtSharePct == null ? "" : trtSharePct) + "'>" + sharePct(b.trt_n, denomTrt) + " " + subsidyTag(trtShare, ctrlShare, shareMode) +
+      "<td class='trt' style='vertical-align:middle' data-sort='" + (trtSharePct == null ? "" : trtSharePct) + "'>" + sharePct(b.trt_n, denomTrt) +
       "</td><td class='ctrl' style='vertical-align:middle' data-sort='" + (p75c == null ? "" : p75c) + "'>" + fmt(p75c) + "</td><td class='trt' style='vertical-align:middle' data-sort='" + (p75t == null ? "" : p75t) + "'>" + fmt(p75t) +
       "</td><td class='ctrl' style='vertical-align:middle' data-sort='" + (p85c == null ? "" : p85c) + "'>" + fmt(p85c) + "</td><td class='trt' style='vertical-align:middle' data-sort='" + (p85t == null ? "" : p85t) + "'>" + fmt(p85t) +
       "</td><td class='ctrl' style='vertical-align:middle' data-sort='" + (p99c == null ? "" : p99c) + "'>" + fmt(p99c) + "</td><td class='trt' style='vertical-align:middle' data-sort='" + (p99t == null ? "" : p99t) + "'>" + fmt(p99t) +

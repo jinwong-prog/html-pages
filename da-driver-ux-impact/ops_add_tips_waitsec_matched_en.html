@@ -195,8 +195,8 @@
   <table class="cmp small">
     <thead><tr>
       <th style="text-align:left">What we kept the same</th>
-      <th class="trt">Completion rate · orders with subsidy</th>
-      <th class="ctrl">Completion rate · orders with no subsidy</th>
+      <th class="trt">Completion rate · subsidy orders</th>
+      <th class="ctrl">Completion rate · non-subsidy orders</th>
       <th>Completion rate difference (percentage points)</th>
       <th style="text-align:left">Difference on each of the 6 campaign days</th>
     </tr></thead>
@@ -205,12 +205,12 @@
         <td class="trt"><span class="trt-val">51.6%</span> <span class="n">(529/1,026)</span></td>
         <td class="ctrl"><span class="ctrl-val">58.3%</span> <span class="n">(598/1,026)</span></td>
         <td class="diff lose">−6.7pp</td>
-        <td rowspan="4" style="text-align:left;vertical-align:middle;font-size:13px;color:var(--ink2)">Tue −10.4pp ｜ Fri −1.2pp ｜ Mon −7.5pp<br>Thu −9.2pp ｜ Mon −24.8pp ｜ Fri −3.5pp<br><b class="hl-bad">On all six days, orders with subsidy finished less often</b></td></tr>
+        <td rowspan="4" style="text-align:left;vertical-align:middle;font-size:13px;color:var(--ink2)">Tue −10.4pp ｜ Fri −1.2pp ｜ Mon −7.5pp<br>Thu −9.2pp ｜ Mon −24.8pp ｜ Fri −3.5pp<br><b class="hl-bad">On all six days, subsidy orders finished less often</b></td></tr>
       <tr><td style="text-align:left">+ same date + hour of day</td>
         <td class="trt"><span class="trt-val">51.6%</span> <span class="n">(525/1,018)</span></td>
         <td class="ctrl"><span class="ctrl-val">58.4%</span> <span class="n">(594/1,018)</span></td>
         <td class="diff lose">−6.8pp</td></tr>
-      <tr><td style="text-align:left">Only groups with 20+ orders with subsidy<br><span style="font-size:12px;color:var(--muted)">(drop tiny groups so a few orders do not drive the result)</span></td>
+      <tr><td style="text-align:left">Only groups with 20+ subsidy orders<br><span style="font-size:12px;color:var(--muted)">(drop tiny groups so a few orders do not drive the result)</span></td>
         <td class="trt"><span class="trt-val">52.5%</span> <span class="n">(511/974)</span></td>
         <td class="ctrl"><span class="ctrl-val">57.6%</span> <span class="n">(561/974)</span></td>
         <td class="diff lose">−5.2pp</td></tr>
@@ -247,7 +247,7 @@
   <p class="meta" style="margin:10px 0 0">* <code>pending_orders_at_120s</code> is surfaced in <code>mart_ops_add_tips_campaign_orders</code> and originates from <code>order_master_table_hk</code>.</p>
   </div>
   <div class="box warn">
-    <b>Orders with subsidy · 3 trigger buckets</b>（queried 2026-07-20，6 Peak days，<code>pass_sheet_static_eligibility</code>；response = <code>final_response_time</code> (or <code>first_response_time</code> if unavailable)；pending = <code>pending_orders_at_120s</code>）
+    <b>Subsidy orders · 3 trigger buckets</b>（queried 2026-07-20，6 Peak days，<code>pass_sheet_static_eligibility</code>；response = <code>final_response_time</code> (or <code>first_response_time</code> if unavailable)；pending = <code>pending_orders_at_120s</code>）
     <ul class="plain" style="margin:8px 0 0">
       <li><b>1) Both</b>：response_time ≥ <b>120s</b> <b>AND</b> pending ≥ <b>40 orders</b> — <b>769</b> / 1,039（74.0%）</li>
       <li><b>2) Pending ≥40 orders only</b>（response &lt;120s or null）— <b>270</b> / 1,039（26.0%）</li>
@@ -271,12 +271,12 @@
   </details>
 
   <!-- ② results -->
-  <h2>② Result: Orders with subsidy still completed less often</h2>
-  <p>Orders were split into 15 comparable groups. In <b class="hl-bad">13 groups</b>, orders with subsidy had a lower completion rate than orders with no subsidy.</p>
+  <h2>② Result: Subsidy orders still completed less often</h2>
+  <p>Orders were split into 15 comparable groups. In <b class="hl-bad">13 groups</b>, subsidy orders had a lower completion rate than non-subsidy orders.</p>
   <p>Click a long-wait row to expand / collapse details. The &lt;$85 × 121–180s group (n=6) is shown only in Full detail — click that row for the day breakdown; treat as noise.</p>
   <div class="legend">
-    <span class="it"><span class="chip ctrl"></span> Orders with no subsidy</span>
-    <span class="it"><span class="chip trt"></span> Orders with subsidy</span>
+    <span class="it"><span class="chip ctrl"></span> Non-subsidy orders</span>
+    <span class="it"><span class="chip trt"></span> Subsidy orders</span>
     <span class="waitsec-view-toggle" role="group" aria-label="Main table detail level">
       <button type="button" class="active" data-view="compact" aria-pressed="true">Simple view</button>
       <button type="button" data-view="full" aria-pressed="false">Full detail</button>
@@ -290,17 +290,17 @@
     </colgroup>
     <thead><tr>
       <th>GTV</th><th class="th-2line">Response time<br>(s)</th>
-      <th class="ctrl th-2line">Orders with no subsidy<br>number of orders</th><th class="ctrl th-2line">Completion<br>rate</th>
-      <th class="trt th-2line">Orders with subsidy<br>number of orders</th><th class="trt th-2line">Completion<br>rate</th><th class="th-2line">Completion rate difference<br>(percentage points)</th>
+      <th class="ctrl th-2line">Non-subsidy orders<br>(n)</th><th class="ctrl th-2line">Completion<br>rate</th>
+      <th class="trt th-2line">Subsidy orders<br>(n)</th><th class="trt th-2line">Completion<br>rate</th><th class="th-2line">Completion rate difference<br>(percentage points)</th>
     </tr></thead>
     <tbody>
       <tr class="waitsec-static-row"><td>&lt;$85</td><td>0–60s</td><td class="ctrl n">613</td><td class="ctrl"><span class="ctrl-val">90.9%</span></td><td class="trt n">2</td><td class="trt"><span class="trt-val">0.0%</span></td><td class="diff lose">−90.9</td></tr>
       <tr class="waitsec-static-row"><td>&lt;$85</td><td>60–120s</td><td class="ctrl n">119</td><td class="ctrl"><span class="ctrl-val">75.6%</span></td><td class="trt n">0</td><td class="trt">—</td><td class="diff">—</td></tr>
-      <tr class="waitsec-static-row pos drill-static-row" data-static-detail="lt85-121-180" title="Click to expand / collapse｜Full view only｜orders with subsidy count=6; not counted as a real win" role="button" tabindex="0" aria-expanded="false"><td>&lt;$85</td><td>121–180s</td><td class="ctrl n">78</td><td class="ctrl"><span class="ctrl-val">67.9%</span></td><td class="trt n">6</td><td class="trt"><span class="trt-val">83.3%</span></td><td class="diff win">+15.4 <span class="lift-tag lift-about the same" title="Full view only; only 6 orders with subsidy orders — noise, not a real win">n=6·ignore</span></td></tr>
+      <tr class="waitsec-static-row pos drill-static-row" data-static-detail="lt85-121-180" title="Click to expand / collapse｜Full view only｜subsidy orders count=6; not counted as a real win" role="button" tabindex="0" aria-expanded="false"><td>&lt;$85</td><td>121–180s</td><td class="ctrl n">78</td><td class="ctrl"><span class="ctrl-val">67.9%</span></td><td class="trt n">6</td><td class="trt"><span class="trt-val">83.3%</span></td><td class="diff win">+15.4 <span class="lift-tag lift-about the same" title="Full view only; only 6 subsidy orders orders — noise, not a real win">n=6·ignore</span></td></tr>
       <tr class="static-detail-row" data-static-detail="lt85-121-180" hidden><td colspan="7"><div class="drill-inner">
         <table class="cmp small">
-          <caption><b>Breakdown · &lt;$85 × 121–180 (+15.4)</b>: orders with subsidy count=6 → noise</caption>
-          <thead><tr><th>Date</th><th>Weekday</th><th class="ctrl">Orders with no subsidy</th><th class="ctrl">Completion rate</th><th class="trt">Orders with subsidy</th><th class="trt">Completion rate</th></tr></thead>
+          <caption><b>Breakdown · &lt;$85 × 121–180 (+15.4)</b>: subsidy orders count=6 → noise</caption>
+          <thead><tr><th>Date</th><th>Weekday</th><th class="ctrl">Non-subsidy orders</th><th class="ctrl">Completion rate</th><th class="trt">Subsidy orders</th><th class="trt">Completion rate</th></tr></thead>
           <tbody>
             <tr><td>2026-05-26</td><td>Tue</td><td class="ctrl n">11</td><td class="ctrl"><span class="ctrl-val">63.6%</span></td><td class="trt n">0</td><td class="trt">—</td></tr>
             <tr><td>2026-05-29</td><td>Fri</td><td class="ctrl n">18</td><td class="ctrl"><span class="ctrl-val">72.2%</span></td><td class="trt n">0</td><td class="trt">—</td></tr>
@@ -313,53 +313,53 @@
       </div></td></tr>
       <tr class="drill-row" data-drill-key="&lt;$85|181-400" title="Click to expand / collapse"><td>&lt;$85</td><td>181–400s</td><td class="ctrl n">130</td><td class="ctrl"><span class="ctrl-val">59.2%</span></td><td class="trt n">19</td><td class="trt"><span class="trt-val">47.4%</span></td><td class="diff lose">−11.8</td></tr>
       <tr class="key-insight-row lose" hidden><td colspan="7"><div class="key-insight-inner">
-        <b class="k">This group: orders with subsidy finish 11.4 percentage points less often (only 29 orders with subsidy — small); look at 241–300  sec and 301–360 sec</b>
+        <b class="k">This group: subsidy orders finish 11.4 percentage points less often (only 29 subsidy orders — small); look at 241–300  sec and 301–360 sec</b>
         <ul>
-          <li><b>Time from order placed to completed</b>: 301-360s orders with subsidy <b>10.3% (3/29)</b> &lt; orders with no subsidy 14.1% (21/149) → worse for subsidy</li><li><b>Time from order placed to completed</b>: 241-300s orders with subsidy 6.9% (2/29) &lt; orders with no subsidy 18.1% (27/149) → worse for subsidy</li><li><b>Time from order placed to cancelled</b>: 241-300s orders with subsidy <b>17.2% (5/29)</b> &gt; orders with no subsidy 7.4% (11/149) → worse for subsidy</li><li><b>Time from order placed to cancelled</b>: 301-360s orders with subsidy 6.9% (2/29) &gt; orders with no subsidy 6.7% (10/149) → worse for subsidy</li>
+          <li><b>Time to completion</b>: 301-360s subsidy orders <b>10.3% (3/29)</b> &lt; non-subsidy orders 14.1% (21/149) → worse for subsidy</li><li><b>Time to completion</b>: 241-300s subsidy orders 6.9% (2/29) &lt; non-subsidy orders 18.1% (27/149) → worse for subsidy</li><li><b>Time to cancellation</b>: 241-300s subsidy orders <b>17.2% (5/29)</b> &gt; non-subsidy orders 7.4% (11/149) → worse for subsidy</li><li><b>Time to cancellation</b>: 301-360s subsidy orders 6.9% (2/29) &gt; non-subsidy orders 6.7% (10/149) → worse for subsidy</li>
         </ul>
-        <span class="muted-cap">This group: orders with subsidy 48.3% (14/29) vs orders with no subsidy 59.7% (89/149)。Full time buckets and longest-wait orders below. (2026-07-14 queried)</span>
+        <span class="muted-cap">This group: subsidy orders 48.3% (14/29) vs non-subsidy orders 59.7% (89/149)。Full time buckets and longest-wait orders below. (2026-07-14 queried)</span>
       </div></td></tr>
       <tr class="drill-row" data-drill-key="&lt;$85|400+" title="Click to expand / collapse"><td>&lt;$85</td><td>400s+</td><td class="ctrl n">131</td><td class="ctrl"><span class="ctrl-val">51.1%</span></td><td class="trt n">56</td><td class="trt"><span class="trt-val">33.9%</span></td><td class="diff lose">−17.2</td></tr>
       <tr class="key-insight-row lose" hidden><td colspan="7"><div class="key-insight-inner">
-        <b class="k">This group: orders with subsidy finish 20.2 percentage points less often; look at 400–459 sec vs 940–999 sec</b>
+        <b class="k">This group: subsidy orders finish 20.2 percentage points less often; look at 400–459 sec vs 940–999 sec</b>
         <ul>
-          <li><b>Time from order placed to cancelled</b>: 400-459s orders with subsidy 4.5% (3/66) &lt; orders with no subsidy 5.3% (6/114) → better for subsidy</li><li><b>Time from order placed to cancelled</b>: 460-519s orders with subsidy 1.5% (1/66) &lt; orders with no subsidy 4.4% (5/114) → better for subsidy</li><li><b>Time from order placed to cancelled</b>: 940-999s orders with subsidy <b>6.1% (4/66)</b> &gt; orders with no subsidy 1.8% (2/114) → worse for subsidy</li><li><b>Time from order placed to cancelled</b>: 1060-1119s orders with subsidy 6.1% (4/66) &gt; orders with no subsidy 0.0% (0/114) → worse for subsidy</li><li><b>Time from order placed to completed</b>: 400-459s orders with subsidy 4.5% (3/66) &lt; orders with no subsidy 12.3% (14/114) → worse for subsidy</li><li><b>Time from order placed to completed</b>: 760-819s orders with subsidy <b>6.1% (4/66)</b> &gt; orders with no subsidy 1.8% (2/114) → better for subsidy</li>
+          <li><b>Time to cancellation</b>: 400-459s subsidy orders 4.5% (3/66) &lt; non-subsidy orders 5.3% (6/114) → better for subsidy</li><li><b>Time to cancellation</b>: 460-519s subsidy orders 1.5% (1/66) &lt; non-subsidy orders 4.4% (5/114) → better for subsidy</li><li><b>Time to cancellation</b>: 940-999s subsidy orders <b>6.1% (4/66)</b> &gt; non-subsidy orders 1.8% (2/114) → worse for subsidy</li><li><b>Time to cancellation</b>: 1060-1119s subsidy orders 6.1% (4/66) &gt; non-subsidy orders 0.0% (0/114) → worse for subsidy</li><li><b>Time to completion</b>: 400-459s subsidy orders 4.5% (3/66) &lt; non-subsidy orders 12.3% (14/114) → worse for subsidy</li><li><b>Time to completion</b>: 760-819s subsidy orders <b>6.1% (4/66)</b> &gt; non-subsidy orders 1.8% (2/114) → better for subsidy</li>
         </ul>
-        <span class="muted-cap">This group: orders with subsidy 33.3% (22/66) vs orders with no subsidy 53.5% (61/114)。Full time buckets and longest-wait orders below. (2026-07-14 queried)</span>
+        <span class="muted-cap">This group: subsidy orders 33.3% (22/66) vs non-subsidy orders 53.5% (61/114)。Full time buckets and longest-wait orders below. (2026-07-14 queried)</span>
       </div></td></tr>
       <tr class="waitsec-static-row"><td>$85–149</td><td>0–60s</td><td class="ctrl n">3989</td><td class="ctrl"><span class="ctrl-val">92.7%</span></td><td class="trt n">4</td><td class="trt"><span class="trt-val">0.0%</span></td><td class="diff lose">−92.7</td></tr>
       <tr class="waitsec-static-row"><td>$85–149</td><td>60–120s</td><td class="ctrl n">784</td><td class="ctrl"><span class="ctrl-val">78.3%</span></td><td class="trt n">8</td><td class="trt"><span class="trt-val">12.5%</span></td><td class="diff lose">−65.8</td></tr>
       <tr class="waitsec-static-row"><td>$85–149</td><td>121–180s</td><td class="ctrl n">508</td><td class="ctrl"><span class="ctrl-val">78.0%</span></td><td class="trt n">25</td><td class="trt"><span class="trt-val">52.0%</span></td><td class="diff lose">−26.0</td></tr>
       <tr class="drill-row" data-drill-key="$85-149|181-400" title="Click to expand / collapse"><td>$85–149</td><td>181–400s</td><td class="ctrl n">792</td><td class="ctrl"><span class="ctrl-val">68.2%</span></td><td class="trt n">201</td><td class="trt"><span class="trt-val">65.2%</span></td><td class="diff lose">−3.0</td></tr>
       <tr class="key-insight-row lose" hidden><td colspan="7"><div class="key-insight-inner">
-        <b class="k">This group: orders with subsidy finish 3.4 percentage points less often; focus on 301–360 sec</b>
+        <b class="k">This group: subsidy orders finish 3.4 percentage points less often; focus on 301–360 sec</b>
         <ul>
-          <li><b>Time from order placed to completed</b>: 301-360s orders with subsidy <b>15.4% (41/266)</b> &gt; orders with no subsidy 14.5% (138/949) → better for subsidy</li><li><b>Time from order placed to completed</b>: 241-300s orders with subsidy 19.5% (52/266) &gt; orders with no subsidy 17.8% (169/949) → better for subsidy</li><li><b>Time from order placed to cancelled</b>: 301-360s orders with subsidy <b>10.2% (27/266)</b> &gt; orders with no subsidy 6.6% (63/949) → worse for subsidy</li><li><b>Time from order placed to cancelled</b>: 241-300s orders with subsidy 7.5% (20/266) &lt; orders with no subsidy 8.0% (76/949) → better for subsidy</li>
+          <li><b>Time to completion</b>: 301-360s subsidy orders <b>15.4% (41/266)</b> &gt; non-subsidy orders 14.5% (138/949) → better for subsidy</li><li><b>Time to completion</b>: 241-300s subsidy orders 19.5% (52/266) &gt; non-subsidy orders 17.8% (169/949) → better for subsidy</li><li><b>Time to cancellation</b>: 301-360s subsidy orders <b>10.2% (27/266)</b> &gt; non-subsidy orders 6.6% (63/949) → worse for subsidy</li><li><b>Time to cancellation</b>: 241-300s subsidy orders 7.5% (20/266) &lt; non-subsidy orders 8.0% (76/949) → better for subsidy</li>
         </ul>
-        <span class="muted-cap">This group: orders with subsidy 64.3% (171/266) vs orders with no subsidy 67.7% (642/949)。Full time buckets and longest-wait orders below. (2026-07-14 queried)</span>
+        <span class="muted-cap">This group: subsidy orders 64.3% (171/266) vs non-subsidy orders 67.7% (642/949)。Full time buckets and longest-wait orders below. (2026-07-14 queried)</span>
       </div></td></tr>
       <tr class="drill-row" data-drill-key="$85-149|400+" title="Click to expand / collapse"><td>$85–149</td><td>400s+</td><td class="ctrl n">496</td><td class="ctrl"><span class="ctrl-val">56.2%</span></td><td class="trt n">417</td><td class="trt"><span class="trt-val">54.0%</span></td><td class="diff lose">−2.2</td></tr>
       <tr class="key-insight-row lose" hidden><td colspan="7"><div class="key-insight-inner">
-        <b class="k">This group: orders with subsidy finish 3.2 percentage points less often; look at 460–519 sec vs 1120–1179 sec</b>
+        <b class="k">This group: subsidy orders finish 3.2 percentage points less often; look at 460–519 sec vs 1120–1179 sec</b>
         <ul>
-          <li><b>Time from order placed to cancelled</b>: 460-519s orders with subsidy <b>2.9% (14/486)</b> &lt; orders with no subsidy 8.3% (43/515) → better for subsidy</li><li><b>Time from order placed to cancelled</b>: 1120-1179s orders with subsidy 2.7% (13/486) &gt; orders with no subsidy 0.6% (3/515) → worse for subsidy</li><li><b>Time from order placed to cancelled</b>: 400-459s orders with subsidy 2.5% (12/486) &lt; orders with no subsidy 5.8% (30/515) → better for subsidy</li><li><b>Time from order placed to completed</b>: 460-519s orders with subsidy <b>6.8% (33/486)</b> &lt; orders with no subsidy 12.4% (64/515) → worse for subsidy</li><li><b>Time from order placed to completed</b>: 760-819s orders with subsidy 3.1% (15/486) &gt; orders with no subsidy 1.2% (6/515) → better for subsidy</li>
+          <li><b>Time to cancellation</b>: 460-519s subsidy orders <b>2.9% (14/486)</b> &lt; non-subsidy orders 8.3% (43/515) → better for subsidy</li><li><b>Time to cancellation</b>: 1120-1179s subsidy orders 2.7% (13/486) &gt; non-subsidy orders 0.6% (3/515) → worse for subsidy</li><li><b>Time to cancellation</b>: 400-459s subsidy orders 2.5% (12/486) &lt; non-subsidy orders 5.8% (30/515) → better for subsidy</li><li><b>Time to completion</b>: 460-519s subsidy orders <b>6.8% (33/486)</b> &lt; non-subsidy orders 12.4% (64/515) → worse for subsidy</li><li><b>Time to completion</b>: 760-819s subsidy orders 3.1% (15/486) &gt; non-subsidy orders 1.2% (6/515) → better for subsidy</li>
         </ul>
-        <span class="muted-cap">This group: orders with subsidy 53.9% (262/486) vs orders with no subsidy 57.1% (294/515)。Full time buckets and longest-wait orders below. (2026-07-14 queried)</span>
+        <span class="muted-cap">This group: subsidy orders 53.9% (262/486) vs non-subsidy orders 57.1% (294/515)。Full time buckets and longest-wait orders below. (2026-07-14 queried)</span>
       </div></td></tr>
       <tr class="waitsec-static-row"><td>$150–199</td><td>0–60s</td><td class="ctrl n">1733</td><td class="ctrl"><span class="ctrl-val">91.2%</span></td><td class="trt n">4</td><td class="trt"><span class="trt-val">0.0%</span></td><td class="diff lose">−91.2</td></tr>
       <tr class="waitsec-static-row"><td>$150–199</td><td>60–120s</td><td class="ctrl n">241</td><td class="ctrl"><span class="ctrl-val">65.1%</span></td><td class="trt n">2</td><td class="trt"><span class="trt-val">0.0%</span></td><td class="diff lose">−65.1</td></tr>
       <tr class="waitsec-static-row"><td>$150–199</td><td>121–180s</td><td class="ctrl n">184</td><td class="ctrl"><span class="ctrl-val">65.8%</span></td><td class="trt n">7</td><td class="trt"><span class="trt-val">42.9%</span></td><td class="diff lose">−22.9</td></tr>
       <tr class="drill-row pos" data-drill-key="$150-199|181-400" title="Click to expand full buckets / tail orders"><td>$150–199</td><td>181–400s</td><td class="ctrl n">334</td><td class="ctrl"><span class="ctrl-val">54.8%</span></td><td class="trt n">83</td><td class="trt"><span class="trt-val">57.8%</span></td><td class="diff win">+3.0</td></tr>
       <tr class="key-insight-row" hidden><td colspan="7"><div class="key-insight-inner">
-        <b class="k">This group: orders with subsidy finish 2 percentage points less often; 301–360／361–420 sec — share with subsidy is worth watching</b>
+        <b class="k">This group: subsidy orders finish 2 percentage points less often; 301–360／361–420 sec — share with subsidy is worth watching</b>
         <ul>
-          <li><b>Time from order placed to completed</b>: 301-360s orders with subsidy <b>17.8% (19/107)</b> &gt; orders with no subsidy 12.2% (45/369) → better for subsidy</li><li><b>Time from order placed to completed</b>: 361-420s orders with subsidy 3.7% (4/107) &lt; orders with no subsidy 5.1% (19/369) → worse for subsidy</li><li><b>Time from order placed to cancelled</b>: 361-420s orders with subsidy <b>11.2% (12/107)</b> &gt; orders with no subsidy 4.3% (16/369) → worse for subsidy</li><li><b>Time from order placed to cancelled</b>: 301-360s orders with subsidy 9.3% (10/107) &lt; orders with no subsidy 10.8% (40/369) → better for subsidy</li>
+          <li><b>Time to completion</b>: 301-360s subsidy orders <b>17.8% (19/107)</b> &gt; non-subsidy orders 12.2% (45/369) → better for subsidy</li><li><b>Time to completion</b>: 361-420s subsidy orders 3.7% (4/107) &lt; non-subsidy orders 5.1% (19/369) → worse for subsidy</li><li><b>Time to cancellation</b>: 361-420s subsidy orders <b>11.2% (12/107)</b> &gt; non-subsidy orders 4.3% (16/369) → worse for subsidy</li><li><b>Time to cancellation</b>: 301-360s subsidy orders 9.3% (10/107) &lt; non-subsidy orders 10.8% (40/369) → better for subsidy</li>
         </ul>
-        <span class="muted-cap">This group: orders with subsidy 55.1% (59/107) vs orders with no subsidy 53.1% (196/369)。Full time buckets and longest-wait orders below. (2026-07-14 queried)</span>
+        <span class="muted-cap">This group: subsidy orders 55.1% (59/107) vs non-subsidy orders 53.1% (196/369)。Full time buckets and longest-wait orders below. (2026-07-14 queried)</span>
         <div class="inline-day-break">
           <table class="cmp small">
             <caption><b>Breakdown · $150–199 × 181–400 (+3.0)</b>: parent cell differs by day; time-bucket focus after expand is still <b>301–420s</b></caption>
-            <thead><tr><th>Date</th><th>Weekday</th><th class="ctrl">Orders with no subsidy / Completion / pending_orders_at_120s</th><th class="trt">Orders with subsidy / Completion / pending_orders_at_120s</th><th>Which side finished more often</th></tr></thead>
+            <thead><tr><th>Date</th><th>Weekday</th><th class="ctrl">Non-subsidy orders / Completion / pending_orders_at_120s</th><th class="trt">Subsidy orders / Completion / pending_orders_at_120s</th><th>Which side finished more often</th></tr></thead>
             <tbody>
               <tr><td>2026-05-26</td><td>Tue</td><td class="ctrl"><span class="ctrl-val">53 · 47.2% · 161</span></td><td class="trt"><span class="trt-val">16 · 43.8% · 206</span></td><td class="lose">Worse for subsidy</td></tr>
               <tr><td>2026-05-29</td><td>Fri</td><td class="ctrl"><span class="ctrl-val">77 · 53.2% · 112</span></td><td class="trt"><span class="trt-val">7 · 71.4% · 136</span></td><td class="win">Better for subsidy (n=7)</td></tr>
@@ -373,11 +373,11 @@
       </div></td></tr>
       <tr class="drill-row" data-drill-key="$150-199|400+" title="Click to expand / collapse"><td>$150–199</td><td>400s+</td><td class="ctrl n">238</td><td class="ctrl"><span class="ctrl-val">50.0%</span></td><td class="trt n">192</td><td class="trt"><span class="trt-val">39.1%</span></td><td class="diff lose">−10.9</td></tr>
       <tr class="key-insight-row lose" hidden><td colspan="7"><div class="key-insight-inner">
-        <b class="k">This group: orders with subsidy finish 11.2 percentage points less often; look at 400–639 sec vs 760–1059 sec</b>
+        <b class="k">This group: subsidy orders finish 11.2 percentage points less often; look at 400–639 sec vs 760–1059 sec</b>
         <ul>
-          <li><b>Time from order placed to cancelled</b>: 400-459s orders with subsidy <b>2.7% (6/222)</b> &lt; orders with no subsidy 5.5% (13/235) → better for subsidy</li><li><b>Time from order placed to cancelled</b>: 940-999s orders with subsidy <b>5.4% (12/222)</b> &gt; orders with no subsidy 2.1% (5/235) → worse for subsidy</li><li><b>Time from order placed to completed</b>: 400-459s orders with subsidy <b>3.6% (8/222)</b> &lt; orders with no subsidy 11.1% (26/235) → worse for subsidy</li><li><b>Time from order placed to completed</b>: 760-819s orders with subsidy 2.7% (6/222) &gt; orders with no subsidy 2.6% (6/235) → better for subsidy</li>
+          <li><b>Time to cancellation</b>: 400-459s subsidy orders <b>2.7% (6/222)</b> &lt; non-subsidy orders 5.5% (13/235) → better for subsidy</li><li><b>Time to cancellation</b>: 940-999s subsidy orders <b>5.4% (12/222)</b> &gt; non-subsidy orders 2.1% (5/235) → worse for subsidy</li><li><b>Time to completion</b>: 400-459s subsidy orders <b>3.6% (8/222)</b> &lt; non-subsidy orders 11.1% (26/235) → worse for subsidy</li><li><b>Time to completion</b>: 760-819s subsidy orders 2.7% (6/222) &gt; non-subsidy orders 2.6% (6/235) → better for subsidy</li>
         </ul>
-        <span class="muted-cap">This group: orders with subsidy 36.5% (81/222) vs orders with no subsidy 47.7% (112/235)。Full time buckets and longest-wait orders below. (2026-07-14 queried)</span>
+        <span class="muted-cap">This group: subsidy orders 36.5% (81/222) vs non-subsidy orders 47.7% (112/235)。Full time buckets and longest-wait orders below. (2026-07-14 queried)</span>
       </div></td></tr>
 
     </tbody>
@@ -392,7 +392,7 @@
 
   <div class="card">
   <table class="cmp">
-    <thead><tr><th>GTV</th><th>Response time (s)</th><th class="ctrl th-2line">Orders with no subsidy<br>Avg. number of pending orders</th><th class="trt th-2line">Orders with subsidy<br>Avg. number of pending orders</th><th class="th-2line">Difference<br>(orders; higher for subsidy = harder)</th></tr></thead>
+    <thead><tr><th>GTV</th><th>Response time (s)</th><th class="ctrl th-2line">Non-subsidy orders<br>Avg. number of pending orders</th><th class="trt th-2line">Subsidy orders<br>Avg. number of pending orders</th><th class="th-2line">Difference<br>(orders; higher for subsidy = harder)</th></tr></thead>
     <tbody>
       <tr><td>&lt;$85</td><td>0–60s</td><td class="ctrl"><span class="ctrl-val">105.8</span></td><td class="trt"><span class="trt-val">138.0</span></td><td class="diff lose">+32.2</td></tr>
       <tr><td>&lt;$85</td><td>121–180s</td><td class="ctrl"><span class="ctrl-val">113.2</span></td><td class="trt"><span class="trt-val">143.0</span></td><td class="diff lose">+29.8</td></tr>
@@ -430,11 +430,11 @@
     <b>How we estimate “extra completed orders”:</b>
     We cannot point to any single order and say “this one finished only because of the subsidy.”
     So we estimate from the completion-rate gap after matching similar orders:
-    <pre style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:13.5px;overflow-x:auto;margin:10px 0">Completion-rate gap after matching = completion rate (orders with subsidy) − completion rate (orders with no subsidy)
+    <pre style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:13.5px;overflow-x:auto;margin:10px 0">Completion-rate gap after matching = completion rate (subsidy orders) − completion rate (non-subsidy orders)
               = 55.3% − 62.6%
               = −1.9 percentage points (i.e. −1.9%)
 
-Extra completed orders ≈ number of orders with subsidy × completion-rate gap
+Extra completed orders ≈ number of subsidy orders × completion-rate gap
         = 1,050 × (strictest fair comparison ≈ −4.7 percentage points)
         ≈ −24 (negative — no evidence of extra completed orders)</pre>
     Result ≤ 0, i.e. <b class="hl-bad">no proven extra completed orders</b>.
@@ -451,7 +451,7 @@ Extra completed orders ≈ number of orders with subsidy × completion-rate gap
   <h3 style="font-size:18px;margin:28px 0 8px">Cash summary</h3>
   <p>During this period（2026-07-14 queried，HK · <code>pass_sheet_price_lt_200</code> · 6 campaign days）:</p>
   <div class="kpi">
-    <div class="k"><div class="lbl">Subsidized orders completed</div><div class="val">529</div><div class="sub">orders with subsidy that finished</div></div>
+    <div class="k"><div class="lbl">Subsidized orders completed</div><div class="val">529</div><div class="sub">subsidy orders that finished</div></div>
     <div class="k"><div class="lbl">GTV generated</div><div class="val">$65,904</div><div class="sub">from those completed orders</div></div>
     <div class="k"><div class="lbl">Subsidies paid</div><div class="val">$4,945</div><div class="sub">paid on completed orders only</div></div>
   </div>
@@ -496,8 +496,8 @@ Extra completed orders ≈ number of orders with subsidy × completion-rate gap
     ["tip_amount", "Subsidy amount tier ($5/$10/$15)"],
   ];
   const dimOptionsCompleted = [
-    ["death_buckets", "Time from order placed to completed (buckets)"],
-    ["death_summary", "Time from order placed to completed: overall"],
+    ["death_buckets", "Time to completion (buckets)"],
+    ["death_summary", "Time to completion: overall"],
     ["backlog", "Orders waiting for a driver when dispatching (how hard)"],
     ["region", "pickup_location_region"],
     ["release", "Release count"],
@@ -559,9 +559,9 @@ Extra completed orders ≈ number of orders with subsidy × completion-rate gap
   function cellCls(side, cls) {
     return cls ? side + " " + cls : side;
   }
-  /** Subsidized vs no-subsidy: better / worse for subsidy (anchor = orders with subsidy side)
-   *  rate = completion / Δ (higher orders with subsidy = better for subsidy)
-   *  share / share_lo = cancel rate (lower orders with subsidy cancel = better for subsidy)
+  /** Subsidized vs no-subsidy: better / worse for subsidy (anchor = subsidy orders side)
+   *  rate = completion / Δ (higher subsidy orders = better for subsidy)
+   *  share / share_lo = cancel rate (lower subsidy orders cancel = better for subsidy)
    *  share_hi = completion time-bucket share of cell (higher = better for subsidy)
    *  death_bucket = death time-bucket share of cell (lower = better for subsidy, fewer cancelled in that window)
    */
@@ -671,8 +671,8 @@ Extra completed orders ≈ number of orders with subsidy × completion-rate gap
     const trtCancelCls = cmpCls(t.cancel_pct, c.cancel_pct, true);
     return '<div class="' + boxCls + '" style="margin:0 0 12px;font-size:13.5px;line-height:1.55">' +
       "<b>Cell completion / cancel rates</b>:" +
-      '<span class="ctrl">Orders with no subsidy · completed ' + pct(c.cr_pct, c.completed, c.n) + " · cancelled " + pct(c.cancel_pct, c.cancelled, c.n) + "</span>｜" +
-      '<span class="' + cellCls("trt", trtCrCls) + '">Orders with subsidy · completed ' + pct(t.cr_pct, t.completed, t.n) + " " + subsidyTag(t.cr_pct, c.cr_pct, "rate") + "</span> · " +
+      '<span class="ctrl">Non-subsidy orders · completed ' + pct(c.cr_pct, c.completed, c.n) + " · cancelled " + pct(c.cancel_pct, c.cancelled, c.n) + "</span>｜" +
+      '<span class="' + cellCls("trt", trtCrCls) + '">Subsidy orders · completed ' + pct(t.cr_pct, t.completed, t.n) + " " + subsidyTag(t.cr_pct, c.cr_pct, "rate") + "</span> · " +
       '<span class="' + cellCls("trt", trtCancelCls) + '">cancelled ' + pct(t.cancel_pct, t.cancelled, t.n) + " " + subsidyTag(t.cancel_pct, c.cancel_pct, "share") + "</span>｜" +
       '<span class="diff ' + dCls + '">completion rate difference ' + dTxt + " " + subsidyTag(dpp, 0, "rate") + "</span></div>";
   }
@@ -683,14 +683,14 @@ Extra completed orders ≈ number of orders with subsidy × completion-rate gap
       const g = DRILL.meta && DRILL.meta.completed_outcome_global;
       if (!g) return "";
       const c = g.ctrl, t = g.trt;
-      return '<div class="box good" style="margin:0 0 12px;font-size:13.5px"><b>All completed orders end-to-end duration final_response_time (long-wait pool total)</b>: Orders with no subsidy · P75 ' + fmt(c.complete_p75) + 's / P85 ' + fmt(c.complete_p85) + 's / P99 ' + fmt(c.complete_p99) + 's / max ' + fmt(c.complete_max) +
-        's (n=' + c.completed + ')｜Orders with subsidy · P75 ' + fmt(t.complete_p75) + 's / P85 ' + fmt(t.complete_p85) + 's / P99 ' + fmt(t.complete_p99) + 's / max ' + fmt(t.complete_max) + 's (n=' + t.completed + ')</div>';
+      return '<div class="box good" style="margin:0 0 12px;font-size:13.5px"><b>All completed orders end-to-end duration final_response_time (long-wait pool total)</b>: Non-subsidy orders · P75 ' + fmt(c.complete_p75) + 's / P85 ' + fmt(c.complete_p85) + 's / P99 ' + fmt(c.complete_p99) + 's / max ' + fmt(c.complete_max) +
+        's (n=' + c.completed + ')｜Subsidy orders · P75 ' + fmt(t.complete_p75) + 's / P85 ' + fmt(t.complete_p85) + 's / P99 ' + fmt(t.complete_p99) + 's / max ' + fmt(t.complete_max) + 's (n=' + t.completed + ')</div>';
     }
     const g = DRILL.meta && DRILL.meta.cancel_death_global;
     if (!g) return "";
     const c = g.ctrl, t = g.trt;
-    return '<div class="box warn" style="margin:0 0 12px;font-size:13.5px"><b>All cancelled orders: time from order placed to cancelled (long-wait total)</b>: Orders with no subsidy · P75 ' + fmt(c.death_p75) + 's / P85 ' + fmt(c.death_p85) + 's / P99 ' + fmt(c.death_p99) + 's / max ' + fmt(c.death_max) +
-      's (n=' + c.n + ')｜Orders with subsidy · P75 ' + fmt(t.death_p75) + 's / P85 ' + fmt(t.death_p85) + 's / P99 ' + fmt(t.death_p99) + 's / max ' + fmt(t.death_max) + 's (n=' + t.n + ')</div>';
+    return '<div class="box warn" style="margin:0 0 12px;font-size:13.5px"><b>All cancelled orders: time from order placed to cancelled (long-wait total)</b>: Non-subsidy orders · P75 ' + fmt(c.death_p75) + 's / P85 ' + fmt(c.death_p85) + 's / P99 ' + fmt(c.death_p99) + 's / max ' + fmt(c.death_max) +
+      's (n=' + c.n + ')｜Subsidy orders · P75 ' + fmt(t.death_p75) + 's / P85 ' + fmt(t.death_p85) + 's / P99 ' + fmt(t.death_p99) + 's / max ' + fmt(t.death_max) + 's (n=' + t.n + ')</div>';
   }
 
   function tableHtml(caption, head, bodyRows) {
@@ -721,39 +721,32 @@ Extra completed orders ≈ number of orders with subsidy × completion-rate gap
     const s = row.summary || {};
     const denomCtrl = s.ctrl && s.ctrl.n;
     const denomTrt = s.trt && s.trt.n;
-    const timeLabel = completed ? "Time from order placed to completed (buckets)" : "Time from order placed to cancelled (buckets)";
+    const timeLabel = completed ? "Time to completion" : "Time to cancellation";
     const rangeNote = minS >= 400 ? "from 400s" : (minS >= 181 ? "from 181s" : "from 180s");
-    const outcomeNote = "Share% denominator = all orders in cell (completed + cancelled)";
-    const winNote = completed
-      ? "Better/worse = share of group with subsidy vs no subsidy (time-to-complete: higher share = better)"
-      : "Better/worse = share of group with subsidy vs no subsidy (time-to-cancel: lower share = better, fewer cancels in that window)";
+    const outcomeNote = "Share % denominator = all orders in this cell (completed + cancelled)";
     const caption = (completed
-      ? "Time-to-complete buckets (status=completed only; final_response_time; 120s wide; " + rangeNote + "; " + outcomeNote + ")"
-      : "Time-to-cancel buckets (status=cancelled only; cancelled_at−created_at; 120s wide; " + rangeNote + "; " + outcomeNote + ")") +
-      "· <span class='muted-cap'>Click column headers to sort. " + winNote + "</span>";
-    const head = [timeLabel, "Orders with no subsidy (count)", "Orders with subsidy (count)", "佔全組% · 無補貼", "佔全組% · 有補貼 (較好／較差)", "P75 · 無補貼", "P75 · 有補貼", "P85 · 無補貼", "P85 · 有補貼", "P99 · 無補貼", "P99 · 有補貼", "max · no subsidy", "max · with subsidy"];
+      ? "Time-to-completion buckets (status=completed only; final_response_time; 120s bins; " + rangeNote + "; " + outcomeNote + ")"
+      : "Time-to-cancellation buckets (status=cancelled only; cancelled_at−created_at; 120s bins; " + rangeNote + "; " + outcomeNote + ")") +
+      " · <span class='muted-cap'>Click column headers to sort</span>";
+    const head = [timeLabel, "Non-subsidy orders (n)", "Subsidy orders (n)", "Share of non-subsidy orders", "Share of subsidy orders", "P75 (no subsidy)", "P75 (subsidy)", "P85 (no subsidy)", "P85 (subsidy)", "P99 (no subsidy)", "P99 (subsidy)", "Max (no subsidy)", "Max (subsidy)"];
     const body = buckets.map((b) => {
       const p75c = bucketVal(b, "ctrl", 75), p75t = bucketVal(b, "trt", 75);
       const p85c = bucketVal(b, "ctrl", 85), p85t = bucketVal(b, "trt", 85);
       const p99c = bucketVal(b, "ctrl", 99), p99t = bucketVal(b, "trt", 99);
       const maxC = bucketMax(b, "ctrl"), maxT = bucketMax(b, "trt");
-      const shareCls = shareCompareCls(b.trt_n, b.ctrl_n, denomTrt, denomCtrl, b.bucket, completed, buckets);
-      const trtShare = shareRate(b.trt_n, denomTrt);
-      const ctrlShare = shareRate(b.ctrl_n, denomCtrl);
       const ctrlSharePct = denomCtrl ? Math.round((b.ctrl_n / denomCtrl) * 1000) / 10 : null;
       const trtSharePct = denomTrt ? Math.round((b.trt_n / denomTrt) * 1000) / 10 : null;
-      const shareMode = completed ? "share_hi" : "death_bucket";
       return "<tr><td style='text-align:left;vertical-align:middle' data-sort='" + bucketStart(b.bucket) + "'>" + b.bucket + "s</td>" +
       "<td class='ctrl n' style='vertical-align:middle' data-sort='" + (b.ctrl_n || 0) + "'>" + fmt(b.ctrl_n) + "</td>" +
       "<td class='trt n' style='vertical-align:middle' data-sort='" + (b.trt_n || 0) + "'>" + fmt(b.trt_n) + "</td>" +
       "<td class='ctrl' style='vertical-align:middle' data-sort='" + (ctrlSharePct == null ? "" : ctrlSharePct) + "'>" + sharePct(b.ctrl_n, denomCtrl) + "</td>" +
-      "<td class='" + cellCls("trt", shareCls) + "' style='vertical-align:middle' data-sort='" + (trtSharePct == null ? "" : trtSharePct) + "'>" + sharePct(b.trt_n, denomTrt) + " " + subsidyTag(trtShare, ctrlShare, shareMode) +
+      "<td class='trt' style='vertical-align:middle' data-sort='" + (trtSharePct == null ? "" : trtSharePct) + "'>" + sharePct(b.trt_n, denomTrt) +
       "</td><td class='ctrl' style='vertical-align:middle' data-sort='" + (p75c == null ? "" : p75c) + "'>" + fmt(p75c) + "</td><td class='trt' style='vertical-align:middle' data-sort='" + (p75t == null ? "" : p75t) + "'>" + fmt(p75t) +
       "</td><td class='ctrl' style='vertical-align:middle' data-sort='" + (p85c == null ? "" : p85c) + "'>" + fmt(p85c) + "</td><td class='trt' style='vertical-align:middle' data-sort='" + (p85t == null ? "" : p85t) + "'>" + fmt(p85t) +
       "</td><td class='ctrl' style='vertical-align:middle' data-sort='" + (p99c == null ? "" : p99c) + "'>" + fmt(p99c) + "</td><td class='trt' style='vertical-align:middle' data-sort='" + (p99t == null ? "" : p99t) + "'>" + fmt(p99t) +
       "</td><td class='ctrl' style='vertical-align:middle' data-sort='" + (maxC == null ? "" : maxC) + "'>" + fmt(maxC) + "</td><td class='trt' style='vertical-align:middle' data-sort='" + (maxT == null ? "" : maxT) + "'>" + fmt(maxT) + "</td></tr>";
     });
-    if (!body.length) body.push("<tr><td colspan='13' style='text-align:left;color:var(--muted)'>No " + (completed ? "completed" : "cancelled") + " order data in this cell</td></tr>");
+    if (!body.length) body.push("<tr><td colspan='13' style='text-align:left;color:var(--muted)'>No " + (completed ? "completed" : "cancelled") + " orders in this cell</td></tr>");
     return tableHtml(caption, head, body);
   }
 
@@ -773,9 +766,9 @@ Extra completed orders ≈ number of orders with subsidy × completion-rate gap
         "</td><td class='trt' style='vertical-align:middle'>" + fmt(t.p75) + "</td><td class='trt' style='vertical-align:middle'>" + fmt(t.p85) + "</td><td class='trt' style='vertical-align:middle'>" + fmt(t.p99) + "</td><td class='trt' style='vertical-align:middle'>" + fmt(t.max) + "</td></tr>";
     });
     const s = row.summary || {};
-    const extra = "<p style='font-size:13px;color:var(--ink2);margin:10px 0 0'>Cell overall: orders with no subsidy completed " + pct(s.ctrl && s.ctrl.cr_pct, s.ctrl && s.ctrl.completed, s.ctrl && s.ctrl.n) +
+    const extra = "<p style='font-size:13px;color:var(--ink2);margin:10px 0 0'>Cell overall: non-subsidy orders completed " + pct(s.ctrl && s.ctrl.cr_pct, s.ctrl && s.ctrl.completed, s.ctrl && s.ctrl.n) +
       " · cancelled " + pct(s.ctrl && s.ctrl.cancel_pct, s.ctrl && s.ctrl.cancelled, s.ctrl && s.ctrl.n) +
-      "｜orders with subsidy completed " + pct(s.trt && s.trt.cr_pct, s.trt && s.trt.completed, s.trt && s.trt.n) +
+      "｜subsidy orders completed " + pct(s.trt && s.trt.cr_pct, s.trt && s.trt.completed, s.trt && s.trt.n) +
       " · cancelled " + pct(s.trt && s.trt.cancel_pct, s.trt && s.trt.cancelled, s.trt && s.trt.n) +
       "｜completion rate difference " + (s.delta_pp == null ? "—" : (s.delta_pp > 0 ? "+" : "") + s.delta_pp + "pp") + "</p>";
     const cap = completed ? "Completed orders: time-to-complete percentiles + group completion rate" : "Cancelled orders: time-to-cancel percentiles + group completion rate";
@@ -786,7 +779,7 @@ Extra completed orders ≈ number of orders with subsidy × completion-rate gap
     const items = (row.dimensions && row.dimensions[dimKey]) || [];
     const completed = mode === "completed";
     const timeHdr = completed ? "Time-to-complete P75/P85/P99 (no subsidy / with subsidy)" : "Time-to-cancel P75/P85/P99 (no subsidy / with subsidy)";
-    const head = ["Group", "Orders with no subsidy (count)", "無補貼訂單 · Completion rate", "無補貼訂單 · 取消率", "Orders with subsidy (count)", "Orders with subsidy · Completion rate", "Orders with subsidy · 取消率", "Completion rate difference (percentage points)", timeHdr];
+    const head = ["Group", "Non-subsidy orders (n)", "Non-subsidy orders · Completion rate", "Non-subsidy orders · Cancel rate", "Subsidy orders (n)", "Subsidy orders · Completion rate", "Subsidy orders · Cancel rate", "Completion rate difference (percentage points)", timeHdr];
     const body = items.map((it) => {
       const c = it.ctrl || {}, t = it.trt || {};
       const dcls = it.delta_pp > 0 ? "win" : it.delta_pp < 0 ? "lose" : "";
@@ -807,7 +800,7 @@ Extra completed orders ≈ number of orders with subsidy × completion-rate gap
         "</td><td class='diff " + dcls + "' style='vertical-align:middle' data-sort='" + (it.delta_pp == null ? "" : it.delta_pp) + "'>" + (it.delta_pp > 0 ? "+" : "") + fmt(it.delta_pp) + " " + subsidyTag(it.delta_pp, 0, "rate") + "</td><td style='vertical-align:middle'>" + timeCtrl + " ｜ " + timeTrt + "</td></tr>";
     });
     if (!body.length) body.push("<tr><td colspan='9' style='text-align:left;color:var(--muted)'>No data in this cell</td></tr>");
-    return tableHtml(caption + " · <span class='muted-cap'>Click column headers to sort; 較好／較差＝有補貼相對無補貼</span>", head, body);
+    return tableHtml(caption + " · <span class='muted-cap'>Click column headers to sort</span>", head, body);
   }
 
   function renderTailHtml(row, mode) {
@@ -876,7 +869,7 @@ Extra completed orders ≈ number of orders with subsidy × completion-rate gap
     const completed = mode === "completed";
     if (wc === "180-400") {
       if (completed) {
-        return '<p class="drill-scope-note"><b>Why do completion-time buckets stop around 400s?</b> Main table “180–400” filters on <code>wait_sec</code>; within this cell most <b>completed</b> <code>final_response_time</code> values are ≤400s (e.g. this cell orders with no subsidy max ' +
+        return '<p class="drill-scope-note"><b>Why do completion-time buckets stop around 400s?</b> Main table “180–400” filters on <code>wait_sec</code>; within this cell most <b>completed</b> <code>final_response_time</code> values are ≤400s (e.g. this cell non-subsidy orders max ' +
           fmt(row.summary && row.summary.ctrl && row.summary.ctrl.complete_max) + "s). Longer completions fall in the main-table “400+” wait row — not a table error.</p>";
       }
       return '<p class="drill-scope-note"><b>Why can time-to-cancel exceed 400 seconds?</b> 主表「180–400」只代表 <code>wait_sec</code> 落在 180–399s (常用<b>等到首個司機</b>的時間)，不是cancelled_at上限。訂單可以先有司機, 之後再等到取消，所以 <code>cancelled_at−created_at</code> 可以到 1,000s+ (例: 本組無補貼取消 max ' +
@@ -893,11 +886,11 @@ Extra completed orders ≈ number of orders with subsidy × completion-rate gap
     const s = row.summary || {};
     const c = s.ctrl || {}, t = s.trt || {};
     if (completed) {
-      return '<div class="box good" style="margin:0 0 12px;font-size:13.5px"><b>This cell completed-order final_response_time</b>: Orders with no subsidy · P75 ' + fmt(c.complete_p75) + 's / P85 ' + fmt(c.complete_p85) + 's / P99 ' + fmt(c.complete_p99) + 's / max ' + fmt(c.complete_max) +
-        's (n=' + c.completed + ')｜Orders with subsidy · P75 ' + fmt(t.complete_p75) + 's / P85 ' + fmt(t.complete_p85) + 's / P99 ' + fmt(t.complete_p99) + 's / max ' + fmt(t.complete_max) + 's (n=' + t.completed + ')</div>';
+      return '<div class="box good" style="margin:0 0 12px;font-size:13.5px"><b>This cell completed-order final_response_time</b>: Non-subsidy orders · P75 ' + fmt(c.complete_p75) + 's / P85 ' + fmt(c.complete_p85) + 's / P99 ' + fmt(c.complete_p99) + 's / max ' + fmt(c.complete_max) +
+        's (n=' + c.completed + ')｜Subsidy orders · P75 ' + fmt(t.complete_p75) + 's / P85 ' + fmt(t.complete_p85) + 's / P99 ' + fmt(t.complete_p99) + 's / max ' + fmt(t.complete_max) + 's (n=' + t.completed + ')</div>';
     }
-    return '<div class="box warn" style="margin:0 0 12px;font-size:13.5px"><b>This group cancelled orders: time from order placed to cancelled</b>: Orders with no subsidy · P75 ' + fmt(c.death_p75) + 's / P85 ' + fmt(c.death_p85) + 's / P99 ' + fmt(c.death_p99) + 's / max ' + fmt(c.death_max) +
-      's (n=' + c.cancelled + ')｜Orders with subsidy · P75 ' + fmt(t.death_p75) + 's / P85 ' + fmt(t.death_p85) + 's / P99 ' + fmt(t.death_p99) + 's / max ' + fmt(t.death_max) + 's (n=' + t.cancelled + ')</div>';
+    return '<div class="box warn" style="margin:0 0 12px;font-size:13.5px"><b>This group cancelled orders: time from order placed to cancelled</b>: Non-subsidy orders · P75 ' + fmt(c.death_p75) + 's / P85 ' + fmt(c.death_p85) + 's / P99 ' + fmt(c.death_p99) + 's / max ' + fmt(c.death_max) +
+      's (n=' + c.cancelled + ')｜Subsidy orders · P75 ' + fmt(t.death_p75) + 's / P85 ' + fmt(t.death_p85) + 's / P99 ' + fmt(t.death_p99) + 's / max ' + fmt(t.death_max) + 's (n=' + t.cancelled + ')</div>';
   }
 
   function renderDetail(detailTr, key, dim) {
