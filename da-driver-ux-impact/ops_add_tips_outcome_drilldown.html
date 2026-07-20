@@ -389,7 +389,14 @@
   </div>
   </div>
 
-  <h2 id="sec-adddim">主圖 · 加維度（疊在故事上 · 可 multi 篩選）</h2>
+  <h2 id="sec-adddim">
+    <button type="button" class="sec-toggle" id="secAdddimToggle" aria-expanded="true" aria-controls="sec-adddim-body">
+      <span class="sec-chevron" aria-hidden="true">▸</span>
+      <span>主圖 · 加維度（疊在故事上 · 可 multi 篩選）</span>
+    </button>
+  </h2>
+  <p class="sec-collapse-hint" id="secAdddimHint" style="display:none">點標題展開圖表與明細；再點可收起。</p>
+  <div id="sec-adddim-body" class="sec-collapse-body">
   <div class="card chart-primary">
     <h3>預設：距離段（km）；圖＝股票式兩層（上完成率／下訂單量）</h3>
     <p class="cap">
@@ -447,6 +454,7 @@
     <div id="routeAttrTable" style="margin-top:10px"></div>
     <p class="cap mini" id="interactInsight"></p>
   </div>
+  </div>
 
   <h2 id="sec-dist">分布 · long response time focus band（取消時間）</h2>
   <div class="chart-grid">
@@ -477,18 +485,37 @@
     </div>
 
     <div class="card chart-distribution" style="grid-column:1/-1">
-      <h3>斷崖式取消率 · 逐桶條件取消率（hazard 折線）</h3>
-      <p class="cap"><b>cancel-centric（以「取消」為核心）</b>：折線是取消<b>率</b>——每個 60 秒桶內，「該桶起點仍在生」的訂單有多少比例在此桶取消（<b>hazard ＝ 該桶取消 ÷ 桶起點 risk set</b>；存活時間：完成單＝落單→完成，取消單＝落單→取消）。主軸＝<b>終局 cancel 的 actor（果）</b>：<b>實線＝用戶取消</b>（OrderRequest＋User）、<b>虛線＝司機取消</b>（Driver＋AdminUser 併入）。顏色＝<b>C/T（藍無補／紅有補）</b>，一眼對比。<b>release 與派單失敗是「因」不是「果」，不入主線</b>，只在 tooltip 作解釋（該桶派單失敗數、曾 release 數）。折線抽高＝<b>斷崖</b>。母體＝全 eligible；<code>risk set</code> 少於門檻的桶不畫。觀察性、非因果。</p>
+      <h3>As orders wait longer, when are they most likely to get cancelled?</h3>
+      <p class="cap">
+        We split waiting time after an order is placed into <b>60-second slices</b>.
+        At the <b>start</b> of each slice, the order is still open (not finished, not cancelled yet).
+        This chart shows: <b>out of those orders, what share get cancelled during that 60 seconds</b>.
+        <b>Solid lines</b> = cancelled by the <b>customer</b>.
+        <b>Dashed lines</b> = cancelled by the <b>driver</b>.
+        <b>Blue</b> = no subsidy.
+        <b>Red</b> = with subsidy.
+        When a line <b>jumps up</b>, many more orders were cancelled in that slice.
+        Things like “how many times we re-sent the order” or “no driver ever took it” are <b>reasons</b>, not what this chart is mainly about—they only show up when you hover on the chart.
+        If a slice has too few orders, we do not draw it, so the chart does not mislead.
+        <b>This chart describes what we see; it does not prove that subsidies caused the result.</b>
+      </p>
       <div class="legend hazard-legend" id="hazardLegend">
-        <span data-ds="0" role="button" tabindex="0"><span class="chip ctrl"></span>無補 · 用戶取消（實線）</span>
-        <span data-ds="1" role="button" tabindex="0"><span class="chip ctrl" style="opacity:.55"></span>無補 · 司機取消（虛線）</span>
-        <span data-ds="2" role="button" tabindex="0"><span class="chip trt"></span>有補 · 用戶取消（實線）</span>
-        <span data-ds="3" role="button" tabindex="0"><span class="chip trt" style="opacity:.55"></span>有補 · 司機取消（虛線）</span>
+        <span data-ds="0" role="button" tabindex="0"><span class="chip ctrl"></span>No subsidy · customer cancel</span>
+        <span data-ds="1" role="button" tabindex="0"><span class="chip ctrl" style="opacity:.55"></span>No subsidy · driver cancel (dashed)</span>
+        <span data-ds="2" role="button" tabindex="0"><span class="chip trt"></span>With subsidy · customer cancel</span>
+        <span data-ds="3" role="button" tabindex="0"><span class="chip trt" style="opacity:.55"></span>With subsidy · driver cancel (dashed)</span>
       </div>
-      <p class="cap mini" style="margin:2px 0 6px">點圖例可開／關對應線（再點還原）。</p>
+      <p class="cap mini" style="margin:2px 0 6px">Click a legend label to hide or show that line. Click again to bring it back.</p>
       <div class="chart-box" style="height:340px"><canvas id="hazardCurve"></canvas></div>
-      <p class="cap mini">注意：有補（紅）在早段（&lt;120s）近 0%，是because subsidy only triggers when response time ≥120s，早桶沒有「有補」訂單、非真的零風險；有補的斷崖落在觸發後的桶。此為觀察性、非因果。</p>
-      <p class="cap mini" style="color:var(--ink2)"><b>穩健化：</b>只顯示 ≤900s（>900s 每桶得個位數取消、屬小樣本噪音，非趨勢；有補臂全條線僅建於約 1,300 單，尾段逐桶抖動勿逐點解讀）；桶起點 risk&lt;50 不畫；峰值標記只在 ≤600s 的穩定區搜尋，避免把尾段噪音尖標成峰值。圖上 <b>600–900s 的灰色網底＝小樣本雜訊區</b>：該段每桶僅十幾單取消事件，平滑線的起伏（如 600s、840s 的隆起）只是抽樣抖動，並非真實的次級取消波，請勿逐點解讀，只看 ≤600s 的主體趨勢。</p>
+      <p class="cap mini"><b>Note:</b> Subsidies only kick in after the order has waited a while (about 120 seconds or more).
+        So at the <b>very beginning</b> of the chart, the red lines are almost flat—not because “subsidies mean zero risk,” but because <b>there were almost no subsidised orders yet</b>.
+        The red lines only make sense <b>after</b> subsidies could apply.
+        This is still observation only, not proof of cause and effect.</p>
+      <p class="cap mini" style="color:var(--ink2)"><b>How to read this chart:</b> Focus on the first <b>15 minutes (900 seconds)</b>.
+        After that, each slice has very few orders, so the lines can wiggle for no real reason—<b>do not treat that as a trend</b>.
+        We skip slices with too few orders.
+        The <b>grey band from 600–900 seconds</b> means “very few orders here”: small bumps on the line are mostly random noise—<b>do not read every little peak</b>.
+        Look at the <b>first 10 minutes (600 seconds)</b> for the main story.</p>
     </div>
 
     <div class="card chart-distribution" style="grid-column:1/-1">
@@ -1642,10 +1669,10 @@ const REPORT_DATA = {"meta": {"query_date": "2026-07-17", "scope": "HK PlatformO
     });
     // cancel-centric：主軸＝終局 cancel 的 actor（實線＝用戶取消＝斷崖主體；虛線＝司機取消）
     const SERIES = [
-      {name:'無補·用戶取消', arr:gate(H.ctrl.hz_user_pct, H.ctrl.risk), color:CTRL, cliff:true},
-      {name:'無補·司機取消', arr:gate(H.ctrl.hz_driver_pct, H.ctrl.risk), color:CTRL, cliff:false},
-      {name:'有補·用戶取消', arr:gate(H.trt.hz_user_pct, H.trt.risk), color:TRT, cliff:true},
-      {name:'有補·司機取消', arr:gate(H.trt.hz_driver_pct, H.trt.risk), color:TRT, cliff:false},
+      {name:'No subsidy · customer', arr:gate(H.ctrl.hz_user_pct, H.ctrl.risk), color:CTRL, cliff:true},
+      {name:'No subsidy · driver', arr:gate(H.ctrl.hz_driver_pct, H.ctrl.risk), color:CTRL, cliff:false},
+      {name:'With subsidy · customer', arr:gate(H.trt.hz_user_pct, H.trt.risk), color:TRT, cliff:true},
+      {name:'With subsidy · driver', arr:gate(H.trt.hz_driver_pct, H.trt.risk), color:TRT, cliff:false},
     ];
     // 穩健化（3）峰值只喺穩定窗（≤600s）搵，避免 label 標喺尾段小樣本噪音尖
     const stableIdx = H.edges.indexOf(600)>=0 ? Math.min(H.edges.indexOf(600), capI) : capI;
@@ -1662,7 +1689,7 @@ const REPORT_DATA = {"meta": {"query_date": "2026-07-17", "scope": "HK PlatformO
           borderWidth:1, borderDash:[4,4], drawTime:'beforeDatasetsDraw'};
         ann.noiseLbl = {type:'label', xValue:xlab[Math.min(noiseFromI+Math.round((capI-noiseFromI)/2), capI)],
           yValue:YMAX, yAdjust:8, clip:false,
-          content:['⚠ 小樣本雜訊區（每桶僅十幾單）','平滑線起伏為抽樣抖動 · 請勿逐點解讀'],
+          content:['⚠ Few orders here','Wiggles are noise — do not read every peak'],
           color:'#6b7280', font:{size:10, weight:'600'},
           backgroundColor:'rgba(255,255,255,0.75)', borderColor:'rgba(120,120,120,0.35)',
           borderWidth:1, borderRadius:4, padding:{x:6,y:3}, position:'center'};
@@ -1675,7 +1702,7 @@ const REPORT_DATA = {"meta": {"query_date": "2026-07-17", "scope": "HK PlatformO
         ann['pt'+k] = {type:'point', xValue:xlab[p.i], yValue:p.v, radius:s.cliff?4:3,
           backgroundColor:s.color, borderColor:'#fff', borderWidth:1.5};
         ann['lb'+k] = {type:'label', xValue:xlab[p.i], yValue:p.v, clip:false,
-          content: s.cliff ? [s.name, `▼斷崖 ${p.v}% @ ${H.edges[p.i]}s`] : [s.name],
+          content: s.cliff ? [s.name, `▼ spike ${p.v}% @ ${H.edges[p.i]}s`] : [s.name],
           color:s.color, font:{size:11, weight:s.cliff?'700':'600'},
           backgroundColor:'rgba(255,255,255,0.85)', borderColor:s.color, borderWidth:s.cliff?1:0,
           borderRadius:4, padding:{x:5,y:3},
@@ -1685,25 +1712,25 @@ const REPORT_DATA = {"meta": {"query_date": "2026-07-17", "scope": "HK PlatformO
     };
     const hazardChart = new Chart(el,{
       type:'line',
-      data:{labels:xlab, datasets:SERIES.map(s=>line(s.name+'率', s.arr, s.color, !s.cliff))},
+      data:{labels:xlab, datasets:SERIES.map(s=>line(s.name, s.arr, s.color, !s.cliff))},
       options:{responsive:true,maintainAspectRatio:false,
         interaction:{mode:'index',intersect:false},
         plugins:{legend:{display:false},
           annotation:{annotations:{}},
           tooltip:{callbacks:{
-            title:(items)=>`存活 ${items[0].label} 桶`,
+            title:(items)=>`After ${items[0].label} of waiting`,
             label:(c)=>c.parsed.y==null?null:`${c.dataset.label}: ${c.parsed.y}%`,
             afterBody:(items)=>{
               const i=items[0].dataIndex, side=items[0].datasetIndex<2?'ctrl':'trt';
               const s=H[side];
-              return [`risk ${nf(s.risk[i])}｜取消 ${s.cancel[i]}（用戶 ${s.user[i]}／司機 ${s.driver[i]}）`,
-                      `因層：派單失敗 ${s.dispatch[i]}｜曾 release ${s.released[i]}`];
+              return [`Still open: ${nf(s.risk[i])} · Cancelled: ${s.cancel[i]} (customer ${s.user[i]} / driver ${s.driver[i]})`,
+                      `Context: no driver took it ${s.dispatch[i]} · re-sent ${s.released[i]}`];
             }
           }}},
         scales:{
-          y:{...gridCfg,title:{display:true,text:'該桶條件取消率 %（hazard）',color:INK2},
+          y:{...gridCfg,title:{display:true,text:'% cancelled in this 60 seconds',color:INK2},
              ticks:{...(gridCfg.ticks||{}),callback:(v)=>v+'%'}},
-          x:{...gridCfg,title:{display:true,text:'訂單存活時間（落單起，60s 桶）',color:INK2}}
+          x:{...gridCfg,title:{display:true,text:'How long the order has been waiting',color:INK2}}
         }}
     });
     const refreshAnn = ()=>{ hazardChart.options.plugins.annotation.annotations = buildAnn(); hazardChart.update(); };
@@ -2795,6 +2822,28 @@ const REPORT_DATA = {"meta": {"query_date": "2026-07-17", "scope": "HK PlatformO
         body.removeAttribute('hidden');
         if(hint) hint.style.display = 'none';
         ensureGlobalDriverLens();
+      }
+    });
+  })();
+  // 加維度區塊：點標題展開／收起（預設展開；收起後再開會重繪圖表避免 canvas 寬度為 0）
+  (function bindSecAdddimToggle(){
+    const btn = document.getElementById('secAdddimToggle');
+    const body = document.getElementById('sec-adddim-body');
+    const hint = document.getElementById('secAdddimHint');
+    if(!btn || !body) return;
+    btn.addEventListener('click', ()=>{
+      const open = btn.getAttribute('aria-expanded') === 'true';
+      if(open){
+        btn.setAttribute('aria-expanded', 'false');
+        body.classList.add('is-collapsed');
+        body.setAttribute('hidden', '');
+        if(hint) hint.style.display = '';
+      } else {
+        btn.setAttribute('aria-expanded', 'true');
+        body.classList.remove('is-collapsed');
+        body.removeAttribute('hidden');
+        if(hint) hint.style.display = 'none';
+        if(typeof paintInteract === 'function') paintInteract();
       }
     });
   })();
