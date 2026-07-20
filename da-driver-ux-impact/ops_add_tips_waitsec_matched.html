@@ -136,7 +136,7 @@
   .drill-controls label{color:var(--muted);font-size:13px}
   .drill-controls select{font:inherit;padding:6px 10px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--ink);max-width:min(100%,720px);min-width:min(100%,280px)}
   .drill-table-scroll{overflow-x:auto;margin:0 0 12px;-webkit-overflow-scrolling:touch}
-  .drill-table-scroll table.cmp.small{min-width:980px}
+  .drill-table-scroll table.cmp.small{min-width:520px}
   .drill-table-scroll table.cmp.small th,.drill-table-scroll table.cmp.small td{font-size:13px;padding:8px 10px}.drill-table-scroll table.cmp.small td{white-space:nowrap}.drill-table-scroll table.cmp.small th{white-space:normal;line-height:1.25;min-width:4.5em}
   .drill-outcome-toggle{display:inline-flex;align-items:center;gap:8px;font-size:13.5px;color:var(--ink2);cursor:pointer;user-select:none}
   .drill-outcome-toggle input{width:16px;height:16px;margin:0;cursor:pointer}
@@ -286,7 +286,7 @@
       <col style="width:11%"><col style="width:15%"><col style="width:12%">
     </colgroup>
     <thead><tr>
-      <th>車費</th><th class="th-2line">Response time<br>(s)</th>
+      <th>車費</th><th class="th-2line">Response time</th>
       <th class="ctrl th-2line">無補貼<br>訂單張數</th><th class="ctrl">完成率</th>
       <th class="trt th-2line">有補貼<br>訂單張數</th><th class="trt">完成率</th><th class="th-2line">差距<br>（百分點）</th>
     </tr></thead>
@@ -389,7 +389,7 @@
 
   <div class="card">
   <table class="cmp">
-    <thead><tr><th>車費</th><th>Response time (s)</th><th class="ctrl th-2line">無補貼<br>Avg. number of pending orders</th><th class="trt th-2line">有補貼<br>Avg. number of pending orders</th><th class="th-2line">差距<br>（張；有補貼更高＝更難）</th></tr></thead>
+    <thead><tr><th>車費</th><th>Response time</th><th class="ctrl th-2line">無補貼<br>Avg. number of pending orders</th><th class="trt th-2line">有補貼<br>Avg. number of pending orders</th><th class="th-2line">差距<br>（張；有補貼更高＝更難）</th></tr></thead>
     <tbody>
       <tr><td>&lt;$85</td><td>0–60</td><td class="ctrl"><span class="ctrl-val">105.8</span></td><td class="trt"><span class="trt-val">138.0</span></td><td class="diff lose">+32.2</td></tr>
       <tr><td>&lt;$85</td><td>121–180</td><td class="ctrl"><span class="ctrl-val">113.2</span></td><td class="trt"><span class="trt-val">143.0</span></td><td class="diff lose">+29.8</td></tr>
@@ -722,25 +722,35 @@
       ? "完成時間分桶（僅 status=completed；final_response_time；桶寬 120s；" + rangeNote + "；" + outcomeNote + "）"
       : "取消時間分桶（僅 status=cancelled；cancelled_at−created_at；桶寬 120s；" + rangeNote + "；" + outcomeNote + "）") +
       "· <span class='muted-cap'>點欄標題可排序</span>";
-    const head = [timeLabel, "無補貼訂單（n）", "有補貼訂單（n）", "無補貼訂單佔比", "有補貼訂單佔比", "P75（無補貼）", "P75（有補貼）", "P85（無補貼）", "P85（有補貼）", "P99（無補貼）", "P99（有補貼）", "Max（無補貼）", "Max（有補貼）"];
+    // 分位／max 欄：整欄都沒數就不顯示（分桶資料通常只有 n／佔比；P75+ 已在上方摘要）
+    const pctCols = [
+      { label: "P75（無補貼）", cls: "ctrl", get: function (b) { return bucketVal(b, "ctrl", 75); } },
+      { label: "P75（有補貼）", cls: "trt", get: function (b) { return bucketVal(b, "trt", 75); } },
+      { label: "P85（無補貼）", cls: "ctrl", get: function (b) { return bucketVal(b, "ctrl", 85); } },
+      { label: "P85（有補貼）", cls: "trt", get: function (b) { return bucketVal(b, "trt", 85); } },
+      { label: "P99（無補貼）", cls: "ctrl", get: function (b) { return bucketVal(b, "ctrl", 99); } },
+      { label: "P99（有補貼）", cls: "trt", get: function (b) { return bucketVal(b, "trt", 99); } },
+      { label: "Max（無補貼）", cls: "ctrl", get: function (b) { return bucketMax(b, "ctrl"); } },
+      { label: "Max（有補貼）", cls: "trt", get: function (b) { return bucketMax(b, "trt"); } },
+    ].filter(function (col) {
+      return buckets.some(function (b) { return col.get(b) != null; });
+    });
+    const head = [timeLabel, "無補貼訂單（n）", "有補貼訂單（n）", "無補貼訂單佔比", "有補貼訂單佔比"].concat(pctCols.map(function (c) { return c.label; }));
     const body = buckets.map((b) => {
-      const p75c = bucketVal(b, "ctrl", 75), p75t = bucketVal(b, "trt", 75);
-      const p85c = bucketVal(b, "ctrl", 85), p85t = bucketVal(b, "trt", 85);
-      const p99c = bucketVal(b, "ctrl", 99), p99t = bucketVal(b, "trt", 99);
-      const maxC = bucketMax(b, "ctrl"), maxT = bucketMax(b, "trt");
       const ctrlSharePct = denomCtrl ? Math.round((b.ctrl_n / denomCtrl) * 1000) / 10 : null;
       const trtSharePct = denomTrt ? Math.round((b.trt_n / denomTrt) * 1000) / 10 : null;
-      return "<tr><td style='text-align:left;vertical-align:middle' data-sort='" + bucketStart(b.bucket) + "'>" + b.bucket + "s</td>" +
+      let row = "<tr><td style='text-align:left;vertical-align:middle' data-sort='" + bucketStart(b.bucket) + "'>" + b.bucket + "s</td>" +
       "<td class='ctrl n' style='vertical-align:middle' data-sort='" + (b.ctrl_n || 0) + "'>" + fmt(b.ctrl_n) + "</td>" +
       "<td class='trt n' style='vertical-align:middle' data-sort='" + (b.trt_n || 0) + "'>" + fmt(b.trt_n) + "</td>" +
       "<td class='ctrl' style='vertical-align:middle' data-sort='" + (ctrlSharePct == null ? "" : ctrlSharePct) + "'>" + sharePct(b.ctrl_n, denomCtrl) + "</td>" +
-      "<td class='trt' style='vertical-align:middle' data-sort='" + (trtSharePct == null ? "" : trtSharePct) + "'>" + sharePct(b.trt_n, denomTrt) +
-      "</td><td class='ctrl' style='vertical-align:middle' data-sort='" + (p75c == null ? "" : p75c) + "'>" + fmt(p75c) + "</td><td class='trt' style='vertical-align:middle' data-sort='" + (p75t == null ? "" : p75t) + "'>" + fmt(p75t) +
-      "</td><td class='ctrl' style='vertical-align:middle' data-sort='" + (p85c == null ? "" : p85c) + "'>" + fmt(p85c) + "</td><td class='trt' style='vertical-align:middle' data-sort='" + (p85t == null ? "" : p85t) + "'>" + fmt(p85t) +
-      "</td><td class='ctrl' style='vertical-align:middle' data-sort='" + (p99c == null ? "" : p99c) + "'>" + fmt(p99c) + "</td><td class='trt' style='vertical-align:middle' data-sort='" + (p99t == null ? "" : p99t) + "'>" + fmt(p99t) +
-      "</td><td class='ctrl' style='vertical-align:middle' data-sort='" + (maxC == null ? "" : maxC) + "'>" + fmt(maxC) + "</td><td class='trt' style='vertical-align:middle' data-sort='" + (maxT == null ? "" : maxT) + "'>" + fmt(maxT) + "</td></tr>";
+      "<td class='trt' style='vertical-align:middle' data-sort='" + (trtSharePct == null ? "" : trtSharePct) + "'>" + sharePct(b.trt_n, denomTrt) + "</td>";
+      pctCols.forEach(function (col) {
+        const v = col.get(b);
+        row += "<td class='" + col.cls + "' style='vertical-align:middle' data-sort='" + (v == null ? "" : v) + "'>" + fmt(v) + "</td>";
+      });
+      return row + "</tr>";
     });
-    if (!body.length) body.push("<tr><td colspan='13' style='text-align:left;color:var(--muted)'>此格無" + (completed ? "完成" : "取消") + "單資料</td></tr>");
+    if (!body.length) body.push("<tr><td colspan='" + head.length + "' style='text-align:left;color:var(--muted)'>此格無" + (completed ? "完成" : "取消") + "單資料</td></tr>");
     return tableHtml(caption, head, body);
   }
 

@@ -136,7 +136,7 @@
   .drill-controls label{color:var(--muted);font-size:13px}
   .drill-controls select{font:inherit;padding:6px 10px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--ink);max-width:min(100%,720px);min-width:min(100%,280px)}
   .drill-table-scroll{overflow-x:auto;margin:0 0 12px;-webkit-overflow-scrolling:touch}
-  .drill-table-scroll table.cmp.small{min-width:980px}
+  .drill-table-scroll table.cmp.small{min-width:520px}
   .drill-table-scroll table.cmp.small th,.drill-table-scroll table.cmp.small td{font-size:13px;padding:8px 10px}.drill-table-scroll table.cmp.small td{white-space:nowrap}.drill-table-scroll table.cmp.small th{white-space:normal;line-height:1.25;min-width:4.5em}
   .drill-outcome-toggle{display:inline-flex;align-items:center;gap:8px;font-size:13.5px;color:var(--ink2);cursor:pointer;user-select:none}
   .drill-outcome-toggle input{width:16px;height:16px;margin:0;cursor:pointer}
@@ -289,7 +289,7 @@
       <col style="width:11%"><col style="width:15%"><col style="width:12%">
     </colgroup>
     <thead><tr>
-      <th>GTV</th><th class="th-2line">Response time<br>(s)</th>
+      <th>GTV</th><th class="th-2line">Response time</th>
       <th class="ctrl th-2line">Non-subsidy orders<br>(n)</th><th class="ctrl th-2line">Completion<br>rate</th>
       <th class="trt th-2line">Subsidy orders<br>(n)</th><th class="trt th-2line">Completion<br>rate</th><th class="th-2line">Completion rate difference<br>(percentage points)</th>
     </tr></thead>
@@ -393,7 +393,7 @@
 
   <div class="card">
   <table class="cmp">
-    <thead><tr><th>GTV</th><th>Response time (s)</th><th class="ctrl th-2line">Non-subsidy orders<br>Avg. number of pending orders</th><th class="trt th-2line">Subsidy orders<br>Avg. number of pending orders</th><th class="th-2line">Difference<br>(orders; higher for subsidy = harder)</th></tr></thead>
+    <thead><tr><th>GTV</th><th>Response time</th><th class="ctrl th-2line">Non-subsidy orders<br>Avg. number of pending orders</th><th class="trt th-2line">Subsidy orders<br>Avg. number of pending orders</th><th class="th-2line">Difference<br>(orders; higher for subsidy = harder)</th></tr></thead>
     <tbody>
       <tr><td>&lt;$85</td><td>0–60s</td><td class="ctrl"><span class="ctrl-val">105.8</span></td><td class="trt"><span class="trt-val">138.0</span></td><td class="diff lose">+32.2</td></tr>
       <tr><td>&lt;$85</td><td>121–180s</td><td class="ctrl"><span class="ctrl-val">113.2</span></td><td class="trt"><span class="trt-val">143.0</span></td><td class="diff lose">+29.8</td></tr>
@@ -727,25 +727,35 @@ Extra completed orders ≈ number of subsidy orders × completion-rate gap
       ? "Time-to-completion buckets (status=completed only; final_response_time; 120s bins; " + rangeNote + "; " + outcomeNote + ")"
       : "Time-to-cancellation buckets (status=cancelled only; cancelled_at−created_at; 120s bins; " + rangeNote + "; " + outcomeNote + ")") +
       " · <span class='muted-cap'>Click column headers to sort</span>";
-    const head = [timeLabel, "Non-subsidy orders (n)", "Subsidy orders (n)", "Share of non-subsidy orders", "Share of subsidy orders", "P75 (no subsidy)", "P75 (subsidy)", "P85 (no subsidy)", "P85 (subsidy)", "P99 (no subsidy)", "P99 (subsidy)", "Max (no subsidy)", "Max (subsidy)"];
+    // Hide percentile/max columns when the whole column has no values (bucket rows usually only have n / share; P75+ stay in the summary above)
+    const pctCols = [
+      { label: "P75 (no subsidy)", cls: "ctrl", get: function (b) { return bucketVal(b, "ctrl", 75); } },
+      { label: "P75 (subsidy)", cls: "trt", get: function (b) { return bucketVal(b, "trt", 75); } },
+      { label: "P85 (no subsidy)", cls: "ctrl", get: function (b) { return bucketVal(b, "ctrl", 85); } },
+      { label: "P85 (subsidy)", cls: "trt", get: function (b) { return bucketVal(b, "trt", 85); } },
+      { label: "P99 (no subsidy)", cls: "ctrl", get: function (b) { return bucketVal(b, "ctrl", 99); } },
+      { label: "P99 (subsidy)", cls: "trt", get: function (b) { return bucketVal(b, "trt", 99); } },
+      { label: "Max (no subsidy)", cls: "ctrl", get: function (b) { return bucketMax(b, "ctrl"); } },
+      { label: "Max (subsidy)", cls: "trt", get: function (b) { return bucketMax(b, "trt"); } },
+    ].filter(function (col) {
+      return buckets.some(function (b) { return col.get(b) != null; });
+    });
+    const head = [timeLabel, "Non-subsidy orders (n)", "Subsidy orders (n)", "Share of non-subsidy orders", "Share of subsidy orders"].concat(pctCols.map(function (c) { return c.label; }));
     const body = buckets.map((b) => {
-      const p75c = bucketVal(b, "ctrl", 75), p75t = bucketVal(b, "trt", 75);
-      const p85c = bucketVal(b, "ctrl", 85), p85t = bucketVal(b, "trt", 85);
-      const p99c = bucketVal(b, "ctrl", 99), p99t = bucketVal(b, "trt", 99);
-      const maxC = bucketMax(b, "ctrl"), maxT = bucketMax(b, "trt");
       const ctrlSharePct = denomCtrl ? Math.round((b.ctrl_n / denomCtrl) * 1000) / 10 : null;
       const trtSharePct = denomTrt ? Math.round((b.trt_n / denomTrt) * 1000) / 10 : null;
-      return "<tr><td style='text-align:left;vertical-align:middle' data-sort='" + bucketStart(b.bucket) + "'>" + b.bucket + "s</td>" +
+      let rowHtml = "<tr><td style='text-align:left;vertical-align:middle' data-sort='" + bucketStart(b.bucket) + "'>" + b.bucket + "s</td>" +
       "<td class='ctrl n' style='vertical-align:middle' data-sort='" + (b.ctrl_n || 0) + "'>" + fmt(b.ctrl_n) + "</td>" +
       "<td class='trt n' style='vertical-align:middle' data-sort='" + (b.trt_n || 0) + "'>" + fmt(b.trt_n) + "</td>" +
       "<td class='ctrl' style='vertical-align:middle' data-sort='" + (ctrlSharePct == null ? "" : ctrlSharePct) + "'>" + sharePct(b.ctrl_n, denomCtrl) + "</td>" +
-      "<td class='trt' style='vertical-align:middle' data-sort='" + (trtSharePct == null ? "" : trtSharePct) + "'>" + sharePct(b.trt_n, denomTrt) +
-      "</td><td class='ctrl' style='vertical-align:middle' data-sort='" + (p75c == null ? "" : p75c) + "'>" + fmt(p75c) + "</td><td class='trt' style='vertical-align:middle' data-sort='" + (p75t == null ? "" : p75t) + "'>" + fmt(p75t) +
-      "</td><td class='ctrl' style='vertical-align:middle' data-sort='" + (p85c == null ? "" : p85c) + "'>" + fmt(p85c) + "</td><td class='trt' style='vertical-align:middle' data-sort='" + (p85t == null ? "" : p85t) + "'>" + fmt(p85t) +
-      "</td><td class='ctrl' style='vertical-align:middle' data-sort='" + (p99c == null ? "" : p99c) + "'>" + fmt(p99c) + "</td><td class='trt' style='vertical-align:middle' data-sort='" + (p99t == null ? "" : p99t) + "'>" + fmt(p99t) +
-      "</td><td class='ctrl' style='vertical-align:middle' data-sort='" + (maxC == null ? "" : maxC) + "'>" + fmt(maxC) + "</td><td class='trt' style='vertical-align:middle' data-sort='" + (maxT == null ? "" : maxT) + "'>" + fmt(maxT) + "</td></tr>";
+      "<td class='trt' style='vertical-align:middle' data-sort='" + (trtSharePct == null ? "" : trtSharePct) + "'>" + sharePct(b.trt_n, denomTrt) + "</td>";
+      pctCols.forEach(function (col) {
+        const v = col.get(b);
+        rowHtml += "<td class='" + col.cls + "' style='vertical-align:middle' data-sort='" + (v == null ? "" : v) + "'>" + fmt(v) + "</td>";
+      });
+      return rowHtml + "</tr>";
     });
-    if (!body.length) body.push("<tr><td colspan='13' style='text-align:left;color:var(--muted)'>No " + (completed ? "completed" : "cancelled") + " orders in this cell</td></tr>");
+    if (!body.length) body.push("<tr><td colspan='" + head.length + "' style='text-align:left;color:var(--muted)'>No " + (completed ? "completed" : "cancelled") + " orders in this cell</td></tr>");
     return tableHtml(caption, head, body);
   }
 
