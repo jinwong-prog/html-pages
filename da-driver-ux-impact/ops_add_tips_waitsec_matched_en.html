@@ -290,8 +290,8 @@
     </colgroup>
     <thead><tr>
       <th>GTV</th><th class="th-2line">Response time<br>(s)</th>
-      <th class="ctrl th-2line">Orders with no subsidy<br>(count)</th><th class="ctrl th-2line">Completion<br>rate</th>
-      <th class="trt th-2line">Orders with subsidy<br>(count)</th><th class="trt th-2line">Completion<br>rate</th><th class="th-2line">Completion rate difference<br>(percentage points)</th>
+      <th class="ctrl th-2line">Orders with<br>no subsidy</th><th class="ctrl th-2line">Completion<br>rate</th>
+      <th class="trt th-2line">Orders with<br>subsidy</th><th class="trt th-2line">Completion<br>rate</th><th class="th-2line">Completion rate difference<br>(percentage points)</th>
     </tr></thead>
     <tbody>
       <tr class="waitsec-static-row"><td>&lt;$85</td><td>0–60s</td><td class="ctrl n">613</td><td class="ctrl"><span class="ctrl-val">90.9%</span></td><td class="trt n">2</td><td class="trt"><span class="trt-val">0.0%</span></td><td class="diff lose">−90.9</td></tr>
@@ -300,7 +300,7 @@
       <tr class="static-detail-row" data-static-detail="lt85-121-180" hidden><td colspan="7"><div class="drill-inner">
         <table class="cmp small">
           <caption><b>Breakdown · &lt;$85 × 121–180 (+15.4)</b>: orders with subsidy count=6 → noise</caption>
-          <thead><tr><th>Date</th><th>Weekday</th><th class="ctrl">Orders with no subsidy (count)</th><th class="ctrl">Completion rate</th><th class="trt">Orders with subsidy (count)</th><th class="trt">Completion rate</th></tr></thead>
+          <thead><tr><th>Date</th><th>Weekday</th><th class="ctrl">Orders with no subsidy</th><th class="ctrl">Completion rate</th><th class="trt">Orders with subsidy</th><th class="trt">Completion rate</th></tr></thead>
           <tbody>
             <tr><td>2026-05-26</td><td>Tue</td><td class="ctrl n">11</td><td class="ctrl"><span class="ctrl-val">63.6%</span></td><td class="trt n">0</td><td class="trt">—</td></tr>
             <tr><td>2026-05-29</td><td>Fri</td><td class="ctrl n">18</td><td class="ctrl"><span class="ctrl-val">72.2%</span></td><td class="trt n">0</td><td class="trt">—</td></tr>
@@ -359,7 +359,7 @@
         <div class="inline-day-break">
           <table class="cmp small">
             <caption><b>Breakdown · $150–199 × 181–400 (+3.0)</b>: parent cell differs by day; time-bucket focus after expand is still <b>301–420s</b></caption>
-            <thead><tr><th>Date</th><th>Weekday</th><th class="ctrl">Orders with no subsidy (count) / Completion / pending_orders_at_120s</th><th class="trt">Orders with subsidy (count) / Completion / pending_orders_at_120s</th><th>Which side finished more often</th></tr></thead>
+            <thead><tr><th>Date</th><th>Weekday</th><th class="ctrl">Orders with no subsidy / Completion / pending_orders_at_120s</th><th class="trt">Orders with subsidy / Completion / pending_orders_at_120s</th><th>Which side finished more often</th></tr></thead>
             <tbody>
               <tr><td>2026-05-26</td><td>Tue</td><td class="ctrl"><span class="ctrl-val">53 · 47.2% · 161</span></td><td class="trt"><span class="trt-val">16 · 43.8% · 206</span></td><td class="lose">Worse for subsidy</td></tr>
               <tr><td>2026-05-29</td><td>Fri</td><td class="ctrl"><span class="ctrl-val">77 · 53.2% · 112</span></td><td class="trt"><span class="trt-val">7 · 71.4% · 136</span></td><td class="win">Better for subsidy (n=7)</td></tr>
@@ -436,7 +436,7 @@
               = 55.3% − 62.6%
               = −1.9 percentage points (i.e. −1.9%)
 
-Incremental completions = orders with subsidy order count × adjusted completion-rate gap
+Incremental completions = orders with subsidy × adjusted completion-rate gap
         = 1,050 × (adjusted gap; triple aligned ≈ −4.7pp)
         ≈ −24 (negative — no evidence of extra completions)</pre>
     Result ≤ 0, i.e. <b class="hl-bad">no extra completed orders observed</b>.
@@ -718,7 +718,7 @@ Incremental completions = orders with subsidy order count × adjusted completion
       ? "Time-to-complete buckets (status=completed only; final_response_time; 120s wide; " + rangeNote + "; " + outcomeNote + ")"
       : "Time-to-cancel buckets (status=cancelled only; cancelled_at−created_at; 120s wide; " + rangeNote + "; " + outcomeNote + ")") +
       "· <span class='muted-cap'>Click column headers to sort. " + winNote + "</span>";
-    const head = [timeLabel, "Orders with no subsidy (count)", "Orders with subsidy (count)", "佔全組% · 無補貼", "佔全組% · 有補貼 (較好／較差)", "P75 · 無補貼", "P75 · 有補貼", "P85 · 無補貼", "P85 · 有補貼", "P99 · 無補貼", "P99 · 有補貼", "max · no subsidy", "max · with subsidy"];
+    const head = [timeLabel, "Orders with no subsidy", "Orders with subsidy", "佔全組% · 無補貼", "佔全組% · 有補貼 (較好／較差)", "P75 · 無補貼", "P75 · 有補貼", "P85 · 無補貼", "P85 · 有補貼", "P99 · 無補貼", "P99 · 有補貼", "max · no subsidy", "max · with subsidy"];
     const body = buckets.map((b) => {
       const p75c = bucketVal(b, "ctrl", 75), p75t = bucketVal(b, "trt", 75);
       const p85c = bucketVal(b, "ctrl", 85), p85t = bucketVal(b, "trt", 85);
@@ -773,7 +773,7 @@ Incremental completions = orders with subsidy order count × adjusted completion
     const items = (row.dimensions && row.dimensions[dimKey]) || [];
     const completed = mode === "completed";
     const timeHdr = completed ? "Time-to-complete P75/P85/P99 (no subsidy / with subsidy)" : "Time-to-cancel P75/P85/P99 (no subsidy / with subsidy)";
-    const head = ["Group", "Orders with no subsidy (count)", "無補貼訂單 · Completion rate", "無補貼訂單 · 取消率", "Orders with subsidy (count)", "Orders with subsidy · Completion rate", "Orders with subsidy · 取消率", "Completion rate difference (percentage points)", timeHdr];
+    const head = ["Group", "Orders with no subsidy", "無補貼訂單 · Completion rate", "無補貼訂單 · 取消率", "Orders with subsidy", "Orders with subsidy · Completion rate", "Orders with subsidy · 取消率", "Completion rate difference (percentage points)", timeHdr];
     const body = items.map((it) => {
       const c = it.ctrl || {}, t = it.trt || {};
       const dcls = it.delta_pp > 0 ? "win" : it.delta_pp < 0 ? "lose" : "";
