@@ -383,9 +383,6 @@
   </div>
 
 
-  <h2 style="font-size:17px;color:var(--ink2)">Long-wait orders (over 400 sec) show no improvement either</h2>
-  <p>Orders waiting over 400 sec are the hardest to dispatch and most in need of rescue. But in all three GTV bands <b class="hl-bad">the orders with subsidy group still has a lower completion rate</b> (&lt;$85 lower by 17.2 percentage points, $150–199 lower by 10.9, $85–149 lower by 2.3). Even for the hardest-to-dispatch orders, subsidies did not help.</p>
-
   <!-- ③ why -->
   <h2>③ Why? — Subsidy tends to go to harder orders first</h2>
   <p>This does not prove the subsidy is useless. It shows that <b>orders that got a subsidy were already harder to assign</b>. We look at <b>orders waiting for a driver</b> (<code>pending_orders_at_120s</code>) at 120 seconds (higher = harder). Even at the same response time, <b class="hl-bad">orders with subsidy had more orders waiting for a driver in every group</b>. So a raw completion-rate comparison is unfair to orders with subsidy.</p>
