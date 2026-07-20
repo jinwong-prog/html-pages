@@ -383,9 +383,8 @@
 
   <!-- ③ 平均 pending（按 response time 分組） -->
   <h2>③ 平均 pending 訂單數（按 response time 分組）</h2>
-  <p>訂單按<b>同一個 response time</b> 分組（同一 GTV 內）。比較有補貼與無補貼訂單的 <b>平均 pending 訂單數</b>（<code>pending_orders_at_120s</code>）。</p>
-  <p>有補貼的訂單在每一組的 pending 本來就更高。在同樣條件下比較後，完成率差距收窄了（<b>−6.7 → −4.7 個百分點</b>），但有補貼訂單的完成率仍然較低。</p>
-  <p class="meta">下表 = <code>AVG(pending_orders_at_120s)</code>（2026-07-20 實查，HK · <code>pass_sheet_price_lt_200</code> · <code>wait_sec</code> 分箱 · 單位＝張訂單）</p>
+  <p>有補貼訂單在每一組的 pending 都較高。對齊相近訂單後，完成率差距由 <b>−6.7pp 收窄至 −4.7pp</b>，但有補貼訂單完成率仍然較低。</p>
+  <p class="meta">平均 <code>pending_orders_at_120s</code>。</p>
 
   <div class="card">
   <table class="cmp">
