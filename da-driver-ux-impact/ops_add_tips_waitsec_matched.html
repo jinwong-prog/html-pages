@@ -384,7 +384,7 @@
   <p>不是補貼一定沒用，而是<b>有補貼的訂單本身就比較難派</b>。這裡用 pending（<code>pending_orders_at_120s</code>：落單後約 120 秒時還有多少張單在等司機）來看：就算 response time 一樣，<b class="hl-bad">有補貼組每一組的 pending 都更高</b>。即兩組的實際難度並不一樣，直接比完成率，對有補貼組不公平。</p>
   <div class="card">
   <table class="cmp">
-    <thead><tr><th>車費</th><th>等候(秒)</th><th class="ctrl th-2line">無補貼<br>pending（等司機訂單數）</th><th class="trt th-2line">有補貼<br>pending（等司機訂單數）</th><th class="th-2line">差距<br>（有補貼更高＝更難）</th></tr></thead>
+    <thead><tr><th>車費</th><th>等候(秒)</th><th class="ctrl th-2line">無補貼<br>平均 pending 訂單數（張）</th><th class="trt th-2line">有補貼<br>平均 pending 訂單數（張）</th><th class="th-2line">差距<br>（張；有補貼更高＝更難）</th></tr></thead>
     <tbody>
       <tr><td>&lt;$85</td><td>0–60</td><td class="ctrl"><span class="ctrl-val">103.2</span></td><td class="trt"><span class="trt-val">138.0</span></td><td class="diff lose">+34.8</td></tr>
       <tr><td>&lt;$85</td><td>121–180</td><td class="ctrl"><span class="ctrl-val">110.9</span></td><td class="trt"><span class="trt-val">138.8</span></td><td class="diff lose">+27.9</td></tr>
