@@ -386,8 +386,8 @@
 
 
   <!-- ③ why -->
-  <h2>③ Why? — Subsidy tends to go to harder orders first</h2>
-  <p>This does not prove the subsidy is useless. It shows that <b>orders that got a subsidy were already harder to assign</b>. We look at <b>orders waiting for a driver</b> (<code>pending_orders_at_120s</code>) at 120 seconds (higher = harder). Even at the same response time, <b class="hl-bad">orders with subsidy had more orders waiting for a driver in every group</b>. So a raw completion-rate comparison is unfair to orders with subsidy.</p>
+  <h2>③ Why? — Subsidy orders were harder to find a driver</h2>
+  <p>Subsidy orders already had more orders waiting for a driver. After comparing orders under the same conditions, the gap became smaller (<b>−6.7 → −4.7 percentage points</b>), but subsidy orders still completed less often.</p>
   <p class="meta">Table = <code>AVG(pending_orders_at_120s)</code>（2026-07-20 queried，HK · <code>pass_sheet_price_lt_200</code> · <code>wait_sec</code> band · unit = orders）</p>
 
   <div class="card">
@@ -411,8 +411,6 @@
     </tbody>
   </table>
   </div>
-
-  <p><b>What if we also keep orders waiting for a driver the same?</b> The completion-rate gap narrows from <b>−6.7 percentage points</b> (same GTV + response time) to <b>−4.7 percentage points</b> (strictest fair comparison). That market congestion explains part of the gap, <b class="hl-bad">but orders with subsidy still finish less often than orders with no subsidy</b>. See the main table at the top; on every campaign day, orders with subsidy finished less often (Tue −10.4 through Mon −24.8).</p>
 
   <!-- ④ ROI -->
   <h2>④ Money spent can be confirmed; extra completed orders cannot</h2>
