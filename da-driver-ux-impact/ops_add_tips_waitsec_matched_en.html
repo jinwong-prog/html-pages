@@ -387,26 +387,26 @@
   <!-- ③ why -->
   <h2>③ Why? — Subsidy tends to go to harder orders first</h2>
   <p>This does not prove the subsidy is useless. It shows that <b>orders that got a subsidy were already harder to assign</b>. We look at <b>orders waiting for a driver</b> (<code>pending_orders_at_120s</code>) at 120 seconds (higher = harder). Even at the same response time, <b class="hl-bad">orders with subsidy had more orders waiting for a driver in every group</b>. So a raw completion-rate comparison is unfair to orders with subsidy.</p>
-  <p class="meta">Table numbers = <code>AVG(pending_orders_at_120s)</code> by GTV × response-time band（2026-07-20 queried，HK PlatformOD Van ASAP GTV &lt; $200，<code>pass_sheet_static_eligibility</code>；unit = orders；not median）</p>
+  <p class="meta">Table = <code>AVG(pending_orders_at_120s)</code>（2026-07-20 queried，HK · <code>pass_sheet_price_lt_200</code> · <code>wait_sec</code> band · unit = orders）</p>
 
   <div class="card">
   <table class="cmp">
     <thead><tr><th>GTV</th><th>Response time (s)</th><th class="ctrl th-2line">Orders with no subsidy<br>avg. pending order count (orders)</th><th class="trt th-2line">Orders with subsidy<br>avg. pending order count (orders)</th><th class="th-2line">Difference<br>(orders; higher for subsidy = harder)</th></tr></thead>
     <tbody>
-      <tr><td>&lt;$85</td><td>0–60s</td><td class="ctrl"><span class="ctrl-val">105.6</span></td><td class="trt"><span class="trt-val">138.0</span></td><td class="diff lose">+32.4</td></tr>
+      <tr><td>&lt;$85</td><td>0–60s</td><td class="ctrl"><span class="ctrl-val">105.8</span></td><td class="trt"><span class="trt-val">138.0</span></td><td class="diff lose">+32.2</td></tr>
       <tr><td>&lt;$85</td><td>121–180s</td><td class="ctrl"><span class="ctrl-val">113.2</span></td><td class="trt"><span class="trt-val">143.0</span></td><td class="diff lose">+29.8</td></tr>
-      <tr><td>&lt;$85</td><td>181–400s</td><td class="ctrl"><span class="ctrl-val">110.0</span></td><td class="trt"><span class="trt-val">153.8</span></td><td class="diff lose">+43.8</td></tr>
-      <tr><td>&lt;$85</td><td>400s+</td><td class="ctrl"><span class="ctrl-val">103.9</span></td><td class="trt"><span class="trt-val">145.3</span></td><td class="diff lose">+41.4</td></tr>
+      <tr><td>&lt;$85</td><td>181–400s</td><td class="ctrl"><span class="ctrl-val">109.8</span></td><td class="trt"><span class="trt-val">153.8</span></td><td class="diff lose">+44.0</td></tr>
+      <tr><td>&lt;$85</td><td>400s+</td><td class="ctrl"><span class="ctrl-val">105.2</span></td><td class="trt"><span class="trt-val">145.3</span></td><td class="diff lose">+40.0</td></tr>
       <tr><td>$85–149</td><td>0–60s</td><td class="ctrl"><span class="ctrl-val">107.3</span></td><td class="trt"><span class="trt-val">167.6</span></td><td class="diff lose">+60.3</td></tr>
       <tr><td>$85–149</td><td>60–120s</td><td class="ctrl"><span class="ctrl-val">122.9</span></td><td class="trt"><span class="trt-val">165.6</span></td><td class="diff lose">+42.7</td></tr>
-      <tr><td>$85–149</td><td>121–180s</td><td class="ctrl"><span class="ctrl-val">124.2</span></td><td class="trt"><span class="trt-val">141.3</span></td><td class="diff lose">+17.1</td></tr>
-      <tr><td>$85–149</td><td>181–400s</td><td class="ctrl"><span class="ctrl-val">129.6</span></td><td class="trt"><span class="trt-val">157.9</span></td><td class="diff lose">+28.3</td></tr>
-      <tr><td>$85–149</td><td>400s+</td><td class="ctrl"><span class="ctrl-val">123.8</span></td><td class="trt"><span class="trt-val">163.1</span></td><td class="diff lose">+39.3</td></tr>
-      <tr><td>$150–199</td><td>0–60s</td><td class="ctrl"><span class="ctrl-val">110.2</span></td><td class="trt"><span class="trt-val">183.9</span></td><td class="diff lose">+73.7</td></tr>
-      <tr><td>$150–199</td><td>60–120s</td><td class="ctrl"><span class="ctrl-val">130.2</span></td><td class="trt"><span class="trt-val">157.5</span></td><td class="diff lose">+27.3</td></tr>
-      <tr><td>$150–199</td><td>121–180s</td><td class="ctrl"><span class="ctrl-val">124.7</span></td><td class="trt"><span class="trt-val">153.1</span></td><td class="diff lose">+28.4</td></tr>
-      <tr><td>$150–199</td><td>181–400s</td><td class="ctrl"><span class="ctrl-val">140.6</span></td><td class="trt"><span class="trt-val">162.3</span></td><td class="diff lose">+21.7</td></tr>
-      <tr><td>$150–199</td><td>400s+</td><td class="ctrl"><span class="ctrl-val">131.3</span></td><td class="trt"><span class="trt-val">168.7</span></td><td class="diff lose">+37.4</td></tr>
+      <tr><td>$85–149</td><td>121–180s</td><td class="ctrl"><span class="ctrl-val">123.8</span></td><td class="trt"><span class="trt-val">141.3</span></td><td class="diff lose">+17.5</td></tr>
+      <tr><td>$85–149</td><td>181–400s</td><td class="ctrl"><span class="ctrl-val">129.3</span></td><td class="trt"><span class="trt-val">157.9</span></td><td class="diff lose">+28.6</td></tr>
+      <tr><td>$85–149</td><td>400s+</td><td class="ctrl"><span class="ctrl-val">121.6</span></td><td class="trt"><span class="trt-val">163.3</span></td><td class="diff lose">+41.6</td></tr>
+      <tr><td>$150–199</td><td>0–60s</td><td class="ctrl"><span class="ctrl-val">110.2</span></td><td class="trt"><span class="trt-val">183.9</span></td><td class="diff lose">+73.6</td></tr>
+      <tr><td>$150–199</td><td>60–120s</td><td class="ctrl"><span class="ctrl-val">129.3</span></td><td class="trt"><span class="trt-val">157.5</span></td><td class="diff lose">+28.2</td></tr>
+      <tr><td>$150–199</td><td>121–180s</td><td class="ctrl"><span class="ctrl-val">124.8</span></td><td class="trt"><span class="trt-val">153.1</span></td><td class="diff lose">+28.3</td></tr>
+      <tr><td>$150–199</td><td>181–400s</td><td class="ctrl"><span class="ctrl-val">140.1</span></td><td class="trt"><span class="trt-val">162.3</span></td><td class="diff lose">+22.2</td></tr>
+      <tr><td>$150–199</td><td>400s+</td><td class="ctrl"><span class="ctrl-val">127.8</span></td><td class="trt"><span class="trt-val">168.7</span></td><td class="diff lose">+40.9</td></tr>
     </tbody>
   </table>
   </div>
