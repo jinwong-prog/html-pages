@@ -205,19 +205,25 @@
   <!-- ① factors controlled -->
   <h2>① What did we keep the same when comparing?</h2>
   <p>For a fair comparison, we only put <b>similar orders</b> in the same group, then compare the completion rate of <b>orders with subsidy</b> vs <b>orders with no subsidy</b>.</p>
+  <p class="meta"><b>BigQuery source:</b> <code>gogox-ba-sandbox.analytics.mart_ops_add_tips_campaign_orders</code> (main table; <code>pending_orders_at_120s</code> sourced from <code>order_master_table_hk</code>).</p>
   <div class="card">
   <table>
-    <thead><tr><th>What we kept the same</th><th style="text-align:left">BigQuery column</th><th style="text-align:left">How we grouped</th></tr></thead>
+    <thead><tr>
+      <th style="text-align:left">What</th>
+      <th style="text-align:left">BigQuery table</th>
+      <th style="text-align:left">BigQuery column</th>
+    </tr></thead>
     <tbody>
-      <tr><td>GTV</td><td style="text-align:left"><code>gross_transaction_value</code></td><td style="text-align:left">&lt;$85 ｜ $85–149 ｜ $150–199 (&ge;$200 not eligible for subsidies, already excluded)</td></tr>
-      <tr><td>Response time</td><td style="text-align:left"><code>COALESCE(final_response_time, first_response_time)</code> (raw; not <code>wait_sec</code>)</td><td style="text-align:left">0–60s (&lt;60)｜60–120s ｜ 121–180s ｜ 181–400s ｜ 400s+ (non-overlapping; 2026-07-14 BQ queried)</td></tr>
-      <tr><td>Pending orders (≥40 orders gate)</td><td style="text-align:left"><code>pending_orders_at_120s</code></td><td style="text-align:left">&lt;40 orders / 40–80 orders / 80–120 orders / 120–160 orders / 160+ orders (count of orders still waiting; not seconds; extra check in ③)</td></tr>
-      <tr><td>Campaign date / weekday</td><td style="text-align:left"><code>campaign_date</code></td><td style="text-align:left">aligned day by day across 6 days; date locks the weekday</td></tr>
-      <tr><td>Peak period / hour of day</td><td style="text-align:left"><code>created_at</code></td><td style="text-align:left">aligned by order-placement hour (see table below)</td></tr>
-      <tr><td>Customer type</td><td style="text-align:left"><code>business_segment</code></td><td style="text-align:left">all PlatformOD individual customers</td></tr>
-      <tr><td>Order status</td><td style="text-align:left"><code>status</code></td><td style="text-align:left">this filter: 11,421 orders — completed (9,062), incomplete (2,359, incl. cancelled; active rare); orders with subsidy (raw) 1,050</td></tr>
+      <tr><td>GTV</td><td style="text-align:left"><code>mart_ops_add_tips_campaign_orders</code></td><td style="text-align:left"><code>gross_transaction_value</code></td></tr>
+      <tr><td>Response time</td><td style="text-align:left"><code>mart_ops_add_tips_campaign_orders</code></td><td style="text-align:left"><code>COALESCE(final_response_time, first_response_time)</code></td></tr>
+      <tr><td>Pending orders</td><td style="text-align:left"><code>order_master_table_hk</code>*</td><td style="text-align:left"><code>pending_orders_at_120s</code></td></tr>
+      <tr><td>Campaign date</td><td style="text-align:left"><code>mart_ops_add_tips_campaign_orders</code></td><td style="text-align:left"><code>campaign_date</code></td></tr>
+      <tr><td>Order hour</td><td style="text-align:left"><code>mart_ops_add_tips_campaign_orders</code></td><td style="text-align:left"><code>created_at</code></td></tr>
+      <tr><td>Customer type</td><td style="text-align:left"><code>mart_ops_add_tips_campaign_orders</code></td><td style="text-align:left"><code>business_segment</code></td></tr>
+      <tr><td>Order status</td><td style="text-align:left"><code>mart_ops_add_tips_campaign_orders</code></td><td style="text-align:left"><code>status</code></td></tr>
     </tbody>
   </table>
+  <p class="meta" style="margin:10px 0 0">* <code>pending_orders_at_120s</code> is surfaced in <code>mart_ops_add_tips_campaign_orders</code> and originates from <code>order_master_table_hk</code>.</p>
   </div>
   <div class="box warn">
     <b>Orders with subsidy · 3 trigger buckets</b>（queried 2026-07-20，6 Peak days，<code>pass_sheet_static_eligibility</code>；response = <code>COALESCE(final_response_time, first_response_time)</code>；pending = <code>pending_orders_at_120s</code>）

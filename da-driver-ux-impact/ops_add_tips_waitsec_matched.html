@@ -201,20 +201,26 @@
 
   <!-- ① 控制了哪些因素 -->
   <h2>① 這次比較控制了哪些因素？</h2>
-  <p>為了公平比較，只把<b>條件相近</b>的訂單放在一起比：同一組內，比較<b>有補貼組</b>與<b>沒有補貼組（Control）</b>的完成率。</p>
+  <p>為了公平比較，只把<b>條件相近</b>的訂單放在一起比：同一組內，比較<b>有補貼組</b>與<b>沒有補貼組</b>的完成率。</p>
+  <p class="meta"><b>BigQuery source:</b> <code>gogox-ba-sandbox.analytics.mart_ops_add_tips_campaign_orders</code>（主表；<code>pending_orders_at_120s</code> 來自 <code>order_master_table_hk</code>）。</p>
   <div class="card">
   <table>
-    <thead><tr><th>控制的因素</th><th style="text-align:left">BQ 欄位</th><th style="text-align:left">分組方式</th></tr></thead>
+    <thead><tr>
+      <th style="text-align:left">What</th>
+      <th style="text-align:left">BigQuery table</th>
+      <th style="text-align:left">BigQuery column</th>
+    </tr></thead>
     <tbody>
-      <tr><td>車費 GTV</td><td style="text-align:left"><code>gross_transaction_value</code></td><td style="text-align:left">&lt;$85 ｜ $85–149 ｜ $150–199（&ge;$200 不符補貼資格，已排除）</td></tr>
-      <tr><td>Response time</td><td style="text-align:left"><code>COALESCE(final_response_time, first_response_time)</code>（raw；不用 <code>wait_sec</code>）</td><td style="text-align:left">0–60s（&lt;60）｜60–120s ｜ 121–180s ｜ 181–400s ｜ 400s+（互不重疊；2026-07-14 BQ 實查）</td></tr>
-      <tr><td>Pending orders（≥40 orders 閘）</td><td style="text-align:left"><code>pending_orders_at_120s</code></td><td style="text-align:left">&lt;40 orders / 40–80 orders / 80–120 orders / 120–160 orders / 160+ orders（張數，不是秒；額外測試見 ③）</td></tr>
-      <tr><td>Campaign 日期 / 星期</td><td style="text-align:left"><code>campaign_date</code></td><td style="text-align:left">6 日逐日對齊；日期已鎖定星期幾</td></tr>
-      <tr><td>繁忙時段</td><td style="text-align:left"><code>created_at</code></td><td style="text-align:left">按落單小時對齊（見下表）</td></tr>
-      <tr><td>客戶類型</td><td style="text-align:left"><code>business_segment</code></td><td style="text-align:left">全部 PlatformOD 個人客</td></tr>
-      <tr><td>訂單狀態</td><td style="text-align:left"><code>status</code></td><td style="text-align:left">本 filter 共 11,421 張：completed（9,062）、未完成（2,359，含 cancelled；active 極少）；有補貼 raw 1,050 張</td></tr>
+      <tr><td>GTV</td><td style="text-align:left"><code>mart_ops_add_tips_campaign_orders</code></td><td style="text-align:left"><code>gross_transaction_value</code></td></tr>
+      <tr><td>Response time</td><td style="text-align:left"><code>mart_ops_add_tips_campaign_orders</code></td><td style="text-align:left"><code>COALESCE(final_response_time, first_response_time)</code></td></tr>
+      <tr><td>Pending orders</td><td style="text-align:left"><code>order_master_table_hk</code>*</td><td style="text-align:left"><code>pending_orders_at_120s</code></td></tr>
+      <tr><td>Campaign date</td><td style="text-align:left"><code>mart_ops_add_tips_campaign_orders</code></td><td style="text-align:left"><code>campaign_date</code></td></tr>
+      <tr><td>Order hour</td><td style="text-align:left"><code>mart_ops_add_tips_campaign_orders</code></td><td style="text-align:left"><code>created_at</code></td></tr>
+      <tr><td>Customer type</td><td style="text-align:left"><code>mart_ops_add_tips_campaign_orders</code></td><td style="text-align:left"><code>business_segment</code></td></tr>
+      <tr><td>Order status</td><td style="text-align:left"><code>mart_ops_add_tips_campaign_orders</code></td><td style="text-align:left"><code>status</code></td></tr>
     </tbody>
   </table>
+  <p class="meta" style="margin:10px 0 0">* <code>pending_orders_at_120s</code> 已在 <code>mart_ops_add_tips_campaign_orders</code> 露出，來源是 <code>order_master_table_hk</code>。</p>
   </div>
   <div class="box warn">
     <b>有補貼訂單 · 三組觸發拆解</b>（2026-07-20 實查，6 Peak 日，<code>pass_sheet_static_eligibility</code>；response = <code>COALESCE(final_response_time, first_response_time)</code>；pending = <code>pending_orders_at_120s</code>）
