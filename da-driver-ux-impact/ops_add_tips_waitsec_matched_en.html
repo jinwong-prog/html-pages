@@ -412,48 +412,21 @@
   </div>
 
   <!-- ④ ROI -->
-  <h2>④ Did the subsidy increase completed orders?</h2>
-  <p>We cannot know which individual orders were completed because of the subsidy. Instead, we compare <b>similar orders</b> (same fare, response time, and dispatch difficulty) with and without subsidies.</p>
+  <h2>④ Was the subsidy campaign effective?</h2>
+  <p>We compared similar orders with and without subsidies.</p>
 
   <h3 style="font-size:18px;margin:20px 0 8px">Result</h3>
-  <p>After matching similar orders:</p>
   <ul class="plain">
-    <li><b>With subsidy:</b> <b>55.3%</b> completed</li>
-    <li><b>Without subsidy:</b> <b>62.6%</b> completed</li>
+    <li><b>With subsidy:</b> <b>55.3%</b></li>
+    <li><b>Without subsidy:</b> <b>62.6%</b></li>
   </ul>
-  <p><b>Result:</b> We found <b class="hl-bad">no evidence that the subsidy increased completed orders.</b></p>
+  <p><b>Conclusion:</b> <b class="hl-bad">No evidence that the subsidy campaign increased completed orders.</b></p>
 
   <div class="box">
-    <b>How we estimate “extra completed orders”:</b>
-    We cannot point to any single order and say “this one finished only because of the subsidy.”
-    So we estimate from the completion-rate gap after matching similar orders:
-    <pre style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:13.5px;overflow-x:auto;margin:10px 0">Completion-rate gap after matching = completion rate (subsidy orders) − completion rate (non-subsidy orders)
-              = 55.3% − 62.6%
-              = −1.9 percentage points (i.e. −1.9%)
-
-Extra completed orders ≈ number of subsidy orders × completion-rate gap
-        = 1,050 × (strictest fair comparison ≈ −4.7 percentage points)
-        ≈ −24 (negative — no evidence of extra completed orders)</pre>
-    Result ≤ 0, i.e. <b class="hl-bad">no proven extra completed orders</b>.
+    <b>Estimated extra completed orders:</b>
+    <pre style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:13.5px;overflow-x:auto;margin:10px 0">1,050 × (−4.7pp) ≈ −24</pre>
   </div>
-
-  <h3 style="font-size:18px;margin:28px 0 8px">What does this mean?</h3>
-  <p>Because we found <b>no proven increase in completed orders</b>, we <b>cannot calculate</b>:</p>
-  <ul class="plain">
-    <li>Cost per extra completed order</li>
-    <li>Subsidy ROI</li>
-  </ul>
-  <p>Based on the current data, <b class="hl-bad">there is no evidence that the subsidy budget generated additional completed orders.</b></p>
-
-  <h3 style="font-size:18px;margin:28px 0 8px">Cash summary</h3>
-  <p>During this period (2026-07-14 queried, HK · <code>pass_sheet_price_lt_200</code> · 6 campaign days):</p>
-  <div class="kpi">
-    <div class="k"><div class="lbl">Subsidized orders completed</div><div class="val">529</div><div class="sub">subsidy orders that finished</div></div>
-    <div class="k"><div class="lbl">GTV generated</div><div class="val">$65,904</div><div class="sub">from those completed orders</div></div>
-    <div class="k"><div class="lbl">Subsidies paid</div><div class="val">$4,945</div><div class="sub">paid on completed orders only</div></div>
-  </div>
-  <div class="box bad">However, <b>most of these completed orders would likely have been completed even without the subsidy</b> (see section ②).<br>
-    This means the subsidy spending <b>has not been shown to create additional completed orders.</b></div>
+  <p>Since no additional completed orders were found, cost per extra completed order and ROI cannot be calculated.</p>
 
   <!-- ⑤ next steps -->
   <h2>⑤ Next steps: How can we tell if the subsidy really works?</h2>

@@ -486,48 +486,51 @@
 
     <div class="card chart-distribution" style="grid-column:1/-1">
       <h3>As orders wait longer, when are they most likely to get cancelled?</h3>
-      <p class="cap">
-        We split waiting time after an order is placed into <b>60-second slices</b>.
-        At the <b>start</b> of each slice, the order is still open (not finished, not cancelled yet).
-        This chart shows: <b>out of those orders, what share get cancelled during that 60 seconds</b>.
-        <b>Solid lines</b> = cancelled by the <b>customer</b>.
-        <b>Dashed lines</b> = cancelled by the <b>driver</b>.
-        <b>Blue</b> = no subsidy.
-        <b>Red</b> = with subsidy.
-        When a line <b>jumps up</b>, many more orders were cancelled in that slice.
-        Things like “how many times we re-sent the order” or “no driver ever took it” are <b>reasons</b>, not what this chart is mainly about—they only show up when you hover on the chart.
-        If a slice has too few orders, we do not draw it, so the chart does not mislead.
-        <b>This chart describes what we see; it does not prove that subsidies caused the result.</b>
-      </p>
+      <p class="cap">This chart shows <b>when orders are most likely to be cancelled</b>, helping you identify <b>the best time to intervene</b>.</p>
+      <p class="cap">Each point shows the <b>percentage of pending orders that are cancelled in the next 60 seconds</b>.</p>
+      <ul class="cap" style="margin:8px 0 12px;padding-left:1.4em">
+        <li><b>Solid</b> = Customer cancelled</li>
+        <li><b>Dashed</b> = Driver cancelled</li>
+        <li><b>Blue</b> = No subsidy</li>
+        <li><b>Red</b> = With subsidy</li>
+      </ul>
+      <p class="cap"><b>Higher = higher cancellation risk.</b></p>
       <div class="legend hazard-legend" id="hazardLegend">
         <span data-ds="0" role="button" tabindex="0"><span class="chip ctrl"></span>No subsidy · customer cancel</span>
         <span data-ds="1" role="button" tabindex="0"><span class="chip ctrl" style="opacity:.55"></span>No subsidy · driver cancel (dashed)</span>
         <span data-ds="2" role="button" tabindex="0"><span class="chip trt"></span>With subsidy · customer cancel</span>
         <span data-ds="3" role="button" tabindex="0"><span class="chip trt" style="opacity:.55"></span>With subsidy · driver cancel (dashed)</span>
       </div>
-      <p class="cap mini" style="margin:2px 0 6px">Click a legend label to hide or show that line. Click again to bring it back.</p>
+      <p class="cap mini" style="margin:2px 0 6px">Click a legend to hide or show a line.</p>
       <div class="chart-box" style="height:340px"><canvas id="hazardCurve"></canvas></div>
-      <p class="cap mini"><b>Note:</b> Subsidies only kick in after the order has waited a while (about 120 seconds or more).
-        So at the <b>very beginning</b> of the chart, the red lines are almost flat—not because “subsidies mean zero risk,” but because <b>there were almost no subsidised orders yet</b>.
-        The red lines only make sense <b>after</b> subsidies could apply.
-        This is still observation only, not proof of cause and effect.</p>
-      <p class="cap mini" style="color:var(--ink2)"><b>How to read this chart:</b> Focus on the first <b>15 minutes (900 seconds)</b>.
-        After that, each slice has very few orders, so the lines can wiggle for no real reason—<b>do not treat that as a trend</b>.
-        We skip slices with too few orders.
-        The <b>grey band from 600–900 seconds</b> means “very few orders here”: small bumps on the line are mostly random noise—<b>do not read every little peak</b>.
-        Look at the <b>first 10 minutes (600 seconds)</b> for the main story.</p>
+      <h4 style="margin:16px 0 8px;font-size:15px">Notes</h4>
+      <ul class="cap mini" style="margin:0 0 8px;padding-left:1.4em;color:var(--ink2)">
+        <li>Subsidies usually start after about <b>120 seconds</b>, so the red lines before then are not meaningful.</li>
+        <li>Focus on the <b>first 10 minutes (600 seconds)</b>.</li>
+        <li>The grey area contains very few orders, so small ups and downs are mostly random.</li>
+        <li>This chart shows <b>what happened</b>, not <b>why</b> it happened. It does not prove that subsidies caused the difference.</li>
+      </ul>
     </div>
 
     <div class="card chart-distribution" style="grid-column:1/-1">
-      <h3>取消時間分布（只計最終取消訂單；各組歸一化為 100%）</h3>
-      <p class="cap">只分析最終取消的 GOGOX 訂單，不包括已完成訂單。無補貼及有補貼各自將取消訂單總數當作 100%，比較訂單通常在落單後多少秒取消。兩條線各自的面積皆為 100%，因此反映的是<b>取消時間分布</b>，而非取消率，也不受 hazard 圖後段風險集（risk set）縮小影響。此為觀察性分析，不代表因果關係。</p>
+      <h3>When do people cancel their orders?</h3>
+      <p class="cap mini" style="margin:0 0 8px">(Only cancelled orders are shown)</p>
+      <p class="cap">This chart only shows orders that were cancelled. Orders that were completed are not included.</p>
+      <p class="cap">Each line adds up to 100%. This helps us compare when people cancel, not how many people cancel.</p>
+      <h4 style="margin:16px 0 8px;font-size:15px">How to read the chart</h4>
+      <ul class="cap" style="margin:0 0 12px;padding-left:1.4em">
+        <li>A higher point means more cancellations happened at that time.</li>
+        <li>A line further to the right means people usually waited longer before cancelling.</li>
+        <li>Click the legend to hide or show a line.</li>
+        <li>The dashed line shows the middle cancel time (median).</li>
+      </ul>
       <div class="legend hazard-legend" id="deathDistLegend">
-        <span data-ds="0" role="button" tabindex="0"><span class="chip ctrl"></span>無補 · 取消單</span>
-        <span data-ds="1" role="button" tabindex="0"><span class="chip trt"></span>有補 · 取消單</span>
+        <span data-ds="0" role="button" tabindex="0"><span class="chip ctrl"></span>No subsidy · cancelled orders</span>
+        <span data-ds="1" role="button" tabindex="0"><span class="chip trt"></span>With subsidy · cancelled orders</span>
       </div>
-      <p class="cap mini" style="margin:2px 0 6px">點圖例可開／關對應線（再點還原）。虛線＝各組中位取消時間。</p>
       <div class="chart-box" style="height:320px"><canvas id="deathDistCurve"></canvas></div>
-      <p class="cap mini" style="color:var(--ink2)"><b>讀圖：</b>峰值＝該組取消訂單最集中的取消時間；線越向右＝該組取消訂單平均等待越久才取消。無補貼的中位取消時間約 <b>180 秒</b>，取消高峰約在 60 秒；有補貼的中位取消時間約 <b>720 秒</b>，取消高峰約在 300 秒。代表有補貼的取消訂單普遍等待更久才取消（例如等待配對司機或補貼生效），約四成取消發生於 900 秒後，因此圖表顯示至 1800 秒。Tooltip 可查看各時間區間的用戶取消／司機取消明細。</p>
+      <div id="deathDistReading" style="color:var(--ink2)"></div>
+      <p class="cap mini" style="margin:12px 0 0;color:var(--ink2)"><b>Note:</b> This chart shows what happened in the data. It does not prove that the subsidy caused people to wait longer before cancelling.</p>
     </div>
 
     <div class="card chart-distribution" style="grid-column:1/-1">
@@ -1718,19 +1721,19 @@ const REPORT_DATA = {"meta": {"query_date": "2026-07-17", "scope": "HK PlatformO
         plugins:{legend:{display:false},
           annotation:{annotations:{}},
           tooltip:{callbacks:{
-            title:(items)=>`After ${items[0].label} of waiting`,
+            title:(items)=>`After ${items[0].label} pending`,
             label:(c)=>c.parsed.y==null?null:`${c.dataset.label}: ${c.parsed.y}%`,
             afterBody:(items)=>{
               const i=items[0].dataIndex, side=items[0].datasetIndex<2?'ctrl':'trt';
               const s=H[side];
-              return [`Still open: ${nf(s.risk[i])} · Cancelled: ${s.cancel[i]} (customer ${s.user[i]} / driver ${s.driver[i]})`,
+              return [`Pending: ${nf(s.risk[i])} · Cancelled: ${s.cancel[i]} (customer ${s.user[i]} / driver ${s.driver[i]})`,
                       `Context: no driver took it ${s.dispatch[i]} · re-sent ${s.released[i]}`];
             }
           }}},
         scales:{
           y:{...gridCfg,title:{display:true,text:'% cancelled in this 60 seconds',color:INK2},
              ticks:{...(gridCfg.ticks||{}),callback:(v)=>v+'%'}},
-          x:{...gridCfg,title:{display:true,text:'How long the order has been waiting',color:INK2}}
+          x:{...gridCfg,title:{display:true,text:'How long orders have been pending',color:INK2}}
         }}
     });
     const refreshAnn = ()=>{ hazardChart.options.plugins.annotation.annotations = buildAnn(); hazardChart.update(); };
@@ -1777,8 +1780,8 @@ const REPORT_DATA = {"meta": {"query_date": "2026-07-17", "scope": "HK PlatformO
     const norm = (arr)=>{ const t=arr.reduce((a,b)=>a+(b||0),0)||1; return arr.map(v=>+(100*(v||0)/t).toFixed(2)); };
     const medIdx = (arr)=>{ const t=arr.reduce((a,b)=>a+(b||0),0); let c=0; for(let i=0;i<arr.length;i++){ c+=arr[i]||0; if(c>=t/2) return i; } return -1; };
     const SERIES = [
-      {name:'無補·取消單', cancel:H.ctrl.cancel, user:H.ctrl.user, driver:H.ctrl.driver, color:CTRL},
-      {name:'有補·取消單', cancel:H.trt.cancel, user:H.trt.user, driver:H.trt.driver, color:TRT},
+      {name:'No subsidy · cancelled', cancel:H.ctrl.cancel, user:H.ctrl.user, driver:H.ctrl.driver, color:CTRL, key:'ctrl'},
+      {name:'With subsidy · cancelled', cancel:H.trt.cancel, user:H.trt.user, driver:H.trt.driver, color:TRT, key:'trt'},
     ];
     const line = (s)=>({label:s.name, data:norm(s.cancel), borderColor:s.color, backgroundColor:s.color,
       borderWidth:2.5, pointRadius:0, pointHoverRadius:4, spanGaps:true, tension:.25, fill:false});
@@ -1788,22 +1791,42 @@ const REPORT_DATA = {"meta": {"query_date": "2026-07-17", "scope": "HK PlatformO
         interaction:{mode:'index',intersect:false},
         plugins:{legend:{display:false}, annotation:{annotations:{}},
           tooltip:{callbacks:{
-            title:(it)=>`死於 ${it[0].label} 桶`,
+            title:(it)=>`Cancelled in ${it[0].label} bucket`,
             label:(c)=>c.parsed.y==null?null:`${c.dataset.label}: ${c.parsed.y}%`,
             afterBody:(it)=>{ const i=it[0].dataIndex;
-              return SERIES.map(s=>`${s.name}: 取消 ${nf(s.cancel[i])}（用戶 ${s.user[i]}／司機 ${s.driver[i]}）`); }
+              return SERIES.map(s=>`${s.name}: ${nf(s.cancel[i])} cancelled (customer ${s.user[i]} / driver ${s.driver[i]})`); }
           }}},
         scales:{
-          y:{...gridCfg, title:{display:true,text:'佔該組取消單 %（歸一化）',color:INK2},
+          y:{...gridCfg, title:{display:true,text:'% of that group\'s cancelled orders',color:INK2},
              ticks:{...(gridCfg.ticks||{}),callback:(v)=>v+'%'}},
-          x:{...gridCfg, title:{display:true,text:'取消時間（落單→取消秒數，60s 桶）',color:INK2}}
+          x:{...gridCfg, title:{display:true,text:'Seconds from order to cancellation (60s buckets)',color:INK2}}
         }}
     });
-    // 各組中位取消時間虛線標記
+    const peakIdx = (arr)=>{ let best=0; for(let i=1;i<arr.length;i++){ if((arr[i]||0)>(arr[best]||0)) best=i; } return best; };
+    const pctAfter = (arr,sec)=>{ const t=arr.reduce((a,b)=>a+(b||0),0)||1; let s=0; H.edges.forEach((e,i)=>{ if(e>=sec) s+=arr[i]||0; }); return Math.round(100*s/t); };
+    const readEl = document.getElementById('deathDistReading');
+    if(readEl){
+      const ctrl = SERIES[0], trt = SERIES[1];
+      const ctrlMi=medIdx(ctrl.cancel), ctrlPi=peakIdx(ctrl.cancel);
+      const trtMi=medIdx(trt.cancel), trtPi=peakIdx(trt.cancel);
+      const ctrlMed = ctrlMi>=0 ? H.edges[ctrlMi] : '—', ctrlPeak = ctrlPi>=0 ? H.edges[ctrlPi] : '—';
+      const trtMed = trtMi>=0 ? H.edges[trtMi] : '—', trtPeak = trtPi>=0 ? H.edges[trtPi] : '—';
+      const trtLate = pctAfter(H.trt.cancel, 900);
+      const xMax = H.edges[H.edges.length-1] || 1740;
+      readEl.innerHTML = `<h4 style="margin:16px 0 8px;font-size:15px">What this chart shows</h4>`
+        + `<ul class="cap mini" style="margin:0;padding-left:1.4em">`
+        + `<li><b>No subsidy:</b> Most cancellations happen around <b>${ctrlPeak} seconds</b>. Half of all cancellations happen before <b>${ctrlMed} seconds</b>.</li>`
+        + `<li><b>With subsidy:</b> Most cancellations happen around <b>${trtPeak} seconds</b>. Half of all cancellations happen before <b>${trtMed} seconds</b>.</li>`
+        + `<li>This means people with a subsidy usually wait longer before cancelling.</li>`
+        + `<li>Around <b>${trtLate}%</b> of subsidised cancellations happen after 900 seconds, so the chart goes up to <b>${xMax} seconds</b>.</li>`
+        + `<li>Move your mouse over the chart to see whether the cancellation was made by the customer or the driver.</li>`
+        + `</ul>`;
+    }
+    // median cancel time markers (dashed vertical lines)
     const ann = {};
     SERIES.forEach((s,k)=>{ const mi=medIdx(s.cancel); if(mi<0) return;
       ann['med'+k]={type:'line', xMin:xlab[mi], xMax:xlab[mi], borderColor:s.color, borderWidth:1.5, borderDash:[4,4],
-        label:{display:true, content:`中位取消 ${H.edges[mi]}s`, color:'#fff', backgroundColor:s.color,
+        label:{display:true, content:`Median ${H.edges[mi]}s`, color:'#fff', backgroundColor:s.color,
           font:{size:10,weight:'600'}, position:k===0?'start':'end'}}; });
     chart.options.plugins.annotation.annotations = ann; chart.update();
     const leg = document.getElementById('deathDistLegend');
