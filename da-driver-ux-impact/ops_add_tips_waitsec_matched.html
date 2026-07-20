@@ -77,7 +77,20 @@
   .waitsec-view-toggle button{font:inherit;font-size:13px;padding:6px 14px;border:0;background:transparent;color:var(--ink2);cursor:pointer;line-height:1.3}
   .waitsec-view-toggle button.active{background:var(--ctrl);color:#fff;font-weight:600}
   .waitsec-view-toggle button:focus-visible{outline:2px solid var(--ctrl);outline-offset:2px}
-  #main-waitsec-table[data-view=compact] tbody tr.waitsec-static-row{display:none}
+  #main-waitsec-table[data-view=compact] tbody tr.waitsec-static-row,
+  #main-waitsec-table[data-view=compact] tbody tr.static-detail-row{display:none}
+  tr.drill-static-row{cursor:pointer;user-select:none}
+  tr.drill-static-row:hover td{background:color-mix(in srgb,var(--good) 10%,var(--goodbg)) !important}
+  tr.drill-static-row.active td{background:var(--goodbg) !important;box-shadow:inset 0 0 0 9999px var(--goodbg)}
+  tr.drill-static-row td:first-child::after{content:" ▸";color:var(--muted);font-size:11px;margin-left:4px}
+  tr.drill-static-row.active td:first-child::after{content:" ▾"}
+  tr.static-detail-row td{
+    padding:0;background:var(--neutbg);border-bottom:1px solid var(--axis);
+    white-space:normal;text-align:left;position:static !important;box-shadow:none !important;min-width:0 !important}
+  tr.static-detail-row .drill-inner{padding:14px 16px 18px;max-width:100%;min-width:0;overflow-x:auto}
+  tr.static-detail-row table.cmp.small{margin:0;min-width:640px}
+  tr.key-insight-row .inline-day-break{margin-top:12px;overflow-x:auto}
+  tr.key-insight-row .inline-day-break table.cmp.small{margin:0;min-width:720px}
   #main-waitsec-table th:nth-child(3),#main-waitsec-table td:nth-child(3),
   #main-waitsec-table th:nth-child(5),#main-waitsec-table td:nth-child(5){min-width:72px}
   .legend .it{display:flex;align-items:center;gap:8px}
@@ -254,7 +267,7 @@
 
   <!-- ② 結果 -->
   <h2>② 結果：有補貼組完成率仍然較低</h2>
-  <p>把訂單分成 15 個條件相近的分組。<b class="hl-bad">其中 13 個分組，有補貼組完成率低於沒有補貼組</b>。精簡表六列長等候均可點開：列下先出<b>時間桶重點卡</b>（未點則收起），再是完整分桶／盡頭單。「&lt;$85 × 121–180」只在「完整」可見且 n=6，當雜訊。</p>
+  <p>把訂單分成 15 個條件相近的分組。<b class="hl-bad">其中 13 個分組，有補貼組完成率低於沒有補貼組</b>。點列展開／收合細節。「&lt;$85 × 121–180」只在「完整」可見且 n=6，點該列看逐日拆解，當雜訊。</p>
   <div class="legend">
     <span class="it"><span class="chip ctrl"></span> 沒有補貼組</span>
     <span class="it"><span class="chip trt"></span> 有補貼組</span>
@@ -277,7 +290,21 @@
     <tbody>
       <tr class="waitsec-static-row"><td>&lt;$85</td><td>0–60</td><td class="ctrl n">613</td><td class="ctrl"><span class="ctrl-val">90.9%</span></td><td class="trt n">2</td><td class="trt"><span class="trt-val">0.0%</span></td><td class="diff lose">−90.9</td></tr>
       <tr class="waitsec-static-row"><td>&lt;$85</td><td>60–120</td><td class="ctrl n">119</td><td class="ctrl"><span class="ctrl-val">75.6%</span></td><td class="trt n">0</td><td class="trt">—</td><td class="diff">—</td></tr>
-      <tr class="waitsec-static-row pos" title="僅「完整」顯示｜有補貼 n=6，不計入『有贏又夠量』"><td>&lt;$85</td><td>121–180</td><td class="ctrl n">78</td><td class="ctrl"><span class="ctrl-val">67.9%</span></td><td class="trt n">6</td><td class="trt"><span class="trt-val">83.3%</span></td><td class="diff win">+15.4 <span class="lift-tag lift-flat" title="完整模式才見；有補貼僅 6 張，屬雜訊，不計入有贏又夠量">n=6·不算</span></td></tr>
+      <tr class="waitsec-static-row pos drill-static-row" data-static-detail="lt85-121-180" title="點擊展開／收合｜僅「完整」顯示｜有補貼 n=6，不計入『有贏又夠量』" role="button" tabindex="0" aria-expanded="false"><td>&lt;$85</td><td>121–180</td><td class="ctrl n">78</td><td class="ctrl"><span class="ctrl-val">67.9%</span></td><td class="trt n">6</td><td class="trt"><span class="trt-val">83.3%</span></td><td class="diff win">+15.4 <span class="lift-tag lift-flat" title="完整模式才見；有補貼僅 6 張，屬雜訊，不計入有贏又夠量">n=6·不算</span></td></tr>
+      <tr class="static-detail-row" data-static-detail="lt85-121-180" hidden><td colspan="7"><div class="drill-inner">
+        <table class="cmp small">
+          <caption><b>拆解 · &lt;$85 × 121–180（+15.4）</b>：有補貼 n=6 → 雜訊</caption>
+          <thead><tr><th>日期</th><th>星期</th><th class="ctrl">無補貼 n</th><th class="ctrl">完成率</th><th class="trt">有補貼 n</th><th class="trt">完成率</th></tr></thead>
+          <tbody>
+            <tr><td>2026-05-26</td><td>週二</td><td class="ctrl n">11</td><td class="ctrl"><span class="ctrl-val">63.6%</span></td><td class="trt n">0</td><td class="trt">—</td></tr>
+            <tr><td>2026-05-29</td><td>週五</td><td class="ctrl n">18</td><td class="ctrl"><span class="ctrl-val">72.2%</span></td><td class="trt n">0</td><td class="trt">—</td></tr>
+            <tr><td>2026-06-08</td><td>週一</td><td class="ctrl n">8</td><td class="ctrl"><span class="ctrl-val">87.5%</span></td><td class="trt n">3</td><td class="trt"><span class="trt-val">100.0%</span></td></tr>
+            <tr><td>2026-06-18</td><td>週四</td><td class="ctrl n">12</td><td class="ctrl"><span class="ctrl-val">58.3%</span></td><td class="trt n">1</td><td class="trt"><span class="trt-val">0.0%</span></td></tr>
+            <tr><td>2026-06-22</td><td>週一</td><td class="ctrl n">19</td><td class="ctrl"><span class="ctrl-val">57.9%</span></td><td class="trt n">0</td><td class="trt">—</td></tr>
+            <tr><td>2026-07-03</td><td>週五</td><td class="ctrl n">11</td><td class="ctrl"><span class="ctrl-val">72.7%</span></td><td class="trt n">2</td><td class="trt"><span class="trt-val">100.0%</span></td></tr>
+          </tbody>
+        </table>
+      </div></td></tr>
       <tr class="drill-row" data-drill-key="&lt;$85|181-400" title="點擊展開／收合"><td>&lt;$85</td><td>181–400</td><td class="ctrl n">130</td><td class="ctrl"><span class="ctrl-val">59.2%</span></td><td class="trt n">19</td><td class="trt"><span class="trt-val">47.4%</span></td><td class="diff lose">−11.8</td></tr>
       <tr class="key-insight-row lose" hidden><td colspan="7"><div class="key-insight-inner">
         <b class="k">這一組：有補貼完成率低 11.4 個百分點（有補貼只有 29 張，量小）；請看落單後 241–300 秒與 301–360 秒</b>
@@ -323,6 +350,20 @@
           <li><b>落單到完成</b>：301-360s 有補貼 <b>17.8%（19/107）</b> &gt; 無補貼 12.2%（45/369） → 有補貼較好</li><li><b>落單到完成</b>：361-420s 有補貼 3.7%（4/107） &lt; 無補貼 5.1%（19/369） → 有補貼較差</li><li><b>落單到取消</b>：361-420s 有補貼 <b>11.2%（12/107）</b> &gt; 無補貼 4.3%（16/369） → 有補貼較差</li><li><b>落單到取消</b>：301-360s 有補貼 9.3%（10/107） &lt; 無補貼 10.8%（40/369） → 有補貼較好</li>
         </ul>
         <span class="muted-cap">這一組：有補貼 55.1%（59/107）對比無補貼 53.1%（196/369）。下面是完整時間分段與尾部訂單。（2026-07-14 實查）</span>
+        <div class="inline-day-break">
+          <table class="cmp small">
+            <caption><b>拆解 · $150–199 × 181–400（+3.0）</b>：母格差日；時間桶重點仍是展開後的 <b>301–420s</b></caption>
+            <thead><tr><th>日期</th><th>星期</th><th class="ctrl">無補貼 n / 完成率 / pending_orders_at_120s</th><th class="trt">有補貼 n / 完成率 / pending_orders_at_120s</th><th>方向</th></tr></thead>
+            <tbody>
+              <tr><td>2026-05-26</td><td>週二</td><td class="ctrl"><span class="ctrl-val">53 · 47.2% · 161</span></td><td class="trt"><span class="trt-val">16 · 43.8% · 206</span></td><td class="lose">輸</td></tr>
+              <tr><td>2026-05-29</td><td>週五</td><td class="ctrl"><span class="ctrl-val">77 · 53.2% · 112</span></td><td class="trt"><span class="trt-val">7 · 71.4% · 136</span></td><td class="win">勝(n=7)</td></tr>
+              <tr><td>2026-06-08</td><td>週一</td><td class="ctrl"><span class="ctrl-val">17 · 76.5% · 80</span></td><td class="trt"><span class="trt-val">17 · 76.5% · 129</span></td><td>持平</td></tr>
+              <tr><td>2026-06-18</td><td>週四</td><td class="ctrl"><span class="ctrl-val">74 · 52.7% · 150</span></td><td class="trt"><span class="trt-val">15 · 60.0% · 189</span></td><td class="win">勝</td></tr>
+              <tr><td>2026-06-22</td><td>週一</td><td class="ctrl"><span class="ctrl-val">77 · 53.2% · 183</span></td><td class="trt"><span class="trt-val">0 · — · —</span></td><td>—</td></tr>
+              <tr><td>2026-07-03</td><td>週五</td><td class="ctrl"><span class="ctrl-val">38 · 63.2% · 101</span></td><td class="trt"><span class="trt-val">29 · 51.7% · 148</span></td><td class="lose">輸</td></tr>
+            </tbody>
+          </table>
+        </div>
       </div></td></tr>
       <tr class="drill-row" data-drill-key="$150-199|400+" title="點擊展開／收合"><td>$150–199</td><td>400+</td><td class="ctrl n">238</td><td class="ctrl"><span class="ctrl-val">50.0%</span></td><td class="trt n">192</td><td class="trt"><span class="trt-val">39.1%</span></td><td class="diff lose">−10.9</td></tr>
       <tr class="key-insight-row lose" hidden><td colspan="7"><div class="key-insight-inner">
@@ -333,35 +374,6 @@
         <span class="muted-cap">這一組：有補貼 36.5%（81/222）對比無補貼 47.7%（112/235）。下面是完整時間分段與尾部訂單。（2026-07-14 實查）</span>
       </div></td></tr>
 
-    </tbody>
-  </table>
-  </div>
-
-<div class="card">
-  <table class="cmp small">
-    <caption><b>拆解 1 · &lt;$85 × 121–180（+15.4）</b>：主表「完整」綠列；有補貼 n=6 → 雜訊</caption>
-    <thead><tr><th>日期</th><th>星期</th><th class="ctrl">無補貼 n</th><th class="ctrl">完成率</th><th class="trt">有補貼 n</th><th class="trt">完成率</th></tr></thead>
-    <tbody>
-      <tr><td>2026-05-26</td><td>週二</td><td class="ctrl n">11</td><td class="ctrl"><span class="ctrl-val">63.6%</span></td><td class="trt n">0</td><td class="trt">—</td></tr>
-      <tr><td>2026-05-29</td><td>週五</td><td class="ctrl n">18</td><td class="ctrl"><span class="ctrl-val">72.2%</span></td><td class="trt n">0</td><td class="trt">—</td></tr>
-      <tr><td>2026-06-08</td><td>週一</td><td class="ctrl n">8</td><td class="ctrl"><span class="ctrl-val">87.5%</span></td><td class="trt n">3</td><td class="trt"><span class="trt-val">100.0%</span></td></tr>
-      <tr><td>2026-06-18</td><td>週四</td><td class="ctrl n">12</td><td class="ctrl"><span class="ctrl-val">58.3%</span></td><td class="trt n">1</td><td class="trt"><span class="trt-val">0.0%</span></td></tr>
-      <tr><td>2026-06-22</td><td>週一</td><td class="ctrl n">19</td><td class="ctrl"><span class="ctrl-val">57.9%</span></td><td class="trt n">0</td><td class="trt">—</td></tr>
-      <tr><td>2026-07-03</td><td>週五</td><td class="ctrl n">11</td><td class="ctrl"><span class="ctrl-val">72.7%</span></td><td class="trt n">2</td><td class="trt"><span class="trt-val">100.0%</span></td></tr>
-    </tbody>
-  </table>
-  </div>
-  <div class="card">
-  <table class="cmp small">
-    <caption><b>拆解 2 · $150–199 × 181–400（+3.0）</b>：母格差日；時間桶重點仍是展開後的 <b>301–420s</b></caption>
-    <thead><tr><th>日期</th><th>星期</th><th class="ctrl">無補貼 n / 完成率 / pending_orders_at_120s</th><th class="trt">有補貼 n / 完成率 / pending_orders_at_120s</th><th>方向</th></tr></thead>
-    <tbody>
-      <tr><td>2026-05-26</td><td>週二</td><td class="ctrl"><span class="ctrl-val">53 · 47.2% · 161</span></td><td class="trt"><span class="trt-val">16 · 43.8% · 206</span></td><td class="lose">輸</td></tr>
-      <tr><td>2026-05-29</td><td>週五</td><td class="ctrl"><span class="ctrl-val">77 · 53.2% · 112</span></td><td class="trt"><span class="trt-val">7 · 71.4% · 136</span></td><td class="win">勝(n=7)</td></tr>
-      <tr><td>2026-06-08</td><td>週一</td><td class="ctrl"><span class="ctrl-val">17 · 76.5% · 80</span></td><td class="trt"><span class="trt-val">17 · 76.5% · 129</span></td><td>持平</td></tr>
-      <tr><td>2026-06-18</td><td>週四</td><td class="ctrl"><span class="ctrl-val">74 · 52.7% · 150</span></td><td class="trt"><span class="trt-val">15 · 60.0% · 189</span></td><td class="win">勝</td></tr>
-      <tr><td>2026-06-22</td><td>週一</td><td class="ctrl"><span class="ctrl-val">77 · 53.2% · 183</span></td><td class="trt"><span class="trt-val">0 · — · —</span></td><td>—</td></tr>
-      <tr><td>2026-07-03</td><td>週五</td><td class="ctrl"><span class="ctrl-val">38 · 63.2% · 101</span></td><td class="trt"><span class="trt-val">29 · 51.7% · 148</span></td><td class="lose">輸</td></tr>
     </tbody>
   </table>
   </div>
@@ -976,7 +988,43 @@
         const d = findDrillDetail(tr);
         if (d) d.hidden = true;
       });
+      document.querySelectorAll("#main-waitsec-table tr.drill-static-row.active").forEach((tr) => {
+        tr.classList.remove("active");
+        tr.setAttribute("aria-expanded", "false");
+        const id = tr.getAttribute("data-static-detail");
+        const d = document.querySelector('#main-waitsec-table tr.static-detail-row[data-static-detail="' + id + '"]');
+        if (d) d.hidden = true;
+      });
     }
+  }
+
+  function collapseStaticDetails(exceptTr) {
+    document.querySelectorAll("#main-waitsec-table tr.drill-static-row").forEach((tr) => {
+      if (tr === exceptTr) return;
+      tr.classList.remove("active");
+      tr.setAttribute("aria-expanded", "false");
+      const id = tr.getAttribute("data-static-detail");
+      const d = document.querySelector('#main-waitsec-table tr.static-detail-row[data-static-detail="' + id + '"]');
+      if (d) d.hidden = true;
+    });
+  }
+
+  function toggleStaticRow(tr) {
+    const id = tr.getAttribute("data-static-detail");
+    const detail = document.querySelector('#main-waitsec-table tr.static-detail-row[data-static-detail="' + id + '"]');
+    if (!detail) return;
+    if (tr.classList.contains("active")) {
+      tr.classList.remove("active");
+      tr.setAttribute("aria-expanded", "false");
+      detail.hidden = true;
+      return;
+    }
+    collapseAll(null);
+    collapseStaticDetails(tr);
+    tr.classList.add("active");
+    tr.setAttribute("aria-expanded", "true");
+    detail.hidden = false;
+    detail.scrollIntoView({ block: "nearest", behavior: "smooth" });
   }
 
   document.querySelector(".waitsec-view-toggle")?.addEventListener("click", (e) => {
@@ -986,6 +1034,17 @@
   });
 
   document.getElementById("main-waitsec-table").addEventListener("change", onDrillDetailChange);
+
+  document.querySelectorAll("#main-waitsec-table tr.drill-static-row").forEach((tr) => {
+    const openRow = () => toggleStaticRow(tr);
+    tr.addEventListener("click", openRow);
+    tr.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        openRow();
+      }
+    });
+  });
 
   document.querySelectorAll("#main-waitsec-table tr.drill-row").forEach((tr) => {
     const key = tr.getAttribute("data-drill-key");
@@ -1006,7 +1065,7 @@
       : null;
     if (insight) insight.after(detail);
     else tr.after(detail);
-    const openRow = () => toggleRow(tr);
+    const openRow = () => { collapseStaticDetails(null); toggleRow(tr); };
     tr.addEventListener("click", openRow);
     tr.addEventListener("keydown", (e) => {
       if (e.key === "Enter" || e.key === " ") {

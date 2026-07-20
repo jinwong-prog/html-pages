@@ -77,7 +77,20 @@
   .waitsec-view-toggle button{font:inherit;font-size:13px;padding:6px 14px;border:0;background:transparent;color:var(--ink2);cursor:pointer;line-height:1.3}
   .waitsec-view-toggle button.active{background:var(--ctrl);color:#fff;font-weight:600}
   .waitsec-view-toggle button:focus-visible{outline:2px solid var(--ctrl);outline-offset:2px}
-  #main-waitsec-table[data-view=compact] tbody tr.waitsec-static-row{display:none}
+  #main-waitsec-table[data-view=compact] tbody tr.waitsec-static-row,
+  #main-waitsec-table[data-view=compact] tbody tr.static-detail-row{display:none}
+  tr.drill-static-row{cursor:pointer;user-select:none}
+  tr.drill-static-row:hover td{background:color-mix(in srgb,var(--good) 10%,var(--goodbg)) !important}
+  tr.drill-static-row.active td{background:var(--goodbg) !important;box-shadow:inset 0 0 0 9999px var(--goodbg)}
+  tr.drill-static-row td:first-child::after{content:" ▸";color:var(--muted);font-size:11px;margin-left:4px}
+  tr.drill-static-row.active td:first-child::after{content:" ▾"}
+  tr.static-detail-row td{
+    padding:0;background:var(--neutbg);border-bottom:1px solid var(--axis);
+    white-space:normal;text-align:left;position:static !important;box-shadow:none !important;min-width:0 !important}
+  tr.static-detail-row .drill-inner{padding:14px 16px 18px;max-width:100%;min-width:0;overflow-x:auto}
+  tr.static-detail-row table.cmp.small{margin:0;min-width:640px}
+  tr.key-insight-row .inline-day-break{margin-top:12px;overflow-x:auto}
+  tr.key-insight-row .inline-day-break table.cmp.small{margin:0;min-width:720px}
   #main-waitsec-table th:nth-child(3),#main-waitsec-table td:nth-child(3),
   #main-waitsec-table th:nth-child(5),#main-waitsec-table td:nth-child(5){min-width:72px}
   .legend .it{display:flex;align-items:center;gap:8px}
@@ -258,7 +271,7 @@
   <!-- ② results -->
   <h2>② Result: Orders with subsidy still completed less often</h2>
   <p>Orders were split into 15 comparable groups. In <b class="hl-bad">13 groups</b>, orders with subsidy had a lower completion rate than orders with no subsidy.</p>
-  <p>Click a long-wait row to view the summary, then the full breakdown. The &lt;$85 × 121–180s group (n=6) is shown only in Full View and should be treated as noise.</p>
+  <p>Click a long-wait row to expand / collapse details. The &lt;$85 × 121–180s group (n=6) is shown only in Full detail — click that row for the day breakdown; treat as noise.</p>
   <div class="legend">
     <span class="it"><span class="chip ctrl"></span> Orders with no subsidy</span>
     <span class="it"><span class="chip trt"></span> Orders with subsidy</span>
@@ -281,7 +294,21 @@
     <tbody>
       <tr class="waitsec-static-row"><td>&lt;$85</td><td>0–60s</td><td class="ctrl n">613</td><td class="ctrl"><span class="ctrl-val">90.9%</span></td><td class="trt n">2</td><td class="trt"><span class="trt-val">0.0%</span></td><td class="diff lose">−90.9</td></tr>
       <tr class="waitsec-static-row"><td>&lt;$85</td><td>60–120s</td><td class="ctrl n">119</td><td class="ctrl"><span class="ctrl-val">75.6%</span></td><td class="trt n">0</td><td class="trt">—</td><td class="diff">—</td></tr>
-      <tr class="waitsec-static-row pos" title="Full view only｜orders with subsidy count=6; not counted as a real win"><td>&lt;$85</td><td>121–180s</td><td class="ctrl n">78</td><td class="ctrl"><span class="ctrl-val">67.9%</span></td><td class="trt n">6</td><td class="trt"><span class="trt-val">83.3%</span></td><td class="diff win">+15.4 <span class="lift-tag lift-about the same" title="Full view only; only 6 orders with subsidy orders — noise, not a real win">n=6·ignore</span></td></tr>
+      <tr class="waitsec-static-row pos drill-static-row" data-static-detail="lt85-121-180" title="Click to expand / collapse｜Full view only｜orders with subsidy count=6; not counted as a real win" role="button" tabindex="0" aria-expanded="false"><td>&lt;$85</td><td>121–180s</td><td class="ctrl n">78</td><td class="ctrl"><span class="ctrl-val">67.9%</span></td><td class="trt n">6</td><td class="trt"><span class="trt-val">83.3%</span></td><td class="diff win">+15.4 <span class="lift-tag lift-about the same" title="Full view only; only 6 orders with subsidy orders — noise, not a real win">n=6·ignore</span></td></tr>
+      <tr class="static-detail-row" data-static-detail="lt85-121-180" hidden><td colspan="7"><div class="drill-inner">
+        <table class="cmp small">
+          <caption><b>Breakdown · &lt;$85 × 121–180 (+15.4)</b>: orders with subsidy count=6 → noise</caption>
+          <thead><tr><th>Date</th><th>Weekday</th><th class="ctrl">Orders with no subsidy (count)</th><th class="ctrl">Completion rate</th><th class="trt">Orders with subsidy (count)</th><th class="trt">Completion rate</th></tr></thead>
+          <tbody>
+            <tr><td>2026-05-26</td><td>Tue</td><td class="ctrl n">11</td><td class="ctrl"><span class="ctrl-val">63.6%</span></td><td class="trt n">0</td><td class="trt">—</td></tr>
+            <tr><td>2026-05-29</td><td>Fri</td><td class="ctrl n">18</td><td class="ctrl"><span class="ctrl-val">72.2%</span></td><td class="trt n">0</td><td class="trt">—</td></tr>
+            <tr><td>2026-06-08</td><td>Mon</td><td class="ctrl n">8</td><td class="ctrl"><span class="ctrl-val">87.5%</span></td><td class="trt n">3</td><td class="trt"><span class="trt-val">100.0%</span></td></tr>
+            <tr><td>2026-06-18</td><td>Thu</td><td class="ctrl n">12</td><td class="ctrl"><span class="ctrl-val">58.3%</span></td><td class="trt n">1</td><td class="trt"><span class="trt-val">0.0%</span></td></tr>
+            <tr><td>2026-06-22</td><td>Mon</td><td class="ctrl n">19</td><td class="ctrl"><span class="ctrl-val">57.9%</span></td><td class="trt n">0</td><td class="trt">—</td></tr>
+            <tr><td>2026-07-03</td><td>Fri</td><td class="ctrl n">11</td><td class="ctrl"><span class="ctrl-val">72.7%</span></td><td class="trt n">2</td><td class="trt"><span class="trt-val">100.0%</span></td></tr>
+          </tbody>
+        </table>
+      </div></td></tr>
       <tr class="drill-row" data-drill-key="&lt;$85|181-400" title="Click to expand / collapse"><td>&lt;$85</td><td>181–400s</td><td class="ctrl n">130</td><td class="ctrl"><span class="ctrl-val">59.2%</span></td><td class="trt n">19</td><td class="trt"><span class="trt-val">47.4%</span></td><td class="diff lose">−11.8</td></tr>
       <tr class="key-insight-row lose" hidden><td colspan="7"><div class="key-insight-inner">
         <b class="k">This group: orders with subsidy finish 11.4 percentage points less often (only 29 orders with subsidy — small); look at 241–300  sec and 301–360 sec</b>
@@ -327,6 +354,20 @@
           <li><b>Time from order placed to completed</b>: 301-360s orders with subsidy <b>17.8% (19/107)</b> &gt; orders with no subsidy 12.2% (45/369) → better for subsidy</li><li><b>Time from order placed to completed</b>: 361-420s orders with subsidy 3.7% (4/107) &lt; orders with no subsidy 5.1% (19/369) → worse for subsidy</li><li><b>Time from order placed to cancelled</b>: 361-420s orders with subsidy <b>11.2% (12/107)</b> &gt; orders with no subsidy 4.3% (16/369) → worse for subsidy</li><li><b>Time from order placed to cancelled</b>: 301-360s orders with subsidy 9.3% (10/107) &lt; orders with no subsidy 10.8% (40/369) → better for subsidy</li>
         </ul>
         <span class="muted-cap">This group: orders with subsidy 55.1% (59/107) vs orders with no subsidy 53.1% (196/369)。Full time buckets and longest-wait orders below. (2026-07-14 queried)</span>
+        <div class="inline-day-break">
+          <table class="cmp small">
+            <caption><b>Breakdown · $150–199 × 181–400 (+3.0)</b>: parent cell differs by day; time-bucket focus after expand is still <b>301–420s</b></caption>
+            <thead><tr><th>Date</th><th>Weekday</th><th class="ctrl">Orders with no subsidy (count) / Completion / pending_orders_at_120s</th><th class="trt">Orders with subsidy (count) / Completion / pending_orders_at_120s</th><th>Which side finished more often</th></tr></thead>
+            <tbody>
+              <tr><td>2026-05-26</td><td>Tue</td><td class="ctrl"><span class="ctrl-val">53 · 47.2% · 161</span></td><td class="trt"><span class="trt-val">16 · 43.8% · 206</span></td><td class="lose">Worse for subsidy</td></tr>
+              <tr><td>2026-05-29</td><td>Fri</td><td class="ctrl"><span class="ctrl-val">77 · 53.2% · 112</span></td><td class="trt"><span class="trt-val">7 · 71.4% · 136</span></td><td class="win">Better for subsidy (n=7)</td></tr>
+              <tr><td>2026-06-08</td><td>Mon</td><td class="ctrl"><span class="ctrl-val">17 · 76.5% · 80</span></td><td class="trt"><span class="trt-val">17 · 76.5% · 129</span></td><td>about the same</td></tr>
+              <tr><td>2026-06-18</td><td>Thu</td><td class="ctrl"><span class="ctrl-val">74 · 52.7% · 150</span></td><td class="trt"><span class="trt-val">15 · 60.0% · 189</span></td><td class="win">Better for subsidy</td></tr>
+              <tr><td>2026-06-22</td><td>Mon</td><td class="ctrl"><span class="ctrl-val">77 · 53.2% · 183</span></td><td class="trt"><span class="trt-val">0 · — · —</span></td><td>—</td></tr>
+              <tr><td>2026-07-03</td><td>Fri</td><td class="ctrl"><span class="ctrl-val">38 · 63.2% · 101</span></td><td class="trt"><span class="trt-val">29 · 51.7% · 148</span></td><td class="lose">Worse for subsidy</td></tr>
+            </tbody>
+          </table>
+        </div>
       </div></td></tr>
       <tr class="drill-row" data-drill-key="$150-199|400+" title="Click to expand / collapse"><td>$150–199</td><td>400s+</td><td class="ctrl n">238</td><td class="ctrl"><span class="ctrl-val">50.0%</span></td><td class="trt n">192</td><td class="trt"><span class="trt-val">39.1%</span></td><td class="diff lose">−10.9</td></tr>
       <tr class="key-insight-row lose" hidden><td colspan="7"><div class="key-insight-inner">
@@ -341,34 +382,6 @@
   </table>
   </div>
 
-<div class="card">
-  <table class="cmp small">
-    <caption><b>Breakdown 1 · &lt;$85 × 121–180 (+15.4)</b>: main-table Full-view green row; orders with subsidy count=6 → noise</caption>
-    <thead><tr><th>Date</th><th>Weekday</th><th class="ctrl">Orders with no subsidy (count)</th><th class="ctrl">Completion rate</th><th class="trt">Orders with subsidy (count)</th><th class="trt">Completion rate</th></tr></thead>
-    <tbody>
-      <tr><td>2026-05-26</td><td>Tue</td><td class="ctrl n">11</td><td class="ctrl"><span class="ctrl-val">63.6%</span></td><td class="trt n">0</td><td class="trt">—</td></tr>
-      <tr><td>2026-05-29</td><td>Fri</td><td class="ctrl n">18</td><td class="ctrl"><span class="ctrl-val">72.2%</span></td><td class="trt n">0</td><td class="trt">—</td></tr>
-      <tr><td>2026-06-08</td><td>Mon</td><td class="ctrl n">8</td><td class="ctrl"><span class="ctrl-val">87.5%</span></td><td class="trt n">3</td><td class="trt"><span class="trt-val">100.0%</span></td></tr>
-      <tr><td>2026-06-18</td><td>Thu</td><td class="ctrl n">12</td><td class="ctrl"><span class="ctrl-val">58.3%</span></td><td class="trt n">1</td><td class="trt"><span class="trt-val">0.0%</span></td></tr>
-      <tr><td>2026-06-22</td><td>Mon</td><td class="ctrl n">19</td><td class="ctrl"><span class="ctrl-val">57.9%</span></td><td class="trt n">0</td><td class="trt">—</td></tr>
-      <tr><td>2026-07-03</td><td>Fri</td><td class="ctrl n">11</td><td class="ctrl"><span class="ctrl-val">72.7%</span></td><td class="trt n">2</td><td class="trt"><span class="trt-val">100.0%</span></td></tr>
-    </tbody>
-  </table>
-  </div>
-  <div class="card">
-  <table class="cmp small">
-    <caption><b>Breakdown 2 · $150–199 × 181–400 (+3.0)</b>: parent cell differs by day; time-bucket focus after expand is still <b>301–420s</b></caption>
-    <thead><tr><th>Date</th><th>Weekday</th><th class="ctrl">Orders with no subsidy (count) / Completion / pending_orders_at_120s</th><th class="trt">Orders with subsidy (count) / Completion / pending_orders_at_120s</th><th>Which side finished more often</th></tr></thead>
-    <tbody>
-      <tr><td>2026-05-26</td><td>Tue</td><td class="ctrl"><span class="ctrl-val">53 · 47.2% · 161</span></td><td class="trt"><span class="trt-val">16 · 43.8% · 206</span></td><td class="lose">Worse for subsidy</td></tr>
-      <tr><td>2026-05-29</td><td>Fri</td><td class="ctrl"><span class="ctrl-val">77 · 53.2% · 112</span></td><td class="trt"><span class="trt-val">7 · 71.4% · 136</span></td><td class="win">Better for subsidy (n=7)</td></tr>
-      <tr><td>2026-06-08</td><td>Mon</td><td class="ctrl"><span class="ctrl-val">17 · 76.5% · 80</span></td><td class="trt"><span class="trt-val">17 · 76.5% · 129</span></td><td>about the same</td></tr>
-      <tr><td>2026-06-18</td><td>Thu</td><td class="ctrl"><span class="ctrl-val">74 · 52.7% · 150</span></td><td class="trt"><span class="trt-val">15 · 60.0% · 189</span></td><td class="win">Better for subsidy</td></tr>
-      <tr><td>2026-06-22</td><td>Mon</td><td class="ctrl"><span class="ctrl-val">77 · 53.2% · 183</span></td><td class="trt"><span class="trt-val">0 · — · —</span></td><td>—</td></tr>
-      <tr><td>2026-07-03</td><td>Fri</td><td class="ctrl"><span class="ctrl-val">38 · 63.2% · 101</span></td><td class="trt"><span class="trt-val">29 · 51.7% · 148</span></td><td class="lose">Worse for subsidy</td></tr>
-    </tbody>
-  </table>
-  </div>
 
   <h2 style="font-size:17px;color:var(--ink2)">Long-wait orders (over 400 sec) show no improvement either</h2>
   <p>Orders waiting over 400 sec are the hardest to dispatch and most in need of rescue. But in all three GTV bands <b class="hl-bad">the orders with subsidy group still has a lower completion rate</b> (&lt;$85 lower by 17.2 percentage points, $150–199 lower by 10.9, $85–149 lower by 2.3). Even for the hardest-to-dispatch orders, subsidies did not help.</p>
@@ -980,7 +993,43 @@ Incremental completions = orders with subsidy order count × adjusted completion
         const d = findDrillDetail(tr);
         if (d) d.hidden = true;
       });
+      document.querySelectorAll("#main-waitsec-table tr.drill-static-row.active").forEach((tr) => {
+        tr.classList.remove("active");
+        tr.setAttribute("aria-expanded", "false");
+        const id = tr.getAttribute("data-static-detail");
+        const d = document.querySelector('#main-waitsec-table tr.static-detail-row[data-static-detail="' + id + '"]');
+        if (d) d.hidden = true;
+      });
     }
+  }
+
+  function collapseStaticDetails(exceptTr) {
+    document.querySelectorAll("#main-waitsec-table tr.drill-static-row").forEach((tr) => {
+      if (tr === exceptTr) return;
+      tr.classList.remove("active");
+      tr.setAttribute("aria-expanded", "false");
+      const id = tr.getAttribute("data-static-detail");
+      const d = document.querySelector('#main-waitsec-table tr.static-detail-row[data-static-detail="' + id + '"]');
+      if (d) d.hidden = true;
+    });
+  }
+
+  function toggleStaticRow(tr) {
+    const id = tr.getAttribute("data-static-detail");
+    const detail = document.querySelector('#main-waitsec-table tr.static-detail-row[data-static-detail="' + id + '"]');
+    if (!detail) return;
+    if (tr.classList.contains("active")) {
+      tr.classList.remove("active");
+      tr.setAttribute("aria-expanded", "false");
+      detail.hidden = true;
+      return;
+    }
+    collapseAll(null);
+    collapseStaticDetails(tr);
+    tr.classList.add("active");
+    tr.setAttribute("aria-expanded", "true");
+    detail.hidden = false;
+    detail.scrollIntoView({ block: "nearest", behavior: "smooth" });
   }
 
   document.querySelector(".waitsec-view-toggle")?.addEventListener("click", (e) => {
@@ -990,6 +1039,17 @@ Incremental completions = orders with subsidy order count × adjusted completion
   });
 
   document.getElementById("main-waitsec-table").addEventListener("change", onDrillDetailChange);
+
+  document.querySelectorAll("#main-waitsec-table tr.drill-static-row").forEach((tr) => {
+    const openRow = () => toggleStaticRow(tr);
+    tr.addEventListener("click", openRow);
+    tr.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        openRow();
+      }
+    });
+  });
 
   document.querySelectorAll("#main-waitsec-table tr.drill-row").forEach((tr) => {
     const key = tr.getAttribute("data-drill-key");
@@ -1010,7 +1070,7 @@ Incremental completions = orders with subsidy order count × adjusted completion
       : null;
     if (insight) insight.after(detail);
     else tr.after(detail);
-    const openRow = () => toggleRow(tr);
+    const openRow = () => { collapseStaticDetails(null); toggleRow(tr); };
     tr.addEventListener("click", openRow);
     tr.addEventListener("keydown", (e) => {
       if (e.key === "Enter" || e.key === " ") {
