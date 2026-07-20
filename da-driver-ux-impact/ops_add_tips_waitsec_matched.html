@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>補貼有沒有提高完成率？（拉齊 GTV、response time、pending）</title>
+<title>補貼有沒有提高完成率？（拉齊 GTV、final response time、pending）</title>
 <style>
   :root{
     --plane:#f9f9f7; --surface:#fcfcfb;
@@ -179,13 +179,13 @@
 <body>
 <div class="wrap">
 
-  <h1>補貼有沒有提高完成率？（拉齊 GTV、response time、pending）</h1>
+  <h1>補貼有沒有提高完成率？（拉齊 GTV、final response time、pending）</h1>
   <p class="meta">香港 PlatformOD · Van · ASAP · 車費 &lt; HK$200，共 6 個 campaign 日繁忙時段 ｜（2026-07-14 實查，香港時間，6 campaign 日 2026-05-26 至 2026-07-03；資格 <code>pass_sheet_price_lt_200</code>）｜ 數字全部由 BigQuery 產出</p>
-  <p class="meta"><b>Pending 訂單數</b> = <code>pending_orders_at_120s</code>（落單後約 120 秒時，還有多少張單在等司機；不是 response time）</p>
+  <p class="meta"><b>Pending 訂單數</b> = <code>pending_orders_at_120s</code>（落單後約 120 秒時，還有多少張單在等司機；不是 final response time）</p>
 
   <div class="answer">
     <span class="big">補貼活動無效。</span><br>
-    逐層拉齊車費、response time、日期時段與積壓後，<b>有補貼組完成率仍低於沒有補貼組</b>（三重對齊差距 −4.7 個百分點）。已付補貼 $4,945（529/1,050 張完成單），但<b>無法證明多救回訂單</b>。現有數據不足以支持增加補貼預算。
+    逐層拉齊車費、final response time、日期時段與積壓後，<b>有補貼組完成率仍低於沒有補貼組</b>（三重對齊差距 −4.7 個百分點）。已付補貼 $4,945（529/1,050 張完成單），但<b>無法證明多救回訂單</b>。現有數據不足以支持增加補貼預算。
   </div>
 
   <div class="card">
@@ -198,7 +198,7 @@
       <th style="text-align:left">逐日差距（6 個 campaign 日）</th>
     </tr></thead>
         <tbody>
-      <tr><td style="text-align:left">車費 × response time</td>
+      <tr><td style="text-align:left">車費 × final response time</td>
         <td class="trt"><span class="trt-val">51.6%</span> <span class="n">(529/1,026)</span></td>
         <td class="ctrl"><span class="ctrl-val">58.3%</span> <span class="n">(598/1,026)</span></td>
         <td class="diff lose">−6.7pp</td>
@@ -233,7 +233,7 @@
     </tr></thead>
     <tbody>
       <tr><td>GTV</td><td style="text-align:left"><code>mart_ops_add_tips_campaign_orders</code></td><td style="text-align:left"><code>gross_transaction_value</code></td></tr>
-      <tr><td>Response time</td><td style="text-align:left"><code>mart_ops_add_tips_campaign_orders</code></td><td style="text-align:left"><code>final_response_time</code>（沒有則用 <code>first_response_time</code>）</td></tr>
+      <tr><td>Final response time</td><td style="text-align:left"><code>mart_ops_add_tips_campaign_orders</code></td><td style="text-align:left"><code>final_response_time</code>（沒有則用 <code>first_response_time</code>）</td></tr>
       <tr><td>Pending orders</td><td style="text-align:left"><code>order_master_table_hk</code>*</td><td style="text-align:left"><code>pending_orders_at_120s</code></td></tr>
       <tr><td>Campaign date</td><td style="text-align:left"><code>mart_ops_add_tips_campaign_orders</code></td><td style="text-align:left"><code>campaign_date</code></td></tr>
       <tr><td>Order hour</td><td style="text-align:left"><code>mart_ops_add_tips_campaign_orders</code></td><td style="text-align:left"><code>created_at</code></td></tr>
@@ -267,9 +267,9 @@
   </div>
   </details>
 
-  <!-- ② 完成率（按 response time 分組） -->
-  <h2>② 完成率（按 response time 分組）</h2>
-  <p>訂單按 <b>response time</b> 分組（同一 GTV 內）。比較有補貼與無補貼訂單的完成率。</p>
+  <!-- ② 完成率（按 final response time 分組） -->
+  <h2>② 完成率（按 final response time 分組）</h2>
+  <p>訂單按 <b>final response time</b> 分組（同一 GTV 內）。比較有補貼與無補貼訂單的完成率。</p>
   <p>把訂單分成 15 個條件相近的分組。<b class="hl-bad">其中 13 個分組，有補貼組完成率低於沒有補貼組</b>。</p>
   <div class="legend">
     <span class="it"><span class="chip ctrl"></span> 沒有補貼組</span>
@@ -286,7 +286,7 @@
       <col style="width:11%"><col style="width:15%"><col style="width:12%">
     </colgroup>
     <thead><tr>
-      <th>車費</th><th class="th-2line">Response time</th>
+      <th>車費</th><th class="th-2line">Final response time</th>
       <th class="ctrl th-2line">無補貼<br>訂單張數</th><th class="ctrl">完成率</th>
       <th class="trt th-2line">有補貼<br>訂單張數</th><th class="trt">完成率</th><th class="th-2line">差距<br>（百分點）</th>
     </tr></thead>
@@ -381,14 +381,14 @@
   </table>
   </div>
 
-  <!-- ③ 平均 pending（按 response time 分組） -->
-  <h2>③ 平均 pending 訂單數（按 response time 分組）</h2>
+  <!-- ③ 平均 pending（按 final response time 分組） -->
+  <h2>③ 平均 pending 訂單數（按 final response time 分組）</h2>
   <p>有補貼訂單在每一組的 pending 都較高。對齊相近訂單後，完成率差距由 <b>−6.7pp 收窄至 −4.7pp</b>，但有補貼訂單完成率仍然較低。</p>
   <p class="meta">平均 <code>pending_orders_at_120s</code>。</p>
 
   <div class="card">
   <table class="cmp">
-    <thead><tr><th>車費</th><th>Response time</th><th class="ctrl th-2line">無補貼<br>Avg. number of pending orders</th><th class="trt th-2line">有補貼<br>Avg. number of pending orders</th><th class="th-2line">差距<br>（張；有補貼更高＝更難）</th></tr></thead>
+    <thead><tr><th>車費</th><th>Final response time</th><th class="ctrl th-2line">無補貼<br>Avg. number of pending orders</th><th class="trt th-2line">有補貼<br>Avg. number of pending orders</th><th class="th-2line">差距<br>（張；有補貼更高＝更難）</th></tr></thead>
     <tbody>
       <tr><td>&lt;$85</td><td>0–60</td><td class="ctrl"><span class="ctrl-val">105.8</span></td><td class="trt"><span class="trt-val">138.0</span></td><td class="diff lose">+32.2</td></tr>
       <tr><td>&lt;$85</td><td>121–180</td><td class="ctrl"><span class="ctrl-val">113.2</span></td><td class="trt"><span class="trt-val">143.0</span></td><td class="diff lose">+29.8</td></tr>
@@ -459,7 +459,7 @@
   const rowsByKey = Object.fromEntries((DRILL.rows || []).map((r) => [r.key, r]));
   const dimOptionsCancelled = [
     ["death_buckets", "取消前等了多久（分段）"],
-    ["death_summary", "取消前 response time：整體分布"],
+    ["death_summary", "取消前 final response time：整體分布"],
     ["backlog", "派單當時還未有司機接的單（多難派）"],
     ["region", "pickup_location_region"],
     ["release", "重新派單次數"],
@@ -654,13 +654,13 @@
       const g = DRILL.meta && DRILL.meta.completed_outcome_global;
       if (!g) return "";
       const c = g.ctrl, t = g.trt;
-      return '<div class="box good" style="margin:0 0 12px;font-size:13.5px"><b>全體完成單全程耗時 final_response_time（long response time 母體合計）</b>：無補貼 P75 ' + fmt(c.complete_p75) + 's / P85 ' + fmt(c.complete_p85) + 's / P99 ' + fmt(c.complete_p99) + 's / max ' + fmt(c.complete_max) +
+      return '<div class="box good" style="margin:0 0 12px;font-size:13.5px"><b>全體完成單全程耗時 final_response_time（long final response time 母體合計）</b>：無補貼 P75 ' + fmt(c.complete_p75) + 's / P85 ' + fmt(c.complete_p85) + 's / P99 ' + fmt(c.complete_p99) + 's / max ' + fmt(c.complete_max) +
         's（n=' + c.completed + '）｜有補貼 P75 ' + fmt(t.complete_p75) + 's / P85 ' + fmt(t.complete_p85) + 's / P99 ' + fmt(t.complete_p99) + 's / max ' + fmt(t.complete_max) + 's（n=' + t.completed + '）</div>';
     }
     const g = DRILL.meta && DRILL.meta.cancel_death_global;
     if (!g) return "";
     const c = g.ctrl, t = g.trt;
-    return '<div class="box warn" style="margin:0 0 12px;font-size:13.5px"><b>全體取消單：落單到取消時間（long response time 合計）</b>：無補貼 P75 ' + fmt(c.death_p75) + 's / P85 ' + fmt(c.death_p85) + 's / P99 ' + fmt(c.death_p99) + 's / max ' + fmt(c.death_max) +
+    return '<div class="box warn" style="margin:0 0 12px;font-size:13.5px"><b>全體取消單：落單到取消時間（long final response time 合計）</b>：無補貼 P75 ' + fmt(c.death_p75) + 's / P85 ' + fmt(c.death_p85) + 's / P99 ' + fmt(c.death_p99) + 's / max ' + fmt(c.death_max) +
       's（n=' + c.n + '）｜有補貼 P75 ' + fmt(t.death_p75) + 's / P85 ' + fmt(t.death_p85) + 's / P99 ' + fmt(t.death_p99) + 's / max ' + fmt(t.death_max) + 's（n=' + t.n + '）</div>';
   }
 
@@ -851,7 +851,7 @@
     if (wc === "180-400") {
       if (completed) {
         return '<p class="drill-scope-note"><b>為何完成時間分桶大約到 400s？</b> 主表「180–400」篩的是 <code>wait_sec</code>；在此格內<b>完成單</b>的 <code>final_response_time</code> 多數 ≤400s（例：本格無補貼 max ' +
-          fmt(row.summary && row.summary.ctrl && row.summary.ctrl.complete_max) + "s）。更長完成單會落在主表「400+」response time 列，不是整錯。</p>";
+          fmt(row.summary && row.summary.ctrl && row.summary.ctrl.complete_max) + "s）。更長完成單會落在主表「400+」final response time 列，不是整錯。</p>";
       }
       return '<p class="drill-scope-note"><b>為什麼「落單到取消」可以超過 400 秒？</b> 主表「180–400」只代表 <code>wait_sec</code> 落在 180–399s（常用<b>等到首個司機</b>的時間），不是取消時間上限。訂單可以先有司機、之後再等到取消，所以 <code>cancelled_at−created_at</code> 可以到 1,000s+（例：本組無補貼取消 max ' +
         fmt(row.summary && row.summary.ctrl && row.summary.ctrl.death_max) + "s）。</p>";
@@ -889,7 +889,7 @@
     else if (dim === "campaign_date") tablePart = renderDim(row, "campaign_date", "六個活動日逐日比", mode);
     else if (dim === "tip_amount") tablePart = renderDim(row, "tip_amount", "補貼金額檔", mode);
     inner.innerHTML =
-      '<div class="drill-head"><div class="drill-title">拆解：' + row.fare_band + ' × response time ' + row.wait_coarse.replace("-", "–") + ' 秒' + tipBadge(dpp) + '</div>' +
+      '<div class="drill-head"><div class="drill-title">拆解：' + row.fare_band + ' × final response time ' + row.wait_coarse.replace("-", "–") + ' 秒' + tipBadge(dpp) + '</div>' +
       '<div class="drill-controls">' + dimSelectHtml(key, dim, mode) + outcomeToggleHtml(key, mode === "completed") + '</div></div>' +
       cellOutcomeHtml(row) +
       waitScopeNoteHtml(row, mode) +
