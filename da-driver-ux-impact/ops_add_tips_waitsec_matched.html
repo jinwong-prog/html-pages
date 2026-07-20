@@ -267,8 +267,9 @@
   </div>
   </details>
 
-  <!-- ② 結果 -->
-  <h2>② 結果：有補貼組完成率仍然較低</h2>
+  <!-- ② 完成率（按 response time 分組） -->
+  <h2>② 完成率（按 response time 分組）</h2>
+  <p>訂單按 <b>response time</b> 分組（同一 GTV 內）。比較有補貼與無補貼訂單的完成率。</p>
   <p>把訂單分成 15 個條件相近的分組。<b class="hl-bad">其中 13 個分組，有補貼組完成率低於沒有補貼組</b>。點列展開／收合細節。「&lt;$85 × 121–180」只在「完整」可見且 n=6，點該列看逐日拆解，當雜訊。</p>
   <div class="legend">
     <span class="it"><span class="chip ctrl"></span> 沒有補貼組</span>
@@ -380,9 +381,10 @@
   </table>
   </div>
 
-  <!-- ③ 為什麼 -->
-  <h2>③ 為什麼？——有補貼的訂單更難找到司機</h2>
-  <p>有補貼的訂單本身就有更多單在等司機。在同樣條件下比較後，差距收窄了（<b>−6.7 → −4.7 個百分點</b>），但有補貼訂單的完成率仍然較低。</p>
+  <!-- ③ 平均 pending（按 response time 分組） -->
+  <h2>③ 平均 pending 訂單數（按 response time 分組）</h2>
+  <p>訂單按<b>同一個 response time</b> 分組（同一 GTV 內）。比較有補貼與無補貼訂單的 <b>平均 pending 訂單數</b>（<code>pending_orders_at_120s</code>）。</p>
+  <p>有補貼的訂單在每一組的 pending 本來就更高。在同樣條件下比較後，完成率差距收窄了（<b>−6.7 → −4.7 個百分點</b>），但有補貼訂單的完成率仍然較低。</p>
   <p class="meta">下表 = <code>AVG(pending_orders_at_120s)</code>（2026-07-20 實查，HK · <code>pass_sheet_price_lt_200</code> · <code>wait_sec</code> 分箱 · 單位＝張訂單）</p>
 
   <div class="card">

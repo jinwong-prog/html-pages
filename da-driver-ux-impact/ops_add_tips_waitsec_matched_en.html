@@ -270,8 +270,9 @@
   </div>
   </details>
 
-  <!-- ② results -->
-  <h2>② Result: Subsidy orders still completed less often</h2>
+  <!-- ② completion rate by response time -->
+  <h2>② Completion rate by response time</h2>
+  <p>Orders are grouped by <b>response time</b> (within the same GTV). Compare the completion rates of subsidy and non-subsidy orders.</p>
   <p>Orders were split into 15 comparable groups. In <b class="hl-bad">13 groups</b>, subsidy orders had a lower completion rate than non-subsidy orders.</p>
   <p>Click a long-wait row to expand / collapse details. The &lt;$85 × 121–180s group (n=6) is shown only in Full detail — click that row for the day breakdown; treat as noise.</p>
   <div class="legend">
@@ -385,9 +386,10 @@
   </div>
 
 
-  <!-- ③ why -->
-  <h2>③ Why? — Subsidy orders were harder to find a driver</h2>
-  <p>Subsidy orders already had more orders waiting for a driver. After comparing orders under the same conditions, the gap became smaller (<b>−6.7 → −4.7 percentage points</b>), but subsidy orders still completed less often.</p>
+  <!-- ③ average pending by response time -->
+  <h2>③ Average pending orders by response time</h2>
+  <p>Orders are grouped by the <b>same response time</b> (within the same GTV). Compare the <b>average number of pending orders</b> (<code>pending_orders_at_120s</code>) for subsidy and non-subsidy orders.</p>
+  <p>Subsidy orders already had more pending orders in every group. After comparing under the same conditions, the completion-rate gap became smaller (<b>−6.7 → −4.7 percentage points</b>), but subsidy orders still completed less often.</p>
   <p class="meta">Table = <code>AVG(pending_orders_at_120s)</code>（2026-07-20 queried，HK · <code>pass_sheet_price_lt_200</code> · <code>wait_sec</code> band · unit = orders）</p>
 
   <div class="card">
