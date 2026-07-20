@@ -244,14 +244,14 @@
       <tr><td>Order status</td><td style="text-align:left"><code>mart_ops_add_tips_campaign_orders</code></td><td style="text-align:left"><code>status</code></td></tr>
     </tbody>
   </table>
-  <p class="meta" style="margin:10px 0 0">* <code>pending_orders_at_120s</code> is surfaced in <code>mart_ops_add_tips_campaign_orders</code> and originates from <code>order_master_table_hk</code>.</p>
+  <p class="meta" style="margin:10px 0 0">* <code>pending_orders_at_120s</code> is in <code>mart_ops_add_tips_campaign_orders</code>; it comes from <code>order_master_table_hk</code>.</p>
   </div>
   <div class="box warn">
-    <b>Subsidy orders · 3 trigger buckets</b>（queried 2026-07-20，6 Peak days，<code>pass_sheet_static_eligibility</code>；response = <code>final_response_time</code> (or <code>first_response_time</code> if unavailable)；pending = <code>pending_orders_at_120s</code>）
+    <b>Subsidy orders · 3 trigger buckets</b> (queried 2026-07-20, 6 Peak days, <code>pass_sheet_static_eligibility</code>; response = <code>final_response_time</code> (or <code>first_response_time</code> if unavailable); pending = <code>pending_orders_at_120s</code>)
     <ul class="plain" style="margin:8px 0 0">
-      <li><b>1) Both</b>：response_time ≥ <b>120s</b> <b>AND</b> pending ≥ <b>40 orders</b> — <b>769</b> / 1,039（74.0%）</li>
-      <li><b>2) Pending ≥40 orders only</b>（response &lt;120s or null）— <b>270</b> / 1,039（26.0%）</li>
-      <li><b>3) Response ≥120s only</b>（pending &lt;40 orders）— <b>0</b> / 1,039（0%）</li>
+      <li><b>1) Both</b>: response_time ≥ <b>120s</b> <b>AND</b> pending ≥ <b>40 orders</b> — <b>769</b> / 1,039 (74.0%)</li>
+      <li><b>2) Pending ≥ 40 orders only</b> (response &lt;120s or null) — <b>270</b> / 1,039 (26.0%)</li>
+      <li><b>3) Response ≥ 120s only</b> (pending &lt;40 orders) — <b>0</b> / 1,039 (0%)</li>
     </ul>
   </div>
   <div class="card">
@@ -390,7 +390,7 @@
   <h2>③ Average pending orders by response time</h2>
   <p>Orders are grouped by the <b>same response time</b> (within the same GTV). Compare the <b>average number of pending orders</b> (<code>pending_orders_at_120s</code>) for subsidy and non-subsidy orders.</p>
   <p>Subsidy orders already had more pending orders in every group. After comparing under the same conditions, the completion-rate gap became smaller (<b>−6.7 → −4.7 percentage points</b>), but subsidy orders still completed less often.</p>
-  <p class="meta">Table = <code>AVG(pending_orders_at_120s)</code>（2026-07-20 queried，HK · <code>pass_sheet_price_lt_200</code> · <code>wait_sec</code> band · unit = orders）</p>
+  <p class="meta">Table = <code>AVG(pending_orders_at_120s)</code> (2026-07-20 queried, HK · <code>pass_sheet_price_lt_200</code> · <code>wait_sec</code> band · unit = orders)</p>
 
   <div class="card">
   <table class="cmp">
@@ -449,13 +449,13 @@ Extra completed orders ≈ number of subsidy orders × completion-rate gap
   <p>Based on the current data, <b class="hl-bad">there is no evidence that the subsidy budget generated additional completed orders.</b></p>
 
   <h3 style="font-size:18px;margin:28px 0 8px">Cash summary</h3>
-  <p>During this period（2026-07-14 queried，HK · <code>pass_sheet_price_lt_200</code> · 6 campaign days）:</p>
+  <p>During this period (2026-07-14 queried, HK · <code>pass_sheet_price_lt_200</code> · 6 campaign days):</p>
   <div class="kpi">
     <div class="k"><div class="lbl">Subsidized orders completed</div><div class="val">529</div><div class="sub">subsidy orders that finished</div></div>
     <div class="k"><div class="lbl">GTV generated</div><div class="val">$65,904</div><div class="sub">from those completed orders</div></div>
     <div class="k"><div class="lbl">Subsidies paid</div><div class="val">$4,945</div><div class="sub">paid on completed orders only</div></div>
   </div>
-  <div class="box bad">However, <b>most of these completed orders would likely have been completed even without the subsidy</b>（see section ②）.<br>
+  <div class="box bad">However, <b>most of these completed orders would likely have been completed even without the subsidy</b> (see section ②).<br>
     This means the subsidy spending <b>has not been shown to create additional completed orders.</b></div>
 
   <!-- ⑤ next steps -->
@@ -463,7 +463,7 @@ Extra completed orders ≈ number of subsidy orders × completion-rate gap
   <p>From this analysis, we can say:</p>
   <ul class="plain">
     <li>We found <b>no evidence that subsidies increased the completion rate.</b></li>
-    <li>Orders that received subsidies were <b>harder to dispatch</b>（more orders were waiting for a driver）.</li>
+    <li>Orders that received subsidies were <b>harder to dispatch</b> (more orders were waiting for a driver).</li>
   </ul>
   <p>However, <b>this does not prove that subsidies are ineffective.</b> Other factors, such as <b>region, vehicle type, order time, and driver supply</b>, may still affect the results.</p>
   <div class="box good"><b>To measure the true impact of subsidies, we recommend:</b>
@@ -872,7 +872,7 @@ Extra completed orders ≈ number of subsidy orders × completion-rate gap
         return '<p class="drill-scope-note"><b>Why do completion-time buckets stop around 400s?</b> Main table “180–400” filters on <code>wait_sec</code>; within this cell most <b>completed</b> <code>final_response_time</code> values are ≤400s (e.g. this cell non-subsidy orders max ' +
           fmt(row.summary && row.summary.ctrl && row.summary.ctrl.complete_max) + "s). Longer completions fall in the main-table “400+” wait row — not a table error.</p>";
       }
-      return '<p class="drill-scope-note"><b>Why can time-to-cancel exceed 400 seconds?</b> 主表「180–400」只代表 <code>wait_sec</code> 落在 180–399s (常用<b>等到首個司機</b>的時間)，不是cancelled_at上限。訂單可以先有司機, 之後再等到取消，所以 <code>cancelled_at−created_at</code> 可以到 1,000s+ (例: 本組無補貼取消 max ' +
+      return '<p class="drill-scope-note"><b>Why can time-to-cancel exceed 400 seconds?</b> Main table “180–400” only means <code>wait_sec</code> fell in 180–399s (often time until a <b>first driver</b>), not a cancel-time cap. Orders can keep waiting after first accept until cancel, so <code>cancelled_at−created_at</code> can reach 1,000s+ (e.g. this cell non-subsidy cancel max ' +
         fmt(row.summary && row.summary.ctrl && row.summary.ctrl.death_max) + "s).</p>";
     }
     if (wc === "400+") {
