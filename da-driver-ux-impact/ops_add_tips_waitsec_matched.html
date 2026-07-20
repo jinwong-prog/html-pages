@@ -212,7 +212,7 @@
     </tr></thead>
     <tbody>
       <tr><td>GTV</td><td style="text-align:left"><code>mart_ops_add_tips_campaign_orders</code></td><td style="text-align:left"><code>gross_transaction_value</code></td></tr>
-      <tr><td>Response time</td><td style="text-align:left"><code>mart_ops_add_tips_campaign_orders</code></td><td style="text-align:left"><code>COALESCE(final_response_time, first_response_time)</code></td></tr>
+      <tr><td>Response time</td><td style="text-align:left"><code>mart_ops_add_tips_campaign_orders</code></td><td style="text-align:left"><code>final_response_time</code>（沒有則用 <code>first_response_time</code>）</td></tr>
       <tr><td>Pending orders</td><td style="text-align:left"><code>order_master_table_hk</code>*</td><td style="text-align:left"><code>pending_orders_at_120s</code></td></tr>
       <tr><td>Campaign date</td><td style="text-align:left"><code>mart_ops_add_tips_campaign_orders</code></td><td style="text-align:left"><code>campaign_date</code></td></tr>
       <tr><td>Order hour</td><td style="text-align:left"><code>mart_ops_add_tips_campaign_orders</code></td><td style="text-align:left"><code>created_at</code></td></tr>
@@ -223,7 +223,7 @@
   <p class="meta" style="margin:10px 0 0">* <code>pending_orders_at_120s</code> 已在 <code>mart_ops_add_tips_campaign_orders</code> 露出，來源是 <code>order_master_table_hk</code>。</p>
   </div>
   <div class="box warn">
-    <b>有補貼訂單 · 三組觸發拆解</b>（2026-07-20 實查，6 Peak 日，<code>pass_sheet_static_eligibility</code>；response = <code>COALESCE(final_response_time, first_response_time)</code>；pending = <code>pending_orders_at_120s</code>）
+    <b>有補貼訂單 · 三組觸發拆解</b>（2026-07-20 實查，6 Peak 日，<code>pass_sheet_static_eligibility</code>；response = <code>final_response_time</code>（沒有則用 <code>first_response_time</code>）；pending = <code>pending_orders_at_120s</code>）
     <ul class="plain" style="margin:8px 0 0">
       <li><b>1) Both</b>：response_time ≥ <b>120s</b> <b>且</b> pending ≥ <b>40 orders</b> — <b>769</b>／1,039（74.0%）</li>
       <li><b>2) Pending ≥40 orders only</b>（response &lt;120s 或 null）— <b>270</b>／1,039（26.0%）</li>
@@ -448,7 +448,7 @@
   </div>
 
   <p class="foot">
-    方法：把<b>GTV、response time（<code>COALESCE(final_response_time, first_response_time)</code>）、pending（<code>pending_orders_at_120s</code>）</b>相近的訂單放在一起比較，估算每完成一張訂單的補貼成本與浪費率（未帶來額外完成的補貼比例）。<br>
+    方法：把<b>GTV、response time（<code>final_response_time</code>（沒有則用 <code>first_response_time</code>））、pending（<code>pending_orders_at_120s</code>）</b>相近的訂單放在一起比較，估算每完成一張訂單的補貼成本與浪費率（未帶來額外完成的補貼比例）。<br>
     來源：<code>gogox-ba-sandbox.analytics.mart_ops_add_tips_campaign_orders</code>（2026-07-14 實查，6 個 campaign 日繁忙時段，香港時間）。範圍：PlatformOD 個人客 · Van · ASAP · 車費 &lt; HK$200 · <code>pass_sheet_price_lt_200</code>。有補貼 = <code>has_incentive</code>；配對分母須 <code>wait_sec</code> 非空。補貼只在完成單支付。完成率 = <code>is_completed</code>；Δpp = 有補貼完成率 − 沒補貼完成率（tip-weighted ATT）。數字由 <code>export_waitsec_layer_lift.py</code> 重生成。
   </p>
 
