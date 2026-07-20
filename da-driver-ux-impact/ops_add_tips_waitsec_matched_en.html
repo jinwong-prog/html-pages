@@ -210,14 +210,22 @@
     <thead><tr><th>What we kept the same</th><th style="text-align:left">BigQuery column</th><th style="text-align:left">How we grouped</th></tr></thead>
     <tbody>
       <tr><td>GTV</td><td style="text-align:left"><code>gross_transaction_value</code></td><td style="text-align:left">&lt;$85 ｜ $85–149 ｜ $150–199 (&ge;$200 not eligible for subsidies, already excluded)</td></tr>
-      <tr><td>Response time</td><td style="text-align:left"><code>wait_sec</code></td><td style="text-align:left">0–60s (&lt;60)｜60–120s ｜ 121–180s ｜ 181–400s ｜ 400s+ (non-overlapping; 2026-07-14 BQ queried)</td></tr>
-      <tr><td>Orders waiting for a driver</td><td style="text-align:left"><code>backlog_at_120</code></td><td style="text-align:left">&lt;40 orders / 40–80 orders / 80–120 orders / 120–160 orders / 160+ orders (額外測試，見 ③)</td></tr>
+      <tr><td>Response time</td><td style="text-align:left"><code>COALESCE(final_response_time, first_response_time)</code> (raw; not <code>wait_sec</code>)</td><td style="text-align:left">0–60s (&lt;60)｜60–120s ｜ 121–180s ｜ 181–400s ｜ 400s+ (non-overlapping; 2026-07-14 BQ queried)</td></tr>
+      <tr><td>Pending orders (≥40pcs gate)</td><td style="text-align:left"><code>pending_orders_at_120s</code></td><td style="text-align:left">&lt;40pcs / 40–80pcs / 80–120pcs / 120–160pcs / 160+pcs (count of orders still waiting; not seconds; extra check in ③)</td></tr>
       <tr><td>Campaign date / weekday</td><td style="text-align:left"><code>campaign_date</code></td><td style="text-align:left">aligned day by day across 6 days; date locks the weekday</td></tr>
       <tr><td>Peak period / hour of day</td><td style="text-align:left"><code>created_at</code></td><td style="text-align:left">aligned by order-placement hour (see table below)</td></tr>
       <tr><td>Customer type</td><td style="text-align:left"><code>business_segment</code></td><td style="text-align:left">all PlatformOD individual customers</td></tr>
-      <tr><td>Order status</td><td style="text-align:left"><code>status</code></td><td style="text-align:left">this filter: 11,421 orders — completed (9,062), incomplete (2,359, incl. cancelled; active rare); orders with subsidy (raw) 1,050, of which 24 with null wait_sec are excluded from fair-comparison count</td></tr>
+      <tr><td>Order status</td><td style="text-align:left"><code>status</code></td><td style="text-align:left">this filter: 11,421 orders — completed (9,062), incomplete (2,359, incl. cancelled; active rare); orders with subsidy (raw) 1,050</td></tr>
     </tbody>
   </table>
+  </div>
+  <div class="box warn">
+    <b>Orders with subsidy · 3 trigger buckets</b>（queried 2026-07-20，6 Peak days，<code>pass_sheet_static_eligibility</code>；response = <code>COALESCE(final_response_time, first_response_time)</code>；pending = <code>pending_orders_at_120s</code>）
+    <ul class="plain" style="margin:8px 0 0">
+      <li><b>1) Both</b>：response_time ≥ <b>120s</b> <b>AND</b> pending ≥ <b>40pcs</b> — <b>769</b> / 1,039（74.0%）</li>
+      <li><b>2) Pending ≥40pcs only</b>（response &lt;120s or null）— <b>270</b> / 1,039（26.0%）</li>
+      <li><b>3) Response ≥120s only</b>（pending &lt;40pcs）— <b>0</b> / 1,039（0%）</li>
+    </ul>
   </div>
   <div class="card">
   <table class="small">
@@ -347,7 +355,7 @@
   <div class="card">
   <table class="cmp small">
     <caption><b>Breakdown 2 · $150–199 × 181–400 (+3.0)</b>: parent cell differs by day; time-bucket focus after expand is still <b>301–420s</b></caption>
-    <thead><tr><th>Date</th><th>Weekday</th><th class="ctrl">Orders with no subsidy (count) / Completion / backlog</th><th class="trt">Orders with subsidy (count) / Completion / backlog</th><th>Which side finished more often</th></tr></thead>
+    <thead><tr><th>Date</th><th>Weekday</th><th class="ctrl">Orders with no subsidy (count) / Completion / pending_orders_at_120s</th><th class="trt">Orders with subsidy (count) / Completion / pending_orders_at_120s</th><th>Which side finished more often</th></tr></thead>
     <tbody>
       <tr><td>2026-05-26</td><td>Tue</td><td class="ctrl"><span class="ctrl-val">53 · 47.2% · 161</span></td><td class="trt"><span class="trt-val">16 · 43.8% · 206</span></td><td class="lose">Worse for subsidy</td></tr>
       <tr><td>2026-05-29</td><td>Fri</td><td class="ctrl"><span class="ctrl-val">77 · 53.2% · 112</span></td><td class="trt"><span class="trt-val">7 · 71.4% · 136</span></td><td class="win">Better for subsidy (n=7)</td></tr>
@@ -407,7 +415,7 @@
     <b>What is "extra orders rescued (incremental completions)"?</b>
     Among this batch, how many would have cancelled without subsidy but completed because of subsidy — i.e. orders <b>truly rescued by the subsidy</b>.
     <br>"Incremental completions" <b>cannot be counted directly in reality</b> (no one can name which order "would have cancelled without subsidy"); they are estimated from the adjusted completion-rate gap:
-    <pre style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:13.5px;overflow-x:auto;margin:10px 0">Adjusted completion-rate gap = after matching fare/wait/backlog, orders with subsidy completion − orders with no subsidy completion
+    <pre style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:13.5px;overflow-x:auto;margin:10px 0">Adjusted completion-rate gap = after matching fare / response time / pending_orders_at_120s, orders with subsidy completion − orders with no subsidy completion
               = 55.3% − 62.6%
               = −1.9 percentage points (i.e. −1.9%)
 
@@ -437,7 +445,7 @@ Incremental completions = orders with subsidy order count × adjusted completion
   </div>
 
   <p class="foot">
-    Method: compare orders with similar <b>fare, response time, and backlog</b>; estimate subsidy cost per completed order and wastage (share of subsidy that bought no incremental completion).<br>
+    Method: compare orders with similar <b>GTV, response time (<code>COALESCE(final_response_time, first_response_time)</code>), and pending (<code>pending_orders_at_120s</code>)</b>; estimate subsidy cost per completed order and wastage (share of subsidy that bought no incremental completion).<br>
     Source: <code>gogox-ba-sandbox.analytics.mart_ops_add_tips_campaign_orders</code> (2026-07-14 queried, 6 campaign-day peak periods, Hong Kong time). Scope: PlatformOD individual · Van · ASAP · GTV &lt; HK$200 · <code>pass_sheet_price_lt_200</code>. Subsidized = <code>has_incentive</code>; fair-comparison count requires non-null <code>wait_sec</code>. Subsidy paid on completed orders only. Completion = <code>is_completed</code>; Δpp = orders with subsidy completion − orders with no subsidy completion (orders-with-subsidy weighted comparison). Figures regenerated by <code>export_waitsec_layer_lift.py</code>.
   </p>
 
