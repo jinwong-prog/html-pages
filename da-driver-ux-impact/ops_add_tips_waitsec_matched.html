@@ -58,6 +58,7 @@
   .drill-inner table th:first-child,.drill-inner table td:first-child{text-align:left}
   thead th{color:var(--muted);font-weight:600;border-bottom:1px solid var(--axis);font-size:13px}
   thead th.th-2line{white-space:normal;line-height:1.35;max-width:14em}
+  #main-waitsec-table thead th.th-2line{max-width:9.5em;font-size:12.5px}
   caption{caption-side:top;text-align:left;font-size:13px;color:var(--muted);padding:10px 0 2px}
   table.cmp th.ctrl,table.cmp td.ctrl{background:color-mix(in srgb,var(--ctrl) 10%,transparent)}
   table.cmp th.trt,table.cmp td.trt{background:color-mix(in srgb,var(--trt) 9%,transparent)}
@@ -284,9 +285,9 @@
       <col style="width:11%"><col style="width:15%"><col style="width:12%">
     </colgroup>
     <thead><tr>
-      <th>車費</th><th>等候(秒)</th>
-      <th class="ctrl">無補貼 n</th><th class="ctrl">完成率</th>
-      <th class="trt">有補貼 n</th><th class="trt">完成率</th><th>差距 Δpp</th>
+      <th>車費</th><th class="th-2line">等候<br>(秒)</th>
+      <th class="ctrl th-2line">無補貼<br>n</th><th class="ctrl">完成率</th>
+      <th class="trt th-2line">有補貼<br>n</th><th class="trt">完成率</th><th class="th-2line">差距<br>Δpp</th>
     </tr></thead>
     <tbody>
       <tr class="waitsec-static-row"><td>&lt;$85</td><td>0–60</td><td class="ctrl n">613</td><td class="ctrl"><span class="ctrl-val">90.9%</span></td><td class="trt n">2</td><td class="trt"><span class="trt-val">0.0%</span></td><td class="diff lose">−90.9</td></tr>
