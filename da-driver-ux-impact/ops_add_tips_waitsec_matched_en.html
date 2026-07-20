@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Did the subsidy improve order completion? (same GTV, response time, and pending order count)</title>
+<title>Did the subsidy improve order completion? (same GTV, response time, and pending orders)</title>
 <style>
   :root{
     --plane:#f9f9f7; --surface:#fcfcfb;
@@ -179,10 +179,10 @@
 <body>
 <div class="wrap">
 
-  <h1>Did the subsidy improve order completion? (same GTV, response time, and pending order count)</h1>
+  <h1>Did the subsidy improve order completion? (same GTV, response time, and pending orders)</h1>
   <p class="meta"><p class="meta"><b>Scope:</b> HK PlatformOD Personal · Van · ASAP · GTV &lt; HK$200 · Peak hours · 6 campaign days</p>
   <p class="meta"><b>Source:</b> BigQuery (2026-07-14) · <code>pass_sheet_price_lt_200</code></p>
-  <p class="meta"><b>Pending order count</b> = <code>pending_orders_at_120s</code> (how many orders were still waiting for a driver at ~120s; not wait seconds)</p></p>
+  <p class="meta"><b>Pending orders</b> = <code>pending_orders_at_120s</code> (how many orders were still waiting for a driver at ~120s; not wait seconds)</p></p>
 
   <div class="answer">
     <span class="big">No evidence of subsidy effectiveness.</span><br>
@@ -436,7 +436,7 @@
               = 55.3% − 62.6%
               = −1.9 percentage points (i.e. −1.9%)
 
-Incremental completions = orders with subsidy × adjusted completion-rate gap
+Incremental completions = orders with subsidy order count × adjusted completion-rate gap
         = 1,050 × (adjusted gap; triple aligned ≈ −4.7pp)
         ≈ −24 (negative — no evidence of extra completions)</pre>
     Result ≤ 0, i.e. <b class="hl-bad">no extra completed orders observed</b>.
@@ -718,7 +718,7 @@ Incremental completions = orders with subsidy × adjusted completion-rate gap
       ? "Time-to-complete buckets (status=completed only; final_response_time; 120s wide; " + rangeNote + "; " + outcomeNote + ")"
       : "Time-to-cancel buckets (status=cancelled only; cancelled_at−created_at; 120s wide; " + rangeNote + "; " + outcomeNote + ")") +
       "· <span class='muted-cap'>Click column headers to sort. " + winNote + "</span>";
-    const head = [timeLabel, "Orders with no subsidy", "Orders with subsidy", "佔全組% · 無補貼", "佔全組% · 有補貼 (較好／較差)", "P75 · 無補貼", "P75 · 有補貼", "P85 · 無補貼", "P85 · 有補貼", "P99 · 無補貼", "P99 · 有補貼", "max · no subsidy", "max · with subsidy"];
+    const head = [timeLabel, "Orders with no subsidy (count)", "Orders with subsidy (count)", "佔全組% · 無補貼", "佔全組% · 有補貼 (較好／較差)", "P75 · 無補貼", "P75 · 有補貼", "P85 · 無補貼", "P85 · 有補貼", "P99 · 無補貼", "P99 · 有補貼", "max · no subsidy", "max · with subsidy"];
     const body = buckets.map((b) => {
       const p75c = bucketVal(b, "ctrl", 75), p75t = bucketVal(b, "trt", 75);
       const p85c = bucketVal(b, "ctrl", 85), p85t = bucketVal(b, "trt", 85);
@@ -773,7 +773,7 @@ Incremental completions = orders with subsidy × adjusted completion-rate gap
     const items = (row.dimensions && row.dimensions[dimKey]) || [];
     const completed = mode === "completed";
     const timeHdr = completed ? "Time-to-complete P75/P85/P99 (no subsidy / with subsidy)" : "Time-to-cancel P75/P85/P99 (no subsidy / with subsidy)";
-    const head = ["Group", "Orders with no subsidy", "無補貼訂單 · Completion rate", "無補貼訂單 · 取消率", "Orders with subsidy", "Orders with subsidy · Completion rate", "Orders with subsidy · 取消率", "Completion rate difference (percentage points)", timeHdr];
+    const head = ["Group", "Orders with no subsidy (count)", "無補貼訂單 · Completion rate", "無補貼訂單 · 取消率", "Orders with subsidy (count)", "Orders with subsidy · Completion rate", "Orders with subsidy · 取消率", "Completion rate difference (percentage points)", timeHdr];
     const body = items.map((it) => {
       const c = it.ctrl || {}, t = it.trt || {};
       const dcls = it.delta_pp > 0 ? "win" : it.delta_pp < 0 ? "lose" : "";
