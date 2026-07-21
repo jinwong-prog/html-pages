@@ -459,6 +459,95 @@
   <h3 style="font-size:18px;margin:28px 0 8px">Next step</h3>
   <div class="box good">Run an A/B test to confirm whether the subsidy works.</div>
 
+  <details class="cmp-criteria" id="sec-config-rec">
+  <summary>⑥ Config recommendation: stop subsidy on hard-to-serve orders <span class="hint">Click to expand / collapse</span></summary>
+  <p class="meta">(queried 2026-07-17, HK TRANSPORT PlatformOD Van ASAP GTV &lt;$200, wait_sec ≥ 181s hard-to-serve pool, 6 campaign mornings 2026-05-26 to 2026-07-03)</p>
+
+  <h3 style="font-size:18px;margin:12px 0 8px">Recommendation</h3>
+  <p>Some orders are very unlikely to finish, even after more subsidy.</p>
+  <p>The issue is <b>not</b> that the subsidy is too low. The issue is <b>no driver is willing to take the job</b>.</p>
+  <p>These orders have a <b>55.8% cancellation rate (304/545)</b>. More subsidy mainly raises cost without raising completion.</p>
+  <p><b>Action:</b> Do not offer subsidy for these orders. Keep the budget for orders with a better chance of finishing.</p>
+
+  <h3 style="font-size:18px;margin:20px 0 8px">When should we stop giving subsidy?</h3>
+  <p>Do <b>not</b> offer subsidy if <b>either</b> rule is met (cross-district = pickup region ≠ destination region):</p>
+
+  <div class="card" style="margin:12px 0">
+    <p style="margin:0 0 6px"><b>Rule 1 (main)</b></p>
+    <ul class="plain" style="margin:0">
+      <li>Cross-district trip</li>
+      <li>GTV (<code>gross_transaction_value</code>) <b>≥ HK$150</b></li>
+      <li>OSM route distance (<code>driving_distance_km_osmnx</code>) <b>≥ 7 km</b></li>
+    </ul>
+    <p style="margin:8px 0 0">Covers <b>82%</b> of hard-to-serve orders (449/545). Cancellation rate: <b>57.0% (256/449)</b>.</p>
+  </div>
+
+  <div class="card" style="margin:12px 0">
+    <p style="margin:0 0 6px"><b>Rule 2</b></p>
+    <ul class="plain" style="margin:0">
+      <li>Cross-district trip</li>
+      <li>GTV (<code>gross_transaction_value</code>) <b>&lt; HK$85</b></li>
+      <li>OSM route distance (<code>driving_distance_km_osmnx</code>) <b>&lt; 3 km</b></li>
+    </ul>
+    <p style="margin:8px 0 0">Covers the remaining <b>18%</b> (96/545). Cancellation rate: <b>50.0% (48/96)</b>.</p>
+  </div>
+
+  <div class="card" style="margin:12px 0">
+    <p style="margin:0 0 6px"><b>Optional rule</b></p>
+    <p style="margin:0">If subsidy was already offered, but <b>no driver accepts within 10 minutes</b> (<code>wait_sec</code> ≥ 600), stop increasing the subsidy. Cancellation rate for these orders: <b>65.8% (102/155)</b>.</p>
+  </div>
+
+  <h3 style="font-size:18px;margin:20px 0 8px">If OSM route distance is not available</h3>
+  <p><b>OSM route distance is preferred</b> (<code>driving_distance_km_osmnx</code>) — it best matches the real trip.</p>
+  <ul class="plain">
+    <li>If OSM is not ready yet: start with <b>cross-district + GTV</b>.</li>
+    <li>Use the best available trip distance or ETA as a temporary stand-in, if you have one.</li>
+    <li>Switch to OSM route distance when it is available.</li>
+  </ul>
+
+  <h3 style="font-size:18px;margin:20px 0 8px">What should NOT become rules?</h3>
+  <p>Do <b>not</b> reject orders only because they need a newer vehicle, an English-speaking driver, pet transport, a cross-harbour trip, or parking.</p>
+  <p>These alone do not explain cancellations, and the sample is too small for automatic rules. Use them only for monitoring.</p>
+
+  <h3 style="font-size:18px;margin:20px 0 8px">Location rules</h3>
+  <p>Do <b>not</b> blacklist specific pickup or destination areas.</p>
+  <p>Use three simple signals instead: <b>cross-district</b>, <b>GTV</b>, and <b>route distance</b>. That already covers almost all hard-to-serve orders and stays easy to maintain.</p>
+
+  <h3 style="font-size:18px;margin:20px 0 8px">Expected business impact</h3>
+  <ul class="plain">
+    <li>Spend less on orders that are unlikely to finish.</li>
+    <li>Move subsidy budget to orders with a higher chance of success.</li>
+    <li>Improve subsidy efficiency without adding ops complexity.</li>
+  </ul>
+
+  <h3 style="font-size:18px;margin:20px 0 8px">Simple decision flow</h3>
+  <pre style="background:var(--grid);border:1px solid var(--border);border-radius:10px;padding:14px 16px;overflow:auto;font-size:13px;line-height:1.45;max-width:64ch">Cross-district?
+
+        │
+        ▼
+──────────────────────────────
+GTV ≥ HK$150 AND OSM route ≥ 7 km?
+            OR
+GTV &lt; HK$85 AND OSM route &lt; 3 km?
+──────────────────────────────
+
+        │Yes
+        ▼
+Do NOT offer subsidy
+
+        │No
+        ▼
+Normal subsidy strategy
+
+(Optional)
+Already waiting 10 minutes with no driver?
+        │Yes → Stop increasing subsidy</pre>
+
+  <h3 style="font-size:18px;margin:20px 0 8px">Validation</h3>
+  <p>This recommendation is from <b>observational analysis</b> (not an A/B test).</p>
+  <p>Run a <b>2–4 week pilot</b> and watch completion rate, subsidy spend, and cancellation rate before full rollout.</p>
+  </details>
+
 </div>
 
 <script type="application/json" id="drill-data-json">
