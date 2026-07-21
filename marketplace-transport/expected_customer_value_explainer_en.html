@@ -280,7 +280,7 @@
           <!-- B. ECV -->
           <rect x="20" y="204" width="860" height="140" rx="12" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
           <text x="40" y="234" font-size="15" font-weight="700" fill="#1d4ed8">B. Expected Customer Value · 90d / 180d (this model)</text>
-          <text x="40" y="256" font-size="12" fill="#64748b">Same money idea · clearer next window</text>
+          <text x="40" y="256" font-size="12" fill="#64748b">Same structure (past + next) · different $ rule · clearer window</text>
 
           <line x1="60" y1="286" x2="500" y2="286" stroke="#1d4ed8" stroke-width="2.5" marker-end="url(#arrowBlue)"/>
           <circle cx="90" cy="286" r="7" fill="#0f172a"/>
@@ -319,8 +319,8 @@
             </tr>
             <tr>
               <td><strong>Money idea</strong></td>
-              <td>Already earned + expected next (platform money)</td>
-              <td>Same idea: already earned + expected next</td>
+              <td>Already earned + expected next<br /><span class="th-sub"><code>GTV×10% + fee</code> (company rule)</span></td>
+              <td>Already earned + expected next<br /><span class="th-sub"><code>driver_commission</code> + <code>premium_platform_support</code> (completed orders)</span></td>
             </tr>
             <tr>
               <td><strong>Time window</strong></td>
@@ -343,9 +343,10 @@
 
       <div class="caption">
         <strong>Simple takeaway</strong>
-        LTV = the company view you already know.
-        Expected Customer Value = the same money idea, but only for the next 90 or 180 days —
-        so we can measure and check it more clearly.
+        LTV = the company view you already know (<code>GTV×10% + fee</code>).
+        Expected Customer Value = past + next <strong>90 or 180 days</strong>, using
+        <strong>commission + platform fee fields</strong> on completed orders —
+        easier to check later.
         We are not throwing LTV away.
       </div>
     </section>
