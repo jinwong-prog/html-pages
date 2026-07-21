@@ -86,16 +86,38 @@
     }
     .svg-frame.narrow svg { min-width: 560px; }
     .caption {
-      margin: 8px 6px 8px;
-      padding: 12px 14px;
-      font-size: 14px;
+      margin: 12px 6px 8px;
+      padding: 14px 16px 16px;
+      font-size: 15px;
       color: var(--ink);
-      line-height: 1.55;
-      background: #f8fafc;
-      border: 1px solid var(--line);
-      border-radius: 8px;
+      line-height: 1.6;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-left: 4px solid var(--blue);
+      border-radius: 10px;
     }
-    .caption strong { display: block; margin-bottom: 6px; font-size: 13px; color: var(--sub); }
+    .caption .cap-label {
+      display: block;
+      margin: 0 0 10px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      color: var(--blue);
+    }
+    .caption p {
+      margin: 0 0 8px;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+    .caption p:last-child { margin-bottom: 0; }
+    .caption code {
+      font-size: 13px;
+      background: #fff;
+      border: 1px solid #dbeafe;
+      border-radius: 4px;
+      padding: 1px 5px;
+    }
     .note-box {
       margin: 8px 6px 4px;
       padding: 14px 16px;
@@ -387,12 +409,17 @@
       </div>
 
       <div class="caption">
-        <strong>Simple takeaway</strong>
-        LTV = the company view you already know (<code>GTV×10% + fee</code>).
-        Expected Customer Value = past + next <strong>90 or 180 days</strong>, using
-        <strong>commission + platform fee fields</strong> on completed orders —
-        easier to check later.
-        We are not throwing LTV away.
+        <span class="cap-label">Simple takeaway</span>
+        <p>
+          <strong>LTV</strong> = the company view you already know
+          (<code>GTV×10% + fee</code>).
+        </p>
+        <p>
+          <strong>Expected Customer Value</strong> = past + next
+          90 or 180 days, using commission + platform fee fields
+          on completed orders — easier to check later.
+        </p>
+        <p>We are not throwing LTV away.</p>
       </div>
     </section>
 
@@ -550,10 +577,10 @@
         >How we got $80</span>
       </p>
       <div class="caption">
-        <strong>Simple takeaway</strong>
-        The left side is money already earned.
-        The right side is a careful estimate for the next 90 or 180 days.
-        The final amount is what we report in the meeting.
+        <span class="cap-label">Simple takeaway</span>
+        <p>The left side is money already earned.</p>
+        <p>The right side is a careful estimate for the next 90 or 180 days.</p>
+        <p>The final amount is what we report in the meeting.</p>
       </div>
 
       <details class="row-demo">
@@ -668,10 +695,14 @@
           </ul>
 
           <div class="caption" style="margin:14px 0 0;">
-            <strong>One line</strong>
-            Already earned + expected next = Expected Customer Value.
-            “Chance they book again” is only an estimate that they may book again in that period —
-            not a promise of exactly N orders or a fixed profit.
+            <span class="cap-label">One line</span>
+            <p>
+              Already earned + expected next = Expected Customer Value.
+            </p>
+            <p>
+              “Chance they book again” is only an estimate that they may book again in that period —
+              not a promise of exactly N orders or a fixed profit.
+            </p>
           </div>
         </div>
       </details>
