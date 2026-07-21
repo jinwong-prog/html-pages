@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Expected Customer Value · 90d / 180d — Simple Explainer</title>
+  <style>
+    :root {
+      --bg: #f4f6f9;
+      --card: #fff;
+      --line: #d8dee8;
+      --ink: #0f172a;
+      --sub: #475569;
+      --blue: #1d4ed8;
+      --green: #047857;
+      --red: #b91c1c;
+      --amber: #b45309;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font: 16px/1.65 system-ui, -apple-system, sans-serif;
+    }
+    .wrap { max-width: 960px; margin: 0 auto; padding: 28px 18px 80px; }
+    .meta { margin: 0 0 8px; font-size: 13px; color: var(--sub); }
+    h1 { margin: 0 0 8px; font-size: 28px; line-height: 1.2; }
+    .tagline { margin: 0 0 20px; font-size: 17px; color: var(--sub); }
+    .answer {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-left: 4px solid var(--blue);
+      border-radius: 10px;
+      padding: 16px 18px;
+      margin-bottom: 20px;
+    }
+    .answer strong { display: block; margin-bottom: 8px; font-size: 14px; color: var(--sub); }
+    .answer p { margin: 0 0 10px; font-size: 16px; }
+    .answer p:last-child { margin-bottom: 0; }
+    .answer .window {
+      margin: 12px 0 10px;
+      padding: 10px 14px;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 8px;
+      font-weight: 700;
+      color: var(--blue);
+      text-align: center;
+    }
+    .block {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 18px 16px 12px;
+      margin-bottom: 18px;
+    }
+    .block h2 {
+      margin: 0 0 6px;
+      font-size: 18px;
+      padding: 0 6px;
+    }
+    .block .hint {
+      margin: 0 0 14px;
+      padding: 0 6px;
+      font-size: 15px;
+      color: var(--ink);
+    }
+    .cite {
+      margin: 0 0 12px;
+      padding: 0 6px;
+      font-size: 13px;
+      color: var(--sub);
+    }
+    .svg-frame {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin: 0 0 8px;
+    }
+    .svg-frame svg {
+      display: block;
+      width: 100%;
+      min-width: 680px;
+      height: auto;
+    }
+    .svg-frame.narrow svg { min-width: 560px; }
+    .caption {
+      margin: 8px 6px 8px;
+      padding: 12px 14px;
+      font-size: 14px;
+      color: var(--ink);
+      line-height: 1.55;
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+    .caption strong { display: block; margin-bottom: 6px; font-size: 13px; color: var(--sub); }
+    .note-box {
+      margin: 8px 6px 4px;
+      padding: 14px 16px;
+      border-radius: 8px;
+      border: 1px solid #fde68a;
+      background: #fffbeb;
+      font-size: 15px;
+      line-height: 1.55;
+    }
+    .foot {
+      margin-top: 24px;
+      font-size: 12px;
+      color: var(--sub);
+      line-height: 1.55;
+    }
+    .foot a { color: var(--blue); }
+    .foot ul { margin: 6px 0 0; padding-left: 1.2em; }
+
+    /* Collapsible example rows */
+    details.row-demo {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fff;
+      overflow: hidden;
+      margin: 0 6px 4px;
+    }
+    details.row-demo summary {
+      list-style: none;
+      cursor: pointer;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 8px 14px;
+      padding: 14px 16px;
+      user-select: none;
+    }
+    details.row-demo summary::-webkit-details-marker { display: none; }
+    details.row-demo summary::before {
+      content: "▸";
+      color: var(--blue);
+      font-weight: 700;
+      margin-right: 4px;
+    }
+    details.row-demo[open] summary::before { content: "▾"; }
+    details.row-demo summary:hover { background: #f8fafc; }
+    .row-demo-title { font-weight: 700; font-size: 16px; color: var(--ink); }
+    .row-demo-hint { font-size: 13px; color: var(--sub); }
+    .row-demo-body {
+      padding: 14px 16px 16px;
+      border-top: 1px solid var(--line);
+    }
+    .row-demo-body .lead {
+      margin: 0 0 14px;
+      font-size: 15px;
+      color: var(--ink);
+      line-height: 1.55;
+    }
+    table.row-table {
+      width: 100%;
+      min-width: 760px;
+      border-collapse: collapse;
+      font-size: 14px;
+      background: #fff;
+    }
+    table.row-table th,
+    table.row-table td {
+      border: 1px solid var(--line);
+      padding: 11px 12px;
+      text-align: left;
+      vertical-align: top;
+    }
+    table.row-table th {
+      background: #f1f5f9;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--sub);
+    }
+    table.row-table .th-sub {
+      display: block;
+      font-weight: 500;
+      font-size: 11px;
+      margin-top: 3px;
+      color: #64748b;
+    }
+    table.row-table tbody tr:nth-child(even) { background: #f8fafc; }
+    table.row-table .total-cell { font-weight: 800; color: var(--blue); font-size: 15px; }
+    .row-explain {
+      margin: 14px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+    .row-explain li {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      margin: 0 0 10px;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fbfcfe;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .row-explain li:last-child { margin-bottom: 0; }
+    .row-explain .who {
+      flex: 0 0 auto;
+      font-weight: 800;
+      min-width: 1.5em;
+      color: var(--blue);
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <p class="meta">
+      GoGoX HK · Platform Customers · Simple Explainer ·
+      No live BigQuery figures · Written 2026-07-21
+    </p>
+    <h1>Expected Customer Value · 90d / 180d</h1>
+    <p class="tagline">
+      What we cannot measure forever → what we measure instead → how one customer value is calculated
+    </p>
+
+    <div class="answer">
+      <strong>Why this model exists</strong>
+      <p>
+        The company already has an official <strong>LTV</strong> monthly view.
+        It is useful — and it stays in place.
+      </p>
+      <p>
+        This model adds a clearer next step: look only at the next
+        <strong>90 days or 180 days</strong>, so we can later compare
+        what we expected with real completed orders.
+      </p>
+      <div class="window">Expected Customer Value · 90d / 180d</div>
+      <p>
+        Same idea of “already earned + expected next.”
+        Different name and a fixed time window that is easier to check.
+      </p>
+    </div>
+
+    <!-- SVG 1: compare with LTV, not attack -->
+    <section class="block">
+      <h2>1. How this compares with company LTV</h2>
+      <p class="hint">
+        Think of them as <strong>two related views</strong>, not rivals.
+        Both care about platform money from a customer.
+        The difference is <strong>how far ahead</strong> we look — and how easy that is to check.
+      </p>
+      <div class="svg-frame" role="img" aria-label="Compare company LTV with Expected Customer Value 90 or 180 days">
+        <svg viewBox="0 0 900 380" xmlns="http://www.w3.org/2000/svg" font-family="system-ui,sans-serif">
+          <defs>
+            <marker id="arrowGray" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L6,3 L0,6 Z" fill="#64748b"/>
+            </marker>
+            <marker id="arrowBlue" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L6,3 L0,6 Z" fill="#1d4ed8"/>
+            </marker>
+            <linearGradient id="longHorizon" x1="0" x2="1">
+              <stop offset="0%" stop-color="#e2e8f0" stop-opacity="0.3"/>
+              <stop offset="100%" stop-color="#cbd5e1" stop-opacity="0.7"/>
+            </linearGradient>
+          </defs>
+
+          <!-- Title strip -->
+          <text x="450" y="28" text-anchor="middle" font-size="14" fill="#475569">Same question: how much is this customer worth to the platform?</text>
+
+          <!-- A. Company LTV -->
+          <rect x="20" y="48" width="860" height="140" rx="12" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+          <text x="40" y="78" font-size="15" font-weight="700" fill="#334155">A. Company LTV (official monthly table)</text>
+          <text x="40" y="100" font-size="12" fill="#64748b">Keep using this · familiar to the business</text>
+
+          <line x1="60" y1="130" x2="780" y2="130" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#arrowGray)"/>
+          <circle cx="90" cy="130" r="7" fill="#0f172a"/>
+          <text x="90" y="154" text-anchor="middle" font-size="11" fill="#475569">First order</text>
+          <rect x="200" y="116" width="90" height="28" rx="6" fill="#e2e8f0"/>
+          <text x="245" y="135" text-anchor="middle" font-size="11" fill="#334155">Today</text>
+          <rect x="320" y="112" width="400" height="36" fill="url(#longHorizon)" stroke="#94a3b8" stroke-dasharray="5 4"/>
+          <text x="520" y="135" text-anchor="middle" font-size="12" fill="#475569">Looks further ahead (harder to fully check “whole life”)</text>
+          <text x="40" y="175" font-size="12" fill="#64748b">Useful for: past contribution + a company view of future value</text>
+
+          <!-- B. ECV -->
+          <rect x="20" y="204" width="860" height="140" rx="12" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
+          <text x="40" y="234" font-size="15" font-weight="700" fill="#1d4ed8">B. Expected Customer Value · 90d / 180d (this model)</text>
+          <text x="40" y="256" font-size="12" fill="#64748b">Same money idea · clearer next window</text>
+
+          <line x1="60" y1="286" x2="500" y2="286" stroke="#1d4ed8" stroke-width="2.5" marker-end="url(#arrowBlue)"/>
+          <circle cx="90" cy="286" r="7" fill="#0f172a"/>
+          <text x="90" y="310" text-anchor="middle" font-size="11" fill="#475569">First order</text>
+          <rect x="200" y="272" width="88" height="28" rx="6" fill="#dbeafe" stroke="#1d4ed8"/>
+          <text x="244" y="291" text-anchor="middle" font-size="11" font-weight="600" fill="#1e3a8a">Cutoff</text>
+          <rect x="310" y="268" width="78" height="36" rx="8" fill="#ecfdf5" stroke="#047857" stroke-width="2"/>
+          <text x="349" y="291" text-anchor="middle" font-size="12" font-weight="700" fill="#047857">90d</text>
+          <rect x="400" y="268" width="88" height="36" rx="8" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2"/>
+          <text x="444" y="291" text-anchor="middle" font-size="12" font-weight="700" fill="#1d4ed8">180d</text>
+          <g transform="translate(520,268)">
+            <circle cx="18" cy="18" r="18" fill="#f0fdf4" stroke="#047857" stroke-width="2"/>
+            <path d="M9,19 L15,25 L28,10" fill="none" stroke="#047857" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </g>
+          <text x="560" y="282" font-size="12" font-weight="600" fill="#047857">Later we can check:</text>
+          <text x="560" y="300" font-size="12" fill="#065f46">expected vs real orders / money</text>
+          <text x="40" y="330" font-size="12" fill="#64748b">Useful for: decisions in the next 3–6 months (ads, CRM, offers)</text>
+        </svg>
+      </div>
+
+      <!-- Simple compare table -->
+      <div class="svg-frame" style="margin-top:8px;">
+        <table class="row-table" style="min-width:640px;" aria-label="LTV versus Expected Customer Value">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Company LTV</th>
+              <th>Expected Customer Value · 90d / 180d</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>What it asks</strong></td>
+              <td>What is this customer worth? (company monthly view)</td>
+              <td>What is this customer worth in the next 90 or 180 days?</td>
+            </tr>
+            <tr>
+              <td><strong>Money idea</strong></td>
+              <td>Already earned + expected next (platform money)</td>
+              <td>Same idea: already earned + expected next</td>
+            </tr>
+            <tr>
+              <td><strong>Time window</strong></td>
+              <td>Company rules (including a future estimate)</td>
+              <td>Fixed: <strong>90 days</strong> (ops) or <strong>180 days</strong> (management)</td>
+            </tr>
+            <tr>
+              <td><strong>Easy to check later?</strong></td>
+              <td>Harder for a true “whole life” answer</td>
+              <td>Easier: compare expected vs real orders in that period</td>
+            </tr>
+            <tr>
+              <td><strong>Status</strong></td>
+              <td>Official table — keep using</td>
+              <td>Extra view — only replace LTV after a holdout test wins</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="caption">
+        <strong>Simple takeaway</strong>
+        LTV = the company view you already know.
+        Expected Customer Value = the same money idea, but only for the next 90 or 180 days —
+        so we can measure and check it more clearly.
+        We are not throwing LTV away.
+      </div>
+    </section>
+
+    <!-- SVG 2 -->
+    <section class="block">
+      <h2>2. One customer value = two parts</h2>
+      <p class="hint">Start with the final amount. Then show the two parts that create it.</p>
+      <div class="svg-frame narrow" role="img" aria-label="Already earned plus expected next equals Expected Customer Value">
+        <svg viewBox="0 0 860 240" xmlns="http://www.w3.org/2000/svg" font-family="system-ui,sans-serif">
+          <defs>
+            <marker id="a1" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto">
+              <path d="M0,0 L8,3.5 L0,7 Z" fill="#64748b"/>
+            </marker>
+          </defs>
+          <rect x="20" y="30" width="230" height="150" rx="14" fill="#eff6ff" stroke="#1d4ed8" stroke-width="2.5"/>
+          <text x="135" y="62" text-anchor="middle" font-size="14" font-weight="700" fill="#1d4ed8">ALREADY EARNED</text>
+          <text x="135" y="88" text-anchor="middle" font-size="12" fill="#475569">Historical value</text>
+          <text x="135" y="108" text-anchor="middle" font-size="12" fill="#475569">Based on completed orders</text>
+          <text x="135" y="128" text-anchor="middle" font-size="12" fill="#475569">No prediction</text>
+          <text x="135" y="158" text-anchor="middle" font-size="28" font-weight="800" fill="#1d4ed8">$</text>
+
+          <circle cx="285" cy="105" r="22" fill="#f1f5f9" stroke="#94a3b8"/>
+          <text x="285" y="113" text-anchor="middle" font-size="24" font-weight="700" fill="#334155">+</text>
+
+          <rect x="340" y="30" width="230" height="150" rx="14" fill="#ecfdf5" stroke="#047857" stroke-width="2.5"/>
+          <text x="455" y="62" text-anchor="middle" font-size="14" font-weight="700" fill="#047857">EXPECTED NEXT</text>
+          <text x="455" y="88" text-anchor="middle" font-size="12" fill="#475569">Next 90 or 180 days</text>
+          <text x="455" y="108" text-anchor="middle" font-size="12" fill="#475569">Based on behaviour</text>
+          <text x="455" y="128" text-anchor="middle" font-size="12" fill="#475569">This is an estimate</text>
+          <text x="455" y="158" text-anchor="middle" font-size="28" font-weight="800" fill="#047857">$</text>
+
+          <line x1="590" y1="105" x2="640" y2="105" stroke="#64748b" stroke-width="3" marker-end="url(#a1)"/>
+
+          <rect x="650" y="30" width="190" height="150" rx="14" fill="#0f172a"/>
+          <text x="745" y="70" text-anchor="middle" font-size="12" fill="#94a3b8">REPORT THIS</text>
+          <text x="745" y="100" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">Expected</text>
+          <text x="745" y="122" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">Customer Value</text>
+          <text x="745" y="148" text-anchor="middle" font-size="13" fill="#93c5fd">· 90d / 180d</text>
+        </svg>
+      </div>
+      <div class="caption">
+        <strong>How to read this</strong>
+        Orders and GTV are used to calculate the value.
+        The main number reported to management is <strong>one dollar amount</strong>.
+      </div>
+    </section>
+
+    <!-- SVG 3 -->
+    <section class="block">
+      <h2>3. Customer A — how we estimate $480</h2>
+      <p class="cite">
+        Teaching example only. The figures below are made up to explain the method.
+        They are not live BigQuery results. (Written 2026-07-21 · fictional example · method demo)
+      </p>
+      <div class="svg-frame" role="img" aria-label="Customer A: already earned 400 plus expected next 80 equals Expected Customer Value 480">
+        <svg viewBox="0 0 920 560" xmlns="http://www.w3.org/2000/svg" font-family="system-ui,sans-serif">
+          <defs>
+            <marker id="arrB" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L6,3 L0,6 Z" fill="#64748b"/>
+            </marker>
+            <filter id="sh" x="-5%" y="-5%" width="110%" height="120%">
+              <feDropShadow dx="0" dy="2" stdDeviation="2" flood-opacity="0.12"/>
+            </filter>
+          </defs>
+
+          <rect x="360" y="16" width="200" height="44" rx="22" fill="#0f172a" filter="url(#sh)"/>
+          <text x="460" y="44" text-anchor="middle" font-size="16" font-weight="700" fill="#fff">Customer A</text>
+
+          <path d="M460,60 L460,90 L200,90 L200,110" fill="none" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#arrB)"/>
+          <path d="M460,60 L460,90 L720,90 L720,110" fill="none" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#arrB)"/>
+
+          <rect x="40" y="115" width="320" height="280" rx="16" fill="#eff6ff" stroke="#1d4ed8" stroke-width="2.5"/>
+          <text x="200" y="145" text-anchor="middle" font-size="15" font-weight="800" fill="#1d4ed8">PAST — already earned</text>
+          <text x="200" y="166" text-anchor="middle" font-size="12" fill="#64748b">No prediction is needed</text>
+
+          <g>
+            <circle cx="78" cy="200" r="14" fill="#fff" stroke="#1d4ed8" stroke-width="2"/>
+            <path d="M71,200 L76,205 L87,192" fill="none" stroke="#1d4ed8" stroke-width="2.5" stroke-linecap="round"/>
+            <text x="102" y="205" font-size="14" fill="#0f172a">Completed orders: <tspan font-weight="700">12</tspan></text>
+          </g>
+          <g>
+            <circle cx="78" cy="245" r="14" fill="#fff" stroke="#1d4ed8" stroke-width="2"/>
+            <path d="M71,245 L76,250 L87,237" fill="none" stroke="#1d4ed8" stroke-width="2.5" stroke-linecap="round"/>
+            <text x="102" y="242" font-size="14" fill="#0f172a">Money calculation:</text>
+            <text x="102" y="260" font-size="13" fill="#475569">GTV × 10% + actual platform fee</text>
+          </g>
+          <g>
+            <circle cx="78" cy="300" r="14" fill="#fff" stroke="#1d4ed8" stroke-width="2"/>
+            <path d="M71,300 L76,305 L87,292" fill="none" stroke="#1d4ed8" stroke-width="2.5" stroke-linecap="round"/>
+            <text x="102" y="305" font-size="14" fill="#0f172a">Add up all past completed orders</text>
+          </g>
+          <rect x="90" y="335" width="220" height="42" rx="10" fill="#1d4ed8"/>
+          <text x="200" y="362" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">Already earned $400</text>
+
+          <rect x="560" y="115" width="320" height="280" rx="16" fill="#ecfdf5" stroke="#047857" stroke-width="2.5"/>
+          <text x="720" y="145" text-anchor="middle" font-size="15" font-weight="800" fill="#047857">FUTURE — estimated value</text>
+          <text x="720" y="166" text-anchor="middle" font-size="12" fill="#64748b">Next 90 or 180 days only · not forever</text>
+
+          <g>
+            <circle cx="598" cy="200" r="14" fill="#fff" stroke="#047857" stroke-width="2"/>
+            <path d="M591,200 L596,205 L607,192" fill="none" stroke="#047857" stroke-width="2.5" stroke-linecap="round"/>
+            <text x="622" y="205" font-size="14" fill="#0f172a">Chance of ordering again: <tspan font-weight="700">80%</tspan></text>
+          </g>
+          <g>
+            <circle cx="598" cy="250" r="14" fill="#fff" stroke="#047857" stroke-width="2"/>
+            <path d="M591,250 L596,255 L607,242" fill="none" stroke="#047857" stroke-width="2.5" stroke-linecap="round"/>
+            <text x="622" y="255" font-size="14" fill="#0f172a">Expected future orders: <tspan font-weight="700">4</tspan></text>
+          </g>
+          <g>
+            <circle cx="598" cy="300" r="14" fill="#fff" stroke="#047857" stroke-width="2"/>
+            <path d="M591,300 L596,305 L607,292" fill="none" stroke="#047857" stroke-width="2.5" stroke-linecap="round"/>
+            <text x="622" y="305" font-size="14" fill="#0f172a">Est. platform earn / order: <tspan font-weight="700">$25</tspan></text>
+          </g>
+          <text x="720" y="340" text-anchor="middle" font-size="13" fill="#065f46" font-family="ui-monospace,monospace">4 × $25 × 80%</text>
+          <rect x="610" y="350" width="220" height="30" rx="8" fill="#047857"/>
+          <text x="720" y="371" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">Expected next $80</text>
+
+          <path d="M200,395 L200,430 L460,430" fill="none" stroke="#94a3b8" stroke-width="2.5"/>
+          <path d="M720,395 L720,430 L460,430" fill="none" stroke="#94a3b8" stroke-width="2.5"/>
+          <line x1="460" y1="430" x2="460" y2="455" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#arrB)"/>
+          <text x="460" y="424" text-anchor="middle" font-size="18" font-weight="700" fill="#64748b">+</text>
+
+          <rect x="250" y="460" width="420" height="78" rx="16" fill="#0f172a" filter="url(#sh)"/>
+          <text x="460" y="492" text-anchor="middle" font-size="14" fill="#93c5fd">Expected Customer Value · 90d / 180d</text>
+          <text x="460" y="522" text-anchor="middle" font-size="26" font-weight="800" fill="#fff">$400 + $80 = $480</text>
+
+          <text x="40" y="552" font-size="12" fill="#64748b">Side information: 12 completed orders in the past · about 4 more orders expected</text>
+        </svg>
+      </div>
+      <div class="caption">
+        <strong>Simple takeaway</strong>
+        The left side is money already earned.
+        The right side is a careful estimate for the next 90 or 180 days.
+        The final amount is what we report in the meeting.
+      </div>
+
+      <details class="row-demo">
+        <summary>
+          <span class="row-demo-title">See example rows — Customer A, B, C</span>
+          <span class="row-demo-hint">Click to open or close · made-up numbers only</span>
+        </summary>
+        <div class="row-demo-body">
+          <p class="lead">
+            Each customer is <strong>one row</strong>.
+            The last column is the number to say in a meeting.
+            These figures are teaching examples only — not live BigQuery.
+            (Written 2026-07-21 · fictional · method demo)
+          </p>
+
+          <div class="svg-frame">
+            <table class="row-table" aria-label="Example rows for Customer A, B and C">
+              <thead>
+                <tr>
+                  <th>Who</th>
+                  <th>Look ahead<br /><span class="th-sub">90 or 180 days</span></th>
+                  <th>Already earned<br /><span class="th-sub">past · fact</span></th>
+                  <th>Chance they book again<br /><span class="th-sub">estimate · not a promise</span></th>
+                  <th>About how many more orders</th>
+                  <th>About $ to platform<br /><span class="th-sub">per order</span></th>
+                  <th>Expected next<br /><span class="th-sub">future money</span></th>
+                  <th>Expected Customer Value<br /><span class="th-sub">report this</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>A</strong><br /><span class="th-sub">Still books often</span></td>
+                  <td>180 days</td>
+                  <td>$400</td>
+                  <td>80%</td>
+                  <td>4</td>
+                  <td>$25</td>
+                  <td>$80<br /><span class="th-sub">4 × $25 × 80%</span></td>
+                  <td class="total-cell">$480</td>
+                </tr>
+                <tr>
+                  <td><strong>B</strong><br /><span class="th-sub">Quiet a long time</span></td>
+                  <td>180 days</td>
+                  <td>$400</td>
+                  <td>10%</td>
+                  <td>4</td>
+                  <td>$25</td>
+                  <td>$10<br /><span class="th-sub">4 × $25 × 10%</span></td>
+                  <td class="total-cell">$410</td>
+                </tr>
+                <tr>
+                  <td><strong>C</strong><br /><span class="th-sub">Lower past spend</span></td>
+                  <td>90 days</td>
+                  <td>$120</td>
+                  <td>70%</td>
+                  <td>2</td>
+                  <td>$20</td>
+                  <td>$28<br /><span class="th-sub">2 × $20 × 70%</span></td>
+                  <td class="total-cell">$148</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <ul class="row-explain">
+            <li>
+              <span class="who">A</span>
+              <span>
+                Past money is $400. We think they will likely book again (80%).
+                Future money ≈ $80. <strong>Total to report: $480.</strong>
+                Prefer this customer for keep / light offers — not a deep discount if they will come anyway.
+              </span>
+            </li>
+            <li>
+              <span class="who">B</span>
+              <span>
+                Same past money as A ($400), but we think they are less likely to book again (10%).
+                Future money ≈ $10. <strong>Total: $410.</strong>
+                Same history ≠ same future. Use a low-cost win-back, not VIP spend.
+              </span>
+            </li>
+            <li>
+              <span class="who">C</span>
+              <span>
+                Lower past money ($120) and a shorter window (90 days).
+                Future money ≈ $28. <strong>Total: $148.</strong>
+                Always label 90 days or 180 days on the row so nobody mixes the two.
+              </span>
+            </li>
+          </ul>
+
+          <div class="caption" style="margin:14px 0 0;">
+            <strong>One line</strong>
+            Already earned + expected next = Expected Customer Value.
+            “Chance they book again” is only an estimate that they may book again in that period —
+            not a promise of exactly N orders or a fixed profit.
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <!-- SVG 4 -->
+    <section class="block">
+      <h2>4. How this value helps business decisions</h2>
+      <p class="hint">The same customer value can guide different actions.</p>
+      <div class="svg-frame narrow" role="img" aria-label="Three actions: still active, quiet for a long time, set a budget limit">
+        <svg viewBox="0 0 860 210" xmlns="http://www.w3.org/2000/svg" font-family="system-ui,sans-serif">
+          <rect x="20" y="24" width="250" height="160" rx="14" fill="#fff" stroke="#1d4ed8" stroke-width="2"/>
+          <circle cx="60" cy="60" r="16" fill="#eff6ff" stroke="#1d4ed8" stroke-width="2"/>
+          <path d="M52,60 L58,66 L70,52" fill="none" stroke="#1d4ed8" stroke-width="2.5" stroke-linecap="round"/>
+          <text x="90" y="56" font-size="14" font-weight="700" fill="#0f172a">Still active</text>
+          <text x="40" y="100" font-size="13" fill="#475569">Keep the customer engaged.</text>
+          <text x="40" y="122" font-size="13" fill="#475569">Good service, CRM, light offers.</text>
+          <text x="40" y="150" font-size="12" fill="#64748b">Avoid large discounts if they</text>
+          <text x="40" y="168" font-size="12" fill="#64748b">may return anyway.</text>
+
+          <rect x="305" y="24" width="250" height="160" rx="14" fill="#fff" stroke="#b45309" stroke-width="2"/>
+          <circle cx="345" cy="60" r="16" fill="#fffbeb" stroke="#b45309" stroke-width="2"/>
+          <path d="M337,60 L343,66 L355,52" fill="none" stroke="#b45309" stroke-width="2.5" stroke-linecap="round"/>
+          <text x="375" y="56" font-size="14" font-weight="700" fill="#0f172a">Quiet a long time</text>
+          <text x="325" y="100" font-size="13" fill="#475569">Low-cost win-back only.</text>
+          <text x="325" y="122" font-size="13" fill="#475569">Not automatically a VIP.</text>
+          <text x="325" y="150" font-size="12" fill="#64748b">High past value does not</text>
+          <text x="325" y="168" font-size="12" fill="#64748b">always mean high future value.</text>
+
+          <rect x="590" y="24" width="250" height="160" rx="14" fill="#fff" stroke="#047857" stroke-width="2"/>
+          <circle cx="630" cy="60" r="16" fill="#ecfdf5" stroke="#047857" stroke-width="2"/>
+          <path d="M622,60 L628,66 L640,52" fill="none" stroke="#047857" stroke-width="2.5" stroke-linecap="round"/>
+          <text x="660" y="56" font-size="14" font-weight="700" fill="#0f172a">Set a budget limit</text>
+          <text x="610" y="100" font-size="13" fill="#475569">Cost ≪ expected value</text>
+          <text x="610" y="122" font-size="13" fill="#475569">over next 90 / 180 days.</text>
+          <text x="610" y="150" font-size="12" fill="#64748b">If expected return is too low,</text>
+          <text x="610" y="168" font-size="12" fill="#64748b">do not spend heavily.</text>
+        </svg>
+      </div>
+    </section>
+
+    <div class="note-box">
+      <strong>Important</strong><br />
+      This model does <strong>not</strong> replace the official monthly LTV table yet.
+      Keep using company LTV as usual.
+      Expected Customer Value is an extra 90 / 180-day view.
+      It should only replace the old future method after a holdout test shows it predicts
+      real customer orders and value more accurately.
+    </div>
+
+    <p class="foot">
+      Related documents:
+      <ul>
+        <li><code>knowledge/metrics/ltv-c-level-layman-explain.md</code></li>
+        <li><code>projects/marketplace-transport/docs/ltv-model-spec.md</code></li>
+        <li><a href="ltv_btyd_backtest_report_en.html">ltv_btyd_backtest_report_en.html</a></li>
+      </ul>
+      Method explanation and teaching example only. No live BigQuery figures are shown on this page.
+      (Written 2026-07-21)
+    </p>
+  </div>
+</body>
+</html>
