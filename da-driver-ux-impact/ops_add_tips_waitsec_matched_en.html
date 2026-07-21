@@ -461,7 +461,7 @@
 
   <details class="cmp-criteria" id="sec-config-rec">
   <summary>⑥ Config recommendation: stop subsidy on hard-to-serve orders <span class="hint">Click to expand / collapse</span></summary>
-  <p class="meta">(queried 2026-07-17, HK TRANSPORT PlatformOD Van ASAP GTV &lt;$200, wait_sec ≥ 181s hard-to-serve pool, 6 campaign mornings 2026-05-26 to 2026-07-03)</p>
+  <p class="meta">(queried 2026-07-17, HK TRANSPORT PlatformOD Van ASAP GTV &lt;$200, hard-to-serve pool with final response time (driver) ≥ 181 seconds, 6 campaign mornings 2026-05-26 to 2026-07-03)</p>
 
   <h3 style="font-size:18px;margin:12px 0 8px">Recommendation</h3>
   <p>Some orders are very unlikely to finish, even after more subsidy.</p>
@@ -495,7 +495,7 @@
   <div class="card" style="margin:12px 0">
     <p style="margin:0 0 6px"><b>Rule 3</b></p>
     <ul class="plain" style="margin:0">
-      <li>Final response time (driver) (<code>wait_sec</code>) <b>&gt; 10 minutes</b> (<code>wait_sec</code> ≥ 600)</li>
+      <li>Final response time (driver) (<code>final_response_time</code>) <b>&gt; 10 minutes</b> (≥ 600 seconds)</li>
     </ul>
     <p style="margin:8px 0 0"><b>Action:</b> Do <b>not</b> offer subsidy — exclude these orders. Cancellation rate: <b>65.8% (102/155)</b> in the hard-to-serve pool (queried 2026-07-17, same window as above).</p>
     <p class="meta" style="margin:8px 0 0">This is a one-shot exclude rule (ops-add-tips does not stack more subsidy over time). Use it when the order already has response time past 10 minutes at the subsidy decision.</p>
@@ -536,7 +536,7 @@
    AND OSM route &lt; 3 km
 
 3) Final response time (driver) &gt; 10 minutes
-   (wait_sec ≥ 600)
+   (final_response_time ≥ 600 seconds)
 
 Otherwise → normal subsidy strategy
 
