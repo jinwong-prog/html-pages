@@ -479,7 +479,7 @@
       <li>GTV (<code>gross_transaction_value</code>) <b>≥ HK$150</b></li>
       <li>OSM route distance (<code>driving_distance_km_osmnx</code>) <b>≥ 7 km</b></li>
     </ul>
-    <p style="margin:8px 0 0">Covers <b>82%</b> of hard-to-serve orders (449/545). Cancellation rate: <b>57.0% (256/449)</b>.</p>
+    <p style="margin:8px 0 0">We found <b>545</b> hard-to-serve orders. Rule 1 matches <b>449 of those 545 (82%)</b>. Among those 449, <b>256 cancelled (57.0%)</b>.</p>
   </div>
 
   <div class="card" style="margin:12px 0">
@@ -489,7 +489,7 @@
       <li>GTV (<code>gross_transaction_value</code>) <b>&lt; HK$85</b></li>
       <li>OSM route distance (<code>driving_distance_km_osmnx</code>) <b>&lt; 3 km</b></li>
     </ul>
-    <p style="margin:8px 0 0">Covers the remaining <b>18%</b> (96/545). Cancellation rate: <b>50.0% (48/96)</b>.</p>
+    <p style="margin:8px 0 0">Rule 1 does not catch every hard-to-serve order. Rule 2 catches the <b>other 96 of those 545 (18%)</b> that Rule 1 missed. Among those 96, <b>48 cancelled (50.0%)</b>. Together, Rule 1 + Rule 2 cover all <b>545/545</b>.</p>
   </div>
 
   <div class="card" style="margin:12px 0">
