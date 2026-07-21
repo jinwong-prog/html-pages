@@ -144,6 +144,26 @@
       overflow: hidden;
       margin: 0 6px 4px;
     }
+    details.row-demo.takeaway {
+      border-left: 4px solid var(--blue);
+      background: #f8fbff;
+    }
+    details.row-demo.takeaway[open] {
+      background: #eff6ff;
+    }
+    details.row-demo.takeaway .row-demo-body p {
+      margin: 0 0 8px;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+    details.row-demo.takeaway .row-demo-body p:last-child { margin-bottom: 0; }
+    details.row-demo.takeaway .row-demo-body code {
+      font-size: 13px;
+      background: #fff;
+      border: 1px solid #dbeafe;
+      border-radius: 4px;
+      padding: 1px 5px;
+    }
     details.row-demo summary {
       list-style: none;
       cursor: pointer;
@@ -408,19 +428,24 @@
         </table>
       </div>
 
-      <div class="caption">
-        <span class="cap-label">Simple takeaway</span>
-        <p>
-          <strong>LTV</strong> = the company view you already know
-          (<code>GTV×10% + fee</code>).
-        </p>
-        <p>
-          <strong>Expected Customer Value</strong> = past + next
-          90 or 180 days, using commission + platform fee fields
-          on completed orders — easier to check later.
-        </p>
-        <p>We are not throwing LTV away.</p>
-      </div>
+      <details class="row-demo takeaway">
+        <summary>
+          <span class="row-demo-title">Simple takeaway</span>
+          <span class="row-demo-hint">Click to open or close</span>
+        </summary>
+        <div class="row-demo-body">
+          <p>
+            <strong>LTV</strong> = the company view you already know
+            (<code>GTV×10% + fee</code>).
+          </p>
+          <p>
+            <strong>Expected Customer Value</strong> = past + next
+            90 or 180 days, using commission + platform fee fields
+            on completed orders — easier to check later.
+          </p>
+          <p>We are not throwing LTV away.</p>
+        </div>
+      </details>
     </section>
 
     <!-- SVG 2 -->
@@ -576,12 +601,17 @@
           data-tip="Teaching shortcut (not the live model math): expected next ≈ (about how many more orders) × (about $ to platform per order), scaled by how likely they still book."
         >How we got $80</span>
       </p>
-      <div class="caption">
-        <span class="cap-label">Simple takeaway</span>
-        <p>The left side is money already earned.</p>
-        <p>The right side is a careful estimate for the next 90 or 180 days.</p>
-        <p>The final amount is what we report in the meeting.</p>
-      </div>
+      <details class="row-demo takeaway">
+        <summary>
+          <span class="row-demo-title">Simple takeaway</span>
+          <span class="row-demo-hint">Click to open or close</span>
+        </summary>
+        <div class="row-demo-body">
+          <p>The left side is money already earned.</p>
+          <p>The right side is a careful estimate for the next 90 or 180 days.</p>
+          <p>The final amount is what we report in the meeting.</p>
+        </div>
+      </details>
 
       <details class="row-demo">
         <summary>
