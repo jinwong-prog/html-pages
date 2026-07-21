@@ -470,7 +470,7 @@
   <p><b>Action:</b> Do not offer subsidy for these orders. Keep the budget for orders with a better chance of finishing.</p>
 
   <h3 style="font-size:18px;margin:20px 0 8px">When should we stop giving subsidy?</h3>
-  <p>Do <b>not</b> offer subsidy if <b>either</b> rule is met (cross-district = pickup region ≠ destination region):</p>
+  <p>Do <b>not</b> offer subsidy if <b>any</b> rule is met (cross-district = pickup region ≠ destination region):</p>
 
   <div class="card" style="margin:12px 0">
     <p style="margin:0 0 6px"><b>Rule 1 (main)</b></p>
@@ -493,8 +493,12 @@
   </div>
 
   <div class="card" style="margin:12px 0">
-    <p style="margin:0 0 6px"><b>Optional rule</b></p>
-    <p style="margin:0">If subsidy was already offered, but <b>no driver accepts within 10 minutes</b> (<code>wait_sec</code> ≥ 600), stop increasing the subsidy. Cancellation rate for these orders: <b>65.8% (102/155)</b>.</p>
+    <p style="margin:0 0 6px"><b>Rule 3</b></p>
+    <ul class="plain" style="margin:0">
+      <li>Final response time (driver) (<code>wait_sec</code>) <b>&gt; 10 minutes</b> (<code>wait_sec</code> ≥ 600)</li>
+    </ul>
+    <p style="margin:8px 0 0"><b>Action:</b> Do <b>not</b> offer subsidy — exclude these orders. Cancellation rate: <b>65.8% (102/155)</b> in the hard-to-serve pool (queried 2026-07-17, same window as above).</p>
+    <p class="meta" style="margin:8px 0 0">This is a one-shot exclude rule (ops-add-tips does not stack more subsidy over time). Use it when the order already has response time past 10 minutes at the subsidy decision.</p>
   </div>
 
   <h3 style="font-size:18px;margin:20px 0 8px">If OSM route distance is not available</h3>
@@ -521,27 +525,22 @@
   </ul>
 
   <h3 style="font-size:18px;margin:20px 0 8px">Simple decision flow</h3>
-  <pre style="background:var(--grid);border:1px solid var(--border);border-radius:10px;padding:14px 16px;overflow:auto;font-size:13px;line-height:1.45;max-width:64ch">Cross-district?
+  <pre style="background:var(--grid);border:1px solid var(--border);border-radius:10px;padding:14px 16px;overflow:auto;font-size:13px;line-height:1.45;max-width:64ch">Do NOT offer subsidy if ANY is true:
 
-        │
-        ▼
-──────────────────────────────
-GTV ≥ HK$150 AND OSM route ≥ 7 km?
-            OR
-GTV &lt; HK$85 AND OSM route &lt; 3 km?
-──────────────────────────────
+1) Cross-district
+   AND GTV ≥ HK$150
+   AND OSM route ≥ 7 km
 
-        │Yes
-        ▼
-Do NOT offer subsidy
+2) Cross-district
+   AND GTV &lt; HK$85
+   AND OSM route &lt; 3 km
 
-        │No
-        ▼
-Normal subsidy strategy
+3) Final response time (driver) &gt; 10 minutes
+   (wait_sec ≥ 600)
 
-(Optional)
-Already waiting 10 minutes with no driver?
-        │Yes → Stop increasing subsidy</pre>
+Otherwise → normal subsidy strategy
+
+(Note: subsidy is one-shot, not stacked.)</pre>
 
   <h3 style="font-size:18px;margin:20px 0 8px">Validation</h3>
   <p>This recommendation is from <b>observational analysis</b> (not an A/B test).</p>
