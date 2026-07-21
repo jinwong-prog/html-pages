@@ -477,9 +477,9 @@
     <ul class="plain" style="margin:0">
       <li>Cross-district trip</li>
       <li>GTV (<code>gross_transaction_value</code>) <b>≥ HK$150</b></li>
-      <li>OSM route distance (<code>driving_distance_km_osmnx</code>) <b>≥ 7 km</b></li>
+      <li>OSM route distance <b>≥ 7 km</b> — from an <b>external OSMnx plugin / tool</b> (OpenStreetMap road network; BigQuery column <code>driving_distance_km_osmnx</code>)</li>
     </ul>
-    <p style="margin:8px 0 0">We found <b>545</b> hard-to-serve orders. Rule 1 matches <b>449 of those 545 (82%)</b>. Among those 449, <b>256 cancelled (57.0%)</b>.</p>
+    <p style="margin:8px 0 0">Cancellation rate under this rule: <b>57.0% (256/449)</b>.</p>
   </div>
 
   <div class="card" style="margin:12px 0">
@@ -487,9 +487,9 @@
     <ul class="plain" style="margin:0">
       <li>Cross-district trip</li>
       <li>GTV (<code>gross_transaction_value</code>) <b>&lt; HK$85</b></li>
-      <li>OSM route distance (<code>driving_distance_km_osmnx</code>) <b>&lt; 3 km</b></li>
+      <li>OSM route distance <b>&lt; 3 km</b> — from an <b>external OSMnx plugin / tool</b> (OpenStreetMap road network; BigQuery column <code>driving_distance_km_osmnx</code>)</li>
     </ul>
-    <p style="margin:8px 0 0">Rule 1 does not catch every hard-to-serve order. Rule 2 catches the <b>other 96 of those 545 (18%)</b> that Rule 1 missed. Among those 96, <b>48 cancelled (50.0%)</b>. Together, Rule 1 + Rule 2 cover all <b>545/545</b>.</p>
+    <p style="margin:8px 0 0">Cancellation rate under this rule: <b>50.0% (48/96)</b>.</p>
   </div>
 
   <div class="card" style="margin:12px 0">
@@ -502,11 +502,11 @@
   </div>
 
   <h3 style="font-size:18px;margin:20px 0 8px">If OSM route distance is not available</h3>
-  <p><b>OSM route distance is preferred</b> (<code>driving_distance_km_osmnx</code>) — it best matches the real trip.</p>
+  <p><b>Prefer OSM route distance</b> from the <b>external OSMnx plugin / tool</b> (OpenStreetMap road network → <code>driving_distance_km_osmnx</code>). It best matches the real driving trip. GoGoX order tables alone do not have this road distance.</p>
   <ul class="plain">
-    <li>If OSM is not ready yet: start with <b>cross-district + GTV</b>.</li>
+    <li>If the OSMnx tool is not ready yet: start with <b>cross-district + GTV</b>.</li>
     <li>Use the best available trip distance or ETA as a temporary stand-in, if you have one.</li>
-    <li>Switch to OSM route distance when it is available.</li>
+    <li>Switch to OSMnx route distance when the external tool output is available.</li>
   </ul>
 
   <h3 style="font-size:18px;margin:20px 0 8px">What should NOT become rules?</h3>
@@ -515,7 +515,7 @@
 
   <h3 style="font-size:18px;margin:20px 0 8px">Location rules</h3>
   <p>Do <b>not</b> blacklist specific pickup or destination areas.</p>
-  <p>Use three simple signals instead: <b>cross-district</b>, <b>GTV</b>, and <b>route distance</b>. That already covers almost all hard-to-serve orders and stays easy to maintain.</p>
+  <p>Use three simple signals instead: <b>cross-district</b>, <b>GTV</b>, and <b>OSM route distance</b> (from the external OSMnx plugin / tool). That already catches almost all hard-to-serve orders and stays easy to maintain.</p>
 
   <h3 style="font-size:18px;margin:20px 0 8px">Expected business impact</h3>
   <ul class="plain">
@@ -529,11 +529,11 @@
 
 1) Cross-district
    AND GTV ≥ HK$150
-   AND OSM route ≥ 7 km
+   AND OSM route (OSMnx tool) ≥ 7 km
 
 2) Cross-district
    AND GTV &lt; HK$85
-   AND OSM route &lt; 3 km
+   AND OSM route (OSMnx tool) &lt; 3 km
 
 3) Final response time (driver) &gt; 10 minutes
    (final_response_time ≥ 600 seconds)
