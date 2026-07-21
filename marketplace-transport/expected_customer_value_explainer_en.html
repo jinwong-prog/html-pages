@@ -182,6 +182,48 @@
     }
     table.row-table tbody tr:nth-child(even) { background: #f8fafc; }
     table.row-table .total-cell { font-weight: 800; color: var(--blue); font-size: 15px; }
+    table.row-table td { overflow: visible; }
+    .tip {
+      position: relative;
+      display: inline-block;
+      margin-top: 4px;
+      font-size: 11px;
+      font-weight: 500;
+      color: #64748b;
+      border-bottom: 1px dashed #94a3b8;
+      cursor: help;
+    }
+    .tip::after {
+      content: attr(data-tip);
+      position: absolute;
+      z-index: 40;
+      left: 50%;
+      bottom: calc(100% + 8px);
+      transform: translateX(-50%);
+      width: min(280px, 70vw);
+      padding: 10px 12px;
+      border-radius: 8px;
+      background: #0f172a;
+      color: #f8fafc;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 1.45;
+      text-align: left;
+      white-space: normal;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.2);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.12s ease;
+    }
+    .tip:hover::after,
+    .tip:focus::after,
+    .tip:focus-visible::after {
+      opacity: 1;
+    }
+    .tip-svg-wrap {
+      text-align: center;
+      margin: -8px 0 12px;
+    }
     .row-explain {
       margin: 14px 0 0;
       padding: 0;
@@ -485,9 +527,8 @@
             <path d="M591,300 L596,305 L607,292" fill="none" stroke="#047857" stroke-width="2.5" stroke-linecap="round"/>
             <text x="622" y="305" font-size="14" fill="#0f172a">Est. platform earn / order: <tspan font-weight="700">$25</tspan></text>
           </g>
-          <text x="720" y="340" text-anchor="middle" font-size="13" fill="#065f46" font-family="ui-monospace,monospace">4 × $25 × 80%</text>
-          <rect x="610" y="350" width="220" height="30" rx="8" fill="#047857"/>
-          <text x="720" y="371" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">Expected next $80</text>
+          <rect x="610" y="330" width="220" height="42" rx="8" fill="#047857"/>
+          <text x="720" y="357" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">Expected next $80</text>
 
           <path d="M200,395 L200,430 L460,430" fill="none" stroke="#94a3b8" stroke-width="2.5"/>
           <path d="M720,395 L720,430 L460,430" fill="none" stroke="#94a3b8" stroke-width="2.5"/>
@@ -501,6 +542,13 @@
           <text x="40" y="552" font-size="12" fill="#64748b">Side information: 12 completed orders in the past · about 4 more orders expected</text>
         </svg>
       </div>
+      <p class="tip-svg-wrap">
+        <span
+          class="tip"
+          tabindex="0"
+          data-tip="Teaching shortcut (not the live model math): expected next ≈ (about how many more orders) × (about $ to platform per order), scaled by how likely they still book."
+        >How we got $80</span>
+      </p>
       <div class="caption">
         <strong>Simple takeaway</strong>
         The left side is money already earned.
@@ -517,6 +565,7 @@
           <p class="lead">
             Each customer is <strong>one row</strong>.
             The last column is the number to say in a meeting.
+            Hover <strong>How we got $…</strong> for the teaching shortcut.
             These figures are teaching examples only — not live BigQuery.
             (Written 2026-07-21 · fictional · method demo)
           </p>
@@ -543,7 +592,14 @@
                   <td>80%</td>
                   <td>4</td>
                   <td>$25</td>
-                  <td>$80<br /><span class="th-sub">4 × $25 × 80%</span></td>
+                  <td>
+                    $80<br />
+                    <span
+                      class="tip"
+                      tabindex="0"
+                      data-tip="Teaching shortcut (not the live model math): expected next ≈ (about how many more orders) × (about $ to platform per order), scaled by how likely they still book."
+                    >How we got $80</span>
+                  </td>
                   <td class="total-cell">$480</td>
                 </tr>
                 <tr>
@@ -553,7 +609,14 @@
                   <td>10%</td>
                   <td>4</td>
                   <td>$25</td>
-                  <td>$10<br /><span class="th-sub">4 × $25 × 10%</span></td>
+                  <td>
+                    $10<br />
+                    <span
+                      class="tip"
+                      tabindex="0"
+                      data-tip="Teaching shortcut (not the live model math): expected next ≈ (about how many more orders) × (about $ to platform per order), scaled by how likely they still book."
+                    >How we got $10</span>
+                  </td>
                   <td class="total-cell">$410</td>
                 </tr>
                 <tr>
@@ -563,7 +626,14 @@
                   <td>70%</td>
                   <td>2</td>
                   <td>$20</td>
-                  <td>$28<br /><span class="th-sub">2 × $20 × 70%</span></td>
+                  <td>
+                    $28<br />
+                    <span
+                      class="tip"
+                      tabindex="0"
+                      data-tip="Teaching shortcut (not the live model math): expected next ≈ (about how many more orders) × (about $ to platform per order), scaled by how likely they still book."
+                    >How we got $28</span>
+                  </td>
                   <td class="total-cell">$148</td>
                 </tr>
               </tbody>
