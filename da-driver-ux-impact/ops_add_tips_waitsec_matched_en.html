@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Did the subsidy improve order completion? (same GTV, final response time, and pending orders)</title>
+<title>Did the subsidy improve order completion? (same GTV, final response time (driver), and pending orders)</title>
 <style>
   :root{
     --plane:#f9f9f7; --surface:#fcfcfb;
@@ -179,7 +179,7 @@
 <body>
 <div class="wrap">
 
-  <h1>Did the subsidy improve order completion? (same GTV, final response time, and pending orders)</h1>
+  <h1>Did the subsidy improve order completion? (same GTV, final response time (driver), and pending orders)</h1>
   <p class="meta"><b>Scope:</b> HK PlatformOD Personal · Van · GTV &lt; HK$200 · Peak hours · 6 Peak mornings</p>
 
   <div class="answer">
@@ -197,7 +197,7 @@
       <th>Completion rate difference (percentage points)</th>
     </tr></thead>
         <tbody>
-      <tr><td style="text-align:left">Same GTV + final response time</td>
+      <tr><td style="text-align:left">Same GTV + final response time (driver)</td>
         <td class="trt"><span class="trt-val">51.6%</span> <span class="n">(529/1,026)</span></td>
         <td class="ctrl"><span class="ctrl-val">58.3%</span> <span class="n">(598/1,026)</span></td>
         <td class="diff lose">−6.7pp</td></tr>
@@ -231,7 +231,7 @@
     </tr></thead>
     <tbody>
       <tr><td>GTV</td><td style="text-align:left"><code>mart_ops_add_tips_campaign_orders</code></td><td style="text-align:left"><code>gross_transaction_value</code></td></tr>
-      <tr><td>Final response time</td><td style="text-align:left"><code>mart_ops_add_tips_campaign_orders</code></td><td style="text-align:left"><code>final_response_time</code> (or <code>first_response_time</code> if unavailable) — seconds until a driver is officially assigned to / accepts this order</td></tr>
+      <tr><td>Final response time (driver)</td><td style="text-align:left"><code>mart_ops_add_tips_campaign_orders</code></td><td style="text-align:left"><code>final_response_time</code> (or <code>first_response_time</code> if unavailable) — seconds until a driver is officially assigned to / accepts this order</td></tr>
       <tr><td>Pending orders</td><td style="text-align:left"><code>order_master_table_hk</code>*</td><td style="text-align:left"><code>pending_orders_at_120s</code></td></tr>
       <tr><td>Peak morning date</td><td style="text-align:left"><code>mart_ops_add_tips_campaign_orders</code></td><td style="text-align:left"><code>campaign_date</code> (BQ header; Peak morning date)</td></tr>
       <tr><td>Order hour</td><td style="text-align:left"><code>mart_ops_add_tips_campaign_orders</code></td><td style="text-align:left"><code>created_at</code></td></tr>
@@ -251,11 +251,11 @@
   </div>
   <div class="box" style="background:#f8fafc;border:1px solid #cbd5e1;margin-top:12px">
     <b>How we make a fair comparison (apple-to-apple)</b>
-    <p style="margin:8px 0 0">We only compare similar orders. Same GTV. Same final response time (how long until a driver is officially assigned). Same number of pending orders (how busy the system was).</p>
+    <p style="margin:8px 0 0">We only compare similar orders. Same GTV. Same final response time (driver) — how long until a driver is officially assigned. Same number of pending orders (how busy the system was).</p>
     <p style="margin:8px 0 0">Then we check: did orders with subsidy finish more often than orders with no subsidy?</p>
     <p style="margin:8px 0 0"><b>What we matched (how far):</b></p>
     <ol style="margin:6px 0 0;padding-left:1.25rem">
-      <li>Same GTV + same final response time</li>
+      <li>Same GTV + same final response time (driver)</li>
       <li>Also same date + same hour of day</li>
       <li>Drop tiny groups (need 20+ orders with subsidy)</li>
       <li><b>Strictest:</b> also same pending — this is the main answer (−4.7 percentage points)</li>
@@ -279,9 +279,9 @@
   </div>
   </details>
 
-  <!-- ② completion rate by final response time -->
-  <h2>② Completion rate by final response time</h2>
-  <p>Orders are grouped by <b>final response time</b> (within the same GTV). Compare the completion rates of subsidy and non-subsidy orders.</p>
+  <!-- ② completion rate by final response time (driver) -->
+  <h2>② Completion rate by final response time (driver)</h2>
+  <p>Orders are grouped by <b>final response time (driver)</b> (within the same GTV). Compare the completion rates of subsidy and non-subsidy orders.</p>
   <p>Orders were split into 15 comparable groups. In <b class="hl-bad">13 groups</b>, subsidy orders had a lower completion rate than non-subsidy orders.</p>
   <p class="meta">(queried 2026-07-17, HK PlatformOD Van ASAP Personal GTV &lt;$200, 6 Peak mornings 2026-05-26, 05-29, 06-08, 06-18, 06-22, 07-03, order time 09:30–11:00 HKT)</p>
   <div class="legend">
@@ -299,7 +299,7 @@
       <col style="width:11%"><col style="width:15%"><col style="width:12%">
     </colgroup>
     <thead><tr>
-      <th>GTV</th><th class="th-2line">Final response time</th>
+      <th>GTV</th><th class="th-2line">Final response time (driver)</th>
       <th class="ctrl th-2line">Non-subsidy orders<br>(n)</th><th class="ctrl th-2line">Completion<br>rate</th>
       <th class="trt th-2line">Subsidy orders<br>(n)</th><th class="trt th-2line">Completion<br>rate</th><th class="th-2line">Completion rate difference<br>(percentage points)</th>
     </tr></thead>
@@ -395,14 +395,14 @@
   </div>
 
 
-  <!-- ③ average pending by final response time -->
-  <h2>③ Average pending orders by final response time</h2>
+  <!-- ③ average pending by final response time (driver) -->
+  <h2>③ Average pending orders by final response time (driver)</h2>
   <p>Subsidy orders had more pending orders in every group. After matching similar orders, the completion-rate gap narrowed from <b>−6.7pp to −4.7pp</b>, but subsidy orders still completed less often.</p>
   <p class="meta">Average <code>pending_orders_at_120s</code>.</p>
 
   <div class="card">
   <table class="cmp">
-    <thead><tr><th>GTV</th><th>Final response time</th><th class="ctrl th-2line">Non-subsidy orders<br>Avg. number of pending orders</th><th class="trt th-2line">Subsidy orders<br>Avg. number of pending orders</th><th class="th-2line">Difference<br>(orders; higher for subsidy = harder)</th></tr></thead>
+    <thead><tr><th>GTV</th><th>Final response time (driver)</th><th class="ctrl th-2line">Non-subsidy orders<br>Avg. number of pending orders</th><th class="trt th-2line">Subsidy orders<br>Avg. number of pending orders</th><th class="th-2line">Difference<br>(orders; higher for subsidy = harder)</th></tr></thead>
     <tbody>
       <tr><td>&lt;$85</td><td>0–60s</td><td class="ctrl"><span class="ctrl-val">105.8</span></td><td class="trt"><span class="trt-val">138.0</span></td><td class="diff lose">+32.2</td></tr>
       <tr><td>&lt;$85</td><td>121–180s</td><td class="ctrl"><span class="ctrl-val">113.2</span></td><td class="trt"><span class="trt-val">143.0</span></td><td class="diff lose">+29.8</td></tr>
