@@ -395,16 +395,17 @@
         <div class="row-demo-body">
           <ol class="calc-steps" style="margin:0;padding-left:1.3em;font-size:15px;line-height:1.65;">
             <li style="margin-bottom:10px;">
-              Look at <strong>completed orders</strong> (how many) and the <strong>GTV of those orders</strong> (how big).
-            </li>
-            <li style="margin-bottom:10px;">
-              Turn that into <strong>platform earn in $</strong> — same as company LTV:
-              <strong>GTV×10% + fee</strong> (not raw GTV).
+              Look at <strong>completed orders</strong> (how many) and the
+              <strong>platform money</strong> on each order (how much GoGoX earned —
+              not full customer GTV).<br />
+              Table: <code>order_master_table_hk</code>.
+              Per order: <code>driver_commission</code> + <code>premium_platform_support</code>.
+              Not the same as company LTV (<code>GTV×10% + fee</code>).
             </li>
             <li>
               Split into two parts, then add:
               <div class="formula" style="margin-top:12px;text-align:left;font-size:15px;">
-                <strong>Already earned</strong> (past platform earn)<br />
+                <strong>Already earned</strong> (past platform money)<br />
                 + <strong>Expected next</strong> (next 90 or 180 days)<br />
                 = <strong>Expected Customer Value · 90d / 180d</strong>
               </div>
@@ -451,7 +452,7 @@
             <circle cx="78" cy="245" r="14" fill="#fff" stroke="#1d4ed8" stroke-width="2"/>
             <path d="M71,245 L76,250 L87,237" fill="none" stroke="#1d4ed8" stroke-width="2.5" stroke-linecap="round"/>
             <text x="102" y="242" font-size="14" fill="#0f172a">Money calculation:</text>
-            <text x="102" y="260" font-size="13" fill="#475569">GTV × 10% + actual platform fee</text>
+            <text x="102" y="260" font-size="13" fill="#475569">commission + platform fee fields</text>
           </g>
           <g>
             <circle cx="78" cy="300" r="14" fill="#fff" stroke="#1d4ed8" stroke-width="2"/>
