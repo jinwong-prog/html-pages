@@ -275,7 +275,7 @@
   <div class="split">
     <div class="panel">
       <h3>Of drivers who do ROW, % who also do COLUMN</h3>
-      <p class="pd">among the do-business pool · darker = higher share</p>
+      <p class="pd">each cell = % of the row's drivers who also show the column sign · darker = higher</p>
       <div style="overflow-x:auto"><table class="heat" id="heat"></table></div>
       <div class="heatkey" id="heatkey"></div>
     </div>
@@ -474,7 +474,7 @@ function render(){
       const p = withX.filter(r=>r[hy.i]===1).length/nx;
       const pct = Math.round(p*100);
       const bg = `color-mix(in srgb, var(--blue) ${Math.round(p*100)}%, var(--surface))`;
-      cells += `<td class="${p>=0.5?'hi':''}" style="background:${bg}" title="of drivers who do «${hx.n.replace(/&gt;/,'>')}», ${pct}% also do «${hy.n.replace(/&gt;/,'>')}» (n=${fmt(nx)})">${pct}</td>`;
+      cells += `<td class="${p>=0.5?'hi':''}" style="background:${bg}" title="of drivers who do «${hx.n.replace(/&gt;/,'>')}», ${pct}% also do «${hy.n.replace(/&gt;/,'>')}» (n=${fmt(nx)})">${pct}%</td>`;
     });
     html += `<tr><th class="row">${a+1}. ${hx.n}</th>${cells}</tr>`;
   });
