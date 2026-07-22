@@ -125,6 +125,7 @@
   .heat th{font-weight:600;color:var(--ink2);font-size:11.5px;padding:2px 4px}
   .heat th.col{text-align:center;width:44px}
   .heat th.row{text-align:left;white-space:nowrap;color:var(--ink)}
+  .heat th.row .rn{color:var(--muted);font-weight:400;font-size:10.5px;margin-left:7px;font-variant-numeric:tabular-nums}
   .heat td{text-align:center;padding:0;height:38px;border-radius:6px;font-variant-numeric:tabular-nums;
     font-weight:700;font-size:12.5px;color:var(--ink)}
   .heat td.hi{color:#fff}
@@ -163,7 +164,7 @@
 <div class="viz-root wrap">
 
   <h1>Spotting cheat-app (bot) drivers — who to check by hand</h1>
-  <p class="meta">HK truck orders (van / mudou / mudou9), public-pool drivers · company-assigned (OA) skipped · (queried 2026-07-22, HK TRANSPORT, 30-day pool / 90-day signals)</p>
+  <p class="meta">HK truck orders (van / mudou / mudou9), public-pool drivers · company-assigned (OA) skipped · all booking types (93% <b>On Demand</b>, 4% Same Day, 3% Next Day of the give-back orders) · (queried 2026-07-22, HK TRANSPORT, 30-day pool / 90-day signals)</p>
 
   <div class="headline">
     Of the drivers who really do business, we put <b id="hl-flag">1,458</b> into the top tier for a person to review.
@@ -476,7 +477,7 @@ function render(){
       const bg = `color-mix(in srgb, var(--blue) ${Math.round(p*100)}%, var(--surface))`;
       cells += `<td class="${p>=0.5?'hi':''}" style="background:${bg}" title="of drivers who do «${hx.n.replace(/&gt;/,'>')}», ${pct}% also do «${hy.n.replace(/&gt;/,'>')}» (n=${fmt(nx)})">${pct}%</td>`;
     });
-    html += `<tr><th class="row">${a+1}. ${hx.n}</th>${cells}</tr>`;
+    html += `<tr><th class="row">${a+1}. ${hx.n}<span class="rn">n=${fmt(nx)}</span></th>${cells}</tr>`;
   });
   document.getElementById('heat').innerHTML = html;
   document.getElementById('heatkey').innerHTML =
