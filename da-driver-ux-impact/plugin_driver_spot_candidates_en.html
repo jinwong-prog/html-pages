@@ -214,7 +214,7 @@
   <h4>Scoring cheat sheet</h4>
   <p class="cs">For each sign that is true, add its points → total 0–10. <b>6+ = flagged</b> (always has a strong sign).</p>
   <div class="srow"><span class="pts">+1</span><span>Took the job, gave it back — <b>no other driver took it</b></span></div>
-  <div class="srow"><span class="pts">+2</span><span>Customer <b>did not order again for 30 days</b></span></div>
+  <div class="srow"><span class="pts">+2</span><span>After that dead job, <b>that same customer</b> placed no order for 30 days</span></div>
   <div class="srow"><span class="pts">+3</span><span><b>Same driver</b> grabbed the re-order &amp; finished it</span></div>
   <div class="srow"><span class="pts">+1</span><span>Keeps the pricey trips, gives back the cheap ones</span></div>
   <div class="srow"><span class="pts">+1</span><span>Gives back far more than peers, mostly cheap</span></div>
@@ -484,7 +484,7 @@ const TIERS = [
 ];
 const SIGNALS = [
   {i:5, pts:'+1', label:'Took job, gave it back — no other driver took it'},
-  {i:6, pts:'+2', label:"Customer did not order again for 30 days"},
+  {i:6, pts:'+2', label:"That killed order's customer placed no order for the next 30 days"},
   {i:7, pts:'+3', label:'Same driver grabbed the re-order & finished it'},
   {i:8, pts:'+1', label:'Keeps the pricey trips, gives back the cheap ones'},
   {i:9, pts:'+1', label:'Gives back far more than peers, mostly cheap'},
