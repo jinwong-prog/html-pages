@@ -49,6 +49,24 @@
     white-space:nowrap;line-height:1.2}
   .nav a:hover{background:var(--neutbg);color:var(--ink)}
   .nav a.active{background:var(--blue);color:#fff;font-weight:600}
+
+  /* fixed scoring cheat-sheet (right rail, wide screens only) */
+  .cheat{display:none}
+  @media (min-width:1580px){
+    .cheat{display:block;position:fixed;top:64px;right:24px;width:236px;
+      background:var(--surface);border:1px solid var(--border);border-radius:14px;
+      padding:14px 16px;max-height:calc(100vh - 84px);overflow-y:auto;z-index:40;
+      box-shadow:0 6px 24px rgba(0,0,0,.06)}
+  }
+  .cheat h4{margin:0 0 2px;font-size:13.5px;letter-spacing:-.01em}
+  .cheat .cs{font-size:11px;color:var(--muted);margin:0 0 10px}
+  .cheat .srow{display:flex;gap:9px;align-items:flex-start;padding:6px 0;border-top:1px solid var(--grid);font-size:11.5px;line-height:1.35}
+  .cheat .srow:first-of-type{border-top:0}
+  .cheat .pts{flex:none;font-weight:800;font-variant-numeric:tabular-nums;color:var(--blue);min-width:20px}
+  .cheat .tier{display:flex;justify-content:space-between;gap:8px;font-size:11.5px;padding:4px 0}
+  .cheat .tier b{font-weight:700}
+  .cheat .div{border-top:1px solid var(--axis);margin:11px 0 7px}
+  .cheat .strong{font-size:10.5px;color:var(--muted);margin-top:8px;line-height:1.45}
   .sub{color:var(--muted);font-size:13px;margin:0 0 12px}
   code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.82em;
     background:var(--neutbg);padding:1px 5px;border-radius:5px;color:var(--ink2)}
@@ -188,6 +206,23 @@
     <a href="#s7" data-s="s7">Cases</a>
   </div>
 </nav>
+
+<aside class="cheat" aria-label="Scoring cheat sheet">
+  <h4>Scoring cheat sheet</h4>
+  <p class="cs">Warning score = sum of points (max 10)</p>
+  <div class="srow"><span class="pts">+3</span><span>Took the job, gave it back — <b>no other driver took it</b></span></div>
+  <div class="srow"><span class="pts">+2</span><span>After that, the <b>customer never came back</b></span></div>
+  <div class="srow"><span class="pts">+2</span><span><b>Same driver</b> grabbed the re-order &amp; finished it</span></div>
+  <div class="srow"><span class="pts">+1</span><span>Keeps the pricey trips, gives back the cheap ones</span></div>
+  <div class="srow"><span class="pts">+1</span><span>Gives back far more than peers, mostly cheap</span></div>
+  <div class="srow"><span class="pts">+2</span><span>Grabbed &amp; let go of <b>3+ orders in 8s</b> (bot)</span></div>
+  <div class="div"></div>
+  <div class="tier"><span>🔴 High priority</span><b>6–10 + strong sign</b></div>
+  <div class="tier"><span>🟠 Watch closely</span><b>3–5</b></div>
+  <div class="tier"><span>🔵 Keep monitoring</span><b>0–2</b></div>
+  <p class="strong"><b>Strong sign</b> = no driver took it · customer never came back · same-driver loop · too-fast (bot).</p>
+</aside>
+
 <div class="wrap">
 
   <h1>Spotting cheat-app (bot) drivers — who to check by hand</h1>
