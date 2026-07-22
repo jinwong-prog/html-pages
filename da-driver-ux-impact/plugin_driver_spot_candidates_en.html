@@ -120,6 +120,23 @@
   .cutoff .lab{position:absolute;top:-2px;left:4px;font-size:10px;color:var(--critical);font-weight:700;white-space:nowrap}
   .hnote{font-size:12px;color:var(--muted);margin-top:10px}
 
+  /* heatmap (co-occurrence) */
+  .heat{border-collapse:separate;border-spacing:3px;width:100%;font-size:12px}
+  .heat th{font-weight:600;color:var(--ink2);font-size:11.5px;padding:2px 4px}
+  .heat th.col{text-align:center;width:44px}
+  .heat th.row{text-align:left;white-space:nowrap;color:var(--ink)}
+  .heat td{text-align:center;padding:0;height:38px;border-radius:6px;font-variant-numeric:tabular-nums;
+    font-weight:700;font-size:12.5px;color:var(--ink)}
+  .heat td.hi{color:#fff}
+  .heat td.diag{background:var(--neutbg)!important;color:var(--muted);font-weight:400}
+  .heat td.few{background:var(--neutbg)!important;color:var(--muted);font-weight:400}
+  .heatkey{font-size:12px;color:var(--ink2);margin-top:12px;line-height:1.9}
+  .heatkey b{color:var(--ink);font-weight:600}
+  .relbox{background:var(--neutbg);border-radius:12px;padding:14px 18px;margin:14px 0;font-size:13.5px}
+  .relbox .big{font-size:15px;font-weight:700;margin-bottom:6px;display:block}
+  .relbox b{font-weight:700}
+  .relbox .arrow{color:var(--critical);font-weight:800}
+
   /* timelines */
   .cases{display:grid;grid-template-columns:1fr 1fr;gap:16px}
   @media (max-width:760px){.cases{grid-template-columns:1fr}}
@@ -252,8 +269,34 @@
   </div>
   <p class="sub">Real columns: took-then-gave-back = <code>event_type_cd = 4</code>, <code>actor_type = 'Driver'</code>; no other driver took it = <code>status = 'cancelled'</code> with a <code>cd = 8</code>/<code>11</code> event; same-driver loop = <code>same_driver_took_the_reorder_flag</code>; too-fast = <code>grace_drop_too_fast_flag</code> (3+ orders grabbed &amp; let go within 8s); warning score = <code>signal_points_total</code>.</p>
 
+  <!-- CO-OCCURRENCE -->
+  <h2>⑤ Which warning signs travel together (do X → also do Y)</h2>
+  <p class="sub">This shows whether the signs are random or part of one deliberate chain. <b>Read across a row:</b> of drivers who do the row sign, what share also do the column sign. Darker = stronger link.</p>
+  <div class="split">
+    <div class="panel">
+      <h3>Of drivers who do ROW, % who also do COLUMN</h3>
+      <p class="pd">among the do-business pool · darker = higher share</p>
+      <div style="overflow-x:auto"><table class="heat" id="heat"></table></div>
+      <div class="heatkey" id="heatkey"></div>
+    </div>
+    <div class="panel">
+      <h3>What it means (in one glance)</h3>
+      <div class="relbox">
+        <span class="big">The signs are NOT random — they form one chain.</span>
+        When a driver <b>grabs the customer's re-order</b> (the loop), <span class="arrow">93%</span> of them also had a job
+        <b>die with no other driver taking it</b>, and <span class="arrow">84%</span> had the <b>customer never come back</b> on their own.
+        <div style="margin-top:10px">So the loop is not a one-off — it sits on top of the full harm chain: give back → let it die → grab the re-order.</div>
+      </div>
+      <div class="relbox">
+        <span class="big">Bot-speed drivers also over-drop.</span>
+        Drivers flagged <b>too-fast (bot)</b> are <span class="arrow">6×</span> more likely to also
+        <b>drop far more orders than their peers</b> (39% of them, vs 6% across the whole pool) — same behaviour, machine speed.
+      </div>
+    </div>
+  </div>
+
   <!-- CASES -->
-  <h2>⑤ Two real drivers, checked line by line</h2>
+  <h2>⑥ Two real drivers, checked line by line</h2>
   <p class="sub">We read the raw order timeline by hand before flagging. These are the two headline patterns.</p>
   <div class="cases">
     <div class="case">
@@ -411,6 +454,34 @@ function render(){
     const c=scount[idx], pct=N?Math.round(c/N*100):0;
     return `<tr><td>${s.label}</td><td>${s.pts}</td><td>${fmt(c)} / ${fmt(N)} (${pct}%)</td></tr>`;
   }).join('');
+
+  // CO-OCCURRENCE HEATMAP — P(also do Y | do X), among pool
+  const HS = [
+    {i:5, n:'No driver took it'},
+    {i:6, n:'Never came back'},
+    {i:7, n:'Same-driver loop'},
+    {i:8, n:'Keeps pricey'},
+    {i:9, n:'Drops &gt; peers'},
+    {i:10,n:'Too-fast (bot)'},
+  ];
+  let html = '<tr><th></th>' + HS.map((h,j)=>`<th class="col">${j+1}</th>`).join('') + '</tr>';
+  HS.forEach((hx,a)=>{
+    const withX = pool.filter(r=>r[hx.i]===1); const nx=withX.length;
+    let cells='';
+    HS.forEach((hy,b)=>{
+      if(a===b){ cells+=`<td class="diag">—</td>`; return; }
+      if(nx<20){ cells+=`<td class="few" title="too few drivers">·</td>`; return; }
+      const p = withX.filter(r=>r[hy.i]===1).length/nx;
+      const pct = Math.round(p*100);
+      const bg = `color-mix(in srgb, var(--blue) ${Math.round(p*100)}%, var(--surface))`;
+      cells += `<td class="${p>=0.5?'hi':''}" style="background:${bg}" title="of drivers who do «${hx.n.replace(/&gt;/,'>')}», ${pct}% also do «${hy.n.replace(/&gt;/,'>')}» (n=${fmt(nx)})">${pct}</td>`;
+    });
+    html += `<tr><th class="row">${a+1}. ${hx.n}</th>${cells}</tr>`;
+  });
+  document.getElementById('heat').innerHTML = html;
+  document.getElementById('heatkey').innerHTML =
+    '<b>Key:</b> ' + HS.map((h,j)=>`${j+1} = ${h.n}`).join(' · ') +
+    '<br>A row that never falls below the pool average means that sign rarely appears alone.';
 }
 
 function bindSeg(id, cb){
