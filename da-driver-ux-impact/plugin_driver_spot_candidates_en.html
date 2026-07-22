@@ -205,7 +205,8 @@
     <a href="#s4" data-s="s4">Score</a>
     <a href="#s5" data-s="s5">Signs</a>
     <a href="#s6" data-s="s6">Links</a>
-    <a href="#s7" data-s="s7">Cases</a>
+    <a href="#s7" data-s="s7">Lost</a>
+    <a href="#s8" data-s="s8">Cases</a>
   </div>
 </nav>
 
@@ -393,8 +394,36 @@
     </div>
   </div>
 
+  <!-- CHURN SEGMENT -->
+  <h2 id="s7">⑦ Were the lost customers worth anything? (their past ordering)</h2>
+  <p class="sub">A dead order only counts as a lost customer when that customer placed nothing for 30 days. But were they throwaway first-timers, or real regulars? Here is what each had ordered <b>before</b>.</p>
+  <div class="split">
+    <div class="panel">
+      <h3>The 1,636 give-back orders that lost the customer for 30 days, by past ordering</h3>
+      <p class="pd">bar = number of orders · darker = more loyal customer</p>
+      <div class="bars">
+        <div class="bar-row"><div class="top"><span class="name">NEW — 0 past orders</span><span class="val">436 (27%)</span></div><div class="track"><div class="fill" style="width:43%;background:color-mix(in srgb,var(--blue) 32%,var(--surface))"></div></div></div>
+        <div class="bar-row"><div class="top"><span class="name">LIGHT — 1–4 past orders</span><span class="val">701 (43%)</span></div><div class="track"><div class="fill" style="width:70%;background:color-mix(in srgb,var(--blue) 55%,var(--surface))"></div></div></div>
+        <div class="bar-row"><div class="top"><span class="name">REGULAR — 5–19 past orders</span><span class="val">379 (23%)</span></div><div class="track"><div class="fill" style="width:38%;background:color-mix(in srgb,var(--blue) 80%,var(--surface))"></div></div></div>
+        <div class="bar-row"><div class="top"><span class="name">HEAVY — 20+ past orders</span><span class="val">120 (7%)</span></div><div class="track"><div class="fill" style="width:12%;background:var(--blue)"></div></div></div>
+      </div>
+    </div>
+    <div class="panel">
+      <h3>So this is NOT "just throwaway new customers"</h3>
+      <div class="relbox">
+        <span class="big">About 1 in 3 were established customers.</span>
+        REGULAR + HEAVY = <span class="arrow">499 (30%)</span> had ordered <b>5 or more times</b> before (a lost customer's median span as a customer was <b>87 days</b>). Losing them is real damage — not first-timers who tried once.
+      </div>
+      <div class="relbox">
+        <span class="big">And they really left.</span>
+        <span class="arrow">94%</span> of these lost customers have placed <b>no order at all up to today</b> (2026-07-22). Only 6% ever came back — mostly 30–60 days later.
+      </div>
+      <p class="hnote">BQ columns (analysis-only, NOT scored): <code>churn_new_customer_90d</code> · <code>churn_light_customer_90d</code> · <code>churn_regular_customer_90d</code> · <code>churn_heavy_customer_90d</code>. Next version: weight by customer value / expected LTV lost — the flag itself stays as-is so no loss is hidden.</p>
+    </div>
+  </div>
+
   <!-- CASES -->
-  <h2 id="s7">⑦ Two real drivers, checked line by line</h2>
+  <h2 id="s8">⑧ Two real drivers, checked line by line</h2>
   <p class="sub">We read the raw order timeline by hand before flagging. These are the two headline patterns.</p>
   <div class="cases">
     <div class="case">
