@@ -467,7 +467,7 @@
         <strong>數據口徑：</strong>
         <ul style="margin:6px 0 0;">
           <li><strong>查詢日期</strong>：2026-05-31 實查</li>
-          <li><strong>資料範圍</strong>：HK TRANSPORT B2C（<code>product_name='TRANSPORT'</code>、香港）</li>
+          <li><strong>資料範圍</strong>：HK TRANSPORT · <code>business_segment='PlatformOD'</code>（Data Team）· <code>product_name='TRANSPORT'</code></li>
           <li><strong>時間窗口</strong>：流失 cohort = <code>count_released=2</code> 首事件、90 日回看；GTV／<code>quoted_surcharges</code> = 30 天滾動</li>
           <li><strong>來源表</strong>：<code class="bq-table-path">gogox-data-science-non-prod.analytics_prod_master.order_master_table_hk</code>、<code class="bq-table-path">gogox-data-science-non-prod.raw.hk_db_streaming_order_request_events</code></li>
         </ul>
@@ -480,7 +480,7 @@
         <li><strong>中期</strong>：完成率下降；流局後約 <strong>~57% 用戶不重落</strong>（直接放棄），約 38–46% 加價重落新單。</li>
         <li><strong>長期</strong>：流局後不重落的那批用戶 30 日流失 <strong>34.7%</strong>、90 日永久流失 <strong>25.9%</strong>，累積令 <code>net_impact_hkd</code> 轉負。</li>
       </ul>
-      <p style="font-size:12px;color:#8a8f98;margin-top:10px;">（2026-05-31 實查，HK TRANSPORT B2C；流失 cohort 為 count_released=2 首事件、90 日窗口）</p>
+      <p style="font-size:12px;color:#8a8f98;margin-top:10px;">（2026-05-31 實查，HK TRANSPORT · business_segment='PlatformOD'；流失 cohort 為 count_released=2 首事件、90 日窗口）</p>
     </section>
 
     <section class="card" id="framework">
@@ -531,7 +531,7 @@
           <td>合法例外</td>
           <td>排走 <strong>OA 派單</strong>（結構性污染分母）</td>
           <td>
-            排除：<button type="button" class="term-btn" data-term="oa">OA 派單</button>（order 層：<code>is_oa_order=TRUE</code>／<code>cd=26</code> 事件；司機層：<code>oa_driver=TRUE</code>）→ 唔計公海外掛指標
+            排除：<button type="button" class="term-btn" data-term="oa">OA 派單</button>——<strong>首選</strong>訂單有 <code>event_type_cd=26</code>（Data Team CSV 🟢 events 表）；司機層 <code>oa_driver=TRUE</code> 僅輔助。⚠️ 勿依賴未入 CSV 的 <code>is_oa_order</code> 表
           </td>
         </tr>
       </tbody></table></div>
@@ -539,11 +539,11 @@
         閱讀順序：<strong>① 是否符合資格（進池條件）→ ② 是否被排除（排除條件）</strong>。排除係<strong>否決條件</strong>，唔屬要符合嘅進池項。
       </p>
       <p class="callout neutral" style="margin-bottom:8px;">
-        <strong>事件定義</strong>（點擊<strong>藍色字</strong>查看詳細定義）—— <code>event_type_cd</code> 口徑以 Admin Panel label 為準。
+        <strong>事件代碼怎麼讀？</strong>（點藍色字看詳情）—— 數字代碼 <code>event_type_cd</code> 以 <strong>Data Team 字典</strong>（<code>raw.event_type_cd_lookup</code>）為準。Admin 畫面的英文說明只是人話旁註，和字典衝突時跟 Data Team。
       </p>
       <ul class="rule-list">
-        <li><strong>已派單（<button type="button" class="term-btn" data-term="cd2">cd=2</button>）</strong>：只有 cd=2 視為正式派單，<strong>不包括</strong> <button type="button" class="term-btn" data-term="pick">pick（20/22/26）</button>，亦不以 <button type="button" class="term-btn" data-term="cd6">cd=6</button> 當作完成。</li>
-        <li><strong>Release（<button type="button" class="term-btn" data-term="cd4">cd=4</button>）</strong>：只收 cd=4 + <code>actor_type='Driver'</code>（司機自發放單）；<strong>cd=25 soft_release（Admin 指定）唔計</strong>，<strong>cd=21 Grace Drop 係獨立信號（≠ cd=4）</strong>。BQ 實查（2026-05-31，HK TRANSPORT B2C，30 天）：同一張單 release 次數 <strong>p99=2、最多見 8 次</strong>（<code>count_released</code>），每次多數重派去<strong>不同</strong>司機；無人接即以 <button type="button" class="term-btn" data-term="cd-terminal">cd=3／8／11 終結（流局）</button>。「同一司機放走再接返同一張單」存在但罕見（<button type="button" class="term-btn" data-term="same-order-reaccept">2026年5月 1,415 宗、涉及 902 位司機，約佔 release→重接 2%</button>）。
+        <li><strong>已派單（<button type="button" class="term-btn" data-term="cd2">cd=2</button>）</strong>：只有 cd=2 算正式派給司機。<strong>不包括</strong> <button type="button" class="term-btn" data-term="pick">搶單／pick（20/22/26）</button>。完成單是另一個代碼 <button type="button" class="term-btn" data-term="cd6">cd=6</button>。</li>
+        <li><strong>放單 Release（<button type="button" class="term-btn" data-term="cd4">cd=4</button>）</strong>：只算「司機自己放單」= cd=4 且 <code>actor_type='Driver'</code>。<strong>不算</strong> cd=25 <code>force_released</code>（Admin 強制放單，Data Team 名稱）。<strong>也不要把</strong> cd=21 Grace Drop 跟 cd=4 加在一起算。BQ 實查（2026-05-31，HK TRANSPORT，<code>business_segment='PlatformOD'</code>，30 天）：同一張單放單次數 <strong>p99=2、最多見 8 次</strong>（<code>count_released</code>），多數會派給<strong>別的</strong>司機；一直沒人接就會 <button type="button" class="term-btn" data-term="cd-terminal">取消／流局（cd=3／8／11）</button>。「同一司機放走又接回同一張單」很少見（<button type="button" class="term-btn" data-term="same-order-reaccept">2026年5月 1,415 宗、約佔 2%</button>）。
           <details class="why-3rd-fold">
             <summary>
               <span class="why-chevron" aria-hidden="true">▶</span>
@@ -565,12 +565,12 @@
         <li><strong>/II、/III 訂閱</strong>：<button type="button" class="term-btn" data-term="ii-plan">並非豁免因素</button>，仍可能因 high release 或 cheat／fake GPS 被納入評分。</li>
       </ul>
       <p style="font-size:12px;color:#8a8f98;margin-top:6px;line-height:1.6;">
-        ⚠️ <strong>lookup 特殊情況：</strong>lookup 表現時 stale，<code>cd=26～29</code> 在表內缺失；涉及呢幾個碼用<strong>整數 cd 值</strong>認（以 Admin Panel label 為準），唔靠 lookup 反查 enum。BQ 對照表：<code>gogox-data-science-non-prod.raw.event_type_cd_lookup</code>。
+        ⚠️ <strong>lookup 表過時：</strong>Data Team 寫明 lookup 有 0–25；現場仍會出現 <code>cd=26～29</code>（例如 26＝OA 模式搶單）。這幾個碼請直接用<strong>整數 cd</strong>，不要靠 lookup 反查文字。對照表：<code>gogox-data-science-non-prod.raw.event_type_cd_lookup</code>（Data Team CSV 🟢）。
       </p>
       <div class="callout danger">未通過進池條件者，不打分，也不列入候選。</div>
 
       <h3 class="sub-title">3. 證據分數（evidence score，0–10）</h3>
-      <div class="table-wrap evidence-wrap"><table class='evidence'><thead><tr><th>信號</th><th>商業意涵</th><th>時間窗 / 命中門檻</th><th>依據來源</th><th>分數</th></tr></thead><tbody><tr><td><strong>放棄合理單，導致原單流局</strong></td><td>放走唔係難派嘅單，令訂單無人接、流局</td><td class='mono'>近 30 天；司機 release（cd=4，Driver）後該單以 cd=3／8／11 終結（流局）；用 reorder_next_order_request_id 追蹤後續</td><td class='mono'>BQ 實查（2026-05-01–05-31）：release 後絕大多數派<strong>不同</strong>司機（66,409 單）vs 同司機重接僅 1,415（~47:1），故「同司機重搶」屬邊緣雜訊，非主流</td><td><span class='score'>+3</span></td></tr><tr><td><strong>流局後用戶冇重落、直接流失（Anchor 2 · 流失歸因）</strong></td><td>你 release 整流局嘅單，用戶之後唔再嚟 —— 平台永久少一個客</td><td class='mono'>近 90 天；該司機 release（cd=4,Driver）導致流局嘅單，其用戶「流局後 90 日唔再落單率」&gt; 同組 p90（is_reordered=FALSE 且 90 日內無單）</td><td class='mono'>BQ 實查（2026-05-31）：流局後<strong>冇重落</strong>用戶 30 日流失 <strong>34.7%</strong>、90 日 <strong>25.9%</strong>，佔流局用戶約 <strong>~57%</strong>（count_released=2 首事件 cohort）；對比加價重落用戶 90 日流失僅 ~0.4–0.5% → 真正傷害係<strong>流失</strong>，唔係加價</td><td><span class='score'>+2</span></td></tr><tr><td><strong>同司機閉環自肥（release→用戶加價重落→同司機接返完成）· 最強 intent 證據</strong></td><td>同一個司機放走原單、等用戶加價重落、再自己接返做完 —— 得益閉環，鎖定得益者係同一人</td><td class='mono'>近 90 天；以 event log <strong>逐司機追蹤同一串動作（行為指紋，4 個 key 全中）</strong>：① 同一 <code>driver_id</code> 既 release（cd=4）又 accept（cd=2）；② 時間上<strong>先放後接</strong>（BQ 證實新單 100% 在原單後）；③ 同一 <code>user_id</code> 重落；④ 同一張新單（<code>order_id</code> 經 <code>reorder_next_order_request_id</code> 連）；且新單 <code>completed</code>。<strong>命中即直接人工覆核 / Phase 2 候選（毋須夠 6 分）</strong></td><td class='mono'>BQ 實查（2026-05-31）：<strong>1,441</strong> 宗閉環（佔 reorder pair <strong>5.4%</strong>）、<strong>859</strong> 完成、新單 GTV 平均 <strong>+$14.1</strong>；accept-share 基線期望僅 <strong>~11 宗</strong> → lift <strong>~130 倍</strong>（2026-05-31 BQ 實查，HK TRANSPORT，90 天，accept-share permutation；⚠️ 未按地區×時段條件化）。<strong>逐司機計個人 lift 作偵測信號</strong>：某司機個人閉環倍數遠高於隨機 = 蓄意線索</td><td><span class='score'>+2</span></td></tr><tr><td>流局後用戶加價重落新單（輔助 · 機制旁證）</td><td>用戶為咗有人接而自願加價重落 —— <strong>多數會留低，唔屬流失傷害</strong></td><td class='mono'>近 90 天；reorder_next_order_request_id 連到新單，new_gtv − orig_gtv &gt; 0；❌ 不用 quoted_surcharges（平台收、固定規則、非司機可操控）</td><td class='mono'>BQ 實查（2026-05-31，HK TRANSPORT B2C）：流局後重落率約 38–46%、新單 GTV +9.2%（+$13.77）；加價重落用戶 90 日流失僅 ~0.4–0.5%，故只作<strong>機制旁證</strong>，唔當傷害本身</td><td><span class='score'>+1</span></td></tr><tr><td><strong>90 天都反覆異常</strong></td><td>不是單日失常，是持續行為</td><td class='mono'>已通過 30 天 Entry gate 後，再看 90 天同一軌是否仍高於同組 p90；OD + Booking 兩軌同時超標亦只計一次</td><td class='mono'>同組 p90 比較；30 天 + 90 天雙窗口驗證</td><td><span class='score'>+2</span></td></tr><tr><td><strong>cancel 造成同單再流入公海</strong></td><td>可疑，但比正式 release 弱</td><td class='mono'>近 30 天；司機 cancel 後同單重新流入公海（由其他司機接或流局）；MVP 先以至少 1 宗命中計分</td><td class='mono'>2026 H1 BQ 實查確認存在；規模約為 release 的 1/6.7</td><td><span class='score'>+1</span></td></tr><tr><td><strong>明顯棄低搶高</strong></td><td>低價單常放、高價單常留</td><td class='mono'>近 30 天司機行為窗口；任一條成立即可：cherry_pick_score &gt; 0.30 或 region_cherry_pick &gt; 0.25；公式 A 另有樣本要求 low ≥ 5、high ≥ 3</td><td class='mono'>公式 A / 公式 B；Shadow Mode 待校準</td><td><span class='score'>+1</span></td></tr><tr><td><strong>Grace Drop / cancel 特別高，且集中低價單</strong></td><td>可能是在繞開正式 release 偵測</td><td class='mono'>近 30 天；grace_drop_rate 或 driver_cancel_rate_30d 高於同組 p90，且低 GTV / 低加成桶高於同司機高 GTV / 高加成桶</td><td class='mono'>同組 p90 比較；30 天行為窗口</td><td><span class='score'>+1</span></td></tr></tbody></table></div>
+      <div class="table-wrap evidence-wrap"><table class='evidence'><thead><tr><th>信號</th><th>商業意涵</th><th>時間窗 / 命中門檻</th><th>依據來源</th><th>分數</th></tr></thead><tbody><tr><td><strong>放棄合理單，導致原單流局</strong></td><td>放走唔係難派嘅單，令訂單無人接、流局</td><td class='mono'>近 30 天；司機 release（cd=4，Driver）後該單以 cd=3／8／11 終結（流局）；用 reorder_next_order_request_id 追蹤後續</td><td class='mono'>BQ 實查（2026-05-01–05-31）：release 後絕大多數派<strong>不同</strong>司機（66,409 單）vs 同司機重接僅 1,415（~47:1），故「同司機重搶」屬邊緣雜訊，非主流</td><td><span class='score'>+3</span></td></tr><tr><td><strong>流局後用戶冇重落、直接流失（Anchor 2 · 流失歸因）</strong></td><td>你 release 整流局嘅單，用戶之後唔再嚟 —— 平台永久少一個客</td><td class='mono'>近 90 天；該司機 release（cd=4,Driver）導致流局嘅單，其用戶「流局後 90 日唔再落單率」&gt; 同組 p90（is_reordered=FALSE 且 90 日內無單）</td><td class='mono'>BQ 實查（2026-05-31）：流局後<strong>冇重落</strong>用戶 30 日流失 <strong>34.7%</strong>、90 日 <strong>25.9%</strong>，佔流局用戶約 <strong>~57%</strong>（count_released=2 首事件 cohort）；對比加價重落用戶 90 日流失僅 ~0.4–0.5% → 真正傷害係<strong>流失</strong>，唔係加價</td><td><span class='score'>+2</span></td></tr><tr><td><strong>同司機閉環自肥（release→用戶加價重落→同司機接返完成）· 最強 intent 證據</strong></td><td>同一個司機放走原單、等用戶加價重落、再自己接返做完 —— 得益閉環，鎖定得益者係同一人</td><td class='mono'>近 90 天；以 event log <strong>逐司機追蹤同一串動作（行為指紋，4 個 key 全中）</strong>：① 同一 <code>driver_id</code> 既 release（cd=4）又 accept（cd=2）；② 時間上<strong>先放後接</strong>（BQ 證實新單 100% 在原單後）；③ 同一 <code>user_id</code> 重落；④ 同一張新單（<code>order_id</code> 經 <code>reorder_next_order_request_id</code> 連）；且新單 <code>completed</code>。<strong>命中即直接人工覆核 / Phase 2 候選（毋須夠 6 分）</strong></td><td class='mono'>BQ 實查（2026-05-31）：<strong>1,441</strong> 宗閉環（佔 reorder pair <strong>5.4%</strong>）、<strong>859</strong> 完成、新單 GTV 平均 <strong>+$14.1</strong>；accept-share 基線期望僅 <strong>~11 宗</strong> → lift <strong>~130 倍</strong>（2026-05-31 BQ 實查，HK TRANSPORT，90 天，accept-share permutation；⚠️ 未按地區×時段條件化）。<strong>逐司機計個人 lift 作偵測信號</strong>：某司機個人閉環倍數遠高於隨機 = 蓄意線索</td><td><span class='score'>+2</span></td></tr><tr><td>流局後用戶加價重落新單（輔助 · 機制旁證）</td><td>用戶為咗有人接而自願加價重落 —— <strong>多數會留低，唔屬流失傷害</strong></td><td class='mono'>近 90 天；reorder_next_order_request_id 連到新單，new_gtv − orig_gtv &gt; 0；❌ 不用 quoted_surcharges（平台收、固定規則、非司機可操控）</td><td class='mono'>BQ 實查（2026-05-31，HK TRANSPORT · business_segment='PlatformOD'）：流局後重落率約 38–46%、新單 GTV +9.2%（+$13.77）；加價重落用戶 90 日流失僅 ~0.4–0.5%，故只作<strong>機制旁證</strong>，唔當傷害本身</td><td><span class='score'>+1</span></td></tr><tr><td><strong>90 天都反覆異常</strong></td><td>不是單日失常，是持續行為</td><td class='mono'>已通過 30 天 Entry gate 後，再看 90 天同一軌是否仍高於同組 p90；OD + Booking 兩軌同時超標亦只計一次</td><td class='mono'>同組 p90 比較；30 天 + 90 天雙窗口驗證</td><td><span class='score'>+2</span></td></tr><tr><td><strong>cancel 造成同單再流入公海</strong></td><td>可疑，但比正式 release 弱</td><td class='mono'>近 30 天；司機 cancel 後同單重新流入公海（由其他司機接或流局）；MVP 先以至少 1 宗命中計分</td><td class='mono'>2026 H1 BQ 實查確認存在；規模約為 release 的 1/6.7</td><td><span class='score'>+1</span></td></tr><tr><td><strong>明顯棄低搶高</strong></td><td>低價單常放、高價單常留</td><td class='mono'>近 30 天司機行為窗口；任一條成立即可：cherry_pick_score &gt; 0.30 或 region_cherry_pick &gt; 0.25；公式 A 另有樣本要求 low ≥ 5、high ≥ 3</td><td class='mono'>公式 A / 公式 B；Shadow Mode 待校準</td><td><span class='score'>+1</span></td></tr><tr><td><strong>Grace Drop / cancel 特別高，且集中低價單</strong></td><td>可能是在繞開正式 release 偵測</td><td class='mono'>近 30 天；grace_drop_rate 或 driver_cancel_rate_30d 高於同組 p90，且低 GTV / 低加成桶高於同司機高 GTV / 高加成桶</td><td class='mono'>同組 p90 比較；30 天行為窗口</td><td><span class='score'>+1</span></td></tr></tbody></table></div>
       <div class="callout info">
         <strong>閱讀說明：</strong>
         <ul>
@@ -681,7 +681,7 @@
           </table>
           <div class="term-note-warn" style="margin-top:14px;">
             <h5>⚠️ 平台對同一張單的 Release 有上限：最多 3 次</h5>
-            <p>來源：<code>knowledge/data-sources/order-request-events.md</code>（Admin Panel + BQ 雙重確認）</p>
+            <p>來源：Data Team 字典（cd↔action）＋ <code>order-request-events.md</code>（細節補充；衝突以 Data Team 為準）</p>
             <table class="term-mini-table">
               <thead><tr><th>Release 次數</th><th>平台行為</th></tr></thead>
               <tbody>
@@ -802,7 +802,7 @@ WHERE m.product_name = 'TRANSPORT'
               <tr><td><strong>③ 倍數（lift）</strong></td><td>實際 ÷ 隨機期望<br><span style="font-size:.85em;color:#475569;font-weight:400;">→ 結論：把①同②放在一起比，量化「比巧合多幾倍」。Lift = 1 即與巧合無異；130 倍即實際發生次數是純巧合的 130 倍。</span></td><td>1,441 ÷ 11 ≈ <strong>130 倍</strong></td></tr>
             </tbody>
           </table>
-          <blockquote><strong>倍數（lift）= 實際命中 ÷ 隨機期望。</strong>＝1 即和巧合一樣；本案 ≈ <strong>130 倍</strong>，遠遠多於巧合。<br><span style="font-size:12px;color:#8a8f98;">（資料來源：2026-05-31 BQ 實查，HK TRANSPORT B2C，資料範圍：查詢日前 90 天；accept-share permutation 基線；⚠️ 未按地區×時段條件化，是否蓄意仍需再驗。）</span></blockquote>
+          <blockquote><strong>倍數（lift）= 實際命中 ÷ 隨機期望。</strong>＝1 即和巧合一樣；本案 ≈ <strong>130 倍</strong>，遠遠多於巧合。<br><span style="font-size:12px;color:#8a8f98;">（資料來源：2026-05-31 BQ 實查，HK TRANSPORT · business_segment='PlatformOD'，資料範圍：查詢日前 90 天；accept-share permutation 基線；⚠️ 未按地區×時段條件化，是否蓄意仍需再驗。）</span></blockquote>
 
           <h5 class="term-part">為甚麼用「倍數」而不是直接看 5.4%？</h5>
           <p>單看 5.4% 不知道算高還是低。要有對照才有意義——和「純隨機」比，5.4% 是它的約 130 倍，這樣才看得出「異常」。同理：中六合彩本身機率很低，但若某人中了 100 多次平均水平，就不是運氣問題。</p>
@@ -817,7 +817,7 @@ WHERE m.product_name = 'TRANSPORT'
       "impact-method": {
         title: "上面這幾個數字是怎麼算出來的",
         wide: true,
-        lead: "<strong>三組數字的來源：</strong>① 把訂單流局後的用戶分成三組，比較各組的流失情況；② 流失的定義是「90 日內有沒有再下單」；③ 「同一司機重複接單」用去重的 SQL，比對放單司機是否等於重新接單的司機。所有數字皆為 <strong>2026-05-31 實查、HK TRANSPORT B2C</strong>。",
+        lead: "<strong>三組數字的來源：</strong>① 把訂單流局後的用戶分成三組，比較各組的流失情況；② 流失的定義是「90 日內有沒有再下單」；③ 「同一司機重複接單」用去重的 SQL，比對放單司機是否等於重新接單的司機。所有數字皆為 <strong>2026-05-31 實查、HK TRANSPORT · business_segment='PlatformOD'</strong>。",
         htmlBody: `
           <h5 class="term-part">① 把流局後的用戶分成三組</h5>
           <p>取被放棄兩次（<code>count_released=2</code>）且最終取消（<code>status='cancelled'</code>）的流局訂單，依用戶<strong>第一次</strong>遇到流局的事件分組，再看他之後的行為：</p>
@@ -871,10 +871,10 @@ FROM reorder_pairs p;</code></pre>
           </table>
 
           <div class="callout neutral">
-            <h5 class="term-part">③ 附加費／surge — 不作 cheat 偵測</h5>
-            <p><strong>唔用。</strong> <code>quoted_surcharges</code>（報價附加費合計，含時段／動態加成等）由平台規則決定，司機操控唔到；reorder 前後只 <strong>+$0.96 ≈ 無變</strong>（2026-06-26 BQ 實查，HK TRANSPORT B2C，30 天）。</p>
-            <p>外掛 App「急車費偏好」只係<strong>篩選背景</strong>，<strong>唔係</strong>偵測條件。Peak 時段「放單催 surge」動機<strong>不成立</strong>（FA-08b 已驗）。</p>
-            <p>偵測用：release、cherry-pick（<code>cherry_pick_score</code>）、流局重落（<code>reorder_gtv_uplift</code>）、grab-drop 閉環 — <strong>唔用 surcharge。</strong></p>
+            <h5 class="term-part">③ 附加費／急車費 — 不作外掛證據</h5>
+            <p><strong>不要用。</strong> <code>quoted_surcharges</code> 是平台按規則算的附加費合計（急車費只是其中一項）。司機改不了。流局後重落，這欄幾乎不變（約 +$0.96；2026-06-26 實查，HK TRANSPORT，<code>business_segment='PlatformOD'</code>，30 天）。</p>
+            <p>外掛 App 的「急車費偏好」只是<strong>篩選喜好</strong>，<strong>不是</strong>偵測條件。繁忙時段「放單催急車費」也<strong>不成立</strong>。</p>
+            <p>偵測請看：放單、挑單、流局後重落、閉環自肥 — <strong>不要看附加費。</strong></p>
           </div>
 
           <div class="term-note-warn">
@@ -882,7 +882,7 @@ FROM reorder_pairs p;</code></pre>
             <p>• 流失 ~57%／26% 是「被放棄兩次（<code>count_released=2</code>）」的首次事件群組、90 日窗口，不等於全體流局訂單的比例。<br>• 閉環 130 倍（2026-05-31 BQ 實查，90 天）是相對<strong>未條件化</strong>的隨機水準；同地區、同時段司機重疊（地理鄰近）尚未排除，是否蓄意仍需再驗。<br>• 數字會隨滾動窗口每日移動，引用時請附上查詢日期。</p>
           </div>
         `,
-        tag: "2026-05-31 實查 · HK TRANSPORT B2C",
+        tag: "2026-05-31 實查 · HK TRANSPORT · business_segment='PlatformOD'",
       },
       "base-lifespan": {
         title: "基礎 lifespan · 「1 單 → 1 個月」係咩意思",
@@ -988,7 +988,7 @@ FROM reorder_pairs p;</code></pre>
       "cheat-app": {
         title: "市場外掛 App 功能（超級一號／天宮二號）",
         wide: true,
-        lead: "<strong>第一步：</strong>實機查閱<strong>兩款</strong>外掛 App（超級一號、天宮二號）整理嘅功能與設計 — <strong>本 popup 不含圖片</strong>，只列觀察內容。<strong>Cherry-pick</strong>：優先選取高價值訂單，並避免低價值訂單。下方為 App 產品面；<strong>第二步 BQ 對照</strong>喺底部，點擊展開。",
+        lead: "<strong>第一步：</strong>我們實機看過兩款外掛 App（超級一號、天宮二號）。下面只寫看到的功能（<strong>沒有截圖</strong>）。一句話：外掛幫司機<strong>挑好單、避開差單</strong>。下方是 App 怎麼設計；底部可展開<strong>第二步</strong>：BigQuery 能對上什麼欄位。表名以 Data Team CSV 為準。",
         htmlBody: `
           <h5>一、核心結構：2×3 矩陣（路線類型 × 時間模式）</h5>
           <p><strong>底部 5 模組：</strong>1 首頁／2 採集(GPS)／3 即時／4 預約／5 記錄(機場)。其中 <strong>6 版設置</strong>係一個 <strong>2×3 矩陣</strong> —「揀邊度（路線類型）」×「揀邊個時間模式」。</p>
@@ -1083,22 +1083,21 @@ FROM reorder_pairs p;</code></pre>
           <details class="step2-fold">
             <summary><span class="fold-chevron" aria-hidden="true">▶</span>第二步：BQ 欄位對照 + 偵測方向（非 App 產品面）</summary>
             <div class="step2-fold-body">
-          <p><em>欄位名 ✅ 來自 <code>schema-field-dictionary.md</code>（<code>bq show</code> 確認）；⚠️ 標未確認／衍生。event_type_cd SSOT：<code>raw.event_type_cd_lookup</code></em></p>
+          <p><em>表狀態以 <strong>Data Team CSV</strong>（2026-07-17）為準：🟢＝可用。欄位名須與真表一致。事件代碼 SSOT：Data Team 字典 + <code>raw.event_type_cd_lookup</code>。⚙️＝自己算的，不是表上原有欄。</em></p>
           <table class="term-mini-table">
-            <thead><tr><th>概念</th><th>BQ 欄位／值</th><th>表（全名）</th></tr></thead>
+            <thead><tr><th>人話</th><th>BQ 欄位／值</th><th>表（Data Team）</th></tr></thead>
             <tbody>
-              <tr><td>接受／已派（過程）</td><td><code>event_type_cd=2</code> + <code>actor_type='Driver'</code></td><td class="bq-table-path"><code>gogox-data-science-non-prod.raw.hk_db_streaming_order_request_events</code></td></tr>
-              <tr><td>放單 release（過程）</td><td><code>event_type_cd=4</code> + <code>actor_type='Driver'</code></td><td class="bq-table-path"><code>gogox-data-science-non-prod.raw.hk_db_streaming_order_request_events</code></td></tr>
-              <tr><td>drop／Grace Drop（過程）</td><td><code>event_type_cd=21</code> + <code>actor_type='Driver'</code></td><td class="bq-table-path"><code>gogox-data-science-non-prod.raw.hk_db_streaming_order_request_events</code></td></tr>
-              <tr><td>訂單總值</td><td><code>gross_transaction_value</code> (FLOAT)</td><td class="bq-table-path"><code>gogox-data-science-non-prod.analytics_prod_master.order_master_table_hk</code></td></tr>
-              <tr><td>額外加錢（司機議價）</td><td><code>driver_amendments</code> (FLOAT) — 司機發起、客同意後加價。<strong>⚠️</strong> 非純用戶小費，係 driver-initiated 議價（實查見下方）</td><td class="bq-table-path"><code>gogox-data-science-non-prod.analytics_prod_master.order_master_table_hk</code></td></tr>
-              <tr><td>取貨地區</td><td><code>pickup_location_region</code>（如 <code>'機場'</code>／<code>'東涌'</code>…）</td><td class="bq-table-path"><code>gogox-data-science-non-prod.analytics_prod_master.order_master_table_hk</code></td></tr>
-              <tr><td>落車地區</td><td><code>destination_location_region</code></td><td class="bq-table-path"><code>gogox-data-science-non-prod.analytics_prod_master.order_master_table_hk</code></td></tr>
-              <tr><td>單型（即時／今日／預約）</td><td><code>booking_type IN ('On Demand','Same Day','Next Day')</code></td><td class="bq-table-path"><code>gogox-data-science-non-prod.analytics_prod_master.order_master_table_hk</code></td></tr>
-              <tr><td>cherry-pick（計算）⚙️</td><td><code>cherry_pick_score</code>；events ⋈ master ON <code>order_request_id</code> = <code>system_order_request_id</code>，以 <code>gtv_per_km</code>（性價比）為主軸分桶，輔以 <code>driver_amendments</code>；❌ 不再用 <code>quoted_surcharges</code> 分桶</td><td class="bq-table-path"><code>gogox-data-science-non-prod.raw.hk_db_streaming_order_request_events</code><br><code>gogox-data-science-non-prod.analytics_prod_master.order_master_table_hk</code></td></tr>
-              <tr><td>流局後用戶加價重落新單（計算）⚙️</td><td><code>reorder_gtv_uplift</code>；原單流局後用 <code>reorder_next_order_request_id</code> 追新單，<code>new_gtv − orig_gtv &gt; 0</code>（實查 +9.2%）；輔以 <code>driver_amendments</code> 差。❌ 已棄用 <code>reaccept_with_amendment</code>（同單同司機重接係雜訊）／<code>quoted_surcharges</code> 差（+$0.96≈無變，不作偵測）</td><td class="bq-table-path"><code>gogox-data-science-non-prod.raw.hk_db_streaming_order_request_events</code><br><code>gogox-data-science-non-prod.analytics_prod_master.order_master_table_hk</code></td></tr>
-              <tr><td>每公里值（計算）⚠️</td><td><code>gtv_per_km</code> = <code>gross_transaction_value</code> ÷ <code>estimated_distance</code>（估計值；join key 待確認）</td><td class="bq-table-path"><code>gogox-data-science-non-prod.analytics_prod_master.order_master_table_hk</code><br><code>gogox-analytics-prod.features.osm_route_estimates</code></td></tr>
-              <tr><td>同組基準</td><td><code>membership_tier</code> × <code>vehicle_type</code>；排除 <code>oa_driver=TRUE</code>（司機層）；<code>has_auto_accept</code> ⚠️ 衍生</td><td class="bq-table-path"><code>gogox-data-science-non-prod.analytics_prod_master.driver_master_table_hk</code><br><code>gogox-data-science-non-prod.raw.hk_db_streaming_driver_subscriptions</code></td></tr>
+              <tr><td>正式接單／已派</td><td><code>event_type_cd=2</code> + <code>actor_type='Driver'</code>（字典名 <code>picked_up</code>＝接單，<strong>不是</strong>取貨）</td><td class="bq-table-path">🟢 <code>…raw.hk_db_streaming_order_request_events</code></td></tr>
+              <tr><td>司機放單</td><td><code>event_type_cd=4</code> + <code>actor_type='Driver'</code></td><td class="bq-table-path">🟢 同上</td></tr>
+              <tr><td>Grace 內丟單</td><td><code>event_type_cd=21</code> + <code>actor_type='Driver'</code></td><td class="bq-table-path">🟢 同上</td></tr>
+              <tr><td>訂單總額（GTV）</td><td><code>gross_transaction_value</code></td><td class="bq-table-path">🟢 <code>…order_master_table_hk</code></td></tr>
+              <tr><td>司機加收（議價）</td><td><code>driver_amendments</code> — 司機提出、客同意後加價。<strong>不是</strong>純用戶小費</td><td class="bq-table-path">🟢 同上</td></tr>
+              <tr><td>取貨／落車地區</td><td><code>pickup_location_region</code>／<code>destination_location_region</code></td><td class="bq-table-path">🟢 同上</td></tr>
+              <tr><td>單型</td><td><code>booking_type IN ('On Demand','Same Day','Next Day')</code></td><td class="bq-table-path">🟢 同上</td></tr>
+              <tr><td>挑單分數（自己算）⚙️</td><td><code>cherry_pick_score</code>＝用 GTV 與距離等現有欄算出；join：events.<code>order_request_id</code> = master.<code>system_order_request_id</code>。❌ 不用 <code>quoted_surcharges</code></td><td class="bq-table-path">🟢 events + 🟢 order_master</td></tr>
+              <tr><td>流局後客加價重落（自己算）⚙️</td><td><code>reorder_gtv_uplift</code>＝新單 GTV − 舊單 GTV（用 <code>reorder_next_order_request_id</code>）。❌ 不用附加費差</td><td class="bq-table-path">🟢 events + 🟢 order_master</td></tr>
+              <tr><td>每公里 GTV（自己算）⚠️</td><td><code>gross_transaction_value</code> ÷ 估計距離。距離表<strong>不在 Data Team CSV</strong>，暫不可當正式真源</td><td class="bq-table-path">🟢 order_master<br>⚠️ <code>…features.osm_route_estimates</code>（未入 CSV）</td></tr>
+              <tr><td>同組比較</td><td>主看 <code>vehicle_type</code>；可參考 <code>membership_tier</code>（⚠️ 舊字典標「不準、勿用」，本頁僅暫用，待 DE 確認）。訂閱<strong>不是</strong>研判條件，不因訂閱加減分</td><td class="bq-table-path">🟢 <code>…driver_master_table_hk</code><br>⚠️ 訂閱表 <code>…driver_subscriptions</code>（未入 CSV）— 不作正式真源</td></tr>
             </tbody>
           </table>
           <blockquote>
@@ -1106,26 +1105,26 @@ FROM reorder_pairs p;</code></pre>
             <p>TRANSPORT 共 <strong>495,878</strong> 單，其中 <strong>91,164</strong> 單有司機改價（<code>driver_amendments ≠ 0</code>），佔 <strong>18.38%</strong>。</p>
             <p>呢 91,164 單嘅平均改價金額為 <strong>+$60.75</strong>。不過數值範圍由 <strong>−$360</strong> 至 <strong>+$69,006</strong>，存在極端離群值，平均數可能被拉高，未必代表典型改價水平 — 建議進一步參考 <strong>Median</strong> 或 <strong>Percentile</strong> 指標。</p>
           </blockquote>
-          <p><strong>偵測方向：</strong><code>event_type_cd=4</code>（release）、<code>event_type_cd=21</code>（drop，Driver）係<strong>過程信號</strong>；重點驗證 cherry-pick <strong>結果</strong> — 相對同組（<code>membership_tier</code> × <code>vehicle_type</code>，排除 <code>oa_driver=TRUE</code> 及 <code>has_auto_accept</code> ⚠️）是否異常：</p>
+          <p><strong>怎麼查「有沒有在挑單」？</strong>先看過程：有沒有常放單（cd=4）或 Grace 丟單（cd=21）。再看結果：跟<strong>同車型</strong>司機比，是不是特別愛接高報酬路線／高議價單（排走 OA：用 cd=26，見 OA 說明）：</p>
           <ol>
-            <li><strong>高性價比：</strong><code>gtv_per_km</code> ⚠️ 偏高（短途高值，唔單看 <code>gross_transaction_value</code> 絕對額）。❌ 唔用 <code>quoted_surcharges</code>（平台規則、不可控、已棄用）</li>
-            <li><strong>額外加錢：</strong><code>driver_amendments</code> 偏高（司機集中接「客肯加錢」嘅單）</li>
-            <li><strong>路線集中：</strong><code>pickup_location_region</code>／<code>destination_location_region</code> 集中於 <code>'機場'</code>、<code>'東涌'</code> 等長途點</li>
-            <li><strong>系統性避低價：</strong><code>cherry_pick_score</code> ⚙️ 顯著為正</li>
-            <li>以上指標高於同組 <strong>p90</strong></li>
+            <li><strong>短途高價：</strong>GTV 高、距離短（每公里值僅供參考——距離表未入 Data Team CSV）。❌ 不要用 <code>quoted_surcharges</code></li>
+            <li><strong>司機加收偏多：</strong><code>driver_amendments</code> 偏高</li>
+            <li><strong>路線集中機場／東涌等：</strong><code>pickup_location_region</code>／<code>destination_location_region</code></li>
+            <li><strong>系統性避低價：</strong>自己算的挑單分數明顯偏高</li>
+            <li>以上高於同組第 90 百分位</li>
           </ol>
-          <p><strong>誠實提示：</strong></p>
+          <p><strong>請記住：</strong></p>
           <ul>
-            <li><strong><code>quoted_surcharges</code>／surge 唔用作 cheat 偵測</strong>（2026-06-26 已棄用）；真正可被 cherry-pick 嘅係相對性價比（<code>gtv_per_km</code>）、路線選擇、同客方加錢（<code>driver_amendments</code>）</li>
-            <li><strong>⚠️</strong> <code>driver_amendments</code> 名義上係司機發起議價，非乾淨「用戶小費」；admin panel「BONUS (PAID BY CUSTOMER)」喺 <code>order_master</code> 暫無對應欄位，如要精準追用戶加錢需另尋資料源。改價分佈有極端離群（見上方實查），司機層比較宜用 p90／median，唔好單靠平均數</li>
-            <li><code>pickup_location_region</code> 係平台地名 mapping（短地名、非官方 18 區）— 外掛 UI「機場／東涌」要對返欄位<strong>實際值域</strong></li>
-            <li><code>gtv_per_km</code> 依賴 <code>gogox-analytics-prod.features.osm_route_estimates.estimated_distance</code>（估計值，非實際 GPS）</li>
+            <li><strong>附加費／急車費不作外掛證據</strong>（平台規則算的，司機改不了）</li>
+            <li><code>driver_amendments</code>＝司機議價，不是乾淨「用戶小費」；比較請用中位數／第 90 百分位，不要只看平均</li>
+            <li>地區名是平台短地名，要對真實欄位值，不要自己發明地名</li>
+            <li>每公里 GTV 需要的距離表<strong>不在 Data Team CSV</strong>——暫不作正式裁決依據</li>
           </ul>
-          <p><strong>App 功能 → BQ 對照</strong>（App UI 文案 ⚙️ 非 BQ 欄位；event_type_cd SSOT：<code>raw.event_type_cd_lookup</code>）</p>
+          <p><strong>App 功能 → BQ 對照</strong>（左邊是 App 畫面字，不是 BQ 欄名；代碼跟 Data Team）</p>
           <table class="term-mini-table">
             <thead><tr><th>App 功能（UI 文案）</th><th>BQ 概念</th><th>欄位／條件</th><th>表（全名）</th></tr></thead>
             <tbody>
-              <tr><td>「急車費／surge」</td><td>App 篩選偏好（<strong>唔用作偵測</strong>）</td><td>❌ 唔用 <code>quoted_surcharges</code> 作 cheat 條件；見 impact-method ③</td><td>—</td></tr>
+              <tr><td>「急車費／surge」</td><td>App 篩選喜好（<strong>不作偵測</strong>）</td><td>❌ 不用 <code>quoted_surcharges</code>；見 impact-method ③</td><td>—</td></tr>
               <tr><td>「6秒公海」</td><td>Grace Drop 試單窗口</td><td><code>event_type_cd=21</code> + <code>actor_type='Driver'</code></td><td class="bq-table-path"><code>gogox-data-science-non-prod.raw.hk_db_streaming_order_request_events</code></td></tr>
               <tr><td>「搶輸左的訂單」</td><td>App UI 文案 ⚙️（機制存疑）</td><td><strong>⚠️ BQ 實查：release 後同單重派去<em>不同</em>司機，平台不容同一司機 release 後再接同一 <code>order_request_id</code>。</strong>真正可追蹤嘅係用戶重落<em>新單</em>（<code>reorder_next_order_request_id</code>），非同單同司機重接</td><td class="bq-table-path"><code>gogox-data-science-non-prod.raw.hk_db_streaming_order_request_events</code></td></tr>
               <tr><td>「放單退點」</td><td>release 試單（過程）</td><td><code>event_type_cd=4</code> + <code>actor_type='Driver'</code></td><td class="bq-table-path"><code>gogox-data-science-non-prod.raw.hk_db_streaming_order_request_events</code></td></tr>
@@ -1138,33 +1137,33 @@ FROM reorder_pairs p;</code></pre>
       },
       cd2: {
         title: "cd=2 · accepted the order（已派單）",
-        lead: "標題 <strong>「cd=2」</strong> = SSOT Admin Panel <strong>accepted the order</strong>。<strong>Only cd=2 = really assigned</strong>（平台正式派單）。lookup enum <code>picked_up</code> 係 DB 名，<strong>唔代表取貨</strong>。",
+        lead: "<strong>cd=2</strong>＝Data Team：<code>picked_up</code>（意思＝<strong>正式接單／已派</strong>，不是取貨）。Admin 畫面常寫 accepted the order。只有這個碼算「單真的派給司機了」。",
         body: [
-          "正常流程：pick（cd=20/22/26）→ 隨即／數秒內 → cd=2 accept——兩步唔同事件。",
-          "計數用 <code>COUNT(DISTINCT order_request_id)</code>，唔好用 <code>COUNT(*)</code>（同一司機同單可有多個事件）。",
-          "本框架：近 30 天 OD cd=2 <strong>≥ 30</strong> 做棄單率分母；之後 release／drop 仍計入已派。",
+          "流程：先搶單 pick（cd=20/22/26）→ 再 cd=2 正式接單。兩步不同。",
+          "數單數用 <code>COUNT(DISTINCT order_request_id)</code>，不要用 <code>COUNT(*)</code>。",
+          "本頁：近 30 天即時單（On Demand）cd=2 <strong>≥ 30</strong> 才算「樣本夠」；之後的放單仍算在已派之後。",
         ],
-        tag: "SSOT: event_type_cd_lookup · cd=2",
+        tag: "Data Team · event_type_cd_lookup · cd=2",
       },
       cd4: {
-        title: "cd=4 · released the order（Release）",
+        title: "cd=4 · released（司機放單）",
         wide: true,
-        lead: "標題 <strong>「cd=4」</strong> = SSOT Admin Panel <strong>released the order</strong>（司機放單回公海）。<strong>做司機篩選閘必須加 <code>actor_type='Driver'</code></strong>，否則會撈埋 AdminUser／系統 release，高估司機「壞行為」<strong>6%–52%</strong>（SSOT 已印證）。",
+        lead: "<strong>cd=4</strong>＝Data Team：<code>released</code>（司機把單放回公海）。篩司機時<strong>必須</strong>加 <code>actor_type='Driver'</code>，否則會混進非司機放單，高估壞行為。",
         htmlBody: `
           <ul>
-            <li>訂單回到公海，其他司機可以再接。<strong>唔用</strong> <code>quoted_surcharges</code>／surge 變動作 cheat 證據（已棄用）。</li>
-            <li>入池要 <strong>cd=4 + <code>actor_type='Driver'</code> ≥ 1 次</strong>：確認有<strong>司機自發</strong>棄單行為先值得評分。</li>
-            <li>棄單率分子 = cd=4（Driver）；分母 = cd=2 已派單。</li>
-            <li><strong>口徑邊界：</strong>cd=25 <code>soft_released</code>（Admin 指定派單，30 天約 146 events）<strong>唔計</strong>；cd=21 <code>driver_drops_order</code>（Grace Drop）係<strong>另一個信號</strong>，<strong>cd=21 ≠ cd=4</strong>，唔可以當「drop = release」撈埋計。</li>
+            <li>單回到公海，其他司機可以再接。<strong>不要</strong>用附加費變動作外掛證據。</li>
+            <li>進池要至少一次：<strong>cd=4 + Driver</strong>。</li>
+            <li>棄單率：分子＝司機 cd=4；分母＝cd=2 已派。</li>
+            <li><strong>邊界：</strong>cd=25 Data Team 名是 <code>force_released</code>（Admin 強制放單）——<strong>不計</strong>進司機棄單。cd=21 是 Grace 丟單，<strong>跟 cd=4 不同</strong>，不能加在一起。</li>
           </ul>
 
-          <h5>實證：一張單嘅完整時間線（HKT）</h5>
+          <h5>實證：一張單的完整時間線（HKT）</h5>
           <table class="term-mini-table">
             <thead><tr><th>時間</th><th>cd</th><th>lookup</th><th>司機</th><th>解讀</th></tr></thead>
             <tbody>
-              <tr><td>00:20:26</td><td>0</td><td>created</td><td>—</td><td>落單</td></tr>
-              <tr><td>07:47:08</td><td>2</td><td>picked_up</td><td>2969</td><td>分配俾 2969</td></tr>
-              <tr><td>08:42:59</td><td><strong>4</strong></td><td>released</td><td>2969</td><td><strong>接咗 56 分鐘後 release ← 真棄單</strong></td></tr>
+              <tr><td>00:20:26</td><td>0</td><td>created</td><td>—</td><td>下單</td></tr>
+              <tr><td>07:47:08</td><td>2</td><td>picked_up</td><td>2969</td><td>分配給 2969</td></tr>
+              <tr><td>08:42:59</td><td><strong>4</strong></td><td>released</td><td>2969</td><td><strong>接了 56 分鐘後 release ← 真棄單</strong></td></tr>
               <tr><td>08:46:17</td><td>2</td><td>accept</td><td>10547</td><td>再派</td></tr>
               <tr><td>09:34:30</td><td>20</td><td>pick</td><td>72989</td><td>72989 搶</td></tr>
               <tr><td>09:34:34</td><td><strong>21</strong></td><td>drop</td><td>72989</td><td><strong>隔 3.9 秒即 drop ← grace 內</strong></td></tr>
@@ -1179,24 +1178,24 @@ FROM reorder_pairs p;</code></pre>
 
           <h5>結論（全部 BQ 實證，2026-06-25 實查，HK TRANSPORT，30 天）</h5>
           <ul>
-            <li><strong>cd=21 = grace 期內放</strong> — pick（20/22）後 <strong>median 3–5 秒、p90 ≤8–10 秒</strong>即 drop，正落喺 ~8 秒 grace window 內。</li>
+            <li><strong>cd=21 = grace 期內放</strong> — pick（20/22）後 <strong>median 3–5 秒、p90 ≤8–10 秒</strong>即 drop，正落在 ~8 秒 grace window 內。</li>
             <li><strong>cd=4 = 真正分配後放</strong> — accept（cd=2）後 <strong>median 38 秒</strong>、可去到幾分鐘先 release，遠超 grace。</li>
-            <li><strong>兩者係唔同階段、唔同司機</strong> — 同一司機同單「先 21 再 4」30 日得 8 宗；grace-dropper 同 releaser 基本上係兩個人。</li>
-            <li>張單會喺多個司機之間彈嚟彈去（pick→grace-drop→再派→…→accept→release）。</li>
-            <li>訂單層：兩樣都有嘅單，<strong>62% 係 21 先 → 4 後</strong>（median 隔 83 秒）。</li>
+            <li><strong>兩者是不同階段、不同司機</strong> — 同一司機同單「先 21 再 4」30 日得 8 宗；grace-dropper 與 releaser 基本上是兩個人。</li>
+            <li>訂單會在多個司機之間彈來彈去（pick→grace-drop→再派→…→accept→release）。</li>
+            <li>訂單層：兩樣都有的單，<strong>62% 是 21 先 → 4 後</strong>（median 隔 83 秒）。</li>
           </ul>
 
-          <blockquote><strong>對 cheat 偵測嘅意義：</strong>cd=21 同 cd=4 量度緊生命週期<strong>兩個唔同點，唔可以相加</strong>。grace-drop 嘅指紋價值在於「<strong>pick→drop 超短（秒級、機器速度）</strong>」呢個時序特徵 —— 捉外掛應計 <strong>pick→drop 延遲 + 頻率</strong>，唔係淨計 drop count。</blockquote>
+          <blockquote><strong>對 cheat 偵測的意義：</strong>cd=21 與 cd=4 衡量的是生命週期<strong>兩個不同點，不可以相加</strong>。grace-drop 的指紋價值在於「<strong>pick→drop 超短（秒級、機器速度）</strong>」這個時序特徵 —— 捉外掛應計 <strong>pick→drop 延遲 + 頻率</strong>，不是只計 drop count。</blockquote>
         `,
         tag: "SSOT · cd=4 須 actor_type='Driver' · cd=21≠cd=4 已實證",
       },
       cd6: {
         title: "cd=6 · completed the order（完成單）",
-        lead: "標題 <strong>「cd=6」</strong> = SSOT Admin Panel <strong>completed the order</strong>（訂單送達完成）。SSOT：cd=6 <strong>100% Driver</strong>，唔使加 actor filter。",
+        lead: "<strong>cd=6</strong>＝Data Team：<code>completed</code>（送達完成）。幾乎全是司機事件，通常不用再加 actor 篩選。",
         body: [
-          "用嚟計「月完成幾多單」——確認司機有做生意、有外掛動機。",
+          "用來計「月完成多少單」——確認司機有做生意、有外掛動機。",
           "完成閘：近 30 天 OD + Booking cd=6 合計 <strong>≥ 30 單</strong>。",
-          "<strong>唔用作</strong>棄單率分母——重度棄單者往往「派得多、完成得少」。",
+          "<strong>不用作</strong>棄單率分母——重度棄單者往往「派得多、完成得少」。",
         ],
         tag: "SSOT: event_type_cd_lookup · cd=6",
       },
@@ -1232,46 +1231,43 @@ FROM reorder_pairs p;</code></pre>
       oa: {
         title: "OA · 過山易",
         wide: true,
-        lead: "<strong>OA = 平台派俾 Gold/Platinum 排班司機嘅單，唔經公海搶單。</strong>外掛框架<strong>要排走呢類單</strong>——OA 由系統派，行為模式同公海搶單唔同，撈埋會污染分母。",
+        lead: "<strong>OA＝平台排班派給指定司機的單</strong>（不經公海搶）。分析外掛時要<strong>排走這類單</strong>，否則會把「系統派單」跟「公海挑單」混在一起。",
         htmlBody: `
-          <h5>點識別 OA（排走用）</h5>
+          <h5>怎樣認出 OA 單？（跟 Data Team CSV）</h5>
           <table class="term-mini-table">
-            <thead><tr><th>層級</th><th>條件</th><th>來源</th></tr></thead>
+            <thead><tr><th>做法</th><th>條件</th><th>表</th></tr></thead>
             <tbody>
-              <tr><td><strong>訂單層</strong></td><td><code>is_oa_order=TRUE</code>（或等價：有 <code>cd=26</code> OA pick 事件）</td><td class="bq-table-path"><code>gogox-analytics-prod.order_assignment_engine3.order</code></td></tr>
-              <tr><td><strong>司機層</strong></td><td><code>oa_driver=TRUE</code></td><td class="bq-table-path"><code>gogox-data-science-non-prod.analytics_prod_master.driver_master_table_hk</code></td></tr>
+              <tr><td><strong>首選（CSV 🟢）</strong></td><td>訂單有 <code>event_type_cd=26</code>（Data Team：OA 模式搶單；lookup 可能沒有文字）</td><td class="bq-table-path">🟢 <code>…raw.hk_db_streaming_order_request_events</code></td></tr>
+              <tr><td>司機層輔助</td><td><code>oa_driver=TRUE</code>（名冊是當日快照，可能漏人）</td><td class="bq-table-path">🟢 <code>…driver_master_table_hk</code></td></tr>
+              <tr><td>⚠️ 舊 OA engine 表</td><td><code>is_oa_order=TRUE</code></td><td class="bq-table-path">⚠️ <code>…order_assignment_engine3.order</code>（<strong>不在 Data Team CSV</strong>，不作正式真源）</td></tr>
+            </tbody>
+          </table>
+          <p>CSV 另有 OA／Driving Mode 相關銀表可參考：<code>hk_db_silver.driver_oa_events</code>、<code>hk_db_silver.order_dispatch_window_histories</code>（皆 🟢）。本頁裁決以 <strong>cd=26 + events 表</strong>為主。</p>
+
+          <h5>規模說明（2026-06-25 實查，HK）</h5>
+          <table class="term-mini-table">
+            <thead><tr><th>說法</th><th>人數</th></tr></thead>
+            <tbody>
+              <tr><td>名冊上 OA 司機（<code>oa_driver=TRUE</code>）</td><td><strong>297 人</strong></td></tr>
+              <tr><td>近 90 日做過 cd=26 的司機</td><td><strong>501 人</strong>（比名冊多，名冊可能落後）</td></tr>
             </tbody>
           </table>
 
-          <h5>OA 規模（2026-06-25 實查，HK）</h5>
-          <table class="term-mini-table">
-            <thead><tr><th>口徑</th><th>人數</th></tr></thead>
-            <tbody>
-              <tr><td>官方 OA 司機（<code>oa_driver=TRUE</code> roster／註冊名冊）</td><td><strong>297 人</strong>（全體司機 0.3%）</td></tr>
-              <tr><td>近 90 日做過 cd=26 OA pick 嘅 distinct 司機</td><td><strong>501 人</strong>（含 204 個唔喺 roster／註冊名冊）</td></tr>
-            </tbody>
-          </table>
-          <p><em><strong>roster（註冊名冊）＝</strong>司機被官方審批、列入 OA 編制嘅名單（<code>oa_driver=TRUE</code>）。呢 297 人全部活躍接 OA；另有 204 個冇 <code>oa_driver</code> flag 嘅司機都做過 cd=26 pick → 事件層 > 名冊，可能 flag 滯後（司機 grain ≠ order grain）。</em></p>
-
-          <h5>cd=26 ≈ is_oa_order（已驗證）</h5>
-          <p>250,020 張 cd=26 單，<strong>97.5%</strong> 對到 OA engine 表，當中 <strong>100%</strong> <code>is_oa_order=TRUE</code>。所以用 cd=26 事件 = 用 is_oa_order，結果一致。</p>
-          <blockquote><strong>⚠️ 出處重點：</strong><code>is_oa_order</code> 喺 <strong>OA engine 表</strong>（<code>gogox-analytics-prod</code>），<strong>唔喺</strong> <code>order_master_table_hk</code> 或 raw events，要 join <code>JSON_VALUE(data,'$.order.details.id')</code> 先攞到。</blockquote>
-
-          <h5>排走口徑建議：order 層 cd=26 為主</h5>
-          <p><code>oa_driver=TRUE</code> 係 <strong>current snapshot（即時名冊）</strong>，唔係歷史。逐月實查：3–6 月每月有 <strong>100–160 個唔喺現時名冊</strong>嘅司機都做過 cd=26 OA pick（佢哋啲單一樣 100% <code>is_oa_order=TRUE</code>）。最可能係<strong>名冊滯後</strong>——接單時係 OA、之後被移出名冊，今日 flag 變 FALSE。</p>
-          <blockquote><strong>結論：</strong>淨用司機層 <code>oa_driver=TRUE</code> 排 OA 會<strong>漏咗</strong>呢 100+ 個期內接過 OA 嘅司機。要乾淨排走 OA 行為，<strong>以 order 層 <code>cd=26</code>／<code>is_oa_order</code> 為主</strong>（事件層，唔受名冊快照影響）；司機層 <code>oa_driver</code> 只作輔助。名冊是否定期變動待 Ops 確認。</blockquote>
+          <h5>為什麼以 cd=26 為主？</h5>
+          <p>過去用未入 CSV 的 OA engine 對過：多數 cd=26 單對得上 <code>is_oa_order</code>。現在正式做法改跟 Data Team：<strong>直接用 events 的 cd=26</strong>，不必依賴未核准表。</p>
+          <blockquote><strong>結論：</strong>排 OA 行為 → 用訂單層 <strong>cd=26</strong>（CSV 🟢 events）。司機層 <code>oa_driver</code> 只作輔助。</blockquote>
         `,
-        tag: "排走 OA 派單 · 非公海單 · 註冊名冊 roster 297 人",
+        tag: "排走 OA · 以 cd=26（CSV 🟢）為主",
       },
       "ii-plan": {
         title: "/II、/III 訂閱自動接單",
-        lead: "標題 <strong>「/II、/III」</strong> = $268／$488 月費開平台 <strong>auto-accept</strong>（月費訂閱機制；<strong>≠ cd=22 Driving Mode</strong>，兩者係唔同嘢，SSOT 未證實同一 footprint，待 join 訂閱表驗證）。<strong>訂閱唔係研判要素</strong>——唔係豁免牌。",
+        lead: "<strong>/II、/III</strong>＝月費開平台自動接單（和 cd=22「行駛模式」不是同一件事）。<strong>有訂閱 ≠ 豁免</strong>：不減分、不加分、不因此踢出候選。",
         body: [
-          "有月費<strong>一樣可以</strong> high release、一樣可以用 cheat app（含 <strong>fake GPS</strong> 偽造位置搶偏好單）。",
-          "合法 auto-accept 同非法 bot <strong>可以同時存在</strong>——典型係訂閱幫你接，bot 幫你挑單、放走唔啱嘅單。",
-          "制裁仍睇 cd=2 行為鏈（棄單率、放棄合理單→流局、流局後用戶重落/流失、net impact）；BQ 無 <code>is_bot</code>，訂閱表只供 Ops 覆核「自動重派」邊界參考。",
+          "有月費一樣可以常放單，一樣可以用外掛（含假 GPS）。",
+          "合法自動接單和非法外掛可以同時存在：訂閱幫接，外掛幫挑、幫放。",
+          "仍看行為：放單、流局、客流失、淨傷害。訂閱相關表<strong>不在 Data Team CSV</strong>，本頁不作正式真源；Ops 覆核時最多當參考。",
         ],
-        tag: "唔減分唔加分 · 唔豁免",
+        tag: "訂閱不是豁免牌 · 訂閱表未入 CSV",
       },
       transport: {
         title: "TRANSPORT · 貨運產品",
@@ -1432,7 +1428,7 @@ FROM reorder_pairs p;</code></pre>
 
           <h5>SQL（已測試通過，2026-06-25，scan ~670MB）</h5>
           <pre class="term-sql"><code>-- incremental_churn_rate · Backtest（已測試通過 2026-06-25, scan ~670MB）
--- 1–4月 base / 2–5月 return；嚴格 release（cd=4+Driver）；回購去重；排 B2B
+-- 1–4月 base / 2–5月 return；嚴格 release（cd=4+Driver）；回購去重；鎖定 PlatformOD
 WITH
 rel_detail AS (
   -- 放飛機事件明細（保留 driver_id 計司機）
@@ -1447,7 +1443,7 @@ rel_detail AS (
     AND e.actor_type = 'Driver'
     AND e.source_ts BETWEEN TIMESTAMP('2025-12-31') AND TIMESTAMP('2026-05-01')
     AND m.product_name = 'TRANSPORT'
-    AND m.organization_id IS NULL
+    AND m.business_segment = 'PlatformOD'
     AND m.user_id IS NOT NULL
     AND DATE(m.created_at) BETWEEN '2026-01-01' AND '2026-04-30'
 ),
@@ -1467,7 +1463,7 @@ victim_base AS (
    AND r.base_month = DATE_TRUNC(DATE(m.created_at), MONTH)
   WHERE m.product_name = 'TRANSPORT'
     AND m.status = 'completed'
-    AND m.organization_id IS NULL
+    AND m.business_segment = 'PlatformOD'
     AND m.user_id IS NOT NULL
     AND DATE(m.created_at) BETWEEN '2026-01-01' AND '2026-04-30'
   GROUP BY m.user_id, base_month, had_release
@@ -1479,7 +1475,7 @@ return_window AS (
   FROM \`gogox-data-science-non-prod.analytics_prod_master.order_master_table_hk\`
   WHERE product_name = 'TRANSPORT'
     AND status = 'completed'
-    AND organization_id IS NULL
+    AND business_segment = 'PlatformOD'
     AND user_id IS NOT NULL
     AND DATE(created_at) BETWEEN '2026-02-01' AND '2026-05-31'
 ),
@@ -1595,7 +1591,7 @@ ORDER BY c.orders_bucket, c.had_release;</code></pre>
               <tr><td><strong>方向</strong></td><td>越低頻嘅客，被放飛機後流失率升幅越明顯（1–3 單最受傷）</td></tr>
               <tr><td><strong>幅度</strong></td><td>真實額外流失率約 <strong>+1.3% 至 +1.9%</strong>，唔係之前講嘅 +3.6% 至 +7.0%</td></tr>
               <tr><td><strong>高頻客</strong></td><td>11+ 單嘅客基本上唔受影響（−0.05%，屬隨機波動）</td></tr>
-              <tr><td><strong>修正原因</strong></td><td>修正咗 fan-out bug + 嚴格 release 定義（<code>event_type_cd=4 + actor_type='Driver'</code>）+ 排 B2B（<code>organization_id IS NULL</code>）</td></tr>
+              <tr><td><strong>修正原因</strong></td><td>修正咗 fan-out bug + 嚴格 release 定義（<code>event_type_cd=4 + actor_type='Driver'</code>）+ 客戶分段鎖定 <code>business_segment = 'PlatformOD'</code>（Data Team）</td></tr>
             </tbody>
           </table>
 
@@ -1807,7 +1803,7 @@ ORDER BY c.orders_bucket, c.had_release;</code></pre>
   FROM \`gogox-data-science-non-prod.analytics_prod_master.order_master_table_hk\`
   WHERE product_name = "TRANSPORT"
     AND status = "completed"
-    AND organization_id IS NULL
+    AND business_segment = 'PlatformOD'
     AND user_id IS NOT NULL
     AND DATE(created_at) BETWEEN "2023-01-01" AND "2024-12-31"
 ),
@@ -1847,7 +1843,7 @@ CROSS JOIN overall_avg o
 GROUP BY b.bucket, o.overall
 ORDER BY b.bucket</code></pre>
 
-              <p style="margin:8px 0 4px;"><strong>實跑結果對比（HK TRANSPORT B2C，churned &gt;180日）</strong></p>
+              <p style="margin:8px 0 4px;"><strong>實跑結果對比（HK TRANSPORT · business_segment='PlatformOD'，churned &gt;180日）</strong></p>
               <table class="term-mini-table">
                 <thead><tr><th>bucket（近30日單量）</th><th>2年窗口（2023–2024）<br>user_count / activity_factor</th><th>7年窗口（2018–）<br>user_count / activity_factor</th><th>備注</th></tr></thead>
                 <tbody>
@@ -1949,7 +1945,7 @@ ORDER BY b.bucket</code></pre>
               <tr><td>被放飛機次數</td><td><code>count_released</code></td><td>同上</td></tr>
               <tr><td>基礎 lifespan</td><td>median active months（<button type="button" class="term-btn" data-term="first-60d"><code>first_60D_orders</code></button> 分群，公司 1/2/3/5 對照表）— 2026 recompute</td><td class="bq-table-path"><code>gogox-data-science-non-prod.analytics_prod_master.order_master_table_hk</code></td></tr>
               <tr><td>分群鍵</td><td><code>first_60D_orders</code>（由 first-ever 完成單起 60 日單量算）</td><td>同上</td></tr>
-              <tr><td>用戶類型</td><td><code>user_type</code>（<code>= 'Platform'</code>）</td><td class="bq-table-path"><code>gogox-data-science-non-prod.raw.ltv_hk_202505</code>（僅作引用 / 參考）</td></tr>
+              <tr><td>用戶類型（舊 LTV 快照用語）</td><td><code>user_type = 'Platform'</code> — <strong>這是 LTV 域名稱</strong>，跟訂單表的 <code>business_segment='PlatformOD'</code> <strong>不是同一個欄</strong></td><td class="bq-table-path">⚠️ <code>…raw.ltv_hk_202505</code>（<strong>不在 Data Team CSV</strong>；只作引用，實際不算這張）</td></tr>
               <tr><td>放飛機事件</td><td><code>event_type_cd = 4</code></td><td class="bq-table-path"><code>gogox-data-science-non-prod.raw.hk_db_streaming_order_request_events</code></td></tr>
               <tr><td>事件時間</td><td><code>created_at</code>（TIMESTAMP）</td><td>同上</td></tr>
               <tr><td>Partition Key（必加）</td><td><code>source_ts</code></td><td>同上</td></tr>
@@ -1957,7 +1953,7 @@ ORDER BY b.bucket</code></pre>
               <tr><td>JOIN Key</td><td><code>order_request_id</code></td><td>同上</td></tr>
             </tbody>
           </table>
-          <p><em><strong>關於 <code>ltv_hk_202505</code>：</strong>呢張係<strong>公司原 LTV model 嘅結果 snapshot</strong>，本頁<strong>只作引用 / 參考</strong>，用嚟解釋 lifespan 基礎（1/2/3/5 月對照表）同 Platform 客口徑嘅出處 — <strong>實際計算唔讀呢張表</strong>，全部由 <code>order_master_table_hk</code> 用 2026 數據即場 recompute（窗口同源）。</em></p>
+                    <p><em><strong>關於 <code>ltv_hk_202505</code>：</strong>這張<strong>不在 Data Team CSV</strong>。本頁只拿來解釋公司舊 lifespan 對照表（1/2/3/5 月）的出處。<strong>實際數字全部用</strong> 🟢 <code>order_master_table_hk</code> 重算。客戶分段請寫 <code>business_segment='PlatformOD'</code>，不要把 LTV 的 <code>user_type='Platform'</code> 混進訂單分析。</em></p>
 
           <h5>✅ Fact-check 驗證紀錄</h5>
           <table class="term-mini-table">

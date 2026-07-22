@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cheat-app driver candidates — v1</title>
+<style>
+  :root{
+    --plane:#f9f9f7;--surface:#fcfcfb;--ink:#0b0b0b;--ink2:#52514e;--muted:#898781;
+    --grid:#e1e0d9;--axis:#c3c2b7;--border:rgba(11,11,11,.10);
+    --ctrl:#2a78d6;--trt:#d03b3b;--bad:#d03b3b;--good:#006300;
+    --badbg:rgba(208,59,59,.08);--goodbg:rgba(0,99,0,.08);
+    --warnbg:rgba(237,161,0,.10);--neutbg:rgba(137,135,129,.09);
+  }
+  @media (prefers-color-scheme:dark){
+    :root{--plane:#0d0d0d;--surface:#1a1a19;--ink:#fff;--ink2:#c3c2b7;--muted:#898781;
+    --grid:#2c2c2a;--axis:#383835;--border:rgba(255,255,255,.10);
+    --ctrl:#3987e5;--trt:#e66767;--bad:#e66767;--good:#0ca30c;
+    --badbg:rgba(230,103,103,.12);--goodbg:rgba(12,163,12,.12);
+    --warnbg:rgba(201,133,0,.15);--neutbg:rgba(137,135,129,.14);}
+  }
+  :root[data-theme=dark]{--plane:#0d0d0d;--surface:#1a1a19;--ink:#fff;--ink2:#c3c2b7;--muted:#898781;--grid:#2c2c2a;--axis:#383835;--border:rgba(255,255,255,.10);--ctrl:#3987e5;--trt:#e66767;--bad:#e66767;--good:#0ca30c;--badbg:rgba(230,103,103,.12);--goodbg:rgba(12,163,12,.12);--warnbg:rgba(201,133,0,.15);--neutbg:rgba(137,135,129,.14);}
+  :root[data-theme=light]{--plane:#f9f9f7;--surface:#fcfcfb;--ink:#0b0b0b;--ink2:#52514e;--muted:#898781;--grid:#e1e0d9;--axis:#c3c2b7;--border:rgba(11,11,11,.10);--ctrl:#2a78d6;--trt:#d03b3b;--bad:#d03b3b;--good:#006300;--badbg:rgba(208,59,59,.08);--goodbg:rgba(0,99,0,.08);--warnbg:rgba(237,161,0,.10);--neutbg:rgba(137,135,129,.09);}
+
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--plane);color:var(--ink);
+    font-family:system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.7;
+    -webkit-font-smoothing:antialiased;font-size:16px;overflow-x:hidden}
+  .wrap{max-width:900px;margin:0 auto;padding:40px 22px 60px}
+  h1{font-size:28px;margin:0 0 6px;letter-spacing:-.01em;line-height:1.32}
+  .meta{color:var(--muted);font-size:13px;margin:0 0 28px;max-width:92ch}
+  h2{font-size:20px;margin:46px 0 4px;letter-spacing:-.01em}
+  .sub{color:var(--muted);font-size:13.5px;margin:0 0 14px;max-width:92ch}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.86em;
+    background:var(--neutbg);padding:1px 5px;border-radius:5px;color:var(--ink2)}
+  .answer{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--bad);
+    border-radius:12px;padding:20px 24px;margin:0 0 10px;font-size:17px}
+  .answer .big{font-size:21px;font-weight:800;letter-spacing:-.01em}
+  .answer .n{color:var(--bad)}
+  .box{border-radius:12px;padding:14px 20px;margin:14px 0;font-size:15px;max-width:92ch}
+  .box.warn{background:var(--warnbg)} .box.neut{background:var(--neutbg)}
+  .box b{font-weight:700}
+  .hl-bad{color:var(--bad);font-weight:700}
+
+  /* KPI / tiers */
+  .kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:14px 0}
+  .k{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:15px 17px;border-left:5px solid var(--muted)}
+  .k .lbl{font-size:13px;color:var(--ink2);font-weight:600}
+  .k .val{font-size:27px;font-weight:800;margin-top:3px;letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+  .k .sub{font-size:12px;color:var(--muted);margin-top:5px;line-height:1.45}
+  .k.red{border-left-color:var(--bad)} .k.red .val{color:var(--bad)}
+  .k.amber{border-left-color:#d99a00}
+  .k.blue{border-left-color:var(--ctrl)}
+  .k.grey{border-left-color:var(--muted)}
+
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:6px 20px 16px;margin:16px 0;overflow-x:auto}
+  table{border-collapse:collapse;width:100%;font-size:14.5px;margin:8px 0}
+  th,td{text-align:right;padding:9px 10px;font-variant-numeric:tabular-nums;white-space:nowrap;vertical-align:middle}
+  th:first-child,td:first-child{text-align:left}
+  thead th{color:var(--muted);font-weight:600;border-bottom:1px solid var(--axis);font-size:12.5px}
+  tbody td{border-bottom:1px solid var(--grid)}
+  tbody tr:last-child td{border-bottom:0}
+  .dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:7px;vertical-align:baseline}
+  .yes{color:var(--bad);font-weight:700}
+  .no{color:var(--muted)}
+  .score{font-weight:800;font-variant-numeric:tabular-nums}
+
+  /* timeline */
+  .tl{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 20px;margin:14px 0}
+  .tl h3{margin:0 0 2px;font-size:16px}
+  .tl .route{color:var(--muted);font-size:13px;margin:0 0 12px}
+  .step{display:flex;gap:12px;align-items:flex-start;padding:5px 0;font-size:14.5px}
+  .step .t{color:var(--muted);font-size:12.5px;min-width:118px;font-variant-numeric:tabular-nums;padding-top:1px}
+  .step .d{flex:1}
+  .step .d b{font-weight:700}
+  .step.bad .d{color:var(--bad)}
+  .step.good .d{color:var(--good)}
+  .rail{border-left:2px solid var(--grid);margin-left:6px;padding-left:16px}
+
+  .foot{color:var(--muted);font-size:12px;margin-top:48px;border-top:1px solid var(--grid);padding-top:14px;max-width:92ch}
+  .foot code{font-size:.9em}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <h1>Spotting cheat-app (bot) drivers — candidate list <span style="color:var(--muted);font-weight:400">v1</span></h1>
+  <p class="meta">
+    HK truck orders (van / mudou / mudou9), public-pool drivers only. Company-assigned (OA) drivers skipped.<br>
+    This is a <b>list for people to check by hand</b> — not a verdict, and no penalty. Read the caveat at the end.<br>
+    <span>(queried 2026-07-22, HK TRANSPORT, 30-day entry / 90-day signals)</span>
+  </p>
+
+  <!-- ============ EXEC SUMMARY ============ -->
+  <div class="answer">
+    Among <b>3,101</b> public-pool truck drivers who really do business, we flagged
+    <span class="big"><span class="n">1,451</span> drivers</span> for a person to review by hand
+    (top tier: <code>high_priority_review</code>).
+    <div style="font-size:14px;color:var(--ink2);margin-top:8px">
+      These drivers show the pattern we care about: <b>they take a job, give it back, no other driver takes it,
+      and often the same driver then grabs the customer's re-order and finishes it.</b>
+    </div>
+  </div>
+  <p class="sub">"Really do business" = in the last 30 days, given <b>≥30</b> orders <b>and</b> finished <b>≥30</b> orders
+    (<code>orders_assigned_30d &gt;= 30</code>, <code>orders_completed_30d &gt;= 30</code>).</p>
+
+  <!-- ============ TIERS ============ -->
+  <h2>How the drivers split into tiers</h2>
+  <p class="sub">Column in the table: <code>review_priority</code>. A higher warning score means more suspicious signs.
+    The top tier needs a score of 6+ <b>and</b> at least one strong sign.</p>
+
+  <div class="kpi">
+    <div class="k red">
+      <div class="lbl">🔴 High priority — review by hand</div>
+      <div class="val">1,451</div>
+      <div class="sub">Score 6–10 and a strong sign.<br>Send to Ops + Trust &amp; Safety.</div>
+    </div>
+    <div class="k amber">
+      <div class="lbl">🟡 Watch closely</div>
+      <div class="val">965</div>
+      <div class="sub">Score 3–5. Some suspicion,<br>chain not complete. No action.</div>
+    </div>
+    <div class="k blue">
+      <div class="lbl">🔵 Keep monitoring</div>
+      <div class="val">685</div>
+      <div class="sub">Score 0–2. Almost no bad signs.<br>Just keep watching.</div>
+    </div>
+    <div class="k grey">
+      <div class="lbl">⚪ Outside the pool</div>
+      <div class="val">3,861</div>
+      <div class="sub">Not enough business in 30 days,<br>or OA driver. Not a candidate.</div>
+    </div>
+  </div>
+  <p class="sub">3,101 drivers do enough business to judge (1,451 + 965 + 685). The other 3,861 are set aside.
+    Total looked at: 6,962 drivers.</p>
+
+  <!-- ============ SIGNALS ============ -->
+  <h2>What the warning signs are, and how many drivers show each</h2>
+  <p class="sub">Each sign adds points to a driver's warning score (0–10). Counted among the 3,101 drivers who do enough business.
+    Rates shown as <code>n/N (%)</code>.</p>
+
+  <div class="card">
+    <table>
+      <thead>
+        <tr>
+          <th>Warning sign (in plain words)</th>
+          <th>Points</th>
+          <th>Drivers showing it</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Took the job, then gave it back — and <b>no other driver took it</b>, so it was cancelled</td>
+          <td>+3</td>
+          <td><span class="yes">2,388 / 3,101 (77%)</span></td>
+        </tr>
+        <tr>
+          <td>After no driver took it, <b>the customer never came back</b></td>
+          <td>+2</td>
+          <td class="yes">2,063 / 3,101 (67%)</td>
+        </tr>
+        <tr>
+          <td><b>The same driver grabbed the customer's re-order</b> and finished it</td>
+          <td>+2</td>
+          <td class="yes">535 / 3,101 (17%)</td>
+        </tr>
+        <tr>
+          <td>Keeps the pricey trips, gives back the cheap ones</td>
+          <td>+1</td>
+          <td>1,753 / 3,101 (57%)</td>
+        </tr>
+        <tr>
+          <td>Gives back far more than similar drivers, mostly cheap trips</td>
+          <td>+1</td>
+          <td>187 / 3,101 (6%)</td>
+        </tr>
+        <tr>
+          <td>Grabbed and let go of <b>8+ orders inside 60 seconds</b> (too fast for a human hand)</td>
+          <td>+2</td>
+          <td>15 / 3,101 (0.5%)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="sub">Real columns behind these: took-then-gave-back = <code>event_type_cd = 4</code>, <code>actor_type = 'Driver'</code>;
+    no other driver took it = order ended <code>status = 'cancelled'</code> with a <code>event_type_cd = 8</code> (cannot_find_driver)
+    or <code>11</code> (expired) event; same-driver loop = <code>same_driver_took_the_reorder_90d</code>;
+    the burst sign = <code>at_least_8_release_or_drop_events_in_60_seconds</code>. Warning score = <code>signal_points_total</code>.</p>
+
+  <div class="box warn">
+    <b>Note on the burst sign.</b> The table today counts "8+ take-backs or grabs-and-lets-go inside 60 seconds"
+    (<code>at_least_8_release_or_drop_events_in_60_seconds</code>). A tighter, cleaner bot-speed sign —
+    <b>3+ different orders grabbed and let go inside 8 seconds</b> — is planned but not built yet, so it is not used in these numbers.
+  </div>
+
+  <!-- ============ TOP CANDIDATES ============ -->
+  <h2>Top candidates, and their story checked one by one</h2>
+  <p class="sub">Every driver below scored <b>9 / 10</b>. Before listing them, we read each one's full order timeline by hand
+    to make sure the pattern is real (see the three worked examples underneath).</p>
+
+  <div class="card">
+    <table>
+      <thead>
+        <tr>
+          <th>Driver</th>
+          <th>Tier / vehicle</th>
+          <th>Warning score</th>
+          <th>Gave back → no driver took it<br><span style="font-weight:400">(90d, orders)</span></th>
+          <th>Same-driver loop<br><span style="font-weight:400">(90d, times)</span></th>
+          <th>Gives back rate<br><span style="font-weight:400">(30d)</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>63026</td><td>Gold II · van</td><td class="score">9</td><td>9</td><td class="yes">2</td><td>68 / 245 (28%)</td></tr>
+        <tr><td>44539</td><td>Gold II · van</td><td class="score">9</td><td>11</td><td class="yes">3</td><td>34 / 121 (28%)</td></tr>
+        <tr><td>46848</td><td>Gold I · van</td><td class="score">9</td><td class="yes">101</td><td class="yes">3</td><td>48 / 150 (32%)</td></tr>
+        <tr><td>60389</td><td>Gold II · van</td><td class="score">9</td><td>7</td><td class="yes">2</td><td>33 / 172 (19%)</td></tr>
+        <tr><td>44783</td><td>Gold I · van</td><td class="score">9</td><td>7</td><td class="yes">2</td><td>41 / 161 (25%)</td></tr>
+        <tr><td>25368</td><td>Gold I · van</td><td class="score">9</td><td class="yes">21</td><td class="yes">1</td><td>98 / 318 (31%)</td></tr>
+        <tr><td>103674</td><td>Bronze III · van</td><td class="score">9</td><td>6</td><td class="yes">2</td><td>26 / 67 (39%)</td></tr>
+        <tr><td>35222</td><td>Bronze I · van</td><td class="score">9</td><td>4</td><td class="yes">2</td><td>28 / 68 (41%)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="sub">"Gives back rate" = take-backs ÷ orders given, last 30 days
+    (<code>releases_by_driver_30d / orders_assigned_30d</code>). Driver 46848 stands out: 101 of its take-backs in 90 days
+    ended with no other driver taking the job.</p>
+
+  <!-- ============ WORKED EXAMPLES ============ -->
+  <h2>Three cases, read line by line (sanity check)</h2>
+  <p class="sub">These are the real order timelines. Each shows the same pattern: the driver takes a job, gives it back,
+    then when the customer re-orders, <b>the same driver grabs it and finishes it</b>.</p>
+
+  <div class="tl">
+    <h3>Case 1 — Driver 63026 · Fanling → Tuen Mun · GTV 150</h3>
+    <p class="route">Order <code>116731320</code>, then re-order <code>116731639</code> · 2026-04-28</p>
+    <div class="rail">
+      <div class="step"><span class="t">07:16:30</span><span class="d">Took the job (accepted it).</span></div>
+      <div class="step bad"><span class="t">07:18:57</span><span class="d"><b>Gave it back</b> about 2.5 minutes later.</span></div>
+      <div class="step bad"><span class="t">07:19+</span><span class="d">No other driver took it → order cancelled.</span></div>
+      <div class="step"><span class="t">07:22:18</span><span class="d">Customer placed the same trip again (re-order).</span></div>
+      <div class="step bad"><span class="t">07:22:34</span><span class="d"><b>The same driver grabbed the re-order.</b></span></div>
+      <div class="step good"><span class="t">08:03:52</span><span class="d">The same driver <b>finished the trip</b> (completed).</span></div>
+    </div>
+  </div>
+
+  <div class="tl">
+    <h3>Case 2 — Driver 44539 · Kowloon Tong → Shap Sze Heung · GTV 180</h3>
+    <p class="route">Order <code>117222187</code>, then re-order <code>117222427</code> · 2026-05-13</p>
+    <div class="rail">
+      <div class="step"><span class="t">12:43:02</span><span class="d">Took the job (accepted it).</span></div>
+      <div class="step bad"><span class="t">12:43:11</span><span class="d"><b>Gave it back 9 seconds later</b>; that order was cancelled.</span></div>
+      <div class="step"><span class="t">12:50:51</span><span class="d">Customer placed the same trip again (re-order).</span></div>
+      <div class="step bad"><span class="t">12:51:07</span><span class="d"><b>The same driver grabbed the re-order.</b></span></div>
+      <div class="step good"><span class="t">13:34:24</span><span class="d">The same driver <b>finished the trip</b> (completed).</span></div>
+    </div>
+  </div>
+
+  <div class="tl">
+    <h3>Case 3 — Driver 46848 · Kowloon Bay → Kwai Chung · GTV 105</h3>
+    <p class="route">Order <code>118443602</code>, then re-order <code>118497304</code> · 2026-06-19 to 06-22</p>
+    <div class="rail">
+      <div class="step"><span class="t">06-19 14:23</span><span class="d">Took the job (accepted it).</span></div>
+      <div class="step bad"><span class="t">06-21 22:46</span><span class="d"><b>Gave it back.</b></span></div>
+      <div class="step bad"><span class="t">06-21 22:52</span><span class="d"><b>No other driver took it</b> → order cancelled.</span></div>
+      <div class="step"><span class="t">06-21 23:26</span><span class="d">Customer placed the same trip again (re-order).</span></div>
+      <div class="step bad"><span class="t">06-21 23:37</span><span class="d"><b>The same driver grabbed the re-order.</b></span></div>
+      <div class="step good"><span class="t">06-22 02:39</span><span class="d">The same driver <b>finished the trip</b> (completed).</span></div>
+    </div>
+  </div>
+
+  <div class="box neut">
+    All three chains check out: take the job → give it back → no other driver takes it → customer re-orders →
+    the same driver grabs it and finishes it. We caught the right pattern, not just fast grabbing or normal dropping.
+  </div>
+
+  <!-- ============ CAVEAT ============ -->
+  <h2>What this does NOT say (read before acting)</h2>
+  <div class="box warn">
+    <ul style="margin:4px 0;padding-left:20px;line-height:1.75">
+      <li><b>This is a review list, not a verdict.</b> It goes to a person (Ops + Trust &amp; Safety) to check by hand.
+        We do <b>not</b> recommend any penalty here.</li>
+      <li><b>No dollar figure yet.</b> The harm in money (<code>net_impact_hkd</code>) needs the LTV model, which is not built.
+        Until then, no punishment.</li>
+      <li><b>Distance is not in yet.</b> The driving-distance number (per-km value, from OSMnx) is still being loaded.
+        "Keeps the pricey trips" is judged on trip value (GTV) for now, not value per km.</li>
+      <li><b>No distance and no amount shown</b> in this v1 on purpose — those come in a later version.</li>
+    </ul>
+  </div>
+
+  <p class="foot">
+    Source: <code>gogox-ba-sandbox.analytics.mart_driver_release_then_cancelled_candidates_90d</code> (BigQuery, us-east4).
+    One row per driver. Pool = last 30 days; behaviour / signals = last 90 days.
+    All numbers queried 2026-07-22 and move a little day to day (rolling window). HK TRANSPORT public-pool, OA drivers excluded.
+    Timelines read from <code>hk_driver_order_events_last_180_days</code>.
+  </p>
+
+</div>
+</body>
+</html>
