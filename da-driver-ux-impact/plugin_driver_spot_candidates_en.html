@@ -123,11 +123,13 @@
   /* heatmap (co-occurrence) */
   .heat{border-collapse:separate;border-spacing:3px;width:100%;font-size:12px}
   .heat th{font-weight:600;color:var(--ink2);font-size:11.5px;padding:2px 4px}
-  .heat th.col{text-align:center;width:44px}
+  .heat th.col{text-align:center;width:52px}
   .heat th.row{text-align:left;white-space:nowrap;color:var(--ink)}
   .heat th.row .rn{color:var(--muted);font-weight:400;font-size:10.5px;margin-left:7px;font-variant-numeric:tabular-nums}
-  .heat td{text-align:center;padding:0;height:38px;border-radius:6px;font-variant-numeric:tabular-nums;
+  .heat td{text-align:center;padding:0;height:44px;border-radius:6px;font-variant-numeric:tabular-nums;
     font-weight:700;font-size:12.5px;color:var(--ink)}
+  .heat td .cp{display:block;line-height:1.15}
+  .heat td .cn{display:block;font-size:9.5px;font-weight:400;opacity:.75;line-height:1.1}
   .heat td.hi{color:#fff}
   .heat td.diag{background:var(--neutbg)!important;color:var(--muted);font-weight:400}
   .heat td.few{background:var(--neutbg)!important;color:var(--muted);font-weight:400}
@@ -198,15 +200,40 @@
   </div>
   <p class="sub" id="filt-note">Showing all 3,101 drivers who do enough business. Charts update when you filter.</p>
 
+  <!-- BOOKING TYPE SCOPE -->
+  <h2>① Which booking type this is about</h2>
+  <p class="sub">GoGoX has three booking types. The cheat pattern lives almost entirely in <b>On Demand</b> (instant matching) — scheduled bookings barely feature.</p>
+  <div class="split">
+    <div class="panel">
+      <h3>Give-back orders, by booking type</h3>
+      <p class="pd">the orders drivers took then gave back (90d) · share of each</p>
+      <div class="bars">
+        <div class="bar-row"><div class="top"><span class="name">On Demand (instant)</span><span class="val">163,187 (93%)</span></div><div class="track"><div class="fill" style="width:93%;background:var(--blue)"></div></div></div>
+        <div class="bar-row"><div class="top"><span class="name">Same Day (scheduled)</span><span class="val">6,069 (4%)</span></div><div class="track"><div class="fill" style="width:3.5%;background:var(--blue)"></div></div></div>
+        <div class="bar-row"><div class="top"><span class="name">Next Day (scheduled)</span><span class="val">5,668 (3%)</span></div><div class="track"><div class="fill" style="width:3.2%;background:var(--blue)"></div></div></div>
+      </div>
+    </div>
+    <div class="panel">
+      <h3>Can we score each booking type on its own?</h3>
+      <div class="relbox" style="margin-top:6px">
+        <span class="big">Only On Demand has enough volume.</span>
+        A driver must do <b>30+ orders in 30 days</b> within a booking type to be judged.
+        In <b>On Demand</b>: 1,539 drivers qualify, 772 get flagged.
+        In <b>Same Day</b>: <span class="arrow">0</span> qualify. In <b>Next Day</b>: <span class="arrow">1</span>.
+        <div style="margin-top:10px">So the flagged list is an <b>On-Demand</b> story. A Same Day / Next Day view would be empty.</div>
+      </div>
+    </div>
+  </div>
+
   <!-- FUNNEL -->
-  <h2>① How the crowd narrows down to the flagged list</h2>
+  <h2>② How the crowd narrows down to the flagged list</h2>
   <p class="sub">Each step is one filter. The bar shrinks as fewer drivers pass. The last bar is who a person reviews.</p>
   <div class="panel">
     <div class="funnel" id="funnel"></div>
   </div>
 
   <!-- TIERS -->
-  <h2>② How drivers split into tiers</h2>
+  <h2>③ How drivers split into tiers</h2>
   <p class="sub">Higher warning score (0–10) = more suspicious signs. Top tier needs 6+ <b>and</b> a strong sign. Column: <code>review_priority</code>.</p>
   <div class="split">
     <div class="panel">
@@ -222,7 +249,7 @@
   </div>
 
   <!-- SCORE DISTRIBUTION -->
-  <h2>③ Why a driver lands in a tier — the warning-score shape</h2>
+  <h2>④ Why a driver lands in a tier — the warning-score shape</h2>
   <p class="sub">Every judged driver gets a score 0–10 (more suspicious signs = higher). The score decides the tier. Colour = tier. The red line is the cut: <b>6 or more (with a strong sign) = flagged</b>.</p>
   <div class="split">
     <div class="panel">
@@ -246,7 +273,7 @@
   </div>
 
   <!-- SIGNALS -->
-  <h2>④ Warning signs, and how many drivers show each</h2>
+  <h2>⑤ Warning signs, and how many drivers show each</h2>
   <p class="sub">Each sign adds points to the warning score. Counted among drivers who do enough business. <span id="sig-mode-note"></span></p>
   <div class="filterbar" style="margin-bottom:8px">
     <div class="fgroup"><span class="fl">Show as</span>
@@ -271,7 +298,7 @@
   <p class="sub">Real columns: took-then-gave-back = <code>event_type_cd = 4</code>, <code>actor_type = 'Driver'</code>; no other driver took it = <code>status = 'cancelled'</code> with a <code>cd = 8</code>/<code>11</code> event; same-driver loop = <code>same_driver_took_the_reorder_flag</code>; too-fast = <code>grace_drop_too_fast_flag</code> (3+ orders grabbed &amp; let go within 8s); warning score = <code>signal_points_total</code>.</p>
 
   <!-- CO-OCCURRENCE -->
-  <h2>⑤ Which warning signs travel together (do X → also do Y)</h2>
+  <h2>⑥ Which warning signs travel together (do X → also do Y)</h2>
   <p class="sub">This shows whether the signs are random or part of one deliberate chain. <b>Read across a row:</b> of drivers who do the row sign, what share also do the column sign. Darker = stronger link.</p>
   <div class="split">
     <div class="panel">
@@ -297,7 +324,7 @@
   </div>
 
   <!-- CASES -->
-  <h2>⑥ Two real drivers, checked line by line</h2>
+  <h2>⑦ Two real drivers, checked line by line</h2>
   <p class="sub">We read the raw order timeline by hand before flagging. These are the two headline patterns.</p>
   <div class="cases">
     <div class="case">
@@ -472,17 +499,17 @@ function render(){
     HS.forEach((hy,b)=>{
       if(a===b){ cells+=`<td class="diag">—</td>`; return; }
       if(nx<20){ cells+=`<td class="few" title="too few drivers">·</td>`; return; }
-      const p = withX.filter(r=>r[hy.i]===1).length/nx;
+      const cnt = withX.filter(r=>r[hy.i]===1).length;
+      const p = cnt/nx;
       const pct = Math.round(p*100);
       const bg = `color-mix(in srgb, var(--blue) ${Math.round(p*100)}%, var(--surface))`;
-      cells += `<td class="${p>=0.5?'hi':''}" style="background:${bg}" title="of drivers who do «${hx.n.replace(/&gt;/,'>')}», ${pct}% also do «${hy.n.replace(/&gt;/,'>')}» (n=${fmt(nx)})">${pct}%</td>`;
+      cells += `<td class="${p>=0.5?'hi':''}" style="background:${bg}" title="of the ${fmt(nx)} drivers who do «${hx.n.replace(/&gt;/,'>')}», ${fmt(cnt)} (${pct}%) also do «${hy.n.replace(/&gt;/,'>')}»"><span class="cp">${pct}%</span><span class="cn">${fmt(cnt)}</span></td>`;
     });
     html += `<tr><th class="row">${a+1}. ${hx.n}<span class="rn">n=${fmt(nx)}</span></th>${cells}</tr>`;
   });
   document.getElementById('heat').innerHTML = html;
   document.getElementById('heatkey').innerHTML =
-    '<b>Key:</b> ' + HS.map((h,j)=>`${j+1} = ${h.n}`).join(' · ') +
-    '<br>A row that never falls below the pool average means that sign rarely appears alone.';
+    '<b>Each cell:</b> big number = share, small number = how many drivers.<br><b>Key:</b> ' + HS.map((h,j)=>`${j+1} = ${h.n}`).join(' · ');
 }
 
 function bindSeg(id, cb){
