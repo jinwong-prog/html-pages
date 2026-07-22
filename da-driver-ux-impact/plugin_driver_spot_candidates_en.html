@@ -214,7 +214,7 @@
   <h4>Scoring cheat sheet</h4>
   <p class="cs">For each sign that is true, add its points → total 0–10. <b>6+ = flagged</b> (always has a strong sign).</p>
   <div class="srow"><span class="pts">+1</span><span>Took the job, gave it back — <b>no other driver took it</b></span></div>
-  <div class="srow"><span class="pts">+2</span><span>After that dead job, <b>that same customer</b> placed no order for 30 days</span></div>
+  <div class="srow"><span class="pts">+2</span><span>They dropped a job → no one else took it → cancelled → <b>that customer</b> did not order again for 30 days</span></div>
   <div class="srow"><span class="pts">+3</span><span><b>Same driver</b> grabbed the re-order &amp; finished it</span></div>
   <div class="srow"><span class="pts">+1</span><span>Keeps the pricey trips, gives back the cheap ones</span></div>
   <div class="srow"><span class="pts">+1</span><span>Gives back far more than peers, mostly cheap</span></div>
@@ -351,6 +351,11 @@
   <!-- SIGNALS -->
   <h2 id="s5">⑤ Warning signs, and how many drivers show each</h2>
   <p class="sub">Each sign adds points to the warning score. Counted among drivers who do enough business. <span id="sig-mode-note"></span></p>
+  <div class="relbox" style="margin:6px 0 14px">
+    <span class="big">Why "lost customer" scores high (+2) — the full chain, step by step</span>
+    <b>1.</b> The driver takes a job, then gives it back. &nbsp; <b>2.</b> No other driver will take it, so the order is cancelled. &nbsp; <b>3.</b> <b>That same customer</b> then places no order for the next 30 days (94% still have not come back as of 2026-07-22).
+    <div style="margin-top:8px">So the drop did not just delay one trip — <b>it cost GoGoX the customer</b>. That is real, lasting damage, so it scores <b>+2</b>. (Compare: "no driver took it" alone is only +1, because 92% of those customers re-order within a day — the harm is only real when the customer actually leaves.)</div>
+  </div>
   <div class="filterbar" style="margin-bottom:8px">
     <div class="fgroup"><span class="fl">Show as</span>
       <div class="seg" id="seg-mode">
@@ -484,7 +489,7 @@ const TIERS = [
 ];
 const SIGNALS = [
   {i:5, pts:'+1', label:'Took job, gave it back — no other driver took it'},
-  {i:6, pts:'+2', label:"That killed order's customer placed no order for the next 30 days"},
+  {i:6, pts:'+2', label:"No driver would take the job they dropped → that customer did not order again for 30 days"},
   {i:7, pts:'+3', label:'Same driver grabbed the re-order & finished it'},
   {i:8, pts:'+1', label:'Keeps the pricey trips, gives back the cheap ones'},
   {i:9, pts:'+1', label:'Gives back far more than peers, mostly cheap'},
