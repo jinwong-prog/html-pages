@@ -92,6 +92,34 @@
   .no{color:var(--muted)}
   .sc{font-weight:800}
 
+  /* funnel / pyramid */
+  .funnel{display:flex;flex-direction:column;gap:7px;margin-top:8px}
+  .fn-row{display:flex;align-items:center;gap:12px}
+  .fn-bar-wrap{flex:1;display:flex;justify-content:center}
+  .fn-bar{height:34px;border-radius:6px;display:flex;align-items:center;justify-content:center;
+    color:#fff;font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;transition:width .35s ease;min-width:44px}
+  .fn-side{font-size:12px;color:var(--ink2);min-width:200px}
+  .fn-side b{color:var(--ink);font-weight:600}
+  .fn-drop{font-size:11px;color:var(--muted);min-width:88px;text-align:right;font-variant-numeric:tabular-nums}
+  @media (max-width:640px){.fn-side{min-width:120px}.fn-drop{display:none}}
+
+  /* histogram (vertical columns) */
+  .hist-legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--ink2);margin:2px 0 10px}
+  .hist-legend span{display:inline-flex;align-items:center;gap:6px}
+  .hist-legend .dot{width:9px;height:9px;border-radius:50%}
+  .hist{position:relative;display:flex;align-items:flex-end;gap:6px;height:190px;padding-top:16px;
+    border-bottom:1.5px solid var(--axis)}
+  .hcol{flex:1;display:flex;flex-direction:column-reverse;justify-content:flex-start;height:100%;position:relative;cursor:default}
+  .hcol .seg{width:100%;transition:height .35s ease}
+  .hcol .seg:first-child{border-radius:0 0 3px 3px}
+  .hcol .cnt{position:absolute;top:-15px;left:0;right:0;text-align:center;font-size:10.5px;
+    color:var(--ink2);font-variant-numeric:tabular-nums}
+  .haxis{display:flex;gap:6px;margin-top:4px}
+  .haxis div{flex:1;text-align:center;font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums}
+  .cutoff{position:absolute;top:0;bottom:0;border-left:2px dashed var(--critical);opacity:.6}
+  .cutoff .lab{position:absolute;top:-2px;left:4px;font-size:10px;color:var(--critical);font-weight:700;white-space:nowrap}
+  .hnote{font-size:12px;color:var(--muted);margin-top:10px}
+
   /* timelines */
   .cases{display:grid;grid-template-columns:1fr 1fr;gap:16px}
   @media (max-width:760px){.cases{grid-template-columns:1fr}}
@@ -152,8 +180,15 @@
   </div>
   <p class="sub" id="filt-note">Showing all 3,101 drivers who do enough business. Charts update when you filter.</p>
 
+  <!-- FUNNEL -->
+  <h2>① How the crowd narrows down to the flagged list</h2>
+  <p class="sub">Each step is one filter. The bar shrinks as fewer drivers pass. The last bar is who a person reviews.</p>
+  <div class="panel">
+    <div class="funnel" id="funnel"></div>
+  </div>
+
   <!-- TIERS -->
-  <h2>① How drivers split into tiers</h2>
+  <h2>② How drivers split into tiers</h2>
   <p class="sub">Higher warning score (0–10) = more suspicious signs. Top tier needs 6+ <b>and</b> a strong sign. Column: <code>review_priority</code>.</p>
   <div class="split">
     <div class="panel">
@@ -168,8 +203,32 @@
     </div>
   </div>
 
+  <!-- SCORE DISTRIBUTION -->
+  <h2>③ Why a driver lands in a tier — the warning-score shape</h2>
+  <p class="sub">Every judged driver gets a score 0–10 (more suspicious signs = higher). The score decides the tier. Colour = tier. The red line is the cut: <b>6 or more (with a strong sign) = flagged</b>.</p>
+  <div class="split">
+    <div class="panel">
+      <h3>Drivers at each warning score</h3>
+      <p class="pd">column height = number of drivers at that score</p>
+      <div class="hist-legend">
+        <span><span class="dot" style="background:var(--critical)"></span>High priority</span>
+        <span><span class="dot" style="background:var(--serious)"></span>Watch closely</span>
+        <span><span class="dot" style="background:var(--blue)"></span>Keep monitoring</span>
+      </div>
+      <div class="hist" id="hist"></div>
+      <div class="haxis" id="haxis"></div>
+      <p class="hnote">The shape peaks at score 5–6, right where the cut sits. In this data every driver scoring 6+ also has a strong sign, so the red line cleanly splits "watch" (orange) from "flagged" (red).</p>
+    </div>
+    <div class="panel">
+      <h3>The rulebook</h3>
+      <p class="pd">how the score maps to a tier</p>
+      <table><thead><tr><th>Score</th><th>Tier</th><th>Drivers</th></tr></thead><tbody id="rule-tbody"></tbody></table>
+      <p class="hnote">Column: <code>review_priority</code>. Top tier also needs one strong sign (no-driver-took-it, customer-never-returned, same-driver loop, or too-fast).</p>
+    </div>
+  </div>
+
   <!-- SIGNALS -->
-  <h2>② Warning signs, and how many drivers show each</h2>
+  <h2>④ Warning signs, and how many drivers show each</h2>
   <p class="sub">Each sign adds points to the warning score. Counted among drivers who do enough business. <span id="sig-mode-note"></span></p>
   <div class="filterbar" style="margin-bottom:8px">
     <div class="fgroup"><span class="fl">Show as</span>
@@ -194,7 +253,7 @@
   <p class="sub">Real columns: took-then-gave-back = <code>event_type_cd = 4</code>, <code>actor_type = 'Driver'</code>; no other driver took it = <code>status = 'cancelled'</code> with a <code>cd = 8</code>/<code>11</code> event; same-driver loop = <code>same_driver_took_the_reorder_flag</code>; too-fast = <code>grace_drop_too_fast_flag</code> (3+ orders grabbed &amp; let go within 8s); warning score = <code>signal_points_total</code>.</p>
 
   <!-- CASES -->
-  <h2>③ Two real drivers, checked line by line</h2>
+  <h2>⑤ Two real drivers, checked line by line</h2>
   <p class="sub">We read the raw order timeline by hand before flagging. These are the two headline patterns.</p>
   <div class="cases">
     <div class="case">
@@ -289,6 +348,53 @@ function render(){
     const share = t.key==='outside_analysis_pool' ? '—' : (N?Math.round(v/N*100)+'%':'—');
     return `<tr><td><span class="dot" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${t.color};margin-right:6px"></span>${t.label.replace(/^\S+\s/,'')}</td><td>${fmt(v)}</td><td>${share}</td></tr>`;
   }).join('');
+
+  // FUNNEL (pyramid) — how the crowd narrows
+  const strong = r => r[5]===1||r[6]===1||r[7]===1||r[10]===1;   // strong sign = s1|s2|s3|s6
+  const anySig = r => r[5]||r[6]||r[7]||r[8]||r[9]||r[10];
+  const stages = [
+    {label:'All public-pool drivers looked at', n:rows.length,                                    c:'var(--muted)'},
+    {label:'Do enough business (≥30 given & ≥30 finished, 30d)', n:N,                              c:'var(--blue)'},
+    {label:'Show at least one warning sign', n:pool.filter(anySig).length,                         c:'var(--serious)'},
+    {label:'Show a strong sign (harm chain or bot speed)', n:pool.filter(strong).length,           c:'var(--serious)'},
+    {label:'🔴 Score 6+ with a strong sign = flagged for review', n:flagged,                        c:'var(--critical)'},
+  ];
+  const fmax = Math.max(1, stages[0].n);
+  document.getElementById('funnel').innerHTML = stages.map((s,idx)=>{
+    const prev = idx===0? s.n : stages[idx-1].n;
+    const drop = idx===0? '' : (prev? '−'+fmt(prev-s.n) : '');
+    const pctAll = Math.round(s.n/fmax*100);
+    return `<div class="fn-row">
+      <div class="fn-side">${s.label}</div>
+      <div class="fn-bar-wrap"><div class="fn-bar" style="width:${Math.max(6,s.n/fmax*100)}%;background:${s.c}">${fmt(s.n)}</div></div>
+      <div class="fn-drop">${idx===0?pctAll+'%':drop}</div>
+    </div>`;
+  }).join('');
+
+  // SCORE DISTRIBUTION (pool, stacked by tier)
+  const buckets = Array.from({length:11},()=>({high:0,watch:0,mon:0,total:0}));
+  pool.forEach(r=>{
+    const b=buckets[r[4]]; b.total++;
+    if(r[2]==='high_priority_review') b.high++;
+    else if(r[2]==='watch_closely') b.watch++;
+    else b.mon++;
+  });
+  const hmax = Math.max(1,...buckets.map(b=>b.total));
+  document.getElementById('hist').innerHTML = buckets.map((b,sc)=>{
+    const seg=(v,col)=> v? `<div class="seg" style="height:${v/hmax*100}%;background:${col}"></div>`:'';
+    return `<div class="hcol" title="Score ${sc}: ${fmt(b.total)} drivers">
+      <div class="cnt">${b.total||''}</div>
+      ${seg(b.mon,'var(--blue)')}${seg(b.watch,'var(--serious)')}${seg(b.high,'var(--critical)')}
+    </div>`;
+  }).join('') + `<div class="cutoff" style="left:calc(${6/11*100}% - 3px)"><span class="lab">≥6 flagged →</span></div>`;
+  document.getElementById('haxis').innerHTML = buckets.map((b,sc)=>`<div>${sc}</div>`).join('');
+  const rules=[
+    {r:'6–10',t:'🔴 High priority *',k:'high_priority_review'},
+    {r:'3–5',t:'🟠 Watch closely',k:'watch_closely'},
+    {r:'0–2',t:'🔵 Keep monitoring',k:'continue_monitoring'},
+  ];
+  document.getElementById('rule-tbody').innerHTML = rules.map(x=>
+    `<tr><td>${x.r}</td><td>${x.t}</td><td>${fmt(tcount[x.k])}</td></tr>`).join('');
 
   // SIGNALS (among pool)
   const scount = SIGNALS.map(s => pool.filter(r=>r[s.i]===1).length);
