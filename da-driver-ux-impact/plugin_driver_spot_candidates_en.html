@@ -212,7 +212,7 @@
 
 <aside class="cheat" aria-label="Scoring cheat sheet">
   <h4>Scoring cheat sheet</h4>
-  <p class="cs">Warning score = sum of points (max 10)</p>
+  <p class="cs">For each sign that is true, add its points → total 0–10. <b>6+ = flagged</b> (always has a strong sign).</p>
   <div class="srow"><span class="pts">+1</span><span>Took the job, gave it back — <b>no other driver took it</b></span></div>
   <div class="srow"><span class="pts">+2</span><span>Customer <b>did not order again for 30 days</b></span></div>
   <div class="srow"><span class="pts">+3</span><span><b>Same driver</b> grabbed the re-order &amp; finished it</span></div>
@@ -320,8 +320,13 @@
   </div>
 
   <!-- SCORE DISTRIBUTION -->
-  <h2 id="s4">④ Why a driver lands in a tier — the warning-score shape</h2>
-  <p class="sub">Every judged driver gets a score 0–10 (more suspicious signs = higher). The score decides the tier. Colour = tier. The red line is the cut: <b>6 or more (with a strong sign) = flagged</b>.</p>
+  <h2 id="s4">④ How the score works, and why a driver lands in a tier</h2>
+  <p class="sub"><b>How to read it:</b> go down the 6 signs; for each one that is true, add its points. The total (0–10) is the warning score. More/worse signs = higher score. The score decides the tier.</p>
+  <div class="relbox" style="margin:6px 0 14px">
+    <span class="big">Worked example — how a driver reaches "flagged"</span>
+    Same driver grabbed the re-order <b>+3</b> &nbsp;·&nbsp; customer did not order again for 30 days <b>+2</b> &nbsp;·&nbsp; no other driver took it <b>+1</b> &nbsp;=&nbsp; <b>6</b> → 🔴 flagged.<br>
+    <span style="color:var(--muted)">Weak-signs-only example: keeps pricey <b>+1</b> · gives back more than peers <b>+1</b> · no driver took it <b>+1</b> = 3 → 🟠 watch. The 3 weak signs add at most 3 points, so weak signs alone can <b>never</b> reach 6 — a flagged driver always has a strong sign.</span>
+  </div>
   <div class="split">
     <div class="panel">
       <h3>Drivers at each warning score</h3>
