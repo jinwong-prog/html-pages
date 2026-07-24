@@ -424,30 +424,9 @@
       <div class="bars" id="bot-speed-bars"></div>
     </div>
     <div class="panel">
-      <h3>Why 1 second, not 8s or 1 minute</h3>
-      <p class="pd">how many scored drivers reach each threshold as the counting window widens (grace-drops, cd=21) · queried 2026-07-24</p>
-      <svg viewBox="0 0 470 210" width="100%" role="img" aria-label="Drivers reaching threshold by counting window">
-        <g font-size="10" fill="var(--muted)">
-          <line x1="44" y1="20" x2="458" y2="20" stroke="var(--border)" stroke-width="1" stroke-dasharray="2 3"/>
-          <line x1="44" y1="63" x2="458" y2="63" stroke="var(--border)" stroke-width="1" stroke-dasharray="2 3"/>
-          <line x1="44" y1="106" x2="458" y2="106" stroke="var(--border)" stroke-width="1" stroke-dasharray="2 3"/>
-          <line x1="44" y1="149" x2="458" y2="149" stroke="var(--border)" stroke-width="1" stroke-dasharray="2 3"/>
-          <line x1="44" y1="192" x2="458" y2="192" stroke="var(--border)" stroke-width="1"/>
-          <text x="40" y="23" text-anchor="end">2000</text>
-          <text x="40" y="109" text-anchor="end">1000</text>
-          <text x="40" y="195" text-anchor="end">0</text>
-        </g>
-        <!-- 2+ series (orange): 95,166,224,437,741,2037 -->
-        <polyline fill="none" stroke="var(--serious)" stroke-width="2.5" points="44,184 125,178 206,173 286,155 367,129 448,17"/>
-        <!-- 3+ series (red): 4,7,8,14,45,1033 -->
-        <polyline fill="none" stroke="var(--critical)" stroke-width="2.5" points="44,192 125,192 206,192 286,191 367,188 448,104"/>
-        <g font-size="10" fill="var(--ink)" text-anchor="middle">
-          <text x="44" y="206">1s</text><text x="125" y="206">2s</text><text x="206" y="206">3s</text>
-          <text x="286" y="206">5s</text><text x="367" y="206">8s</text><text x="448" y="206">60s</text>
-        </g>
-      </svg>
-      <p class="pd"><span style="color:var(--serious)">■</span> 2+ orders &nbsp; <span style="color:var(--critical)">■</span> 3+ orders. The <b>2+</b> line runs away as the window widens (95 → 741 → 2,037) — an unstable threshold. The <b>3+</b> line stays flat (4 → 45) until the window is a full minute. So <b>3+ in the same 1 second</b> is the clean, window-proof bot signal.</p>
-      <table style="margin-top:10px"><thead><tr><th>Most drops in the same 1 second</th><th>Drivers</th><th></th></tr></thead>
+      <h3>Drops in the same 1 second</h3>
+      <p class="pd">scored drivers grouped by the most different orders they grabbed &amp; let go inside one second (grace-drops, cd=21) · queried 2026-07-24</p>
+      <table><thead><tr><th>Most drops in the same 1 second</th><th>Drivers</th><th></th></tr></thead>
         <tbody>
           <tr><td>≤1 (normal)</td><td>2,921</td><td></td></tr>
           <tr><td>2</td><td>86</td><td>🟠 suspected</td></tr>
@@ -455,7 +434,7 @@
           <tr><td>6</td><td>1</td><td>🔴 machine</td></tr>
         </tbody>
       </table>
-      <p class="pd">Bot pool = <b>90</b> of 3,011 scored (3%) · confirmed (3+) <b>4</b> · suspected (2) <b>86</b>. One driver grabbed &amp; dropped <b>6</b> different orders in a single second — impossible by hand.</p>
+      <p class="pd">Bot pool = <b>90</b> of 3,011 scored (3%) · confirmed (3+ in 1s) <b>4</b> · suspected (2 in 1s) <b>86</b>. One driver grabbed &amp; dropped <b>6</b> different orders in a single second — impossible by hand.</p>
       <p class="pd" style="margin-top:8px;opacity:.8"><i>Note: harm tiers (③ onward) and the funnel bars below still reflect the earlier 8-second per-driver snapshot; they will re-sync on the next data rebuild.</i></p>
     </div>
   </div>
