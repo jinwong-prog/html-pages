@@ -880,7 +880,7 @@ function render(){
   // SCORE DISTRIBUTION (bot pool only, stacked by tier)
   const buckets = Array.from({length:9},()=>({high:0,watch:0,mon:0,total:0}));
   botScored.forEach(r=>{
-    const b=buckets[r[4]]; b.total++;
+    const b=buckets[Math.min(r[4],8)]; b.total++;
     if(r[2]==='high_priority_review') b.high++;
     else if(r[2]==='watch_closely') b.watch++;
     else b.mon++;
