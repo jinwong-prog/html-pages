@@ -427,12 +427,12 @@
     <div class="panel">
       <h3>Drops in the same 1 second</h3>
       <p class="pd">scored drivers grouped by the most different orders they grabbed &amp; let go inside one second (grace-drops, cd=21) · queried 2026-07-24</p>
-      <table><thead><tr><th>Most drops in the same 1 second</th><th>Drivers</th><th></th></tr></thead>
+      <table><thead><tr><th>Orders grabbed then dropped in one second</th><th>Drivers</th><th></th></tr></thead>
         <tbody>
-          <tr><td>≤1 (normal)</td><td>2,921</td><td></td></tr>
-          <tr><td>2</td><td>86</td><td>🟠 suspected</td></tr>
-          <tr><td>3</td><td>3</td><td>🔴 confirmed</td></tr>
-          <tr><td>6</td><td>1</td><td>🔴 machine</td></tr>
+          <tr><td>≤1 order (normal)</td><td>2,921</td><td></td></tr>
+          <tr><td>2 different orders</td><td>86</td><td>🟠 suspected</td></tr>
+          <tr><td>3 different orders</td><td>3</td><td>🔴 confirmed</td></tr>
+          <tr><td>6 different orders</td><td>1</td><td>🔴 machine</td></tr>
         </tbody>
       </table>
       <p class="pd">Bot pool = <b>90</b> of 3,011 scored (3%) · confirmed (3+ in 1s) <b>4</b> · suspected (2 in 1s) <b>86</b>. One driver grabbed &amp; dropped <b>6</b> different orders in a single second — impossible by hand.</p>
@@ -871,9 +871,9 @@ function render(){
     const bs = REPORT_STATS.botSpeed;
     const botOrderTotal = bs.normal.orders + bs.suspected.orders + bs.confirmed.orders;
     const botRows = [
-      ['≤1 in the same 1 second — normal', normalBot, 'color-mix(in srgb,var(--blue) 35%,var(--surface))', 'normal'],
-      ['2 different orders in the same 1 second — 🟠 suspected bot', susbot, 'var(--serious)', 'suspected'],
-      ['3+ different orders in the same 1 second — 🔴 confirmed bot', cbot, 'var(--critical)', 'confirmed'],
+      ['Grabbed then dropped ≤1 order in one second — normal', normalBot, 'color-mix(in srgb,var(--blue) 35%,var(--surface))', 'normal'],
+      ['Grabbed then dropped 2 different orders in one second — 🟠 suspected bot', susbot, 'var(--serious)', 'suspected'],
+      ['Grabbed then dropped 3+ different orders in one second — 🔴 confirmed bot', cbot, 'var(--critical)', 'confirmed'],
     ];
     const bmax = Math.max(1,...botRows.map(x=>x[1]));
     document.getElementById('bot-speed-bars').innerHTML = botRows.map(([name,n,col,tierKey])=>{
