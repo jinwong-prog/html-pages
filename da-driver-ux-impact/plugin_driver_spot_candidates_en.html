@@ -365,7 +365,7 @@
   <div class="kpis">
     <div class="tile"><div class="lbl">① Drivers we checked</div><div class="val" id="k-total">6,214</div><div class="sub" id="k-total-sub">all public-pool truck drivers — went online or did some work in the <b>30d</b> (24 Apr – 24 May 2026)</div></div>
     <div class="tile pool"><div class="lbl">② Drivers actually working on GoGoX</div><div class="val" id="k-pool">3,041</div><div class="sub" id="k-pool-sub">took 30+ orders, finished 30+, released ≥1 in the <b>30d</b></div></div>
-    <div class="tile bot"><div class="lbl">③ Cheat-app drivers (bot pool)</div><div class="val" id="k-botpool">90</div><div class="sub" id="k-botsub">grabbed &amp; let go of 2+ different orders in the same 1 second · 4 confirmed (3+ in 1s) · same <b>30d</b></div></div>
+    <div class="tile bot"><div class="lbl">③ Cheat-app drivers (bot pool)</div><div class="val" id="k-botpool">90</div><div class="sub" id="k-botsub">grabbed &amp; let go of 2+ different orders in the same 1 second · 4 confirmed (3+ in 1s) · 86 suspected (2 in 1s) · same <b>30d</b></div></div>
     <div class="tile flag"><div class="lbl">④ Highest harm scores → check by hand</div><div class="val" id="k-flag">4</div><div class="sub" id="k-flagpct">warning score 6–8 · same <b>30d</b></div></div>
   </div>
 
@@ -847,7 +847,7 @@ function render(){
   }
   document.getElementById('k-botpool').textContent = none(botpool);
   document.getElementById('k-botsub').innerHTML = botpool
-    ? `grabbed &amp; let go of 2+ different orders in the same 1 second · ${fmt(cbot)} confirmed (3+ in 1s) · ${fmt(botpool)} of ${fmt(N)} scored (${N?Math.round(botpool/N*100):0}%) · same <b>30d</b>`
+    ? `grabbed &amp; let go of 2+ different orders in the same 1 second · ${fmt(cbot)} confirmed (3+ in 1s) · ${fmt(susbot)} suspected (2 in 1s) · ${fmt(botpool)} of ${fmt(N)} scored (${N?Math.round(botpool/N*100):0}%) · same <b>30d</b>`
     : (N ? 'no bot-speed drivers in this <b>30d</b> slice' : '—');
   document.getElementById('hl-flag').textContent = none(flagged);
   document.getElementById('k-flag').textContent = none(flagged);
