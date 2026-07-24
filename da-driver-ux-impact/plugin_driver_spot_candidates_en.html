@@ -419,7 +419,8 @@
   <p class="sub">Before looking at any harm, first find <b>who is running a bot</b>. The one thing a human hand cannot fake: <b>grabbing and letting go of several different orders in the same second</b>. For each driver we take their busiest single second and count how many different orders they grabbed and let go, <b>across all three booking types</b> (On Demand, Same Day, Next Day) — not On Demand only (BQ: <code>max_distinct_grace_drop_orders_in_any_1_second_30d</code>, column <code>bot_speed_tier</code>).</p>
   <div class="split">
     <div class="panel">
-      <h3>Most grab-and-drops in the same 1 second</h3>
+      <h3>How fast a driver grabs an order then drops it</h3>
+      <p class="pd" style="margin-bottom:2px">Behaviour shown: a driver <b>accepts an order and lets it go straight away</b> (grab-and-drop / grace drop, cd=21). This bar groups drivers by <b>how many different orders they grabbed &amp; dropped inside their busiest single second</b>. A human hand can do 1 — machine speed does 2, 3, or more.</p>
       <p class="pd" id="bot-speed-pd">scored drivers (<b>30d</b> · 24 Apr – 24 May 2026) · bar = <b>drivers</b> · right column = <b>grace-drop orders</b> (<code>driver_drops_order_30d</code>, cd=21) in the same cohort</p>
       <div class="bars" id="bot-speed-bars"></div>
     </div>
