@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cheat-app driver candidates — v1</title>
+<title>Suspected cheat-app drivers — who to check</title>
 <style>
   .viz-root{
     --plane:#f9f9f7;--surface:#fcfcfb;--ink:#0b0b0b;--ink2:#52514e;--muted:#898781;
@@ -262,7 +262,7 @@
 <div class="viz-root">
 <nav class="nav">
   <div class="nav-in">
-    <span class="brand">🤖 Cheat-app spot</span>
+    <span class="brand">🤖 Suspected cheat-app spot</span>
     <a href="#sbot" data-s="sbot">Bot</a>
     <a href="#s2" data-s="s2">Funnel</a>
     <a href="#s3" data-s="s3">Tiers</a>
@@ -707,9 +707,8 @@ function applyReportStats(){
   setTxt('st-nodriver', fmt(h.noDriver));
   setTxt('st-step2pct', pct1(h.noDriver, h.giveBack)+'%');
   setTxt('st-lost30', fmt(h.lost30));
-  setTxt('st-step3pct', pct1(h.lost30, h.noDriver)+'%');
-  setTxt('st-lost60pct', pct0(h.lost60, h.lost30)+'%');
-  setTxt('st-lost60pair', `${fmt(h.lost60)} of ${fmt(h.lost30)}`);
+  setTxt('st-lost60', fmt(h.lost60));
+  setTxt('st-step3pct', pct1(h.lost60, h.noDriver)+'%');
 
   setTxt('churn-total-h', fmt(h.lost60));
   const churnRows = [
@@ -729,9 +728,7 @@ function applyReportStats(){
   const medHigh = h.churnMed + h.churnHigh;
   setTxt('churn-medhigh', `${fmt(medHigh)} (${pct0(medHigh, h.lost60)}%)`);
   setTxt('churn-avg-prior', `~${h.prior90Avg} orders in the prior 90 days`);
-  setTxt('churn-60pct', pct0(h.lost60, h.lost30)+'%');
-  setTxt('churn-60pair', `${fmt(h.lost60)} of ${fmt(h.lost30)}`);
-  setTxt('churn-cameback', pct0(h.lost30 - h.lost60, h.lost30)+'%');
+  setTxt('churn-60pair', fmt(h.lost60));
 }
 
 function filtered(){
