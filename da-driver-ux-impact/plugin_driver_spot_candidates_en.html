@@ -85,12 +85,23 @@
   }
   .cheat{display:none}
   @media (min-width:1580px){.cheat{display:block}}
-  .comments-rail{padding:0;overflow:hidden;background:transparent;border:0;box-shadow:none}
-  .comments-iframe{border:0;width:100%;display:block;background:transparent}
-  .comments-iframe-compact{height:240px}
-  .comments-iframe-full{height:520px;min-height:400px}
-  .comments-rail .cr-link{display:inline-block;margin-top:4px;font-size:11px;font-weight:700;color:var(--blue);text-decoration:none;padding:0 16px 12px}
+  .comments-rail h4{margin:0 0 2px;font-size:13.5px;letter-spacing:-.01em}
+  .comments-rail .cr-sub{font-size:11px;color:var(--muted);margin:0 0 8px}
+  .comments-rail .cr-note{font-size:11px;line-height:1.45;color:var(--ink2);margin:0 0 10px}
+  .comments-rail .cr-open{display:inline-block;padding:7px 12px;border-radius:9px;background:var(--blue);
+    color:#fff;font-size:11.5px;font-weight:700;text-decoration:none}
+  .comments-rail .cr-open:hover{background:#1f6bc4}
+  .comments-rail .cr-link{display:inline-block;margin-top:8px;font-size:11px;font-weight:700;color:var(--blue);text-decoration:none}
+  .comments-rail .cr-link:hover{text-decoration:underline}
   .discussion{margin:28px 0 0;scroll-margin-top:72px}
+  .notes-panel{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 20px}
+  .notes-panel h2{margin:0 0 4px;font-size:18px}
+  .notes-panel .disc-sub{color:var(--muted);font-size:13px;margin:0 0 12px}
+  .notes-panel .notes-why{font-size:13px;line-height:1.5;margin:0 0 14px;color:var(--ink2)}
+  .notes-panel .notes-open{display:inline-block;padding:10px 16px;border-radius:10px;background:var(--blue);
+    color:#fff;font-weight:700;text-decoration:none;margin-right:10px}
+  .notes-panel .notes-open:hover{background:#1f6bc4}
+  .notes-panel .notes-sheet{font-size:13px;color:var(--blue);font-weight:600}
   .cheat h4{margin:0 0 2px;font-size:13.5px;letter-spacing:-.01em}
   .cheat .cs{font-size:11px;color:var(--muted);margin:0 0 10px}
   .cheat .srow{display:flex;gap:9px;align-items:flex-start;padding:6px 0;border-top:1px solid var(--grid);font-size:11.5px;line-height:1.35}
@@ -303,10 +314,12 @@
   <div class="tier"><span><span class="dot" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--serious);margin-right:5px;vertical-align:middle"></span>Watch closely</span><b>4–5</b></div>
   <div class="tier"><span><span class="dot" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--blue);margin-right:5px;vertical-align:middle"></span>Keep monitoring</span><b>0–3</b></div>
 </aside>
-<aside class="comments-rail" aria-label="Latest notes">
-  <iframe class="comments-iframe comments-iframe-compact" title="Latest notes"
-    src="https://script.google.com/a/macros/gogox.com/s/AKfycbzVDL85lHGIZ6W3kKoumCQHD9GAmuwpMGesV7iKx1oz6cFvF8Ttxq7O_n237gYy6KEAgA/exec?view=widget&amp;compact=1&amp;section=s8"></iframe>
-  <a class="cr-link" href="#discussion-s8">View all notes ↓</a>
+<aside class="comments-rail" aria-label="Team notes">
+  <h4>Team notes</h4>
+  <p class="cr-sub">Bot score (+3)</p>
+  <p class="cr-note">Use your <b>@gogox.com</b> Google account. Notes open in a new tab (GitHub Pages cannot embed gogox-only Google apps).</p>
+  <a class="cr-open" href="https://script.google.com/a/macros/gogox.com/s/AKfycbzVDL85lHGIZ6W3kKoumCQHD9GAmuwpMGesV7iKx1oz6cFvF8Ttxq7O_n237gYy6KEAgA/exec?view=widget&amp;section=s8" target="_blank" rel="noopener noreferrer">Open team notes ↗</a>
+  <br><a class="cr-link" href="#discussion-s8">More on this page ↓</a>
 </aside>
 </div>
 
@@ -679,9 +692,14 @@
     <p style="margin:0"><a href="https://docs.google.com/spreadsheets/d/1v2i-enV0Wb7wmwe6gVNuiY87x313pn-mI1W9G3Ztod0/edit?usp=sharing" target="_blank" rel="noopener noreferrer" style="display:inline-block;padding:8px 14px;border-radius:10px;background:var(--blue);color:#fff;font-weight:700;text-decoration:none">Open Google Sheet ↗</a></p>
   </div>
 
-  <section class="discussion" id="discussion-s8" aria-label="Team notes">
-    <iframe class="comments-iframe comments-iframe-full" title="Team notes — Bot score (+3)"
-      src="https://script.google.com/a/macros/gogox.com/s/AKfycbzVDL85lHGIZ6W3kKoumCQHD9GAmuwpMGesV7iKx1oz6cFvF8Ttxq7O_n237gYy6KEAgA/exec?view=widget&amp;section=s8"></iframe>
+  <section class="discussion" id="discussion-s8" aria-labelledby="discussion-s8-title">
+    <div class="notes-panel">
+      <h2 id="discussion-s8-title">Team notes — Bot score (+3)</h2>
+      <p class="disc-sub">Ming, Jin, Connie, and Matt can add, reply, edit, or delete their own notes.</p>
+      <p class="notes-why">Notes are saved to the Google Sheet tab <b>Comments</b>. Because this report is on GitHub Pages and the notes app is gogox-only, you need to open notes in a <b>new tab</b> and sign in with <b>@gogox.com</b>.</p>
+      <a class="notes-open" href="https://script.google.com/a/macros/gogox.com/s/AKfycbzVDL85lHGIZ6W3kKoumCQHD9GAmuwpMGesV7iKx1oz6cFvF8Ttxq7O_n237gYy6KEAgA/exec?view=widget&amp;section=s8" target="_blank" rel="noopener noreferrer">Open team notes ↗</a>
+      <a class="notes-sheet" href="https://docs.google.com/spreadsheets/d/1v2i-enV0Wb7wmwe6gVNuiY87x313pn-mI1W9G3Ztod0/edit" target="_blank" rel="noopener noreferrer">View Comments tab in Sheet ↗</a>
+    </div>
   </section>
 </div>
 </div>
