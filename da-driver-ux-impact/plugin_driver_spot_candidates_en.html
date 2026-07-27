@@ -426,9 +426,9 @@
   <p class="bot-rule">Rule window = <b>1 second</b> (this decides the bot pool). 2 / 3 / 4 / 6 sec = compare only. (queried 2026-07-27 · HK TRANSPORT · mature cohort T−90 to T−60)</p>
   <div class="fnote-row">
     <p class="fnote-toggle sectoggle" data-target="sbot-detail-table" role="button" tabindex="0"><b>More detail — 1 / 2 / 3 / 4 / 6 sec table</b> <span class="rs-teaser">— compare only</span></p>
-    <span class="showbar showlabel" data-target="sbot-detail-table" role="button" tabindex="0">More ▾</span>
+    <span class="showbar showlabel" data-target="sbot-detail-table" role="button" tabindex="0">Less ▴</span>
   </div>
-  <div id="sbot-detail-table" style="display:none">
+  <div id="sbot-detail-table">
   <div class="panel" style="margin-top:6px">
     <h3>Of 3,247 drivers: how many different orders did they drop in a short time?</h3>
     <div style="overflow-x:auto">
@@ -607,32 +607,58 @@
 
   <!-- CASES -->
   <h2 id="s9">⑨ Real example: bot speed</h2>
-  <p class="sub">One real driver grabbed and let go of orders too fast for a human hand.</p>
-  <div class="panel">
-    <h3>Bot speed — 4 orders in 4.2s · driver 20667 · score 7</h3>
-    <p class="route">Grabbed &amp; let go of 4 different orders in 4.2 seconds · 2026-05-18 09:21</p>
-    <div class="rail">
-      <div class="step bad"><span class="t">09:21:01</span><span class="d">Grabbed and let go of a different order (1 of 4)</span></div>
-      <div class="step bad"><span class="t">09:21:02</span><span class="d">Grabbed and let go of a different order (2 of 4)</span></div>
-      <div class="step bad"><span class="t">09:21:03</span><span class="d">Grabbed and let go of a different order (3 of 4)</span></div>
-      <div class="step bad"><span class="t">09:21:05</span><span class="d">Grabbed and let go of a different order (4 of 4)</span></div>
-      <div class="step"><span class="t"></span><span class="d">4 orders in 4.2s — no human hand can do this. (Example from the <b>30d</b> cohort.)</span></div>
+  <p class="sub">One real driver grabbed and let go of orders too fast for a human hand. Left = all 4 drops. Right = the <b>1-second rule</b> (2 different orders).</p>
+  <div class="split">
+    <div class="panel">
+      <h3>Bot speed — 4 orders in 4.2s · driver 20667 · score 6</h3>
+      <p class="route">Driver <b>20667</b> · date <b>2026-05-18</b> · 09:21 <b>UTC</b> (HKT 17:21) · grace-drop (<code>event_type_cd = 21</code>)</p>
+      <div style="overflow-x:auto">
+      <table>
+        <thead><tr>
+          <th>#</th>
+          <th>order_request_id</th>
+          <th>source_ts (UTC)</th>
+          <th>Gap</th>
+        </tr></thead>
+        <tbody>
+          <tr><td>1</td><td>117374198</td><td>09:21:01.237</td><td>—</td></tr>
+          <tr><td>2</td><td>117374033</td><td>09:21:02.504</td><td>~1.3s</td></tr>
+          <tr><td>3</td><td>117373684</td><td>09:21:03.154</td><td><b>~0.7s</b></td></tr>
+          <tr><td>4</td><td>117373415</td><td>09:21:05.474</td><td>~2.3s</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p class="pd" style="margin-top:8px">Start to end ≈ <b>4.2s</b>, 4 different orders — no human hand can do this.</p>
     </div>
-  </div>
-
-  <!-- CAVEAT -->
-  <div class="caveat">
-    <b>What this does NOT say — read before acting:</b>
-    <ul>
-      <li><b>A list for people to check — not a punishment.</b> It goes to Ops + Trust &amp; Safety to check by hand. No penalty is recommended here.</li>
-      <li><b>No dollar figure yet.</b> How much money we lost (<code>net_impact_hkd</code>) needs the LTV model — not built. Until then, no punishment.</li>
-      <li><b>Distance not in yet.</b> Per-km value (OSMnx driving distance) is still loading; "keeps the pricey trips" uses trip value (GTV) for now.</li>
-    </ul>
+    <div class="panel">
+      <h3>Same driver — zoom in: 2 orders in 1 second</h3>
+      <p class="route">Driver <b>20667</b> · date <b>2026-05-18</b> · our bot rule · rows 2 → 3 from the left table</p>
+      <div style="overflow-x:auto">
+      <table>
+        <thead><tr>
+          <th>#</th>
+          <th>order_request_id</th>
+          <th>source_ts (UTC)</th>
+          <th>Gap</th>
+        </tr></thead>
+        <tbody>
+          <tr><td>2</td><td>117374033</td><td>09:21:02.504</td><td>—</td></tr>
+          <tr><td>3</td><td>117373684</td><td>09:21:03.154</td><td><b>~0.7s</b></td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p class="pd" style="margin-top:8px"><b>Bot rule hit:</b> 2 different orders in the same 1 second.</p>
+    </div>
   </div>
 
   <p class="foot">
     Source: <code>gogox-ba-sandbox.analytics.mart_driver_release_then_cancelled_candidates_90d</code> (BigQuery, us-east4). One row per driver. Mature cohort T−90 to T−60 (queried 2026-07-27): pool = assigned ≥30 + completed ≥30 + not OA (released ≥1 <b>no longer required</b>). Bot pool = 1-second grace-drop burst ≥2. Per-booking filter counts in embedded <code>DATA_BT</code> may still use older booking-type rules. HK TRANSPORT public-pool; OA excluded via <code>event_type_cd = 26</code>.
   </p>
+  <div class="panel" style="margin-top:12px;border:1px solid color-mix(in srgb,var(--blue) 45%,var(--border));border-left:4px solid var(--blue);background:color-mix(in srgb,var(--blue-soft) 55%,var(--surface))">
+    <h3 style="color:var(--blue)">Bot pool driver IDs by harm tier</h3>
+    <p class="pd">High priority / Watch closely / Keep monitoring — open the list in Google Sheet</p>
+    <p style="margin:0"><a href="https://docs.google.com/spreadsheets/d/1v2i-enV0Wb7wmwe6gVNuiY87x313pn-mI1W9G3Ztod0/edit?usp=sharing" target="_blank" rel="noopener noreferrer" style="display:inline-block;padding:8px 14px;border-radius:10px;background:var(--blue);color:#fff;font-weight:700;text-decoration:none">Open Google Sheet ↗</a></p>
+  </div>
 </div>
 </div>
 
@@ -952,8 +978,8 @@ applyReportStats();
 render();
 
 // ensure collapsible panes start closed
-// Keep Step 1 cards open by default (sbot-body). Collapse detail / notes only.
-['review-summary-body','defs-body','sbot-detail-table','sbot-table1-note','funnel-intro-body','funnel-hnote-body','s3-intro-body','page-scope-body'].forEach(id=>{
+// Keep Step 1 cards + 1/2/3/4/6 sec detail table open by default.
+['review-summary-body','defs-body','sbot-table1-note','funnel-intro-body','funnel-hnote-body','s3-intro-body','page-scope-body'].forEach(id=>{
   const el=document.getElementById(id);
   if(el) el.style.display='none';
 });
