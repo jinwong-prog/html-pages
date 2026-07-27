@@ -85,48 +85,12 @@
   }
   .cheat{display:none}
   @media (min-width:1580px){.cheat{display:block}}
-  .comments-rail h4{margin:0 0 2px;font-size:13.5px;letter-spacing:-.01em}
-  .comments-rail .cr-sub{font-size:11px;color:var(--muted);margin:0 0 10px}
-  .comments-rail .cr-item{padding:8px 0;border-top:1px solid var(--grid);font-size:11.5px;line-height:1.4}
-  .comments-rail .cr-item:first-of-type{border-top:0;padding-top:0}
-  .comments-rail .cr-meta{color:var(--muted);font-size:10.5px;margin-bottom:3px}
-  .comments-rail .cr-meta b{color:var(--ink);font-weight:700}
-  .comments-rail .cr-body{white-space:pre-wrap;word-break:break-word}
-  .comments-rail .cr-empty{color:var(--muted);font-size:11.5px}
-  .comments-rail .cr-link{display:inline-block;margin-top:8px;font-size:11px;font-weight:700;color:var(--blue);text-decoration:none}
-  .comments-rail .cr-link:hover{text-decoration:underline}
-  .comments-rail .cr-status{font-size:10.5px;color:var(--muted);margin-top:6px}
-  .discussion{margin:28px 0 0;padding:18px 20px;background:var(--surface);border:1px solid var(--border);
-    border-radius:14px;scroll-margin-top:72px}
-  .discussion h2{margin:0 0 4px;font-size:18px}
-  .discussion .disc-sub{color:var(--muted);font-size:13px;margin:0 0 16px}
-  .comment-list{display:flex;flex-direction:column;gap:12px;margin-bottom:16px}
-  .comment-card{border:1px solid var(--grid);border-radius:12px;padding:12px 14px;background:var(--plane)}
-  .comment-card.reply{margin-left:22px;border-left:3px solid var(--blue-soft)}
-  .comment-meta{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin-bottom:6px;font-size:12px;color:var(--muted)}
-  .comment-meta .author{font-weight:800;color:var(--ink)}
-  .comment-meta .edited{font-style:italic}
-  .comment-body{font-size:14px;line-height:1.5;white-space:pre-wrap;word-break:break-word}
-  .comment-actions{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
-  .comment-actions button,.comment-compose button{font:inherit;font-size:12px;font-weight:600;
-    padding:5px 10px;border-radius:8px;border:1px solid var(--border);background:var(--surface);
-    color:var(--ink2);cursor:pointer}
-  .comment-actions button:hover,.comment-compose button:hover{background:var(--neutbg);color:var(--ink)}
-  .comment-actions button.primary,.comment-compose button.primary{background:var(--blue);color:#fff;border-color:var(--blue)}
-  .comment-actions button.primary:hover{background:#1f6bc4}
-  .comment-actions button.danger{color:var(--critical)}
-  .comment-compose{border-top:1px solid var(--grid);padding-top:14px;margin-top:4px}
-  .comment-compose label{display:block;font-size:12px;font-weight:700;margin-bottom:4px;color:var(--ink2)}
-  .comment-compose select,.comment-compose textarea{width:100%;font:inherit;font-size:14px;
-    border:1px solid var(--border);border-radius:10px;padding:8px 10px;background:var(--surface);color:var(--ink)}
-  .comment-compose textarea{min-height:88px;resize:vertical;margin:8px 0 10px}
-  .comment-compose .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-  .comment-compose .hint{font-size:11.5px;color:var(--muted);flex:1 1 200px}
-  .comment-compose .replying{font-size:12px;color:var(--blue);margin:0 0 8px;font-weight:600}
-  .comment-banner{font-size:12.5px;padding:10px 12px;border-radius:10px;margin-bottom:12px;
-    background:var(--warnbg);border:1px solid color-mix(in srgb,var(--serious) 35%,var(--border))}
-  .comment-edit textarea{width:100%;font:inherit;font-size:14px;border:1px solid var(--border);
-    border-radius:10px;padding:8px 10px;background:var(--surface);min-height:72px;resize:vertical}
+  .comments-rail{padding:0;overflow:hidden;background:transparent;border:0;box-shadow:none}
+  .comments-iframe{border:0;width:100%;display:block;background:transparent}
+  .comments-iframe-compact{height:240px}
+  .comments-iframe-full{height:520px;min-height:400px}
+  .comments-rail .cr-link{display:inline-block;margin-top:4px;font-size:11px;font-weight:700;color:var(--blue);text-decoration:none;padding:0 16px 12px}
+  .discussion{margin:28px 0 0;scroll-margin-top:72px}
   .cheat h4{margin:0 0 2px;font-size:13.5px;letter-spacing:-.01em}
   .cheat .cs{font-size:11px;color:var(--muted);margin:0 0 10px}
   .cheat .srow{display:flex;gap:9px;align-items:flex-start;padding:6px 0;border-top:1px solid var(--grid);font-size:11.5px;line-height:1.35}
@@ -340,11 +304,9 @@
   <div class="tier"><span><span class="dot" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--blue);margin-right:5px;vertical-align:middle"></span>Keep monitoring</span><b>0–3</b></div>
 </aside>
 <aside class="comments-rail" aria-label="Latest notes">
-  <h4>Latest notes</h4>
-  <p class="cr-sub">Bot score (+3) — team discussion</p>
-  <div id="comments-rail-list"><p class="cr-empty">Loading…</p></div>
+  <iframe class="comments-iframe comments-iframe-compact" title="Latest notes"
+    src="https://script.google.com/a/macros/gogox.com/s/AKfycbzVDL85lHGIZ6W3kKoumCQHD9GAmuwpMGesV7iKx1oz6cFvF8Ttxq7O_n237gYy6KEAgA/exec?view=widget&amp;compact=1&amp;section=s8"></iframe>
   <a class="cr-link" href="#discussion-s8">View all notes ↓</a>
-  <p class="cr-status" id="comments-rail-status"></p>
 </aside>
 </div>
 
@@ -717,23 +679,9 @@
     <p style="margin:0"><a href="https://docs.google.com/spreadsheets/d/1v2i-enV0Wb7wmwe6gVNuiY87x313pn-mI1W9G3Ztod0/edit?usp=sharing" target="_blank" rel="noopener noreferrer" style="display:inline-block;padding:8px 14px;border-radius:10px;background:var(--blue);color:#fff;font-weight:700;text-decoration:none">Open Google Sheet ↗</a></p>
   </div>
 
-  <section class="discussion" id="discussion-s8" aria-labelledby="discussion-s8-title">
-    <h2 id="discussion-s8-title">Team notes — Bot score (+3)</h2>
-    <p class="disc-sub">Leave a note for the team. Ming, Jin, Connie, and Matt can add, reply, edit, or delete their own notes.</p>
-    <div id="comments-banner" class="comment-banner" hidden></div>
-    <div id="comments-thread" class="comment-list"></div>
-    <div class="comment-compose" id="comment-compose">
-      <p class="replying" id="comment-replying" hidden></p>
-      <label for="comment-author">Your name</label>
-      <select id="comment-author" aria-label="Your name"></select>
-      <label for="comment-body">Note</label>
-      <textarea id="comment-body" placeholder="Ask a question or leave feedback on the bot score rule…" aria-label="Note"></textarea>
-      <div class="row">
-        <button type="button" class="primary" id="comment-submit">Post note</button>
-        <button type="button" id="comment-cancel-reply" hidden>Cancel reply</button>
-        <span class="hint" id="comment-compose-hint">Saved to Google Sheet tab <b>Comments</b>. Only you can edit or delete your own note.</span>
-      </div>
-    </div>
+  <section class="discussion" id="discussion-s8" aria-label="Team notes">
+    <iframe class="comments-iframe comments-iframe-full" title="Team notes — Bot score (+3)"
+      src="https://script.google.com/a/macros/gogox.com/s/AKfycbzVDL85lHGIZ6W3kKoumCQHD9GAmuwpMGesV7iKx1oz6cFvF8Ttxq7O_n237gYy6KEAgA/exec?view=widget&amp;section=s8"></iframe>
   </section>
 </div>
 </div>
@@ -1095,244 +1043,6 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
   el.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); toggle(); } });
 });
 
-// ── Team comments (Google Sheet Comments tab via Apps Script Web App) ──
-(function(){
-  const COMMENTS_CONFIG = {
-    apiUrl: 'https://script.google.com/a/macros/gogox.com/s/AKfycbzVDL85lHGIZ6W3kKoumCQHD9GAmuwpMGesV7iKx1oz6cFvF8Ttxq7O_n237gYy6KEAgA/exec',
-    section: 's8',
-    authors: ['Ming', 'Jin', 'Connie', 'Matt'],
-    sheetUrl: 'https://docs.google.com/spreadsheets/d/1v2i-enV0Wb7wmwe6gVNuiY87x313pn-mI1W9G3Ztod0/edit'
-  };
-  const LS_AUTHOR = 'plugin_spot_comment_author';
-  const $ = id => document.getElementById(id);
-  const railList = $('comments-rail-list');
-  const railStatus = $('comments-rail-status');
-  const thread = $('comments-thread');
-  const banner = $('comments-banner');
-  const authorSel = $('comment-author');
-  const bodyIn = $('comment-body');
-  const replyLbl = $('comment-replying');
-  const cancelReply = $('comment-cancel-reply');
-  const submitBtn = $('comment-submit');
-  let comments = [];
-  let replyParentId = '';
-
-  COMMENTS_CONFIG.authors.forEach(a=>{
-    const o = document.createElement('option');
-    o.value = a; o.textContent = a;
-    authorSel.appendChild(o);
-  });
-  try{
-    const saved = localStorage.getItem(LS_AUTHOR);
-    if(saved && COMMENTS_CONFIG.authors.includes(saved)) authorSel.value = saved;
-  }catch(e){}
-  authorSel.addEventListener('change', ()=>{
-    try{ localStorage.setItem(LS_AUTHOR, authorSel.value); }catch(e){}
-  });
-
-  function esc(s){
-    return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  }
-  function fmtTime(iso){
-    if(!iso) return '';
-    try{
-      const d = new Date(iso);
-      return d.toLocaleString('en-HK', {dateStyle:'medium', timeStyle:'short'});
-    }catch(e){ return iso; }
-  }
-  function showBanner(msg){
-    banner.hidden = false;
-    banner.textContent = msg;
-  }
-  function apiReady(){
-    return Boolean(COMMENTS_CONFIG.apiUrl && COMMENTS_CONFIG.apiUrl.startsWith('http'));
-  }
-  async function apiCall(action, payload){
-    if(!apiReady()) throw new Error('Comments API not configured. Deploy Apps Script and set COMMENTS_CONFIG.apiUrl.');
-    const params = new URLSearchParams({ action, ...payload });
-    const url = COMMENTS_CONFIG.apiUrl + (COMMENTS_CONFIG.apiUrl.includes('?') ? '&' : '?') + params.toString();
-    const res = await fetch(url, { method: 'GET', cache: 'no-store', credentials: 'include' });
-    const data = await res.json();
-    if(!data.ok) throw new Error(data.error || 'Request failed');
-    return data;
-  }
-  function nestComments(flat){
-    const byId = {};
-    flat.forEach(c=>{ byId[c.id] = { ...c, replies: [] }; });
-    const roots = [];
-    flat.forEach(c=>{
-      const node = byId[c.id];
-      if(c.parent_id && byId[c.parent_id]) byId[c.parent_id].replies.push(node);
-      else roots.push(node);
-    });
-    return roots;
-  }
-  function renderRail(){
-    if(!comments.length){
-      railList.innerHTML = '<p class="cr-empty">No notes yet. Be the first to post below.</p>';
-      return;
-    }
-    const latest = comments.slice(-3).reverse();
-    railList.innerHTML = latest.map(c=>`
-      <div class="cr-item">
-        <div class="cr-meta"><b>${esc(c.author)}</b> · ${esc(fmtTime(c.created_at))}</div>
-        <div class="cr-body">${esc(c.body.length>120 ? c.body.slice(0,120)+'…' : c.body)}</div>
-      </div>`).join('');
-  }
-  function renderCard(c, isReply){
-    const me = authorSel.value;
-    const edited = c.updated_at && c.created_at && c.updated_at !== c.created_at;
-    const actions = c.author === me ? `
-      <button type="button" data-act="edit" data-id="${esc(c.id)}">Edit</button>
-      <button type="button" class="danger" data-act="delete" data-id="${esc(c.id)}">Delete</button>` : '';
-    return `<div class="comment-card${isReply?' reply':''}" data-id="${esc(c.id)}">
-      <div class="comment-meta">
-        <span class="author">${esc(c.author)}</span>
-        <span>${esc(fmtTime(c.created_at))}</span>
-        ${edited ? '<span class="edited">(edited)</span>' : ''}
-      </div>
-      <div class="comment-body" data-body>${esc(c.body)}</div>
-      <div class="comment-actions">
-        <button type="button" data-act="reply" data-id="${esc(c.id)}" data-author="${esc(c.author)}">Reply</button>
-        ${actions}
-      </div>
-    </div>`;
-  }
-  function renderThread(){
-    const tree = nestComments(comments);
-    if(!tree.length){
-      thread.innerHTML = '<p class="disc-sub" style="margin:0">No notes yet.</p>';
-      return;
-    }
-    let html = '';
-    function walk(nodes, isReply){
-      nodes.forEach(n=>{
-        html += renderCard(n, isReply);
-        if(n.replies.length) walk(n.replies, true);
-      });
-    }
-    walk(tree, false);
-    thread.innerHTML = html;
-  }
-  function setReply(parentId, parentAuthor){
-    replyParentId = parentId || '';
-    if(replyParentId){
-      replyLbl.hidden = false;
-      replyLbl.textContent = 'Replying to ' + parentAuthor;
-      cancelReply.hidden = false;
-      bodyIn.focus();
-    }else{
-      replyLbl.hidden = true;
-      cancelReply.hidden = true;
-    }
-  }
-  async function loadComments(){
-    if(!apiReady()){
-      showBanner('Comments API not connected yet. Deploy Apps Script (see repo README), then paste the Web App URL into COMMENTS_CONFIG.apiUrl in this HTML file.');
-      railList.innerHTML = '<p class="cr-empty">API not connected.</p>';
-      thread.innerHTML = '';
-      submitBtn.disabled = true;
-      return;
-    }
-    submitBtn.disabled = false;
-    banner.hidden = true;
-    railStatus.textContent = 'Refreshing…';
-    try{
-      const data = await apiCall('list', { section: COMMENTS_CONFIG.section });
-      comments = data.comments || [];
-      renderRail();
-      renderThread();
-      railStatus.textContent = comments.length ? comments.length + ' note(s)' : '';
-    }catch(err){
-      showBanner('Could not load notes: ' + err.message);
-      railList.innerHTML = '<p class="cr-empty">Load failed.</p>';
-      railStatus.textContent = '';
-    }
-  }
-  async function postComment(){
-    const author = authorSel.value;
-    const body = bodyIn.value.trim();
-    if(!body){ bodyIn.focus(); return; }
-    submitBtn.disabled = true;
-    try{
-      await apiCall('add', {
-        section: COMMENTS_CONFIG.section,
-        author,
-        body,
-        parent_id: replyParentId
-      });
-      bodyIn.value = '';
-      setReply('', '');
-      await loadComments();
-    }catch(err){
-      showBanner(err.message);
-    }finally{
-      submitBtn.disabled = !apiReady();
-    }
-  }
-  thread.addEventListener('click', async ev=>{
-    const btn = ev.target.closest('button[data-act]');
-    if(!btn) return;
-    const act = btn.dataset.act;
-    const id = btn.dataset.id;
-    const me = authorSel.value;
-    if(act === 'reply'){
-      setReply(id, btn.dataset.author);
-      $('discussion-s8').scrollIntoView({ behavior: 'smooth', block: 'start' });
-      return;
-    }
-    if(act === 'delete'){
-      if(!confirm('Delete this note?')) return;
-      try{
-        await apiCall('delete', { id, author: me });
-        await loadComments();
-      }catch(err){ showBanner(err.message); }
-      return;
-    }
-    if(act === 'edit'){
-      const card = btn.closest('.comment-card');
-      const bodyEl = card.querySelector('[data-body]');
-      const old = bodyEl.textContent;
-      const actions = card.querySelector('.comment-actions');
-      actions.replaceChildren();
-      const wrap = document.createElement('div');
-      wrap.className = 'comment-edit';
-      const ta = document.createElement('textarea');
-      ta.setAttribute('aria-label', 'Edit note');
-      ta.value = old;
-      const row = document.createElement('div');
-      row.className = 'row';
-      row.style.marginTop = '8px';
-      const saveBtn = document.createElement('button');
-      saveBtn.type = 'button';
-      saveBtn.className = 'primary';
-      saveBtn.textContent = 'Save';
-      const cancelBtn = document.createElement('button');
-      cancelBtn.type = 'button';
-      cancelBtn.textContent = 'Cancel';
-      row.append(saveBtn, cancelBtn);
-      wrap.append(ta, row);
-      actions.append(wrap);
-      ta.focus();
-      ta.setSelectionRange(ta.value.length, ta.value.length);
-      cancelBtn.addEventListener('click', ()=> renderThread());
-      saveBtn.addEventListener('click', async ()=>{
-        const nb = ta.value.trim();
-        if(!nb) return;
-        try{
-          await apiCall('edit', { id, author: me, body: nb });
-          await loadComments();
-        }catch(err){ showBanner(err.message); }
-      });
-    }
-  });
-  submitBtn.addEventListener('click', postComment);
-  cancelReply.addEventListener('click', ()=> setReply('', ''));
-  bodyIn.addEventListener('keydown', e=>{
-    if((e.metaKey || e.ctrlKey) && e.key === 'Enter'){ e.preventDefault(); postComment(); }
-  });
-  loadComments();
-})();
 </script>
 </body>
 </html>
