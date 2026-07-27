@@ -1097,6 +1097,7 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
 (function(){
   const COMMENTS_API = 'https://script.google.com/a/macros/gogox.com/s/AKfycbzVDL85lHGIZ6W3kKoumCQHD9GAmuwpMGesV7iKx1oz6cFvF8Ttxq7O_n237gYy6KEAgA/exec';
   const WIDGET_URL = COMMENTS_API + '?view=widget&section=s8';
+  const SHEET_ID = '1v2i-enV0Wb7wmwe6gVNuiY87x313pn-mI1W9G3Ztod0';
   const SECTION = 's8';
   const AUTHORS = ['Ming', 'Jin', 'Connie', 'Matt'];
   const LS_AUTHOR = 'plugin_spot_comment_author';
@@ -1112,6 +1113,7 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
   const submitBtn = $('comment-submit');
   let comments = [];
   let replyParentId = '';
+  let readOnlyFromSheet = false;
 
   AUTHORS.forEach(a=>{
     const o = document.createElement('option');
@@ -1163,6 +1165,33 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
       document.head.appendChild(script);
     });
   }
+  async function loadViaGviz(){
+    const url = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID +
+      '/gviz/tq?tqx=out:json&sheet=' + encodeURIComponent('Comments');
+    const res = await fetch(url, { cache: 'no-store' });
+    const text = await res.text();
+    if (text.trimStart().startsWith('<')) throw new Error('Sheet not shared for read');
+    const json = JSON.parse(text.replace(/^[\s\S]*?setResponse\(/, '').replace(/\);\s*$/, ''));
+    const cols = (json.table.cols || []).map(c => String(c.label || '').toLowerCase());
+    const idx = name => cols.indexOf(name);
+    return (json.table.rows || []).map(row => {
+      const cell = i => {
+        const c = row.c[i];
+        return c && c.v != null && c.v !== '' ? String(c.v) : '';
+      };
+      return {
+        id: cell(idx('id')),
+        section: cell(idx('section')),
+        parent_id: cell(idx('parent_id')),
+        author: cell(idx('author')),
+        body: cell(idx('body')),
+        created_at: cell(idx('created_at')),
+        updated_at: cell(idx('updated_at')),
+        deleted: cell(idx('deleted')).toLowerCase() === 'true'
+      };
+    }).filter(r => !r.deleted && r.section === SECTION)
+      .sort((a, b) => String(a.created_at).localeCompare(String(b.created_at)));
+  }
   function nestComments(flat){
     const byId = {};
     flat.forEach(c=>{ byId[c.id] = { ...c, replies: [] }; });
@@ -1188,15 +1217,16 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
   function renderCard(c, isReply){
     const me = authorSel.value;
     const edited = c.updated_at && c.created_at && c.updated_at !== c.created_at;
-    const actions = c.author === me ? `
+    const actions = readOnlyFromSheet ? '' : `
+      <button type="button" data-act="reply" data-id="${esc(c.id)}" data-author="${esc(c.author)}">Reply</button>` +
+      (c.author === me ? `
       <button type="button" data-act="edit" data-id="${esc(c.id)}">Edit</button>
-      <button type="button" class="danger" data-act="delete" data-id="${esc(c.id)}">Delete</button>` : '';
+      <button type="button" class="danger" data-act="delete" data-id="${esc(c.id)}">Delete</button>` : '');
     return `<div class="comment-card${isReply?' reply':''}" data-id="${esc(c.id)}">
       <div class="comment-meta"><span class="author">${esc(c.author)}</span><span>${esc(fmtTime(c.created_at))}</span>${edited?'<span class="edited">(edited)</span>':''}</div>
       <div class="comment-body" data-body>${esc(c.body)}</div>
-      <div class="comment-actions">
-        <button type="button" data-act="reply" data-id="${esc(c.id)}" data-author="${esc(c.author)}">Reply</button>${actions}
-      </div></div>`;
+      ${actions ? '<div class="comment-actions">' + actions + '</div>' : ''}
+      </div>`;
   }
   function renderThread(){
     const tree = nestComments(comments);
@@ -1221,19 +1251,28 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
   async function loadComments(){
     banner.hidden = true;
     railStatus.textContent = 'Refreshing…';
+    readOnlyFromSheet = false;
     try{
       const data = await apiCall('list', { section: SECTION });
       comments = data.comments || [];
-      renderRail();
-      renderThread();
-      railStatus.textContent = comments.length ? comments.length + ' note(s)' : '';
-      submitBtn.disabled = false;
     }catch(err){
-      showBanner('Could not load notes: ' + esc(err.message) + '. Sign in with <b>@gogox.com</b> in Chrome, or <a href="'+WIDGET_URL+'" target="_blank" rel="noopener">open notes in a new tab ↗</a>. Best fix: Apps Script deploy → <b>Who has access: Anyone</b>.');
-      railList.innerHTML = '<p class="cr-empty">Load failed.</p>';
-      railStatus.textContent = '';
-      submitBtn.disabled = false;
+      try{
+        comments = await loadViaGviz();
+        readOnlyFromSheet = true;
+        showBanner('Showing notes from Sheet (read-only here). To <b>post on this page</b>: Apps Script deploy → <b>Who has access: Anyone</b>. Or <a href="'+WIDGET_URL+'" target="_blank" rel="noopener">post in new tab ↗</a> (already works).');
+      }catch(e2){
+        showBanner('Cannot load notes. Fix (pick one): (1) Apps Script deploy → <b>Anyone</b> (2) Sheet → Share → <b>Anyone with the link</b> → Viewer. Or <a href="'+WIDGET_URL+'" target="_blank" rel="noopener">open new tab ↗</a>.');
+        comments = [];
+        railList.innerHTML = '<p class="cr-empty">Load failed.</p>';
+        railStatus.textContent = '';
+        thread.innerHTML = '';
+        return;
+      }
     }
+    renderRail();
+    renderThread();
+    railStatus.textContent = comments.length ? comments.length + ' note(s)' : '';
+    submitBtn.disabled = false;
   }
   async function postComment(){
     const author = authorSel.value;
