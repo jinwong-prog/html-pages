@@ -327,6 +327,25 @@
   html{color-scheme:light only}
   body{background:#f9f9f7!important;color:#0b0b0b}
 
+
+  /* headline comparison table only — wider + less horizontal scroll */
+  #main-table.card{overflow-x:auto;padding:10px 16px 16px}
+  #main-table table.cmp{width:100%;min-width:0;table-layout:fixed}
+  #main-table table.cmp th,#main-table table.cmp td{
+    white-space:normal;overflow-wrap:break-word;word-break:break-word;line-height:1.35}
+  #main-table table.cmp th:first-child,#main-table table.cmp td:first-child{width:34%}
+  #main-table table.cmp th:nth-child(2),#main-table table.cmp td:nth-child(2),
+  #main-table table.cmp th:nth-child(3),#main-table table.cmp td:nth-child(3){width:22%}
+  #main-table table.cmp th:nth-child(4),#main-table table.cmp td:nth-child(4){width:22%}
+  #main-table table.cmp .n{white-space:nowrap;display:inline-block}
+  @media (min-width:1580px){
+    #main-table.card{
+      width:calc(100% + 96px);
+      max-width:calc(100vw - 268px);
+      box-sizing:border-box;
+    }
+  }
+
   /* report sticky navbar */
   .nav{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--plane) 92%,transparent);
     backdrop-filter:saturate(1.1) blur(8px);border-bottom:1px solid var(--border);margin:0 0 18px}
