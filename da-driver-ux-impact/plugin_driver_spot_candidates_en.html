@@ -83,7 +83,7 @@
   .comments-rail .cr-meta b{color:var(--ink);font-weight:700}
   .comments-rail .cr-body{white-space:pre-wrap;word-break:break-word}
   .comments-rail .cr-empty{color:var(--muted);font-size:11.5px}
-  .comments-rail .cr-link{display:inline-block;margin-top:8px;font-size:11px;font-weight:700;color:var(--blue);text-decoration:none}
+  .comments-rail .cr-link{display:inline-block;margin-top:8px;font-size:11px;font-weight:700;color:var(--blue);text-decoration:none;background:none;border:0;padding:0;cursor:pointer;font-family:inherit}
   .comments-rail .cr-link:hover{text-decoration:underline}
   .comments-rail .cr-status{font-size:10.5px;color:var(--muted);margin-top:6px}
   .discussion{margin:28px 0 0;padding:18px 20px;background:var(--surface);border:1px solid var(--border);
@@ -131,9 +131,10 @@
   .comments-modal-close:hover{background:var(--neutbg)}
   .comments-modal-sub{margin:0;padding:8px 18px 0;font-size:12px;color:var(--muted);flex-shrink:0}
   .comments-modal-thread{flex:1 1 auto;overflow-y:auto;padding:12px 18px;margin:0}
-  .comments-modal-foot{padding:10px 18px 14px;border-top:1px solid var(--grid);flex-shrink:0}
-  .comments-modal-goto{font-size:12px;font-weight:700;color:var(--blue);text-decoration:none}
-  .comments-modal-goto:hover{text-decoration:underline}
+  .comments-modal-foot{padding:12px 18px 16px;border-top:1px solid var(--grid);flex-shrink:0;background:var(--plane)}
+  .comments-modal-foot .comment-compose{border-top:0;padding-top:0;margin-top:0}
+  .comments-modal-foot .comment-compose textarea{min-height:72px;margin:6px 0 8px}
+  .comments-modal-banner{margin:8px 18px 0;flex-shrink:0}
   .cheat h4{margin:0 0 2px;font-size:13.5px;letter-spacing:-.01em}
   .cheat .cs{font-size:11px;color:var(--muted);margin:0 0 10px}
   .cheat .srow{display:flex;gap:9px;align-items:flex-start;padding:6px 0;border-top:1px solid var(--grid);font-size:11.5px;line-height:1.35}
@@ -333,7 +334,7 @@
     <a href="#s7" data-s="s7">+3 Loop</a>
     <a href="#s8" data-s="s8">Bot +3</a>
     <a href="#s9" data-s="s9">Cases</a>
-    <a href="#discussion-s8" data-s="discussion-s8">Notes</a>
+    <a href="#" id="nav-notes" role="button">Notes</a>
   </div>
 </nav>
 
@@ -349,7 +350,7 @@
 <aside class="comments-rail" aria-label="Latest notes">
   <h4>Latest notes</h4>
   <div id="comments-rail-list"><p class="cr-empty">Loading…</p></div>
-  <a class="cr-link" href="#discussion-s8">View all notes ↓</a>
+  <button type="button" class="cr-link" id="comments-rail-open">View all notes</button>
   <p class="cr-status" id="comments-rail-status"></p>
 </aside>
 </div>
@@ -723,24 +724,6 @@
     <p style="margin:0"><a href="https://docs.google.com/spreadsheets/d/1v2i-enV0Wb7wmwe6gVNuiY87x313pn-mI1W9G3Ztod0/edit?usp=sharing" target="_blank" rel="noopener noreferrer" style="display:inline-block;padding:8px 14px;border-radius:10px;background:var(--blue);color:#fff;font-weight:700;text-decoration:none">Open Google Sheet ↗</a></p>
   </div>
 
-  <section class="discussion" id="discussion-s8" aria-labelledby="discussion-s8-title">
-    <h2 id="discussion-s8-title">Team notes</h2>
-    <p class="disc-sub">Leave a note on this page. Ming, Jin, Connie, and Matt can add, reply, edit, or delete their own notes.</p>
-    <div id="comments-banner" class="comment-banner" hidden></div>
-    <div id="comments-thread" class="comment-list"></div>
-    <div class="comment-compose" id="comment-compose">
-      <p class="replying" id="comment-replying" hidden></p>
-      <label for="comment-author">Your name</label>
-      <select id="comment-author" aria-label="Your name"></select>
-      <label for="comment-body">Note</label>
-      <textarea id="comment-body" placeholder="Ask a question or leave feedback on the bot score rule…" aria-label="Note"></textarea>
-      <div class="row">
-        <button type="button" class="primary" id="comment-submit">Post note</button>
-        <button type="button" id="comment-cancel-reply" hidden>Cancel reply</button>
-        <span class="hint" id="comment-compose-hint">Saved to Google Sheet tab <b>Comments</b>. Stay signed in with <b>@gogox.com</b> in this browser.</span>
-      </div>
-    </div>
-  </section>
 </div>
 </div>
 
@@ -748,13 +731,25 @@
   <div class="comments-modal-backdrop" data-close-modal tabindex="-1"></div>
   <div class="comments-modal-panel" role="dialog" aria-modal="true" aria-labelledby="comments-modal-title">
     <div class="comments-modal-head">
-      <h3 id="comments-modal-title">Team notes history</h3>
+      <h3 id="comments-modal-title">Team notes</h3>
       <button type="button" class="comments-modal-close" data-close-modal aria-label="Close">✕</button>
     </div>
     <p class="comments-modal-sub" id="comments-modal-sub"></p>
+    <div id="comments-banner" class="comment-banner comments-modal-banner" hidden></div>
     <div id="comments-modal-thread" class="comment-list comments-modal-thread"></div>
     <div class="comments-modal-foot">
-      <a href="#discussion-s8" class="comments-modal-goto" id="comments-modal-goto">Go to full section ↓</a>
+      <div class="comment-compose" id="comment-compose">
+        <p class="replying" id="comment-replying" hidden></p>
+        <label for="comment-author">Your name</label>
+        <select id="comment-author" aria-label="Your name"></select>
+        <label for="comment-body">Note</label>
+        <textarea id="comment-body" placeholder="Ask a question or leave feedback on the bot score rule…" aria-label="Note"></textarea>
+        <div class="row">
+          <button type="button" class="primary" id="comment-submit">Post note</button>
+          <button type="button" id="comment-cancel-reply" hidden>Cancel reply</button>
+          <span class="hint" id="comment-compose-hint">Saved to Google Sheet tab <b>Comments</b>. Stay signed in with <b>@gogox.com</b> in this browser.</span>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -1116,7 +1111,7 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
   el.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); toggle(); } });
 });
 
-// Team notes — inline on this page (fetch → Apps Script → Sheet Comments tab)
+// Team notes — modal + right-rail preview (fetch → Apps Script → Sheet Comments tab)
 (function(){
   const COMMENTS_API = 'https://script.google.com/macros/s/AKfycbzVDL85lHGIZ6W3kKoumCQHD9GAmuwpMGesV7iKx1oz6cFvF8Ttxq7O_n237gYy6KEAgA/exec';
   const WIDGET_URL = COMMENTS_API + '?view=widget&section=s8';
@@ -1127,7 +1122,8 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
   const $ = id => document.getElementById(id);
   const railList = $('comments-rail-list');
   const railStatus = $('comments-rail-status');
-  const thread = $('comments-thread');
+  const railOpen = $('comments-rail-open');
+  const navNotes = $('nav-notes');
   const banner = $('comments-banner');
   const authorSel = $('comment-author');
   const bodyIn = $('comment-body');
@@ -1137,7 +1133,6 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
   const modal = $('comments-modal');
   const modalSub = $('comments-modal-sub');
   const modalThread = $('comments-modal-thread');
-  const modalGoto = $('comments-modal-goto');
   let comments = [];
   let replyParentId = '';
   let readOnlyFromSheet = false;
@@ -1218,7 +1213,7 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
   }
   function renderRail(){
     if(!comments.length){
-      railList.innerHTML = '<p class="cr-empty">No notes yet.</p>';
+      railList.innerHTML = '<p class="cr-empty">No notes yet. Click View all notes to post.</p>';
       return;
     }
     railList.innerHTML = comments.slice(-3).reverse().map(c=>`
@@ -1244,14 +1239,11 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
   }
   function buildThreadHtml(highlightId){
     const tree = nestComments(comments);
-    if(!tree.length) return '<p class="disc-sub" style="margin:0">No notes yet.</p>';
+    if(!tree.length) return '<p class="disc-sub" style="margin:0">No notes yet. Write one below.</p>';
     let html = '';
     function walk(nodes, isReply){ nodes.forEach(n=>{ html += renderCard(n, isReply, highlightId); if(n.replies.length) walk(n.replies, true); }); }
     walk(tree, false);
     return html;
-  }
-  function renderThread(){
-    thread.innerHTML = buildThreadHtml('');
   }
   function renderModalThread(){
     modalThread.innerHTML = buildThreadHtml(modalHighlightId);
@@ -1264,9 +1256,13 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
     catch(e){ card = modalThread.querySelector('.comment-card.highlight'); }
     if(card) requestAnimationFrame(()=> card.scrollIntoView({ block:'center', behavior:'smooth' }));
   }
-  function refreshThreads(){
-    renderThread();
-    if(modalOpen) renderModalThread();
+  function syncComposeReadonly(){
+    const disable = readOnlyFromSheet;
+    authorSel.disabled = disable;
+    bodyIn.disabled = disable;
+    submitBtn.disabled = disable;
+    if(disable) bodyIn.placeholder = 'Read-only here — use new-tab widget to post';
+    else bodyIn.placeholder = 'Ask a question or leave feedback on the bot score rule…';
   }
   function openCommentsModal(id){
     modalHighlightId = id || '';
@@ -1275,12 +1271,17 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
     modal.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
     renderModalThread();
-    const closeBtn = modal.querySelector('.comments-modal-close');
-    if(closeBtn) closeBtn.focus();
+    syncComposeReadonly();
+    if(!readOnlyFromSheet) bodyIn.focus();
+    else {
+      const closeBtn = modal.querySelector('.comments-modal-close');
+      if(closeBtn) closeBtn.focus();
+    }
   }
   function closeCommentsModal(){
     modalOpen = false;
     modalHighlightId = '';
+    setReply('', '');
     modal.hidden = true;
     modal.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
@@ -1291,7 +1292,7 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
       replyLbl.hidden = false;
       replyLbl.textContent = 'Replying to ' + parentAuthor;
       cancelReply.hidden = false;
-      bodyIn.focus();
+      if(modalOpen && !readOnlyFromSheet) bodyIn.focus();
     }else{
       replyLbl.hidden = true;
       cancelReply.hidden = true;
@@ -1314,16 +1315,18 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
         comments = [];
         railList.innerHTML = '<p class="cr-empty">Load failed.</p>';
         railStatus.textContent = '';
-        thread.innerHTML = '';
+        if(modalOpen) renderModalThread();
+        syncComposeReadonly();
         return;
       }
     }
     renderRail();
-    refreshThreads();
+    if(modalOpen) renderModalThread();
+    syncComposeReadonly();
     railStatus.textContent = comments.length ? comments.length + ' note(s)' : '';
-    submitBtn.disabled = false;
   }
   async function postComment(){
+    if(readOnlyFromSheet) return;
     const author = authorSel.value;
     const body = bodyIn.value.trim();
     if(!body){ bodyIn.focus(); return; }
@@ -1335,16 +1338,14 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
       await loadComments();
     }catch(err){
       showBanner(esc(err.message) + ' — try <a href="'+WIDGET_URL+'" target="_blank" rel="noopener">new tab ↗</a>');
-    }finally{ submitBtn.disabled = false; }
+    }finally{ syncComposeReadonly(); }
   }
   async function handleThreadClick(ev){
     const btn = ev.target.closest('button[data-act]');
     if(!btn) return;
     const act = btn.dataset.act, id = btn.dataset.id, me = authorSel.value;
     if(act === 'reply'){
-      closeCommentsModal();
-      const sect = $('discussion-s8');
-      if(sect) sect.scrollIntoView({ behavior:'smooth' });
+      if(!modalOpen) openCommentsModal(id);
       setReply(id, btn.dataset.author);
       return;
     }
@@ -1367,7 +1368,7 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
       const cancelBtn = document.createElement('button');
       cancelBtn.type = 'button'; cancelBtn.textContent = 'Cancel';
       actions.append(ta, saveBtn, cancelBtn);
-      cancelBtn.onclick = ()=> refreshThreads();
+      cancelBtn.onclick = ()=> renderModalThread();
       saveBtn.onclick = async ()=>{
         const nb = ta.value.trim();
         if(!nb) return;
@@ -1376,7 +1377,6 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
       };
     }
   }
-  thread.addEventListener('click', handleThreadClick);
   modalThread.addEventListener('click', handleThreadClick);
   railList.addEventListener('click', ev=>{
     const item = ev.target.closest('.cr-item[data-id]');
@@ -1390,10 +1390,14 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
     ev.preventDefault();
     openCommentsModal(item.dataset.id);
   });
+  if(railOpen) railOpen.addEventListener('click', ()=> openCommentsModal(''));
+  if(navNotes) navNotes.addEventListener('click', ev=>{
+    ev.preventDefault();
+    openCommentsModal('');
+  });
   modal.querySelectorAll('[data-close-modal]').forEach(el=>{
     el.addEventListener('click', closeCommentsModal);
   });
-  modalGoto.addEventListener('click', closeCommentsModal);
   document.addEventListener('keydown', ev=>{
     if(ev.key === 'Escape' && modalOpen) closeCommentsModal();
   });
