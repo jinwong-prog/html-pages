@@ -96,7 +96,8 @@
   .comment-meta{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin-bottom:6px;font-size:12px;color:var(--muted)}
   .comment-meta .author{font-weight:800;color:var(--ink)}
   .comment-meta .edited{font-style:italic}
-  .comment-body{font-size:14px;line-height:1.5;white-space:pre-wrap;word-break:break-word}
+  .comment-body{font-size:14px;line-height:1.5;white-space:pre-wrap;overflow-wrap:normal;word-break:normal;overflow-x:auto}
+  .comments-modal-thread .comment-body{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12.5px;line-height:1.35}
   .comment-actions{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
   .comment-actions button,.comment-compose button{font:inherit;font-size:12px;font-weight:600;
     padding:5px 10px;border-radius:8px;border:1px solid var(--border);background:var(--surface);
@@ -120,7 +121,7 @@
   .comments-modal{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;padding:20px}
   .comments-modal[hidden]{display:none}
   .comments-modal-backdrop{position:absolute;inset:0;background:rgba(11,11,11,.45)}
-  .comments-modal-panel{position:relative;width:min(640px,92vw);max-height:min(80vh,900px);display:flex;
+  .comments-modal-panel{position:relative;width:min(1040px,96vw);max-height:min(88vh,980px);display:flex;
     flex-direction:column;background:var(--surface);border:1px solid var(--border);border-radius:16px;
     box-shadow:0 20px 60px rgba(0,0,0,.18);overflow:hidden}
   .comments-modal-head{display:flex;align-items:center;justify-content:space-between;gap:12px;
@@ -134,7 +135,10 @@
   .comments-modal-foot{padding:12px 18px 16px;border-top:1px solid var(--grid);flex-shrink:0;background:var(--plane)}
   .comments-modal-foot .comment-compose{border-top:0;padding-top:0;margin-top:0}
   .comments-modal-foot .comment-compose textarea{min-height:72px;margin:6px 0 8px}
+  .comments-modal-foot .comments-modal-goto{display:inline-block;margin-top:8px;font-size:12px;font-weight:700;color:var(--blue);text-decoration:none}
+  .comments-modal-goto:hover{text-decoration:underline}
   .comments-modal-banner{margin:8px 18px 0;flex-shrink:0}
+  #comments-compose-home:empty{display:none}
   .cheat h4{margin:0 0 2px;font-size:13.5px;letter-spacing:-.01em}
   .cheat .cs{font-size:11px;color:var(--muted);margin:0 0 10px}
   .cheat .srow{display:flex;gap:9px;align-items:flex-start;padding:6px 0;border-top:1px solid var(--grid);font-size:11.5px;line-height:1.35}
@@ -724,6 +728,27 @@
     <p style="margin:0"><a href="https://docs.google.com/spreadsheets/d/1v2i-enV0Wb7wmwe6gVNuiY87x313pn-mI1W9G3Ztod0/edit?usp=sharing" target="_blank" rel="noopener noreferrer" style="display:inline-block;padding:8px 14px;border-radius:10px;background:var(--blue);color:#fff;font-weight:700;text-decoration:none">Open Google Sheet ↗</a></p>
   </div>
 
+  <section class="discussion" id="discussion-s8" aria-labelledby="discussion-s8-title">
+    <h2 id="discussion-s8-title">Team notes — Bot score (+3)</h2>
+    <p class="disc-sub">Leave a note for the team. Ming, Jin, Connie, and Matt can add, reply, edit, or delete their own notes.</p>
+    <div id="comments-banner" class="comment-banner" hidden></div>
+    <div id="comments-thread" class="comment-list"></div>
+    <div id="comments-compose-home">
+    <div class="comment-compose" id="comment-compose">
+      <p class="replying" id="comment-replying" hidden></p>
+      <label for="comment-author">Your name</label>
+      <select id="comment-author" aria-label="Your name"></select>
+      <label for="comment-body">Note</label>
+      <textarea id="comment-body" placeholder="Ask a question or leave feedback on the bot score rule…" aria-label="Note"></textarea>
+      <div class="row">
+        <button type="button" class="primary" id="comment-submit">Post note</button>
+        <button type="button" id="comment-cancel-reply" hidden>Cancel reply</button>
+        <span class="hint" id="comment-compose-hint">Saved to Google Sheet tab <b>Comments</b>. Stay signed in with <b>@gogox.com</b> in this browser.</span>
+      </div>
+    </div>
+    </div>
+  </section>
+
 </div>
 </div>
 
@@ -731,25 +756,15 @@
   <div class="comments-modal-backdrop" data-close-modal tabindex="-1"></div>
   <div class="comments-modal-panel" role="dialog" aria-modal="true" aria-labelledby="comments-modal-title">
     <div class="comments-modal-head">
-      <h3 id="comments-modal-title">Team notes</h3>
+      <h3 id="comments-modal-title">Team notes history</h3>
       <button type="button" class="comments-modal-close" data-close-modal aria-label="Close">✕</button>
     </div>
     <p class="comments-modal-sub" id="comments-modal-sub"></p>
-    <div id="comments-banner" class="comment-banner comments-modal-banner" hidden></div>
+    <div id="comments-modal-banner" class="comment-banner comments-modal-banner" hidden></div>
     <div id="comments-modal-thread" class="comment-list comments-modal-thread"></div>
     <div class="comments-modal-foot">
-      <div class="comment-compose" id="comment-compose">
-        <p class="replying" id="comment-replying" hidden></p>
-        <label for="comment-author">Your name</label>
-        <select id="comment-author" aria-label="Your name"></select>
-        <label for="comment-body">Note</label>
-        <textarea id="comment-body" placeholder="Ask a question or leave feedback on the bot score rule…" aria-label="Note"></textarea>
-        <div class="row">
-          <button type="button" class="primary" id="comment-submit">Post note</button>
-          <button type="button" id="comment-cancel-reply" hidden>Cancel reply</button>
-          <span class="hint" id="comment-compose-hint">Saved to Google Sheet tab <b>Comments</b>. Stay signed in with <b>@gogox.com</b> in this browser.</span>
-        </div>
-      </div>
+      <div id="comments-modal-compose-slot"></div>
+      <a href="#discussion-s8" class="comments-modal-goto" id="comments-modal-goto">Go to full section ↓</a>
     </div>
   </div>
 </div>
@@ -1125,6 +1140,8 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
   const railOpen = $('comments-rail-open');
   const navNotes = $('nav-notes');
   const banner = $('comments-banner');
+  const modalBanner = $('comments-modal-banner');
+  const thread = $('comments-thread');
   const authorSel = $('comment-author');
   const bodyIn = $('comment-body');
   const replyLbl = $('comment-replying');
@@ -1133,6 +1150,10 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
   const modal = $('comments-modal');
   const modalSub = $('comments-modal-sub');
   const modalThread = $('comments-modal-thread');
+  const modalGoto = $('comments-modal-goto');
+  const composeEl = $('comment-compose');
+  const composeHome = $('comments-compose-home');
+  const modalComposeSlot = $('comments-modal-compose-slot');
   let comments = [];
   let replyParentId = '';
   let readOnlyFromSheet = false;
@@ -1163,6 +1184,10 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
   function showBanner(html){
     banner.hidden = false;
     banner.innerHTML = html;
+    if(modalBanner){
+      modalBanner.hidden = false;
+      modalBanner.innerHTML = html;
+    }
   }
   async function apiCall(action, payload){
     const params = new URLSearchParams({ action, ...payload });
@@ -1213,7 +1238,7 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
   }
   function renderRail(){
     if(!comments.length){
-      railList.innerHTML = '<p class="cr-empty">No notes yet. Click View all notes to post.</p>';
+      railList.innerHTML = '<p class="cr-empty">No notes yet. Open notes or scroll to Team notes below to post.</p>';
       return;
     }
     railList.innerHTML = comments.slice(-3).reverse().map(c=>`
@@ -1245,6 +1270,9 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
     walk(tree, false);
     return html;
   }
+  function renderThread(){
+    thread.innerHTML = buildThreadHtml('');
+  }
   function renderModalThread(){
     modalThread.innerHTML = buildThreadHtml(modalHighlightId);
     modalSub.textContent = comments.length
@@ -1256,6 +1284,10 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
     catch(e){ card = modalThread.querySelector('.comment-card.highlight'); }
     if(card) requestAnimationFrame(()=> card.scrollIntoView({ block:'center', behavior:'smooth' }));
   }
+  function refreshThreads(){
+    renderThread();
+    if(modalOpen) renderModalThread();
+  }
   function syncComposeReadonly(){
     const disable = readOnlyFromSheet;
     authorSel.disabled = disable;
@@ -1264,12 +1296,31 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
     if(disable) bodyIn.placeholder = 'Read-only here — use new-tab widget to post';
     else bodyIn.placeholder = 'Ask a question or leave feedback on the bot score rule…';
   }
+  function goToFullSection(focusCompose){
+    closeCommentsModal();
+    const sec = $('discussion-s8');
+    if(sec) sec.scrollIntoView({ behavior:'smooth', block:'start' });
+    if(focusCompose && !readOnlyFromSheet){
+      requestAnimationFrame(()=> bodyIn.focus());
+    }
+  }
+  function parkComposeInModal(){
+    if(modalComposeSlot && composeEl && composeEl.parentElement !== modalComposeSlot){
+      modalComposeSlot.appendChild(composeEl);
+    }
+  }
+  function parkComposeHome(){
+    if(composeHome && composeEl && composeEl.parentElement !== composeHome){
+      composeHome.appendChild(composeEl);
+    }
+  }
   function openCommentsModal(id){
     modalHighlightId = id || '';
     modalOpen = true;
     modal.hidden = false;
     modal.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
+    parkComposeInModal();
     renderModalThread();
     syncComposeReadonly();
     if(!readOnlyFromSheet) bodyIn.focus();
@@ -1281,7 +1332,7 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
   function closeCommentsModal(){
     modalOpen = false;
     modalHighlightId = '';
-    setReply('', '');
+    parkComposeHome();
     modal.hidden = true;
     modal.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
@@ -1292,7 +1343,7 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
       replyLbl.hidden = false;
       replyLbl.textContent = 'Replying to ' + parentAuthor;
       cancelReply.hidden = false;
-      if(modalOpen && !readOnlyFromSheet) bodyIn.focus();
+      if(!readOnlyFromSheet) bodyIn.focus();
     }else{
       replyLbl.hidden = true;
       cancelReply.hidden = true;
@@ -1315,13 +1366,14 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
         comments = [];
         railList.innerHTML = '<p class="cr-empty">Load failed.</p>';
         railStatus.textContent = '';
+        thread.innerHTML = '<p class="disc-sub" style="margin:0">Load failed.</p>';
         if(modalOpen) renderModalThread();
         syncComposeReadonly();
         return;
       }
     }
     renderRail();
-    if(modalOpen) renderModalThread();
+    refreshThreads();
     syncComposeReadonly();
     railStatus.textContent = comments.length ? comments.length + ' note(s)' : '';
   }
@@ -1345,8 +1397,11 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
     if(!btn) return;
     const act = btn.dataset.act, id = btn.dataset.id, me = authorSel.value;
     if(act === 'reply'){
-      if(!modalOpen) openCommentsModal(id);
       setReply(id, btn.dataset.author);
+      if(modalOpen){
+        parkComposeInModal();
+        if(!readOnlyFromSheet) bodyIn.focus();
+      }
       return;
     }
     if(act === 'delete'){
@@ -1368,7 +1423,7 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
       const cancelBtn = document.createElement('button');
       cancelBtn.type = 'button'; cancelBtn.textContent = 'Cancel';
       actions.append(ta, saveBtn, cancelBtn);
-      cancelBtn.onclick = ()=> renderModalThread();
+      cancelBtn.onclick = ()=> refreshThreads();
       saveBtn.onclick = async ()=>{
         const nb = ta.value.trim();
         if(!nb) return;
@@ -1377,7 +1432,12 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
       };
     }
   }
+  thread.addEventListener('click', handleThreadClick);
   modalThread.addEventListener('click', handleThreadClick);
+  if(modalGoto) modalGoto.addEventListener('click', ev=>{
+    ev.preventDefault();
+    goToFullSection(true);
+  });
   railList.addEventListener('click', ev=>{
     const item = ev.target.closest('.cr-item[data-id]');
     if(!item) return;
