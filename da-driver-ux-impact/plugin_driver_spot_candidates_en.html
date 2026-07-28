@@ -92,7 +92,7 @@
   .discussion .disc-sub{color:var(--muted);font-size:13px;margin:0 0 16px}
   .comment-list{display:flex;flex-direction:column;gap:12px;margin-bottom:16px}
   .comment-card{border:1px solid var(--grid);border-radius:12px;padding:12px 14px;background:var(--plane)}
-  .comment-card.reply{margin-left:22px;border-left:3px solid var(--blue-soft)}
+  .comment-card.reply{margin-left:22px;border-left:3px solid var(--blue);background:color-mix(in srgb,var(--blue-soft) 18%,var(--plane))}
   .comment-topic-block{display:flex;flex-direction:column;gap:12px;margin:0 0 18px;padding:0 0 14px;border-bottom:1px solid var(--grid)}
   .comment-topic-block:last-child{border-bottom:0;margin-bottom:0;padding-bottom:0}
   .comment-topic-head{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0}
@@ -106,6 +106,12 @@
   .comment-chip.new{background:rgba(237,161,0,.18);color:#9a6b00;border:1px solid rgba(237,161,0,.35)}
   .comments-rail .cr-topic{font-size:11px;font-weight:800;color:var(--blue);margin:0 0 2px}
   .comments-rail .cr-chip{margin-left:4px;vertical-align:middle}
+  .comments-rail .cr-latest{font-size:10.5px;color:var(--blue);font-weight:700;margin:0 0 3px}
+  .comments-rail .cr-count{font-size:10px;color:var(--muted);font-weight:600}
+  .comment-card.reply{position:relative}
+  .comment-card.reply::before{content:"Reply";position:absolute;top:8px;right:10px;font-size:10px;font-weight:800;
+    color:var(--blue);letter-spacing:.02em;opacity:.85}
+  .comment-reply-line{font-size:11px;font-weight:700;color:var(--blue);margin:0 0 6px}
   .comment-body{font-size:14px;line-height:1.5;white-space:pre-wrap;overflow-wrap:normal;word-break:normal;overflow-x:auto}
   .comments-modal-thread .comment-body{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12.5px;line-height:1.35}
   .comment-actions{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
@@ -1307,13 +1313,26 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
     const t = String(c.topic || '').trim();
     return t || 'Untitled';
   }
-  function latestTsInTree(node){
-    let best = String(node.created_at || '');
+  function walkNotes(node, out){
+    out.push(node);
+    (node.replies || []).forEach(r=> walkNotes(r, out));
+    return out;
+  }
+  function latestNoteInTree(node){
+    let best = node;
     (node.replies || []).forEach(r=>{
-      const child = latestTsInTree(r);
-      if(child > best) best = child;
+      const child = latestNoteInTree(r);
+      if(String(child.created_at || '') > String(best.created_at || '')) best = child;
     });
     return best;
+  }
+  function latestTsInTree(node){
+    return String(latestNoteInTree(node).created_at || '');
+  }
+  function countNotesInTree(node){
+    let n = 1;
+    (node.replies || []).forEach(r=>{ n += countNotesInTree(r); });
+    return n;
   }
   /** Topics by latest activity (newest topic first). Within topic: oldest → newest + nested replies. */
   function groupByTopic(flat){
@@ -1321,24 +1340,40 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
     const groups = {};
     roots.forEach(root=>{
       const key = topicKey(root);
-      if(!groups[key]) groups[key] = { topic: key, roots: [], latest: '' };
+      if(!groups[key]) groups[key] = { topic: key, roots: [], latest: '', latestNote: null, count: 0 };
       groups[key].roots.push(root);
-      const latest = latestTsInTree(root);
-      if(latest > groups[key].latest) groups[key].latest = latest;
+      const latestNote = latestNoteInTree(root);
+      const latest = String(latestNote.created_at || '');
+      if(latest > groups[key].latest){
+        groups[key].latest = latest;
+        groups[key].latestNote = latestNote;
+      }
+      groups[key].count += countNotesInTree(root);
     });
     return Object.values(groups).sort((a,b)=> String(b.latest).localeCompare(String(a.latest)));
   }
+  function previewBody(text, n){
+    const s = String(text || '').replace(/\s+/g, ' ').trim();
+    return s.length > n ? s.slice(0, n) + '…' : s;
+  }
+  /** Rail: one card per topic (latest 3 topics). Body shows the newest reply in that thread. */
   function renderRail(){
     if(!comments.length){
       railList.innerHTML = '<p class="cr-empty">No notes yet. Open notes or scroll to Team notes below to post.</p>';
       return;
     }
-    railList.innerHTML = comments.slice(-3).reverse().map(c=>`
-      <div class="cr-item cr-item-btn" role="button" tabindex="0" data-id="${esc(c.id)}" title="Open full history">
-        <div class="cr-topic">${esc(topicKey(c))} ${newChipHtml(c)}</div>
-        <div class="cr-meta"><b>${esc(c.author)}</b> · ${esc(fmtTime(c.created_at))}</div>
-        <div class="cr-body">${esc(c.body.length>100?c.body.slice(0,100)+'…':c.body)}</div>
-      </div>`).join('');
+    const groups = groupByTopic(comments).slice(0, 3);
+    railList.innerHTML = groups.map(g=>{
+      const latest = g.latestNote || g.roots[0];
+      const isReply = !!(latest && latest.parent_id);
+      const openId = latest && latest.id ? latest.id : (g.roots[0] && g.roots[0].id) || '';
+      return `
+      <div class="cr-item cr-item-btn" role="button" tabindex="0" data-id="${esc(openId)}" title="Open this topic thread">
+        <div class="cr-topic">${esc(g.topic)} ${newChipHtml(latest)} <span class="cr-count">${g.count} note(s)</span></div>
+        <div class="cr-latest">${isReply ? 'Latest reply' : 'Latest note'} · <b>${esc(latest.author || '')}</b> · ${esc(fmtTime(latest.created_at))}</div>
+        <div class="cr-body">${esc(previewBody(latest.body, 100))}</div>
+      </div>`;
+    }).join('');
   }
   function renderCard(c, isReply, highlightId){
     const me = String(authorSel && authorSel.value || '').trim();
@@ -1354,6 +1389,7 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
     );
     const hl = highlightId && c.id === highlightId ? ' highlight' : '';
     return `<div class="comment-card${isReply?' reply':''}${hl}" data-id="${esc(c.id)}">
+      ${isReply ? '<div class="comment-reply-line">↳ Reply in this topic</div>' : ''}
       <div class="comment-meta"><span class="author">${esc(c.author)}</span><span>${esc(fmtTime(c.created_at))}</span>${newChipHtml(c)}${edited?'<span class="edited">(edited)</span>':''}</div>
       <div class="comment-body" data-body>${esc(c.body)}</div>
       ${actions ? '<div class="comment-actions">' + actions + '</div>' : ''}
@@ -1369,10 +1405,14 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
         function count(node){ acc += 1; (node.replies||[]).forEach(count); }
         count(r); return acc;
       }, 0);
+      const latest = g.latestNote;
+      const latestHint = latest
+        ? (latest.parent_id ? 'Latest reply' : 'Latest note') + ': ' + (latest.author || '') + ' · ' + fmtTime(latest.created_at)
+        : 'last ' + fmtTime(g.latest);
       html += `<div class="comment-topic-block" data-topic="${esc(g.topic)}">
         <div class="comment-topic-head">
           <span class="comment-topic-title">${esc(g.topic)}</span>
-          <span class="comment-topic-meta">${n} note(s) · last ${esc(fmtTime(g.latest))}</span>
+          <span class="comment-topic-meta">${n} note(s) · ${esc(latestHint)}</span>
         </div>`;
       // within topic: oldest root first
       g.roots.sort((a,b)=> String(a.created_at).localeCompare(String(b.created_at)));
@@ -1394,7 +1434,7 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
   function renderModalThread(){
     modalThread.innerHTML = buildThreadHtml(modalHighlightId);
     modalSub.textContent = comments.length
-      ? comments.length + ' note(s) · topics by latest activity · within topic: oldest → newest'
+      ? comments.length + ' note(s) · each topic is its own reply thread · newest activity first'
       : 'No notes yet';
     if(modalHighlightId) scrollToComment(modalHighlightId);
     else {
