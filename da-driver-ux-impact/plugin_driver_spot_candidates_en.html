@@ -1239,11 +1239,24 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
     }).filter(r => !r.deleted && r.section === SECTION)
       .sort((a, b) => String(a.created_at).localeCompare(String(b.created_at)));
   }
-  function isNewNote(c){
-    if(!c || !c.created_at) return false;
+  function noteTs(c){
+    if(!c || !c.created_at) return NaN;
     const ts = Date.parse(c.created_at);
+    return Number.isFinite(ts) ? ts : NaN;
+  }
+  /** NEW = newest by timestamp, or posted within the last 1 hour. */
+  function isNewNote(c){
+    const ts = noteTs(c);
     if(!Number.isFinite(ts)) return false;
-    return (Date.now() - ts) <= 24 * 60 * 60 * 1000;
+    const ageMs = Date.now() - ts;
+    if(ageMs < 0) return false; // future/bad clock → not NEW
+    if(ageMs <= 60 * 60 * 1000) return true;
+    let latest = -Infinity;
+    comments.forEach(x=>{
+      const t = noteTs(x);
+      if(Number.isFinite(t) && t > latest) latest = t;
+    });
+    return ts === latest;
   }
   function newChipHtml(c){
     return isNewNote(c) ? '<span class="comment-chip new">NEW</span>' : '';
