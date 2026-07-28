@@ -393,7 +393,7 @@
     <a href="#s7" data-s="s7">+3 Loop</a>
     <a href="#s8" data-s="s8">Bot +3</a>
     <a href="#s9" data-s="s9">Cases</a>
-    <a href="#" id="nav-notes" role="button">Notes</a>
+    <a href="#discussion-s8" id="nav-notes">Notes</a>
   </div>
 </nav>
 
@@ -1834,7 +1834,8 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
   if(railOpen) railOpen.addEventListener('click', ()=> openCommentsModal(''));
   if(navNotes) navNotes.addEventListener('click', ev=>{
     ev.preventDefault();
-    openCommentsModal('');
+    goToFullSection(true);
+    try{ history.replaceState(null, '', '#discussion-s8'); }catch(_){}
   });
   modal.querySelectorAll('[data-close-modal]').forEach(el=>{
     el.addEventListener('click', closeCommentsModal);
