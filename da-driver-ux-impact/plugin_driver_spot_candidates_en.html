@@ -172,6 +172,16 @@
   .comments-modal-close:hover{background:var(--neutbg)}
   .comments-modal-sub{margin:0;padding:8px 18px 0;font-size:12px;color:var(--muted);flex-shrink:0}
   .comments-modal-thread{flex:1 1 auto;min-height:0;overflow-y:auto;padding:14px 18px;margin:0;display:flex;flex-direction:column;gap:4px}
+  .comments-modal-back{font:inherit;font-size:12px;font-weight:700;color:var(--blue);background:none;border:0;padding:0;cursor:pointer;margin:0 0 8px;text-align:left}
+  .comments-modal-back:hover{text-decoration:underline}
+  .topic-index-item{display:block;width:100%;text-align:left;font:inherit;cursor:pointer;border:1px solid var(--grid);
+    border-radius:12px;padding:12px 14px;margin:0 0 10px;background:var(--surface);transition:background .15s,border-color .15s}
+  .topic-index-item:hover{background:var(--neutbg);border-color:color-mix(in srgb,var(--blue) 40%,var(--grid))}
+  .topic-index-item .ti-title{font-size:13.5px;font-weight:800;margin:0 0 4px}
+  .topic-index-item .ti-meta{font-size:11px;color:var(--muted);margin:0 0 4px}
+  .topic-index-item .ti-body{font-size:12px;color:var(--ink2);line-height:1.4}
+  .topic-index-filter{width:100%;font:inherit;font-size:13px;padding:8px 10px;border:1px solid var(--border);
+    border-radius:10px;margin:0 0 12px;background:#fff}
   .comments-modal-foot{padding:10px 18px 12px;border-top:1px solid var(--grid);flex:0 0 auto;background:var(--plane)}
   .comments-modal-foot .comment-compose{border-top:0;padding-top:0;margin-top:0}
   .comments-modal-foot .comment-compose label{margin-bottom:2px}
@@ -395,7 +405,7 @@
 <aside class="comments-rail" aria-label="Latest notes">
   <h4>Latest notes</h4>
   <div id="comments-rail-list"><p class="cr-empty">Loading…</p></div>
-  <button type="button" class="cr-link" id="comments-rail-open">View all notes</button>
+  <button type="button" class="cr-link" id="comments-rail-open">Browse topics</button>
   <p class="cr-status" id="comments-rail-status"></p>
 </aside>
 </div>
@@ -798,7 +808,10 @@
   <div class="comments-modal-backdrop" data-close-modal tabindex="-1"></div>
   <div class="comments-modal-panel" role="dialog" aria-modal="true" aria-labelledby="comments-modal-title">
     <div class="comments-modal-head">
-      <h3 id="comments-modal-title">Team notes history</h3>
+      <div style="min-width:0;flex:1">
+        <button type="button" class="comments-modal-back" id="comments-modal-back" hidden>← All topics</button>
+        <h3 id="comments-modal-title">Topics</h3>
+      </div>
       <button type="button" class="comments-modal-close" data-close-modal aria-label="Close">✕</button>
     </div>
     <p class="comments-modal-sub" id="comments-modal-sub"></p>
@@ -1190,6 +1203,8 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
   const cancelReply = $('comment-cancel-reply');
   const submitBtn = $('comment-submit');
   const modal = $('comments-modal');
+  const modalTitle = $('comments-modal-title');
+  const modalBack = $('comments-modal-back');
   const modalSub = $('comments-modal-sub');
   const modalThread = $('comments-modal-thread');
   const modalGoto = $('comments-modal-goto');
@@ -1201,6 +1216,9 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
   let readOnlyFromSheet = false;
   let modalOpen = false;
   let modalHighlightId = '';
+  let modalMode = 'index'; // 'index' = topic list · 'topic' = one thread
+  let modalTopicKey = '';
+  let topicFilterQuery = '';
 
   AUTHORS.forEach(a=>{
     const o = document.createElement('option');
@@ -1404,7 +1422,7 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
   /** Rail: one card per topic (latest 3 topics). Body shows the newest reply in that thread. */
   function renderRail(){
     if(!comments.length){
-      railList.innerHTML = '<p class="cr-empty">No notes yet. Open notes or scroll to Team notes below to post.</p>';
+      railList.innerHTML = '<p class="cr-empty">No topics yet. Browse topics or post below.</p>';
       return;
     }
     const groups = groupByTopic(comments).slice(0, 3);
@@ -1442,8 +1460,48 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
       ${actions ? '<div class="comment-actions">' + actions + '</div>' : ''}
       </div>`;
   }
-  function buildThreadHtml(highlightId){
+  function findTopicKeyByNoteId(id){
+    if(!id) return '';
     const groups = groupByTopic(comments);
+    for(const g of groups){
+      for(const root of g.roots){
+        const notes = walkNotes(root, []);
+        if(notes.some(n => n.id === id)) return g.topic;
+      }
+    }
+    return '';
+  }
+  function buildTopicIndexHtml(){
+    let groups = groupByTopic(comments);
+    const q = String(topicFilterQuery || '').trim().toLowerCase();
+    if(q){
+      groups = groups.filter(g =>
+        g.topic.toLowerCase().includes(q) ||
+        String(g.owner||'').toLowerCase().includes(q) ||
+        previewBody((g.latestNote&&g.latestNote.body)||'', 200).toLowerCase().includes(q)
+      );
+    }
+    let html = `<input type="search" class="topic-index-filter" id="topic-index-filter" placeholder="Filter topics…" value="${esc(topicFilterQuery)}" aria-label="Filter topics">`;
+    if(!groups.length){
+      html += '<p class="disc-sub" style="margin:0">No topics yet. Post a note with a topic below.</p>';
+      return html;
+    }
+    html += groups.map(g=>{
+      const latest = g.latestNote || g.roots[0];
+      const owner = topicOwner(g);
+      const color = authorColorClass(owner);
+      const isReply = !!(latest && latest.parent_id);
+      return `<button type="button" class="topic-index-item ${color}" data-open-topic="${esc(g.topic)}">
+        <div class="ti-title ${color}"><span class="topic-author-label">${authorPillHtml(owner)} <span>${esc(g.topic)}</span></span> ${newChipHtml(latest)}</div>
+        <div class="ti-meta">${g.count} note(s) · ${isReply?'Latest reply':'Latest note'}: <b>${esc(latest.author||'')}</b> · ${esc(fmtTime(latest.created_at))}</div>
+        <div class="ti-body">${esc(previewBody(latest&&latest.body, 120))}</div>
+      </button>`;
+    }).join('');
+    return html;
+  }
+  function buildThreadHtml(highlightId, topicOnly){
+    let groups = groupByTopic(comments);
+    if(topicOnly) groups = groups.filter(g => g.topic === topicOnly);
     if(!groups.length) return '<p class="disc-sub" style="margin:0">No notes yet. Write one below.</p>';
     let html = '';
     function walk(nodes, isReply){ nodes.forEach(n=>{ html += renderCard(n, isReply, highlightId); if(n.replies.length) walk(n.replies, true); }); }
@@ -1480,17 +1538,46 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
     catch(e){ card = modalThread.querySelector('.comment-card.highlight'); }
     if(card) requestAnimationFrame(()=> card.scrollIntoView({ block:'center', behavior:'smooth' }));
   }
-  function renderModalThread(){
-    modalThread.innerHTML = buildThreadHtml(modalHighlightId);
-    modalSub.textContent = comments.length
-      ? comments.length + ' note(s) · each topic is its own reply thread · newest activity first'
-      : 'No notes yet';
-    if(modalHighlightId) scrollToComment(modalHighlightId);
-    else {
-      // open without target: jump to latest activity (first topic block = newest)
-      const first = modalThread.querySelector('.comment-topic-block');
-      if(first) requestAnimationFrame(()=> first.scrollIntoView({ block:'start', behavior:'smooth' }));
+  function syncTopicComposeLock(){
+    if(modalMode === 'topic' && modalTopicKey && modalTopicKey !== 'Untitled'){
+      topicIn.value = modalTopicKey;
+      topicIn.disabled = true;
+    }else if(!replyParentId){
+      topicIn.disabled = readOnlyFromSheet;
     }
+  }
+  function renderModalThread(){
+    if(modalMode === 'index'){
+      if(modalTitle) modalTitle.textContent = 'Topics';
+      if(modalBack) modalBack.hidden = true;
+      const groups = groupByTopic(comments);
+      modalSub.textContent = groups.length
+        ? groups.length + ' topic(s) · open one thread — not all at once'
+        : 'No topics yet';
+      modalThread.innerHTML = buildTopicIndexHtml();
+      const filter = $('topic-index-filter');
+      if(filter){
+        filter.addEventListener('input', ()=>{
+          topicFilterQuery = filter.value;
+          const keep = filter.selectionStart;
+          renderModalThread();
+          const f2 = $('topic-index-filter');
+          if(f2){ f2.focus(); try{ f2.setSelectionRange(keep, keep); }catch(e){} }
+        });
+      }
+      syncTopicComposeLock();
+      return;
+    }
+    // single topic thread
+    if(modalTitle) modalTitle.textContent = modalTopicKey || 'Topic';
+    if(modalBack) modalBack.hidden = false;
+    modalThread.innerHTML = buildThreadHtml(modalHighlightId, modalTopicKey);
+    const g = groupByTopic(comments).find(x => x.topic === modalTopicKey);
+    modalSub.textContent = g
+      ? g.count + ' note(s) in this topic · oldest → newest · replies nested'
+      : 'Topic thread';
+    syncTopicComposeLock();
+    if(modalHighlightId) scrollToComment(modalHighlightId);
   }
   function refreshThreads(){
     renderThread();
@@ -1523,24 +1610,55 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
       composeHome.appendChild(composeEl);
     }
   }
-  function openCommentsModal(id){
-    modalHighlightId = id || '';
-    modalOpen = true;
-    modal.hidden = false;
-    modal.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
-    parkComposeInModal();
+  function openTopicThread(topicKey, highlightId){
+    modalMode = 'topic';
+    modalTopicKey = topicKey || '';
+    modalHighlightId = highlightId || '';
+    topicFilterQuery = '';
+    if(!modalOpen){
+      modalOpen = true;
+      modal.hidden = false;
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+      parkComposeInModal();
+    }
+    setReply('', '');
     renderModalThread();
     syncComposeReadonly();
+    syncTopicComposeLock();
     if(!readOnlyFromSheet) bodyIn.focus();
-    else {
-      const closeBtn = modal.querySelector('.comments-modal-close');
-      if(closeBtn) closeBtn.focus();
+  }
+  function openTopicIndex(){
+    modalMode = 'index';
+    modalTopicKey = '';
+    modalHighlightId = '';
+    if(!modalOpen){
+      modalOpen = true;
+      modal.hidden = false;
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+      parkComposeInModal();
     }
+    setReply('', '');
+    if(!readOnlyFromSheet){ topicIn.disabled = false; }
+    renderModalThread();
+    syncComposeReadonly();
+  }
+  function openCommentsModal(id){
+    // With note id → that topic thread only. Without → topic index (not all threads).
+    if(id){
+      const key = findTopicKeyByNoteId(id);
+      openTopicThread(key || topicKey(comments.find(c=>c.id===id)||{}), id);
+      return;
+    }
+    openTopicIndex();
   }
   function closeCommentsModal(){
     modalOpen = false;
     modalHighlightId = '';
+    modalMode = 'index';
+    modalTopicKey = '';
+    topicFilterQuery = '';
     parkComposeHome();
     modal.hidden = true;
     modal.setAttribute('aria-hidden', 'true');
@@ -1608,11 +1726,10 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
       topicIn.value = '';
       setReply('', '');
       const newId = data && data.comment && data.comment.id;
+      const postedTopic = (data && data.comment && data.comment.topic) || topic;
       await loadComments();
       if(newId){
-        modalHighlightId = newId;
-        if(!modalOpen) openCommentsModal(newId);
-        else renderModalThread();
+        openTopicThread(topicKey({ topic: postedTopic }), newId);
       }
     }catch(err){
       showBanner(esc(err.message) + ' — try <a href="'+WIDGET_URL+'" target="_blank" rel="noopener">new tab ↗</a>');
@@ -1682,6 +1799,12 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
     }
   }
   modalThread.addEventListener('click', handleThreadClick);
+  modalThread.addEventListener('click', ev=>{
+    const btn = ev.target.closest('[data-open-topic]');
+    if(!btn) return;
+    openTopicThread(btn.getAttribute('data-open-topic'), '');
+  });
+  if(modalBack) modalBack.addEventListener('click', ()=> openTopicIndex());
   if(modalGoto) modalGoto.addEventListener('click', ev=>{
     ev.preventDefault();
     goToFullSection(true);
