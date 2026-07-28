@@ -1203,11 +1203,39 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
     }
   }
   async function apiCall(action, payload){
-    const params = new URLSearchParams({ action, ...payload });
-    const url = COMMENTS_API + '?' + params.toString();
-    const res = await fetch(url, { method: 'GET', cache: 'no-store', redirect: 'follow' });
-    if(!res.ok) throw new Error('Could not reach notes API (HTTP ' + res.status + ')');
-    const data = await res.json();
+    const body = { action, ...(payload || {}) };
+    // Prefer POST for writes — long note bodies break GET URL length limits.
+    const usePost = action === 'add' || action === 'edit' || action === 'delete';
+    let data = null;
+    if(usePost){
+      try{
+        const res = await fetch(COMMENTS_API, {
+          method: 'POST',
+          cache: 'no-store',
+          redirect: 'follow',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(body)
+        });
+        if(res.ok){
+          data = await res.json();
+        }
+      }catch(e){ data = null; }
+    }
+    if(!data){
+      const params = new URLSearchParams({ action });
+      Object.keys(body).forEach(k=>{
+        if(k === 'action') return;
+        if(body[k] == null) return;
+        params.set(k, String(body[k]));
+      });
+      const url = COMMENTS_API + '?' + params.toString();
+      if(url.length > 1800 && (action === 'add' || action === 'edit')){
+        throw new Error('Note is too long for this browser save. Redeploy Apps Script, or edit topic only / use new-tab widget.');
+      }
+      const res = await fetch(url, { method: 'GET', cache: 'no-store', redirect: 'follow' });
+      if(!res.ok) throw new Error('Could not reach notes API (HTTP ' + res.status + ')');
+      data = await res.json();
+    }
     if(!data || !data.ok) throw new Error((data && data.error) || 'Request failed');
     return data;
   }
@@ -1461,6 +1489,10 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
         return;
       }
     }
+    const topicSupported = !comments.length || comments.some(c => Object.prototype.hasOwnProperty.call(c, 'topic'));
+    if(!topicSupported){
+      showBanner('Topic is not enabled on the live Apps Script yet. Paste updated <b>Code.gs</b> → Deploy → <b>New version</b>. Until then, Save topic will not stick.');
+    }
     renderRail();
     refreshThreads();
     syncComposeReadonly();
@@ -1523,18 +1555,33 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
       const ta = document.createElement('textarea');
       ta.value = old;
       ta.style.cssText = 'width:100%;min-height:72px;font:inherit;padding:8px;border-radius:8px;border:1px solid var(--grid)';
+      const err = document.createElement('div');
+      err.style.cssText = 'width:100%;font-size:12px;color:var(--critical);margin:6px 0;display:none';
       const saveBtn = document.createElement('button');
       saveBtn.type = 'button'; saveBtn.className = 'primary'; saveBtn.textContent = 'Save';
       const cancelBtn = document.createElement('button');
       cancelBtn.type = 'button'; cancelBtn.textContent = 'Cancel';
-      actions.append(topicEdit, ta, saveBtn, cancelBtn);
+      actions.append(topicEdit, ta, err, saveBtn, cancelBtn);
       cancelBtn.onclick = ()=> refreshThreads();
       saveBtn.onclick = async ()=>{
         const nb = ta.value.trim();
         const nt = topicEdit.value.trim();
-        if(!nb || !nt) return;
-        try{ await apiCall('edit', { id, author: me, body: nb, topic: nt }); await loadComments(); }
-        catch(err){ showBanner(esc(err.message)); }
+        err.style.display = 'none';
+        if(!nt){ err.textContent = 'Topic is required.'; err.style.display = 'block'; topicEdit.focus(); return; }
+        if(!nb){ err.textContent = 'Note body is required.'; err.style.display = 'block'; ta.focus(); return; }
+        const payload = { id, author: me, topic: nt };
+        // Only send body when changed — keeps request small when fixing Untitled topic.
+        if(nb !== String(old || '').trim()) payload.body = nb;
+        saveBtn.disabled = true; saveBtn.textContent = 'Saving…';
+        try{
+          await apiCall('edit', payload);
+          await loadComments();
+        }catch(e){
+          err.textContent = e.message || 'Save failed';
+          err.style.display = 'block';
+          showBanner(esc(e.message) + ' — if topic never sticks: redeploy Apps Script <b>Code.gs</b> (New version). Or <a href="'+WIDGET_URL+'" target="_blank" rel="noopener">new tab ↗</a>');
+          saveBtn.disabled = false; saveBtn.textContent = 'Save';
+        }
       };
     }
   }
