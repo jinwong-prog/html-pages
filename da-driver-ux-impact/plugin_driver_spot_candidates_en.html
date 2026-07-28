@@ -1714,7 +1714,13 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
     renderRail();
     refreshThreads();
     syncComposeReadonly();
-    railStatus.textContent = comments.length ? comments.length + ' note(s)' : '';
+    if(!comments.length){
+      railStatus.textContent = '';
+    }else{
+      const topicN = groupByTopic(comments).length;
+      const noteN = comments.length;
+      railStatus.textContent = topicN + ' topic(s) · ' + noteN + ' note(s)';
+    }
   }
   async function postComment(){
     if(readOnlyFromSheet) return;
