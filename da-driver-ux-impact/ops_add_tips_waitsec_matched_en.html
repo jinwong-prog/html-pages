@@ -324,7 +324,7 @@
   .comments-modal-goto:hover{text-decoration:underline}
   .comments-modal-banner{margin:8px 18px 0;flex-shrink:0}
   #comments-compose-home:empty{display:none}
-  html{color-scheme:light only}
+  html{color-scheme:light only;scrollbar-gutter:stable}
   body{background:#f9f9f7!important;color:#0b0b0b}
 
 
@@ -1880,6 +1880,7 @@ Otherwise → normal subsidy strategy
     syncComposeReadonly();
     syncTopicComposeLock();
     if(!readOnlyFromSheet) bodyIn.focus();
+    if(typeof syncRightRailToTeamNotes === 'function') requestAnimationFrame(syncRightRailToTeamNotes);
   }
   function openTopicIndex(){
     const leaveLockedTopic = (modalMode === 'topic' && !!modalTopicKey);
@@ -1903,6 +1904,7 @@ Otherwise → normal subsidy strategy
     }
     renderModalThread();
     syncComposeReadonly();
+    if(typeof syncRightRailToTeamNotes === 'function') requestAnimationFrame(syncRightRailToTeamNotes);
   }
   function openCommentsModal(id){
     // With note id → that topic thread only. Without → topic index (not all threads).
@@ -1932,6 +1934,13 @@ Otherwise → normal subsidy strategy
     modal.hidden = true;
     modal.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
+    // Compose returned → Team notes taller again; resync rail (avoid stuck short / page shrink look).
+    requestAnimationFrame(function(){
+      if(typeof syncRightRailToTeamNotes === 'function') syncRightRailToTeamNotes();
+      requestAnimationFrame(function(){
+        if(typeof syncRightRailToTeamNotes === 'function') syncRightRailToTeamNotes();
+      });
+    });
   }
   function setReply(parentId, parentAuthor){
     replyParentId = parentId || '';
@@ -2142,6 +2151,13 @@ Otherwise → normal subsidy strategy
       return;
     }
     const disc = $('discussion-waitsec-en');
+    // Modal parked compose away from Team notes → section is artificially short.
+    // Keep rail at viewport height so closing does not look like the page "shrunk".
+    if(modalOpen && composeEl && composeHome && composeEl.parentElement !== composeHome){
+      rightRail.style.maxHeight = 'calc(100vh - 84px)';
+      rightRail.style.height = 'calc(100vh - 84px)';
+      return;
+    }
     if(!disc){
       rightRail.style.height = '';
       rightRail.style.maxHeight = 'calc(100vh - 84px)';
