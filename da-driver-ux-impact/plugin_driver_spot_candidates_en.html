@@ -113,7 +113,14 @@
   .comment-chip.new{background:rgba(237,161,0,.18);color:#9a6b00;border:1px solid rgba(237,161,0,.35)}
   .comments-rail .cr-topic{font-size:11px;font-weight:800;color:var(--blue);margin:0 0 2px}
   .comments-rail .cr-chip{margin-left:4px;vertical-align:middle}
-  .comments-rail .cr-latest{font-size:10.5px;font-weight:700;margin:0 0 3px}
+  .comments-rail .cr-latest{font-size:10.5px;font-weight:700;margin:0 0 3px;display:flex;flex-wrap:wrap;align-items:center;gap:4px}
+  .comments-rail .cr-latest.ming{color:#1a5fa8}
+  .comments-rail .cr-latest.jin{color:#1b6b48}
+  .comments-rail .cr-latest.connie{color:#8a4518}
+  .comments-rail .cr-latest.matt{color:#5a3a8a}
+  .comments-rail .cr-latest.other{color:var(--ink2)}
+  .comments-rail .cr-latest .cr-latest-label{color:var(--muted);font-weight:600}
+  .topic-index-item .ti-meta .topic-author-pill{vertical-align:middle}
   .comments-rail .cr-count{font-size:10px;color:var(--muted);font-weight:600}
   .topic-author-label{display:inline-flex;align-items:center;gap:5px;flex-wrap:wrap}
   .topic-author-pill{display:inline-block;font-size:10px;font-weight:800;padding:2px 7px;border-radius:999px;
@@ -1436,10 +1443,12 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
       const openId = latest && latest.id ? latest.id : (g.roots[0] && g.roots[0].id) || '';
       const owner = topicOwner(g);
       const color = authorColorClass(owner);
+      const latestAuthor = String(latest && latest.author || '').trim();
+      const latestColor = authorColorClass(latestAuthor);
       return `
       <div class="cr-item cr-item-btn ${color}" role="button" tabindex="0" data-id="${esc(openId)}" title="Open this topic thread">
         <div class="cr-topic ${color}"><span class="topic-author-label">${authorPillHtml(owner)} <span>${esc(g.topic)}</span></span> ${newChipHtml(latest)} <span class="cr-count">${g.count} note(s)</span></div>
-        <div class="cr-latest" style="color:inherit">${isReply ? 'Latest reply' : 'Latest note'} · <b>${esc(latest.author || '')}</b> · ${esc(fmtTime(latest.created_at))}</div>
+        <div class="cr-latest ${latestColor}"><span class="cr-latest-label">${isReply ? 'Latest reply by' : 'Latest by'}</span> ${authorPillHtml(latestAuthor)} <span class="cr-latest-label">· ${esc(fmtTime(latest.created_at))}</span></div>
         <div class="cr-body">${esc(previewBody(latest.body, 100))}</div>
       </div>`;
     }).join('');
@@ -1495,9 +1504,10 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
       const owner = topicOwner(g);
       const color = authorColorClass(owner);
       const isReply = !!(latest && latest.parent_id);
+      const latestAuthor = String(latest && latest.author || '').trim();
       return `<button type="button" class="topic-index-item ${color}" data-open-topic="${esc(g.topic)}">
         <div class="ti-title ${color}"><span class="topic-author-label">${authorPillHtml(owner)} <span>${esc(g.topic)}</span></span> ${newChipHtml(latest)}</div>
-        <div class="ti-meta">${g.count} note(s) · ${isReply?'Latest reply':'Latest note'}: <b>${esc(latest.author||'')}</b> · ${esc(fmtTime(latest.created_at))}</div>
+        <div class="ti-meta">${g.count} note(s) · ${isReply?'Latest reply by':'Latest by'} ${authorPillHtml(latestAuthor)} · ${esc(fmtTime(latest.created_at))}</div>
         <div class="ti-body">${esc(previewBody(latest&&latest.body, 120))}</div>
       </button>`;
     }).join('');
