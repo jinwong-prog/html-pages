@@ -85,7 +85,7 @@
   .comments-rail .cr-item.cr-item-btn:hover{background:var(--neutbg);border-color:color-mix(in srgb,var(--blue) 35%,var(--grid))}
   .comments-rail .cr-meta{color:var(--muted);font-size:10.5px;margin-bottom:3px}
   .comments-rail .cr-meta b{color:var(--ink);font-weight:700}
-  .comments-rail .cr-body{white-space:pre-wrap;word-break:break-word}
+  .comments-rail .cr-body{white-space:pre-wrap;word-break:break-word;font-size:11.5px;color:var(--ink);line-height:1.4}
   .comments-rail .cr-empty{color:var(--muted);font-size:11.5px}
   .comments-rail .cr-link{display:inline-block;margin-top:8px;font-size:11px;font-weight:700;color:var(--blue);text-decoration:none;background:none;border:0;padding:0;cursor:pointer;font-family:inherit}
   .comments-rail .cr-link:hover{text-decoration:underline}
@@ -111,9 +111,16 @@
   .comment-meta .edited{font-style:italic}
   .comment-chip{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.04em;padding:2px 6px;border-radius:999px;line-height:1.2}
   .comment-chip.new{background:rgba(237,161,0,.18);color:#9a6b00;border:1px solid rgba(237,161,0,.35)}
-  .comments-rail .cr-topic{font-size:11px;font-weight:800;color:var(--blue);margin:0 0 2px}
-  .comments-rail .cr-chip{margin-left:4px;vertical-align:middle}
-  .comments-rail .cr-latest{font-size:10.5px;font-weight:700;margin:0 0 3px;display:flex;flex-wrap:wrap;align-items:center;gap:4px}
+  .comments-rail .cr-labels{display:flex;flex-direction:column;align-items:flex-start;gap:5px;margin:0 0 8px;
+    padding:0 0 8px;border-bottom:1px dashed var(--grid)}
+  .comments-rail .cr-topic{font-size:11px;font-weight:800;color:var(--blue);margin:0;display:flex;flex-wrap:wrap;
+    align-items:center;gap:5px;width:100%}
+  .comments-rail .cr-chip{margin-left:0;vertical-align:middle}
+  .comments-rail .cr-kind{display:inline-block;font-size:9.5px;font-weight:800;letter-spacing:.03em;padding:1px 6px;
+    border-radius:999px;line-height:1.3;border:1px solid transparent}
+  .comments-rail .cr-kind.note{background:var(--neutbg);color:var(--ink2);border-color:var(--grid)}
+  .comments-rail .cr-kind.reply{background:rgba(42,120,214,.10);color:#1a5fa8;border-color:rgba(42,120,214,.28)}
+  .comments-rail .cr-latest{font-size:10.5px;font-weight:700;margin:0;display:flex;flex-wrap:wrap;align-items:center;gap:4px;width:100%}
   .comments-rail .cr-latest.ming{color:#1a5fa8}
   .comments-rail .cr-latest.jin{color:#1b6b48}
   .comments-rail .cr-latest.connie{color:#8a4518}
@@ -1445,10 +1452,14 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
       const color = authorColorClass(owner);
       const latestAuthor = String(latest && latest.author || '').trim();
       const latestColor = authorColorClass(latestAuthor);
+      const kind = isReply ? 'reply' : 'note';
+      const kindLab = isReply ? 'Reply' : 'Note';
       return `
       <div class="cr-item cr-item-btn ${color}" role="button" tabindex="0" data-id="${esc(openId)}" title="Open this topic thread">
-        <div class="cr-topic ${color}"><span class="topic-author-label">${authorPillHtml(owner)} <span>${esc(g.topic)}</span></span> ${newChipHtml(latest)} <span class="cr-count">${g.count} note(s)</span></div>
-        <div class="cr-latest ${latestColor}"><span class="cr-latest-label">${isReply ? 'Latest reply by' : 'Latest by'}</span> ${authorPillHtml(latestAuthor)} <span class="cr-latest-label">· ${esc(fmtTime(latest.created_at))}</span></div>
+        <div class="cr-labels">
+          <div class="cr-topic ${color}"><span class="topic-author-label">${authorPillHtml(owner)} <span>${esc(g.topic)}</span></span> ${newChipHtml(latest)} <span class="cr-count">${g.count} note(s)</span></div>
+          <div class="cr-latest ${latestColor}"><span class="cr-kind ${kind}">${kindLab}</span><span class="cr-latest-label">${isReply ? 'Latest reply by' : 'Latest by'}</span> ${authorPillHtml(latestAuthor)} <span class="cr-latest-label">· ${esc(fmtTime(latest.created_at))}</span></div>
+        </div>
         <div class="cr-body">${esc(previewBody(latest.body, 100))}</div>
       </div>`;
     }).join('');
