@@ -1882,6 +1882,7 @@ Otherwise → normal subsidy strategy
     if(!readOnlyFromSheet) bodyIn.focus();
   }
   function openTopicIndex(){
+    const leaveLockedTopic = (modalMode === 'topic' && !!modalTopicKey);
     modalMode = 'index';
     modalTopicKey = '';
     modalHighlightId = '';
@@ -1895,7 +1896,11 @@ Otherwise → normal subsidy strategy
     modal.classList.add('index-mode');
     parkComposeHome();
     setReply('', '');
-    if(!readOnlyFromSheet){ topicIn.disabled = false; }
+    if(!readOnlyFromSheet){
+      topicIn.disabled = false;
+      // Leaving a locked thread: clear so home Topic is not stuck on that title.
+      if(leaveLockedTopic) topicIn.value = '';
+    }
     renderModalThread();
     syncComposeReadonly();
   }
@@ -1916,6 +1921,14 @@ Otherwise → normal subsidy strategy
     topicFilterQuery = '';
     modal.classList.remove('index-mode');
     parkComposeHome();
+    // Home + modal share one compose. Opening a topic locks Topic for that thread —
+    // unlock + clear on close so the blank is editable again (was: stuck filled + disabled).
+    setReply('', '');
+    if(!readOnlyFromSheet){
+      topicIn.disabled = false;
+      topicIn.value = '';
+    }
+    syncComposeReadonly();
     modal.hidden = true;
     modal.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
