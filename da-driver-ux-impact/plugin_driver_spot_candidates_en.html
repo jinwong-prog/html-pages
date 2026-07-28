@@ -1313,6 +1313,24 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
     const t = String(c.topic || '').trim();
     return t || 'Untitled';
   }
+  function authorColorClass(name){
+    const n = String(name || '').trim().toLowerCase();
+    if(n === 'ming') return 'ming';
+    if(n === 'jin') return 'jin';
+    if(n === 'connie') return 'connie';
+    if(n === 'matt') return 'matt';
+    return 'other';
+  }
+  function authorPillHtml(name){
+    const n = String(name || '').trim() || 'Unknown';
+    return `<span class="topic-author-pill ${authorColorClass(n)}">${esc(n)}</span>`;
+  }
+  /** Topic owner = author of the oldest root note in that topic. */
+  function topicOwner(group){
+    if(group.owner) return group.owner;
+    const roots = (group.roots || []).slice().sort((a,b)=> String(a.created_at).localeCompare(String(b.created_at)));
+    return roots.length ? String(roots[0].author || '').trim() : '';
+  }
   function walkNotes(node, out){
     out.push(node);
     (node.replies || []).forEach(r=> walkNotes(r, out));
@@ -1340,7 +1358,7 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
     const groups = {};
     roots.forEach(root=>{
       const key = topicKey(root);
-      if(!groups[key]) groups[key] = { topic: key, roots: [], latest: '', latestNote: null, count: 0 };
+      if(!groups[key]) groups[key] = { topic: key, roots: [], latest: '', latestNote: null, count: 0, owner: '' };
       groups[key].roots.push(root);
       const latestNote = latestNoteInTree(root);
       const latest = String(latestNote.created_at || '');
@@ -1349,6 +1367,10 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
         groups[key].latestNote = latestNote;
       }
       groups[key].count += countNotesInTree(root);
+    });
+    Object.values(groups).forEach(g=>{
+      const sorted = g.roots.slice().sort((a,b)=> String(a.created_at).localeCompare(String(b.created_at)));
+      g.owner = sorted.length ? String(sorted[0].author || '').trim() : '';
     });
     return Object.values(groups).sort((a,b)=> String(b.latest).localeCompare(String(a.latest)));
   }
@@ -1367,10 +1389,12 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
       const latest = g.latestNote || g.roots[0];
       const isReply = !!(latest && latest.parent_id);
       const openId = latest && latest.id ? latest.id : (g.roots[0] && g.roots[0].id) || '';
+      const owner = topicOwner(g);
+      const color = authorColorClass(owner);
       return `
-      <div class="cr-item cr-item-btn" role="button" tabindex="0" data-id="${esc(openId)}" title="Open this topic thread">
-        <div class="cr-topic">${esc(g.topic)} ${newChipHtml(latest)} <span class="cr-count">${g.count} note(s)</span></div>
-        <div class="cr-latest">${isReply ? 'Latest reply' : 'Latest note'} · <b>${esc(latest.author || '')}</b> · ${esc(fmtTime(latest.created_at))}</div>
+      <div class="cr-item cr-item-btn ${color}" role="button" tabindex="0" data-id="${esc(openId)}" title="Open this topic thread">
+        <div class="cr-topic ${color}"><span class="topic-author-label">${authorPillHtml(owner)} <span>${esc(g.topic)}</span></span> ${newChipHtml(latest)} <span class="cr-count">${g.count} note(s)</span></div>
+        <div class="cr-latest" style="color:inherit">${isReply ? 'Latest reply' : 'Latest note'} · <b>${esc(latest.author || '')}</b> · ${esc(fmtTime(latest.created_at))}</div>
         <div class="cr-body">${esc(previewBody(latest.body, 100))}</div>
       </div>`;
     }).join('');
@@ -1406,12 +1430,14 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
         count(r); return acc;
       }, 0);
       const latest = g.latestNote;
+      const owner = topicOwner(g);
+      const color = authorColorClass(owner);
       const latestHint = latest
         ? (latest.parent_id ? 'Latest reply' : 'Latest note') + ': ' + (latest.author || '') + ' · ' + fmtTime(latest.created_at)
         : 'last ' + fmtTime(g.latest);
-      html += `<div class="comment-topic-block" data-topic="${esc(g.topic)}">
+      html += `<div class="comment-topic-block ${color}" data-topic="${esc(g.topic)}">
         <div class="comment-topic-head">
-          <span class="comment-topic-title">${esc(g.topic)}</span>
+          <span class="comment-topic-title ${color}"><span class="topic-author-label">${authorPillHtml(owner)} <span>${esc(g.topic)}</span></span></span>
           <span class="comment-topic-meta">${n} note(s) · ${esc(latestHint)}</span>
         </div>`;
       // within topic: oldest root first
