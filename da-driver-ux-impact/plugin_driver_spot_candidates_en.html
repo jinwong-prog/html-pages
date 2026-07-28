@@ -64,12 +64,15 @@
   .right-rail{display:none}
   @media (min-width:1580px){
     .right-rail{display:flex;flex-direction:column;gap:12px;position:fixed;top:64px;right:24px;
-      width:280px;max-height:calc(100vh - 84px);overflow-y:auto;z-index:40}
-    .cheat{display:block;position:static;width:auto;max-height:none;
+      width:280px;max-height:calc(100vh - 84px);overflow:hidden;z-index:40}
+    .cheat{display:block;position:static;width:auto;max-height:none;flex:0 0 auto;
       background:var(--surface);border:1px solid var(--border);border-radius:14px;
       padding:14px 16px;box-shadow:0 6px 24px rgba(0,0,0,.06)}
-    .comments-rail{display:block;background:var(--surface);border:1px solid var(--border);
+    .comments-rail{display:flex;flex-direction:column;flex:1 1 auto;min-height:0;
+      background:var(--surface);border:1px solid var(--border);
       border-radius:14px;padding:14px 16px;box-shadow:0 6px 24px rgba(0,0,0,.06)}
+    .comments-rail #comments-rail-list{flex:1 1 auto;min-height:0;overflow-y:auto}
+    .comments-rail .cr-link,.comments-rail .cr-status{flex:0 0 auto}
   }
   .cheat{display:none}
   @media (min-width:1580px){.cheat{display:block}}
@@ -77,10 +80,9 @@
   .comments-rail .cr-sub{font-size:11px;color:var(--muted);margin:0 0 10px}
   .comments-rail .cr-item{font-size:11.5px;line-height:1.4}
   .comments-rail .cr-item.cr-item-btn{cursor:pointer;border:1px solid var(--grid);border-radius:10px;
-    margin:0 0 12px;padding:10px 10px;background:var(--surface);transition:background .15s,border-color .15s}
+    margin:0 0 16px;padding:10px 10px;background:var(--surface);transition:background .15s,border-color .15s}
   .comments-rail .cr-item.cr-item-btn:last-child{margin-bottom:4px}
   .comments-rail .cr-item.cr-item-btn:hover{background:var(--neutbg);border-color:color-mix(in srgb,var(--blue) 35%,var(--grid))}
-  .comments-rail .cr-item:first-of-type{border-top:1px solid var(--grid)}
   .comments-rail .cr-meta{color:var(--muted);font-size:10.5px;margin-bottom:3px}
   .comments-rail .cr-meta b{color:var(--ink);font-weight:700}
   .comments-rail .cr-body{white-space:pre-wrap;word-break:break-word}
@@ -1837,6 +1839,39 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
   submitBtn.addEventListener('click', postComment);
   cancelReply.addEventListener('click', ()=> setReply('', ''));
   bodyIn.addEventListener('keydown', e=>{ if((e.metaKey||e.ctrlKey)&&e.key==='Enter'){ e.preventDefault(); postComment(); } });
+
+  // Keep right-rail bottom aligned with Team notes (#discussion-s8) bottom (wide screens).
+  const rightRail = document.querySelector('.right-rail');
+  const RAIL_TOP = 64;
+  const RAIL_BOTTOM_PAD = 20;
+  function syncRightRailToTeamNotes(){
+    if(!rightRail) return;
+    if(window.matchMedia('(max-width:1579px)').matches){
+      rightRail.style.height = '';
+      rightRail.style.maxHeight = '';
+      return;
+    }
+    const disc = $('discussion-s8');
+    if(!disc){
+      rightRail.style.height = '';
+      rightRail.style.maxHeight = 'calc(100vh - 84px)';
+      return;
+    }
+    const discBottom = disc.getBoundingClientRect().bottom;
+    const viewportCap = window.innerHeight - RAIL_BOTTOM_PAD;
+    const targetBottom = Math.min(discBottom, viewportCap);
+    const h = Math.max(160, Math.round(targetBottom - RAIL_TOP));
+    rightRail.style.maxHeight = h + 'px';
+    rightRail.style.height = h + 'px';
+  }
+  window.addEventListener('scroll', syncRightRailToTeamNotes, {passive:true});
+  window.addEventListener('resize', syncRightRailToTeamNotes);
+  if(typeof ResizeObserver !== 'undefined'){
+    const disc = $('discussion-s8');
+    if(disc) new ResizeObserver(syncRightRailToTeamNotes).observe(disc);
+  }
+  syncRightRailToTeamNotes();
+
   loadComments();
 })();
 </script>
