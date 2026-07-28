@@ -171,8 +171,9 @@
 /* fixed right rail: cheat sheet + comment preview (wide screens only) */
   .right-rail{display:none}
   @media (min-width:1580px){
-    .right-rail{display:flex;flex-direction:column;gap:12px;position:fixed;top:64px;right:24px;
-      width:280px;max-height:calc(100vh - 84px);overflow:hidden;z-index:40}
+    .right-rail{display:flex;flex-direction:column;gap:12px;position:fixed;top:64px;right:16px;
+      width:220px;max-height:calc(100vh - 84px);overflow:hidden;z-index:40}
+    .wrap{padding-right:252px}
     .cheat{display:block;position:static;width:auto;max-height:none;flex:0 0 auto;
       background:var(--surface);border:1px solid var(--border);border-radius:14px;
       padding:14px 16px;box-shadow:0 6px 24px rgba(0,0,0,.06)}
