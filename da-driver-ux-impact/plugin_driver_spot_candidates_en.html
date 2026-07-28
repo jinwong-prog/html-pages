@@ -729,10 +729,9 @@
   </div>
 
   <section class="discussion" id="discussion-s8" aria-labelledby="discussion-s8-title">
-    <h2 id="discussion-s8-title">Team notes — Bot score (+3)</h2>
+    <h2 id="discussion-s8-title">Team notes</h2>
     <p class="disc-sub">Leave a note for the team. Ming, Jin, Connie, and Matt can add, reply, edit, or delete their own notes.</p>
     <div id="comments-banner" class="comment-banner" hidden></div>
-    <div id="comments-thread" class="comment-list"></div>
     <div id="comments-compose-home">
     <div class="comment-compose" id="comment-compose">
       <p class="replying" id="comment-replying" hidden></p>
@@ -1141,7 +1140,6 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
   const navNotes = $('nav-notes');
   const banner = $('comments-banner');
   const modalBanner = $('comments-modal-banner');
-  const thread = $('comments-thread');
   const authorSel = $('comment-author');
   const bodyIn = $('comment-body');
   const replyLbl = $('comment-replying');
@@ -1271,7 +1269,7 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
     return html;
   }
   function renderThread(){
-    thread.innerHTML = buildThreadHtml('');
+    /* bottom section is compose-only; history lives in modal */
   }
   function renderModalThread(){
     modalThread.innerHTML = buildThreadHtml(modalHighlightId);
@@ -1366,7 +1364,6 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
         comments = [];
         railList.innerHTML = '<p class="cr-empty">Load failed.</p>';
         railStatus.textContent = '';
-        thread.innerHTML = '<p class="disc-sub" style="margin:0">Load failed.</p>';
         if(modalOpen) renderModalThread();
         syncComposeReadonly();
         return;
@@ -1432,7 +1429,6 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
       };
     }
   }
-  thread.addEventListener('click', handleThreadClick);
   modalThread.addEventListener('click', handleThreadClick);
   if(modalGoto) modalGoto.addEventListener('click', ev=>{
     ev.preventDefault();
