@@ -93,9 +93,9 @@
   .comment-list{display:flex;flex-direction:column;gap:12px;margin-bottom:16px}
   .comment-card{border:1px solid var(--grid);border-radius:12px;padding:12px 14px;background:var(--plane)}
   .comment-card.reply{margin-left:22px;border-left:3px solid var(--blue-soft)}
-  .comment-topic-block{margin:0 0 16px;padding:0 0 4px;border-bottom:1px solid var(--grid)}
-  .comment-topic-block:last-child{border-bottom:0;margin-bottom:0}
-  .comment-topic-head{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0 0 10px}
+  .comment-topic-block{display:flex;flex-direction:column;gap:12px;margin:0 0 18px;padding:0 0 14px;border-bottom:1px solid var(--grid)}
+  .comment-topic-block:last-child{border-bottom:0;margin-bottom:0;padding-bottom:0}
+  .comment-topic-head{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0}
   .comment-topic-title{font-size:14px;font-weight:800;color:var(--blue);letter-spacing:-.01em}
   .comment-topic-meta{font-size:11px;color:var(--muted)}
   .comment-topic{font-size:13px;font-weight:800;color:var(--blue);margin:0 0 4px;letter-spacing:-.01em}
@@ -128,7 +128,7 @@
     background:var(--warnbg);border:1px solid color-mix(in srgb,var(--serious) 35%,var(--border))}
   .comment-banner a{color:var(--blue);font-weight:700}
   .comment-card.highlight{border-color:var(--blue);box-shadow:0 0 0 2px var(--blue-soft);
-    background:color-mix(in srgb,var(--blue-soft) 25%,var(--plane))}
+    background:color-mix(in srgb,var(--blue-soft) 25%,var(--plane));position:relative;z-index:1}
   .comments-modal{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;padding:20px}
   .comments-modal[hidden]{display:none}
   .comments-modal-backdrop{position:absolute;inset:0;background:rgba(11,11,11,.45)}
@@ -1182,8 +1182,11 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
     const saved = localStorage.getItem(LS_AUTHOR);
     if(saved && AUTHORS.includes(saved)) authorSel.value = saved;
   }catch(e){}
+  if(!authorSel.value) authorSel.value = AUTHORS[0];
   authorSel.addEventListener('change', ()=>{
     try{ localStorage.setItem(LS_AUTHOR, authorSel.value); }catch(e){}
+    refreshThreads();
+    renderRail();
   });
 
   function esc(s){
@@ -1338,13 +1341,17 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
       </div>`).join('');
   }
   function renderCard(c, isReply, highlightId){
-    const me = authorSel.value;
+    const me = String(authorSel && authorSel.value || '').trim();
+    const author = String(c.author || '').trim();
     const edited = c.updated_at && c.created_at && c.updated_at !== c.created_at;
-    const actions = readOnlyFromSheet ? '' : `
-      <button type="button" data-act="reply" data-id="${esc(c.id)}" data-author="${esc(c.author)}">Reply</button>` +
-      (c.author === me ? `
-      <button type="button" data-act="edit" data-id="${esc(c.id)}">Edit</button>
-      <button type="button" class="danger" data-act="delete" data-id="${esc(c.id)}">Delete</button>` : '');
+    const mine = !!me && author === me;
+    const actions = readOnlyFromSheet ? '' : (
+      `<button type="button" data-act="reply" data-id="${esc(c.id)}" data-author="${esc(author)}">Reply</button>` +
+      (mine
+        ? `<button type="button" data-act="edit" data-id="${esc(c.id)}">Edit</button>` +
+          `<button type="button" class="danger" data-act="delete" data-id="${esc(c.id)}">Delete</button>`
+        : '')
+    );
     const hl = highlightId && c.id === highlightId ? ' highlight' : '';
     return `<div class="comment-card${isReply?' reply':''}${hl}" data-id="${esc(c.id)}">
       <div class="comment-meta"><span class="author">${esc(c.author)}</span><span>${esc(fmtTime(c.created_at))}</span>${newChipHtml(c)}${edited?'<span class="edited">(edited)</span>':''}</div>
