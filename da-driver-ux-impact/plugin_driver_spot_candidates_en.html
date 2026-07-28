@@ -93,9 +93,19 @@
   .comment-list{display:flex;flex-direction:column;gap:12px;margin-bottom:16px}
   .comment-card{border:1px solid var(--grid);border-radius:12px;padding:12px 14px;background:var(--plane)}
   .comment-card.reply{margin-left:22px;border-left:3px solid var(--blue-soft)}
+  .comment-topic-block{margin:0 0 16px;padding:0 0 4px;border-bottom:1px solid var(--grid)}
+  .comment-topic-block:last-child{border-bottom:0;margin-bottom:0}
+  .comment-topic-head{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0 0 10px}
+  .comment-topic-title{font-size:14px;font-weight:800;color:var(--blue);letter-spacing:-.01em}
+  .comment-topic-meta{font-size:11px;color:var(--muted)}
+  .comment-topic{font-size:13px;font-weight:800;color:var(--blue);margin:0 0 4px;letter-spacing:-.01em}
   .comment-meta{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin-bottom:6px;font-size:12px;color:var(--muted)}
   .comment-meta .author{font-weight:800;color:var(--ink)}
   .comment-meta .edited{font-style:italic}
+  .comment-chip{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.04em;padding:2px 6px;border-radius:999px;line-height:1.2}
+  .comment-chip.new{background:rgba(237,161,0,.18);color:#9a6b00;border:1px solid rgba(237,161,0,.35)}
+  .comments-rail .cr-topic{font-size:11px;font-weight:800;color:var(--blue);margin:0 0 2px}
+  .comments-rail .cr-chip{margin-left:4px;vertical-align:middle}
   .comment-body{font-size:14px;line-height:1.5;white-space:pre-wrap;overflow-wrap:normal;word-break:normal;overflow-x:auto}
   .comments-modal-thread .comment-body{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12.5px;line-height:1.35}
   .comment-actions{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
@@ -107,8 +117,9 @@
   .comment-actions button.danger{color:var(--critical)}
   .comment-compose{border-top:1px solid var(--grid);padding-top:14px;margin-top:4px}
   .comment-compose label{display:block;font-size:12px;font-weight:700;margin-bottom:4px;color:var(--ink2)}
-  .comment-compose select,.comment-compose textarea{width:100%;font:inherit;font-size:14px;
+  .comment-compose select,.comment-compose textarea,.comment-compose input[type=text]{width:100%;font:inherit;font-size:14px;
     border:1px solid var(--border);border-radius:10px;padding:8px 10px;background:var(--surface);color:var(--ink)}
+  .comment-compose input[type=text]{margin:0 0 8px}
   .comment-compose textarea{min-height:88px;resize:vertical;margin:8px 0 10px}
   .comment-compose .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
   .comment-compose .hint{font-size:11.5px;color:var(--muted);flex:1 1 200px}
@@ -738,6 +749,8 @@
       <p class="replying" id="comment-replying" hidden></p>
       <label for="comment-author">Your name</label>
       <select id="comment-author" aria-label="Your name"></select>
+      <label for="comment-topic">Topic</label>
+      <input type="text" id="comment-topic" maxlength="120" placeholder="Short topic, e.g. Cut-off ASCII chart" aria-label="Topic">
       <label for="comment-body">Note</label>
       <textarea id="comment-body" placeholder="Ask a question or leave feedback on the bot score rule…" aria-label="Note"></textarea>
       <div class="row">
@@ -1142,6 +1155,7 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
   const banner = $('comments-banner');
   const modalBanner = $('comments-modal-banner');
   const authorSel = $('comment-author');
+  const topicIn = $('comment-topic');
   const bodyIn = $('comment-body');
   const replyLbl = $('comment-replying');
   const cancelReply = $('comment-cancel-reply');
@@ -1214,6 +1228,7 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
       return {
         id: cell(idx('id')),
         section: cell(idx('section')),
+        topic: cell(idx('topic')),
         parent_id: cell(idx('parent_id')),
         author: cell(idx('author')),
         body: cell(idx('body')),
@@ -1223,6 +1238,15 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
       };
     }).filter(r => !r.deleted && r.section === SECTION)
       .sort((a, b) => String(a.created_at).localeCompare(String(b.created_at)));
+  }
+  function isNewNote(c){
+    if(!c || !c.created_at) return false;
+    const ts = Date.parse(c.created_at);
+    if(!Number.isFinite(ts)) return false;
+    return (Date.now() - ts) <= 24 * 60 * 60 * 1000;
+  }
+  function newChipHtml(c){
+    return isNewNote(c) ? '<span class="comment-chip new">NEW</span>' : '';
   }
   function nestComments(flat){
     const byId = {};
@@ -1235,6 +1259,31 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
     });
     return roots;
   }
+  function topicKey(c){
+    const t = String(c.topic || '').trim();
+    return t || 'Untitled';
+  }
+  function latestTsInTree(node){
+    let best = String(node.created_at || '');
+    (node.replies || []).forEach(r=>{
+      const child = latestTsInTree(r);
+      if(child > best) best = child;
+    });
+    return best;
+  }
+  /** Topics by latest activity (newest topic first). Within topic: oldest → newest + nested replies. */
+  function groupByTopic(flat){
+    const roots = nestComments(flat);
+    const groups = {};
+    roots.forEach(root=>{
+      const key = topicKey(root);
+      if(!groups[key]) groups[key] = { topic: key, roots: [], latest: '' };
+      groups[key].roots.push(root);
+      const latest = latestTsInTree(root);
+      if(latest > groups[key].latest) groups[key].latest = latest;
+    });
+    return Object.values(groups).sort((a,b)=> String(b.latest).localeCompare(String(a.latest)));
+  }
   function renderRail(){
     if(!comments.length){
       railList.innerHTML = '<p class="cr-empty">No notes yet. Open notes or scroll to Team notes below to post.</p>';
@@ -1242,6 +1291,7 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
     }
     railList.innerHTML = comments.slice(-3).reverse().map(c=>`
       <div class="cr-item cr-item-btn" role="button" tabindex="0" data-id="${esc(c.id)}" title="Open full history">
+        <div class="cr-topic">${esc(topicKey(c))} ${newChipHtml(c)}</div>
         <div class="cr-meta"><b>${esc(c.author)}</b> · ${esc(fmtTime(c.created_at))}</div>
         <div class="cr-body">${esc(c.body.length>100?c.body.slice(0,100)+'…':c.body)}</div>
       </div>`).join('');
@@ -1256,32 +1306,54 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
       <button type="button" class="danger" data-act="delete" data-id="${esc(c.id)}">Delete</button>` : '');
     const hl = highlightId && c.id === highlightId ? ' highlight' : '';
     return `<div class="comment-card${isReply?' reply':''}${hl}" data-id="${esc(c.id)}">
-      <div class="comment-meta"><span class="author">${esc(c.author)}</span><span>${esc(fmtTime(c.created_at))}</span>${edited?'<span class="edited">(edited)</span>':''}</div>
+      <div class="comment-meta"><span class="author">${esc(c.author)}</span><span>${esc(fmtTime(c.created_at))}</span>${newChipHtml(c)}${edited?'<span class="edited">(edited)</span>':''}</div>
       <div class="comment-body" data-body>${esc(c.body)}</div>
       ${actions ? '<div class="comment-actions">' + actions + '</div>' : ''}
       </div>`;
   }
   function buildThreadHtml(highlightId){
-    const tree = nestComments(comments);
-    if(!tree.length) return '<p class="disc-sub" style="margin:0">No notes yet. Write one below.</p>';
+    const groups = groupByTopic(comments);
+    if(!groups.length) return '<p class="disc-sub" style="margin:0">No notes yet. Write one below.</p>';
     let html = '';
     function walk(nodes, isReply){ nodes.forEach(n=>{ html += renderCard(n, isReply, highlightId); if(n.replies.length) walk(n.replies, true); }); }
-    walk(tree, false);
+    groups.forEach(g=>{
+      const n = g.roots.reduce((acc, r)=>{
+        function count(node){ acc += 1; (node.replies||[]).forEach(count); }
+        count(r); return acc;
+      }, 0);
+      html += `<div class="comment-topic-block" data-topic="${esc(g.topic)}">
+        <div class="comment-topic-head">
+          <span class="comment-topic-title">${esc(g.topic)}</span>
+          <span class="comment-topic-meta">${n} note(s) · last ${esc(fmtTime(g.latest))}</span>
+        </div>`;
+      // within topic: oldest root first
+      g.roots.sort((a,b)=> String(a.created_at).localeCompare(String(b.created_at)));
+      walk(g.roots, false);
+      html += '</div>';
+    });
     return html;
   }
-  function renderThread(){
+    function renderThread(){
     /* bottom section is compose-only; history lives in modal */
+  }
+  function scrollToComment(id){
+    if(!id) return;
+    let card = null;
+    try{ card = modalThread.querySelector('[data-id="'+CSS.escape(id)+'"]'); }
+    catch(e){ card = modalThread.querySelector('.comment-card.highlight'); }
+    if(card) requestAnimationFrame(()=> card.scrollIntoView({ block:'center', behavior:'smooth' }));
   }
   function renderModalThread(){
     modalThread.innerHTML = buildThreadHtml(modalHighlightId);
     modalSub.textContent = comments.length
-      ? comments.length + ' note(s) · oldest at top'
+      ? comments.length + ' note(s) · topics by latest activity · within topic: oldest → newest'
       : 'No notes yet';
-    if(!modalHighlightId) return;
-    let card = null;
-    try{ card = modalThread.querySelector('[data-id="'+CSS.escape(modalHighlightId)+'"]'); }
-    catch(e){ card = modalThread.querySelector('.comment-card.highlight'); }
-    if(card) requestAnimationFrame(()=> card.scrollIntoView({ block:'center', behavior:'smooth' }));
+    if(modalHighlightId) scrollToComment(modalHighlightId);
+    else {
+      // open without target: jump to latest activity (first topic block = newest)
+      const first = modalThread.querySelector('.comment-topic-block');
+      if(first) requestAnimationFrame(()=> first.scrollIntoView({ block:'start', behavior:'smooth' }));
+    }
   }
   function refreshThreads(){
     renderThread();
@@ -1290,6 +1362,7 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
   function syncComposeReadonly(){
     const disable = readOnlyFromSheet;
     authorSel.disabled = disable;
+    topicIn.disabled = disable || !!replyParentId;
     bodyIn.disabled = disable;
     submitBtn.disabled = disable;
     if(disable) bodyIn.placeholder = 'Read-only here — use new-tab widget to post';
@@ -1339,11 +1412,16 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
   function setReply(parentId, parentAuthor){
     replyParentId = parentId || '';
     if(replyParentId){
+      const parent = comments.find(c => c.id === replyParentId);
+      topicIn.value = (parent && parent.topic) || topicKey(parent || {});
+      if(topicIn.value === 'Untitled' && !(parent && parent.topic)) topicIn.value = '';
+      topicIn.disabled = true;
       replyLbl.hidden = false;
-      replyLbl.textContent = 'Replying to ' + parentAuthor;
+      replyLbl.textContent = 'Replying to ' + parentAuthor + (topicIn.value ? ' · ' + topicIn.value : '');
       cancelReply.hidden = false;
       if(!readOnlyFromSheet) bodyIn.focus();
     }else{
+      topicIn.disabled = readOnlyFromSheet;
       replyLbl.hidden = true;
       cancelReply.hidden = true;
     }
@@ -1378,14 +1456,23 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
   async function postComment(){
     if(readOnlyFromSheet) return;
     const author = authorSel.value;
+    const topic = topicIn.value.trim();
     const body = bodyIn.value.trim();
+    if(!replyParentId && !topic){ topicIn.focus(); return; }
     if(!body){ bodyIn.focus(); return; }
     submitBtn.disabled = true;
     try{
-      await apiCall('add', { section: SECTION, author, body, parent_id: replyParentId });
+      const data = await apiCall('add', { section: SECTION, author, topic, body, parent_id: replyParentId });
       bodyIn.value = '';
+      topicIn.value = '';
       setReply('', '');
+      const newId = data && data.comment && data.comment.id;
       await loadComments();
+      if(newId){
+        modalHighlightId = newId;
+        if(!modalOpen) openCommentsModal(newId);
+        else renderModalThread();
+      }
     }catch(err){
       showBanner(esc(err.message) + ' — try <a href="'+WIDGET_URL+'" target="_blank" rel="noopener">new tab ↗</a>');
     }finally{ syncComposeReadonly(); }
@@ -1411,8 +1498,15 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
     if(act === 'edit'){
       const card = btn.closest('.comment-card');
       const old = card.querySelector('[data-body]').textContent;
+      const cur = comments.find(c => c.id === id) || {};
       const actions = card.querySelector('.comment-actions');
       actions.replaceChildren();
+      const topicEdit = document.createElement('input');
+      topicEdit.type = 'text';
+      topicEdit.value = cur.topic || '';
+      topicEdit.placeholder = 'Topic';
+      topicEdit.maxLength = 120;
+      topicEdit.style.cssText = 'width:100%;font:inherit;padding:8px;border-radius:8px;border:1px solid var(--grid);margin-bottom:6px';
       const ta = document.createElement('textarea');
       ta.value = old;
       ta.style.cssText = 'width:100%;min-height:72px;font:inherit;padding:8px;border-radius:8px;border:1px solid var(--grid)';
@@ -1420,12 +1514,13 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
       saveBtn.type = 'button'; saveBtn.className = 'primary'; saveBtn.textContent = 'Save';
       const cancelBtn = document.createElement('button');
       cancelBtn.type = 'button'; cancelBtn.textContent = 'Cancel';
-      actions.append(ta, saveBtn, cancelBtn);
+      actions.append(topicEdit, ta, saveBtn, cancelBtn);
       cancelBtn.onclick = ()=> refreshThreads();
       saveBtn.onclick = async ()=>{
         const nb = ta.value.trim();
-        if(!nb) return;
-        try{ await apiCall('edit', { id, author: me, body: nb }); await loadComments(); }
+        const nt = topicEdit.value.trim();
+        if(!nb || !nt) return;
+        try{ await apiCall('edit', { id, author: me, body: nb, topic: nt }); await loadComments(); }
         catch(err){ showBanner(esc(err.message)); }
       };
     }
