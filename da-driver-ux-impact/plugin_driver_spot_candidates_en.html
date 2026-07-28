@@ -409,7 +409,7 @@
 <aside class="comments-rail" aria-label="Latest notes">
   <h4>Latest notes</h4>
   <div id="comments-rail-list"><p class="cr-empty">Loading…</p></div>
-  <button type="button" class="cr-link" id="comments-rail-open">Browse topics</button>
+  <button type="button" class="cr-link" id="comments-rail-open">More topics</button>
   <p class="cr-status" id="comments-rail-status"></p>
 </aside>
 </div>
@@ -1426,7 +1426,7 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
   /** Rail: one card per topic (latest 3 topics). Body shows the newest reply in that thread. */
   function renderRail(){
     if(!comments.length){
-      railList.innerHTML = '<p class="cr-empty">No topics yet. Browse topics or post below.</p>';
+      railList.innerHTML = '<p class="cr-empty">No topics yet. More topics or post below.</p>';
       return;
     }
     const groups = groupByTopic(comments).slice(0, 3);
