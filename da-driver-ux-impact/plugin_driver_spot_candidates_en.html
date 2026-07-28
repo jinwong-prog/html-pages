@@ -206,6 +206,8 @@
   .topic-index-filter{width:100%;font:inherit;font-size:13px;padding:8px 10px;border:1px solid var(--border);
     border-radius:10px;margin:0 0 12px;background:#fff}
   .comments-modal-foot{padding:10px 18px 12px;border-top:1px solid var(--grid);flex:0 0 auto;background:var(--plane)}
+  .comments-modal.index-mode #comments-modal-compose-slot{display:none}
+  .comments-modal.index-mode .comments-modal-foot{padding:8px 18px 10px}
   .comments-modal-foot .comment-compose{border-top:0;padding-top:0;margin-top:0}
   .comments-modal-foot .comment-compose label{margin-bottom:2px}
   .comments-modal-foot .comment-compose textarea{min-height:120px;max-height:220px;height:140px;margin:4px 0 6px;resize:vertical}
@@ -1650,8 +1652,9 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
       modal.hidden = false;
       modal.setAttribute('aria-hidden', 'false');
       document.body.style.overflow = 'hidden';
-      parkComposeInModal();
     }
+    modal.classList.remove('index-mode');
+    parkComposeInModal();
     setReply('', '');
     renderModalThread();
     syncComposeReadonly();
@@ -1667,8 +1670,10 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
       modal.hidden = false;
       modal.setAttribute('aria-hidden', 'false');
       document.body.style.overflow = 'hidden';
-      parkComposeInModal();
     }
+    // Browse topics only — hide compose so list is not confused with posting.
+    modal.classList.add('index-mode');
+    parkComposeHome();
     setReply('', '');
     if(!readOnlyFromSheet){ topicIn.disabled = false; }
     renderModalThread();
@@ -1689,6 +1694,7 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
     modalMode = 'index';
     modalTopicKey = '';
     topicFilterQuery = '';
+    modal.classList.remove('index-mode');
     parkComposeHome();
     modal.hidden = true;
     modal.setAttribute('aria-hidden', 'true');
