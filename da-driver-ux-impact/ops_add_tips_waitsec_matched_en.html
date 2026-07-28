@@ -22,7 +22,7 @@
   body{margin:0;background:var(--plane);color:var(--ink);
     font-family:system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.7;
     -webkit-font-smoothing:antialiased;font-size:16px}
-  .wrap{max-width:1360px;margin:0 auto;padding:44px 40px 88px}
+  .wrap{max-width:1680px;margin:0 auto;padding:44px 40px 88px}
   h1{font-size:28px;margin:0 0 6px;letter-spacing:-.01em;line-height:1.34}
   .meta{color:var(--muted);font-size:13px;margin:0 0 32px;max-width:92ch}
   .answer{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--bad);
@@ -112,7 +112,7 @@
   tr.drill-detail td{
     padding:0;background:var(--neutbg);border-bottom:1px solid var(--axis);
     white-space:normal;text-align:left;position:static !important;box-shadow:none !important;min-width:0 !important}
-  tr.drill-detail .drill-inner{padding:14px 16px 18px;max-width:100%;min-width:0;overflow-x:hidden}
+  tr.drill-detail .drill-inner{padding:14px 16px 18px;max-width:100%;min-width:0;overflow-x:auto;-webkit-overflow-scrolling:touch}
   tr.key-insight-row td{
     padding:0;background:var(--goodbg);border-bottom:1px solid color-mix(in srgb,var(--good) 35%,var(--axis));
     white-space:normal;text-align:left;position:static !important;box-shadow:none !important;min-width:0 !important}
@@ -138,9 +138,9 @@
   .tail-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:12px;min-width:0;width:100%}
   @media(max-width:720px){.tail-grid{grid-template-columns:1fr}}
   .tail-grid .tail-table-wrap{min-width:0;overflow-x:auto;-webkit-overflow-scrolling:touch}
-  .tail-grid table.tail-table{width:100%;min-width:0;table-layout:fixed;margin:0;font-size:12px}
+  .tail-grid table.tail-table{width:max-content;min-width:920px;table-layout:auto;margin:0;font-size:12px}
   .tail-grid table.tail-table th,.tail-grid table.tail-table td{
-    padding:6px 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    padding:6px 8px;white-space:nowrap;overflow:visible;text-overflow:clip;
     font-size:12px;color:var(--muted);vertical-align:middle !important}
   .tail-grid table.tail-table th:first-child,.tail-grid table.tail-table td:first-child{text-align:left}
   .tail-grid table.tail-table th:nth-child(7),.tail-grid table.tail-table td:nth-child(7),
@@ -328,6 +328,16 @@
   body{background:#f9f9f7!important;color:#0b0b0b}
 
 
+  /* section ② waitsec table + drill/tail: use more width so dual tail tables readable */
+  @media (min-width:1580px){
+    .card:has(#main-waitsec-table){
+      width:calc(100% + 120px);
+      max-width:calc(100vw - 268px);
+      box-sizing:border-box;
+      overflow-x:auto;
+    }
+  }
+
   /* headline comparison table only — wider + less horizontal scroll */
   #main-table.card{overflow-x:auto;padding:10px 16px 16px}
   #main-table table.cmp{width:100%;min-width:0;table-layout:fixed}
@@ -349,7 +359,7 @@
   /* report sticky navbar */
   .nav{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--plane) 92%,transparent);
     backdrop-filter:saturate(1.1) blur(8px);border-bottom:1px solid var(--border);margin:0 0 18px}
-  .nav-in{max-width:1360px;margin:0 auto;padding:9px 20px;display:flex;gap:4px;flex-wrap:wrap;
+  .nav-in{max-width:1680px;margin:0 auto;padding:9px 20px;display:flex;gap:4px;flex-wrap:wrap;
     align-items:center;overflow-x:auto}
   .nav .brand{font-size:13px;font-weight:800;letter-spacing:-.01em;margin-right:8px;white-space:nowrap;color:var(--ink)}
   .nav a{font-size:12.5px;color:var(--ink2);text-decoration:none;padding:5px 9px;border-radius:8px;white-space:nowrap}
@@ -361,7 +371,6 @@
 <body>
 <nav class="nav" aria-label="Report sections">
   <div class="nav-in">
-    <span class="brand">Subsidy × waitsec</span>
     <a href="#answer">Answer</a>
     <a href="#main-table">Table</a>
     <a href="#sec-criteria">Criteria</a>
