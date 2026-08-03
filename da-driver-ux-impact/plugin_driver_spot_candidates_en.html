@@ -557,7 +557,7 @@ body.show-v2 a[data-s="s4"]{display:none !important}
 
 </style>
 </head>
-<body>
+<body class="show-v2">
 <div class="viz-root">
 <nav class="nav">
   <div class="nav-in">
@@ -571,7 +571,7 @@ body.show-v2 a[data-s="s4"]{display:none !important}
     <a href="#s8" data-s="s8" data-v1-href="#s8" data-v2-href="#v2-rule-8"><span class="v1-only">Bot +3</span><span class="v2-only">Assigned &amp; Release</span></a>
     <a href="#s9" data-s="s9">Cases</a>
     <a href="#discussion-s8" id="nav-notes">Notes</a>
-    <button type="button" class="v2-toggle" id="v2-toggle" aria-pressed="false" title="Version 2 scoring (Team notes)">
+    <button type="button" class="v2-toggle on" id="v2-toggle" aria-pressed="true" title="Version 2 scoring (Team notes)">
       <span class="knob" aria-hidden="true"></span>
       <span>Version 2</span>
     </button>
@@ -2663,7 +2663,7 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
   }
   const btn = document.getElementById('v2-toggle');
   if(!btn) return;
-  const KEY = 'plugin_spot_v2_on';
+  const KEY = 'plugin_spot_v2_default_on'; // reset preference when V2 became default
   function apply(on, opts){
     document.body.classList.toggle('show-v2', on);
     btn.classList.toggle('on', on);
@@ -2696,8 +2696,12 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
       if(t) t.scrollIntoView({behavior:'smooth', block:'start'});
     }
   }
-  let on = false;
-  try{ on = localStorage.getItem(KEY) === '1'; }catch(e){}
+  let on = true; // Version 2 is the default view
+  try{
+    const saved = localStorage.getItem(KEY);
+    if(saved === '0') on = false;
+    else if(saved === '1') on = true;
+  }catch(e){}
   // Defer so DATA/render exist
   if(document.readyState === 'loading'){
     document.addEventListener('DOMContentLoaded', ()=> apply(on));
