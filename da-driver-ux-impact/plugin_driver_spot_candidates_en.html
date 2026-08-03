@@ -1510,11 +1510,11 @@ function render(){
     setTxt('tier-bars-pd', 'One band per driver · among 143 bot drivers (3-sec pool)');
     setTxt('tier-table-title', 'Table');
     const tpd = document.getElementById('tier-table-pd');
-    if(tpd) tpd.innerHTML = 'share % = among the <b>143</b> bot pool drivers · Extreme case pulled out first (not scored · not in max-8) · remaining score = Assigned (0–2) + Release (0–4) + Cancel (0–2) → max 8 · (queried 2026-08-03, HK TRANSPORT, mature cohort T−90 to T−60)';
+    if(tpd) tpd.innerHTML = 'share % = among the <b>143</b> bot pool drivers · Extreme case first (not scored · not in max-8) · remaining score = Assigned (0–2) + Release (0–4) + Cancel (0–2) → max 8 · (queried 2026-08-03, HK TRANSPORT, mature cohort T−90 to T−60)';
     const s3h = document.querySelector('#s3');
     if(s3h) s3h.innerHTML = '③ Review priority of suspected bot drivers <span class="rs-teaser">— 3 sec · 143 drivers</span>';
     const s3sub = document.querySelector('#s3-intro-body .sub');
-    if(s3sub) s3sub.innerHTML = 'Bot spotting is done. We score the <b>143</b> bot drivers (3-second rule). Each driver sits in <b>one</b> review band. <b>Extreme case</b> (14 drivers) is pulled out first — <b>not scored</b> (not in the max-8 sum). Remaining drivers use Review Priority = Assigned (0–2) + Release (0–4) + Cancel (0–2) → max 8 → bands <b>6–8 / 4–5 / 0–3</b>. Detail: <a href="#v2-rule-8">Assigned &amp; Release</a> · <a href="#v2-rule-7">Cancel</a>. (queried 2026-08-03, HK TRANSPORT, mature cohort T−90 to T−60)';
+    if(s3sub) s3sub.innerHTML = 'Bot spotting is done. We score the <b>143</b> bot drivers (3-second rule). Each driver sits in <b>one</b> review band. <b>Extreme case</b> (14 drivers) comes first — <b>not scored</b> (not in the max-8 sum). Remaining drivers use Review Priority = Assigned (0–2) + Release (0–4) + Cancel (0–2) → max 8 → bands <b>6–8 / 4–5 / 0–3</b>. Detail: <a href="#v2-rule-8">Assigned &amp; Release</a> · <a href="#v2-rule-7">Cancel</a>. (queried 2026-08-03, HK TRANSPORT, mature cohort T−90 to T−60)';
   } else {
     const tmax = Math.max(1,...TIER_BANDS.map(t=>tcount[t.key]));
     document.getElementById('tier-bars').innerHTML = TIER_BANDS.map(t=>{
@@ -1583,7 +1583,7 @@ function render(){
     const ruleHead = document.querySelector('#s4-rulebook-panel thead tr');
     if(ruleHead) ruleHead.innerHTML = '<th>Score / note</th><th>Tier</th><th>Drivers</th>';
     document.getElementById('rule-tbody').innerHTML = [
-      ['Extreme case (pulled out)','🔴 Extreme case · not scored','14'],
+      ['Extreme case','🔴 Extreme case · not scored','14'],
       ['6–8','🔴 High priority','7'],
       ['4–5','🟠 Watch closely','19'],
       ['0–3','🔵 Keep monitoring','103'],
