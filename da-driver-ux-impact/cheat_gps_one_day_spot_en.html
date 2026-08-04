@@ -558,7 +558,23 @@ body.show-v2 a[data-s="s4"]{display:none !important}
 
 
 
-  .case-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  /* Locked light palette — ignore OS / browser dark mode (same report for everyone) */
+  :root, html, body, .viz-root{
+    color-scheme: light only !important;
+    forced-color-adjust: none;
+  }
+  html{color-scheme:light only !important;scrollbar-gutter:stable}
+  html, body{background:#f9f9f7 !important;color:#0b0b0b !important}
+  body, .viz-root, .wrap, .nav, .right-rail, .cheat, .comments-rail,
+  .case-card, .answer, .review-summary, .discussion, .cm-panel, .tile{
+    color-scheme: light only;
+  }
+  input, select, textarea, button{
+    color-scheme: light only;
+    background-color:#fff;
+    color:#0b0b0b;
+  }
+  .case-card{background:var(--surface,#fcfcfb);border:1px solid var(--border);border-radius:14px;
     padding:16px 18px;margin:16px 0 22px}
   .case-head{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;align-items:flex-start}
   .case-title{font-size:17px;font-weight:800;letter-spacing:-.01em}

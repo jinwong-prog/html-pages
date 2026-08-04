@@ -1,6 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head>
+
+<meta name="color-scheme" content="light only">
+<style>
+  :root, html, body { color-scheme: light only !important; background:#fff !important; color:#0b0b0b !important; }
+  /* Bootstrap 5 can follow OS dark — force light chrome inside map iframe */
+  @media (prefers-color-scheme: dark) {
+    :root, html, body { color-scheme: light only !important; background:#fff !important; color:#0b0b0b !important; }
+  }
+</style>
+
     
     <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
     <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
