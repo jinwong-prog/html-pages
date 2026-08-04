@@ -700,11 +700,12 @@ body.show-v2 a[data-s="s4"]{display:none !important}
   </div>
   <div id="sbot-detail-table">
   <div class="panel" style="margin-top:6px" id="sbot-compare-panel">
-    <h3>Of 3,247 drivers: how many different orders did they drop in a short time?</h3>
+    <h3>Of 3,233 drivers: in their fastest short window, how many different orders did they drop?</h3>
+    <p class="pd" id="sbot-compare-howto" style="margin:0 0 10px">How to read: each cell = drivers whose <b>max</b> distinct grace-drops in any window of that length is in that row. It is <b>not</b> “orders per second.” Only the <b>3-sec</b> column sets the bot pool; other columns are compare only.</p>
     <div style="overflow-x:auto">
     <table id="sbot-compare-table" class="rule-col-3s">
       <thead><tr>
-        <th>How many different orders did they drop in the same short time?</th>
+        <th>Max distinct drops in that short window</th>
         <th id="th-1s">1 second <span style="font-weight:400;color:var(--muted)">(compare only)</span></th>
         <th id="th-2s">2 sec <span style="font-weight:400;color:var(--muted)">(compare only)</span></th>
         <th id="th-3s">3 sec <span style="font-weight:400;color:var(--muted)">(the rule)</span></th>
@@ -712,9 +713,9 @@ body.show-v2 a[data-s="s4"]{display:none !important}
         <th id="th-6s">6 sec <span style="font-weight:400;color:var(--muted)">(compare only)</span></th>
       </tr></thead>
       <tbody>
-        <tr id="row-nonbot"><td><b>1 or fewer</b> (non-bot)</td><td>3,209 (98.8%)</td><td>3,162 (97.4%)</td><td id="cell-3s-nonbot">3,090 (95.6%)</td><td>2,999 (92.4%)</td><td>2,817 (86.8%)</td></tr>
-        <tr id="row-bot"><td id="row-bot-label"><b>2 or more</b> (suspected bot) 🟠 — we use the <b>3-second</b> column</td><td id="cell-1s-bot">38 (1.2%)</td><td>85 (2.6%)</td><td id="cell-3s-bot"><b>143 (4.4%)</b></td><td>248 (7.6%)</td><td>430 (13.2%)</td></tr>
-        <tr><td><b>3 or more</b> (very hard for a human) 🔴 — part of the row above</td><td>1 (0.0%)</td><td>2 (0.1%)</td><td>3 (0.1%)</td><td>4 (0.1%)</td><td>9 (0.3%)</td></tr>
+        <tr id="row-nonbot"><td id="row-nonbot-label"><b>Max = 0 or 1</b> (not bot by this column)</td><td>3,209 (98.8%)</td><td>3,162 (97.4%)</td><td id="cell-3s-nonbot">3,090 (95.6%)</td><td>2,999 (92.4%)</td><td>2,817 (86.8%)</td></tr>
+        <tr id="row-bot"><td id="row-bot-label"><b>Max ≥ 2</b> (suspected bot) 🟠 — we use the <b>3-second</b> column</td><td id="cell-1s-bot">38 (1.2%)</td><td>85 (2.6%)</td><td id="cell-3s-bot"><b>143 (4.4%)</b></td><td>248 (7.6%)</td><td>430 (13.2%)</td></tr>
+        <tr><td><b>Max ≥ 3</b> (very hard for a human) 🔴 — part of the row above</td><td>1 (0.0%)</td><td>2 (0.1%)</td><td>3 (0.1%)</td><td>4 (0.1%)</td><td>9 (0.3%)</td></tr>
         <tr><td>Highest count for any one driver</td><td>3</td><td>3</td><td>3</td><td>4</td><td>4</td></tr>
       </tbody>
     </table>
@@ -2403,8 +2404,10 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
     const th3 = document.getElementById('th-3s');
     if(th1) th1.innerHTML = '1 second <span style="font-weight:400;color:var(--muted)">(compare only)</span>';
     if(th3) th3.innerHTML = '3 sec <span style="font-weight:400;color:var(--muted)">(the rule)</span>';
+    const rowNonbotLabel = document.getElementById('row-nonbot-label');
+    if(rowNonbotLabel) rowNonbotLabel.innerHTML = `<b>Max = 0 or 1</b> (not bot by this column)`;
     const rowBotLabel = document.getElementById('row-bot-label');
-    if(rowBotLabel) rowBotLabel.innerHTML = `<b>2 or more</b> (suspected bot) 🟠 — we use the <b>3-second</b> column`;
+    if(rowBotLabel) rowBotLabel.innerHTML = `<b>Max ≥ 2</b> (suspected bot) 🟠 — we use the <b>3-second</b> column`;
     const cell1 = document.getElementById('cell-1s-bot');
     if(cell1) cell1.innerHTML = '38 (1.2%)';
     const cell3b = document.getElementById('cell-3s-bot');
@@ -2413,7 +2416,7 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
     if(cell3n) cell3n.textContent = `${fmt(fullNonBot)} (${fullNonBotPct}%)`;
     const note = document.getElementById('sbot-table1-note-text');
     if(note) note.innerHTML =
-      `Base = <b>${fmt(full.working)}</b> drivers who took ≥30 and finished ≥30 orders (not OA). <b>Rule = 3-second column</b>: bot pool = <b>${fmt(full.bot)}</b> / ${fmt(full.working)} (${fullBotPct}%) from <code>mart_plugin_driver_harm_score_v2</code>. Other columns are compare only. KPI cards above follow Vehicle / Membership filters. (queried ${V2.queried} · HK TRANSPORT · 30d ${V2.cohortCode})`;
+      `Base = <b>${fmt(full.working)}</b> drivers who took ≥30 and finished ≥30 orders (not OA). Each column is that driver’s <b>fastest</b> window of that length — <b>not</b> average pace, and <b>not</b> “one order per second.” <b>Rule = 3-second column</b>: bot pool = <b>${fmt(full.bot)}</b> / ${fmt(full.working)} (${fullBotPct}%) from <code>mart_plugin_driver_harm_score_v2</code>. Other columns are compare only. KPI cards above follow Vehicle / Membership filters. (queried ${V2.queried} · HK TRANSPORT · 30d ${V2.cohortCode})`;
     const teaser = document.querySelector('[data-target="sbot-detail-table"] .rs-teaser');
     if(teaser) teaser.textContent = '— rule = 3 sec';
   };
