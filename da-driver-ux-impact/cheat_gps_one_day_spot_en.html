@@ -1,0 +1,1881 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light only">
+<title>Cheat-app GPS — one-day stitch (pilot)</title>
+<style>
+
+  /* Locked light palette — ignore OS / browser dark mode so everyone sees the same report */
+  :root, .viz-root{
+    color-scheme: light only;
+    --plane:#f9f9f7;--surface:#fcfcfb;--ink:#0b0b0b;--ink2:#52514e;--muted:#898781;
+    --grid:#e1e0d9;--axis:#c3c2b7;--border:rgba(11,11,11,.10);
+    --blue:#2a78d6;--blue-soft:#cde2fb;
+    --critical:#d03b3b;--serious:#ec835a;--good:#006300;
+    --criticalbg:rgba(208,59,59,.10);--warnbg:rgba(237,161,0,.12);--neutbg:rgba(137,135,129,.10);
+  }
+
+  *{box-sizing:border-box}
+  html{scrollbar-gutter:stable}
+  html, body{background:#f9f9f7;color:#0b0b0b}
+  body{margin:0;background:var(--plane);color:var(--ink);
+    font-family:system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.6;
+    -webkit-font-smoothing:antialiased;font-size:16px;overflow-x:hidden}
+  .wrap{max-width:1080px;margin:0 auto;padding:34px 20px 60px}
+  h1{font-size:26px;margin:0 0 4px;letter-spacing:-.01em;line-height:1.3}
+  .meta{color:var(--muted);font-size:12.5px;margin:0 0 22px}
+  h2{font-size:18px;margin:34px 0 3px;letter-spacing:-.01em;scroll-margin-top:60px}
+  h2.sectoggle{cursor:pointer;user-select:none}
+  h2.sectoggle:hover{color:var(--ink2)}
+  h2.sectoggle .rs-teaser{font-weight:500;color:var(--muted);font-size:14px}
+  /* Independent collapse: title left + More/Less right; body always directly under the row */
+  .sect-head{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;margin:34px 0 3px}
+  .sect-head > h2{flex:1 1 200px;margin:0;scroll-margin-top:60px}
+  .sect-head > .showlabel{flex:none;margin:0}
+  .fnote-toggle.sectoggle{cursor:pointer;user-select:none;margin:0;font-size:13px;color:var(--ink2);line-height:1.45}
+  .fnote-toggle.sectoggle:hover{color:var(--ink)}
+  .fnote-toggle.sectoggle .rs-teaser{font-weight:500;color:var(--muted);font-size:12px}
+  html{scroll-behavior:smooth}
+
+  /* navbar */
+  .nav{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--plane) 88%,transparent);
+    backdrop-filter:saturate(1.1) blur(8px);border-bottom:1px solid var(--border);margin:0 0 22px}
+  .nav-in{max-width:1080px;margin:0 auto;padding:9px 20px;display:flex;gap:4px;flex-wrap:wrap;
+    align-items:center;overflow-x:auto}
+  .nav .brand{font-size:13px;font-weight:800;letter-spacing:-.01em;margin-right:8px;white-space:nowrap}
+  .nav a{font-size:12.5px;color:var(--ink2);text-decoration:none;padding:5px 10px;border-radius:8px;
+    white-space:nowrap;line-height:1.2}
+  .nav a:hover{background:var(--neutbg);color:var(--ink)}
+  .nav a.active{background:var(--blue);color:#fff;font-weight:600}
+  .showbar{cursor:pointer;user-select:none;text-align:center;font-size:12.5px;font-weight:700;letter-spacing:.02em;color:var(--ink2);background:var(--neutbg);border:1px solid var(--border);border-radius:10px;padding:9px;margin:12px 0 10px;transition:background .12s,color .12s}
+  .showbar:hover{background:var(--blue);color:#fff;border-color:var(--blue)}
+  .showbar.showlabel{
+    display:inline-block;width:auto;text-align:left;font-size:11.5px;font-weight:600;
+    padding:3px 10px;margin:2px 0 10px;border-radius:999px;letter-spacing:0;line-height:1.35
+  }
+  .fnote-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;margin-top:14px}
+  .fnote-row .fnote-toggle{margin:0;flex:1 1 200px}
+  .fnote-row .showlabel{margin:0;flex:none}
+  /* Body sits under its own header row — never between title and the toggle button */
+  .sect-head + [id$="-body"],
+  .fnote-row + [id$="-body"]{margin-top:6px}
+
+  /* fixed right rail: cheat sheet + comment preview (wide screens only) */
+  .right-rail{display:none}
+  @media (min-width:1580px){
+    .right-rail{display:flex;flex-direction:column;gap:12px;position:fixed;top:64px;right:24px;
+      width:280px;max-height:calc(100vh - 84px);overflow:hidden;z-index:40}
+    .cheat{display:block;position:static;width:auto;max-height:none;flex:0 0 auto;
+      background:var(--surface);border:1px solid var(--border);border-radius:14px;
+      padding:14px 16px;box-shadow:0 6px 24px rgba(0,0,0,.06)}
+    .comments-rail{display:flex;flex-direction:column;flex:1 1 auto;min-height:0;
+      background:var(--surface);border:1px solid var(--border);
+      border-radius:14px;padding:14px 16px;box-shadow:0 6px 24px rgba(0,0,0,.06)}
+    .comments-rail #comments-rail-body{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;overflow:hidden}
+    .comments-rail #comments-rail-list{flex:1 1 auto;min-height:0;overflow-y:auto}
+    .comments-rail .cr-link,.comments-rail .cr-status{flex:0 0 auto}
+  }
+  .cheat{display:none}
+  @media (min-width:1580px){.cheat{display:block}}
+  .comments-rail h4{margin:0;font-size:13.5px;letter-spacing:-.01em}
+  .comments-rail .cr-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 10px}
+  .comments-rail .cr-head h4{flex:1 1 auto;min-width:0}
+  .comments-rail .cr-head .showlabel{margin:0;flex:none}
+  body:not(.show-v2) .comments-rail .cr-head .showlabel{display:none}
+  body:not(.show-v2) .comments-rail.is-collapsed{flex:1 1 auto;min-height:0;padding:14px 16px}
+  body:not(.show-v2) .comments-rail.is-collapsed .cr-head{margin:0 0 10px}
+  body:not(.show-v2) #comments-rail-body{display:flex !important}
+  /* Version 2: collapse = whole Latest notes card shrinks to header only */
+  body.show-v2 .comments-rail.is-collapsed{
+    flex:0 0 auto;min-height:0;padding:10px 14px}
+  body.show-v2 .comments-rail.is-collapsed .cr-head{margin:0}
+  body.show-v2 .comments-rail.is-collapsed #comments-rail-body{display:none !important}
+  .comments-rail .cr-sub{font-size:11px;color:var(--muted);margin:0 0 10px}
+  .comments-rail .cr-item{font-size:11.5px;line-height:1.4}
+  .comments-rail .cr-item.cr-item-btn{cursor:pointer;border:1px solid var(--grid);border-radius:10px;
+    margin:0 0 16px;padding:10px 10px;background:var(--surface);transition:background .15s,border-color .15s}
+  .comments-rail .cr-item.cr-item-btn:last-child{margin-bottom:4px}
+  .comments-rail .cr-item.cr-item-btn:hover{background:var(--neutbg);border-color:color-mix(in srgb,var(--blue) 35%,var(--grid))}
+  .comments-rail .cr-meta{color:var(--muted);font-size:10.5px;margin-bottom:3px}
+  .comments-rail .cr-meta b{color:var(--ink);font-weight:700}
+  .comments-rail .cr-body{white-space:pre-wrap;word-break:break-word;font-size:11.5px;color:var(--ink);line-height:1.4}
+  .comments-rail .cr-empty{color:var(--muted);font-size:11.5px}
+  .comments-rail .cr-link{display:inline-block;margin-top:8px;font-size:11px;font-weight:700;color:var(--blue);text-decoration:none;background:none;border:0;padding:0;cursor:pointer;font-family:inherit}
+  .comments-rail .cr-link:hover{text-decoration:underline}
+  .comments-rail .cr-status{font-size:10.5px;color:var(--muted);margin-top:6px}
+  .discussion{margin:28px 0 0;padding:18px 20px;background:var(--surface);border:1px solid var(--border);
+    border-radius:14px;scroll-margin-top:72px}
+  .discussion h2{margin:0 0 4px;font-size:18px}
+  .discussion .disc-sub{color:var(--muted);font-size:13px;margin:0 0 16px}
+  .comment-list{display:flex;flex-direction:column;gap:12px;margin-bottom:16px}
+  .comment-card{border:1px solid var(--grid);border-radius:12px;padding:12px 14px;background:var(--plane)}
+  .comment-card.reply{margin-left:22px;border-left:3px solid var(--blue);background:color-mix(in srgb,var(--blue-soft) 18%,var(--plane))}
+  .comment-topic-block{display:flex;flex-direction:column;gap:12px;margin:0 0 28px;padding:14px 14px 16px;
+    border:1px solid var(--grid);border-radius:14px;background:var(--surface);
+    box-shadow:0 1px 0 rgba(11,11,11,.04)}
+  .comment-topic-block:last-child{margin-bottom:12px}
+  .comment-topic-head{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0;padding:0 0 10px;
+    border-bottom:1px dashed var(--grid)}
+  .comment-topic-title{font-size:14px;font-weight:800;color:var(--blue);letter-spacing:-.01em}
+  .comment-topic-meta{font-size:11px;color:var(--muted)}
+  .comment-topic{font-size:13px;font-weight:800;color:var(--blue);margin:0 0 4px;letter-spacing:-.01em}
+  .comment-meta{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin-bottom:6px;font-size:12px;color:var(--muted)}
+  .comment-meta .author{font-weight:800;color:var(--ink)}
+  .comment-meta .edited{font-style:italic}
+  .comment-chip{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.04em;padding:2px 6px;border-radius:999px;line-height:1.2}
+  .comment-chip.new{background:rgba(237,161,0,.18);color:#9a6b00;border:1px solid rgba(237,161,0,.35)}
+  .comments-rail .cr-labels{display:flex;flex-direction:column;align-items:flex-start;gap:5px;margin:0 0 8px;
+    padding:0 0 8px;border-bottom:1px dashed var(--grid)}
+  .comments-rail .cr-topic{font-size:11px;font-weight:800;color:var(--blue);margin:0;display:flex;flex-wrap:wrap;
+    align-items:center;gap:5px;width:100%}
+  .comments-rail .cr-chip{margin-left:0;vertical-align:middle}
+  .comments-rail .cr-kind{display:inline-block;font-size:9.5px;font-weight:800;letter-spacing:.03em;padding:1px 6px;
+    border-radius:999px;line-height:1.3;border:1px solid transparent}
+  .comments-rail .cr-kind.note{background:var(--neutbg);color:var(--ink2);border-color:var(--grid)}
+  .comments-rail .cr-kind.reply{background:rgba(42,120,214,.10);color:#1a5fa8;border-color:rgba(42,120,214,.28)}
+  .comments-rail .cr-latest{font-size:10.5px;font-weight:700;margin:0;display:flex;flex-wrap:wrap;align-items:center;gap:4px;width:100%}
+  .comments-rail .cr-latest.ming{color:#1a5fa8}
+  .comments-rail .cr-latest.jin{color:#1b6b48}
+  .comments-rail .cr-latest.connie{color:#8a4518}
+  .comments-rail .cr-latest.matt{color:#5a3a8a}
+  .comments-rail .cr-latest.other{color:var(--ink2)}
+  .comments-rail .cr-latest .cr-latest-label{color:var(--muted);font-weight:600}
+  .topic-index-item .ti-meta .topic-author-pill{vertical-align:middle}
+  .comments-rail .cr-count{font-size:10px;color:var(--muted);font-weight:600}
+  .topic-author-label{display:inline-flex;align-items:center;gap:5px;flex-wrap:wrap}
+  .topic-author-pill{display:inline-block;font-size:10px;font-weight:800;padding:2px 7px;border-radius:999px;
+    letter-spacing:.02em;border:1px solid transparent;line-height:1.3;white-space:nowrap}
+  .topic-author-pill.ming{background:rgba(42,120,214,.14);color:#1a5fa8;border-color:rgba(42,120,214,.35)}
+  .topic-author-pill.jin{background:rgba(46,158,110,.14);color:#1b6b48;border-color:rgba(46,158,110,.35)}
+  .topic-author-pill.connie{background:rgba(180,90,40,.12);color:#8a4518;border-color:rgba(180,90,40,.35)}
+  .topic-author-pill.matt{background:rgba(120,80,180,.12);color:#5a3a8a;border-color:rgba(120,80,180,.35)}
+  .topic-author-pill.other{background:var(--neutbg);color:var(--ink2);border-color:var(--grid)}
+  .comment-topic-title.ming,.comments-rail .cr-topic.ming{color:#1a5fa8}
+  .comment-topic-title.jin,.comments-rail .cr-topic.jin{color:#1b6b48}
+  .comment-topic-title.connie,.comments-rail .cr-topic.connie{color:#8a4518}
+  .comment-topic-title.matt,.comments-rail .cr-topic.matt{color:#5a3a8a}
+  .comment-topic-block.ming{border-color:rgba(42,120,214,.35);border-left:4px solid #2a78d6;background:color-mix(in srgb,#2a78d6 4%,var(--surface))}
+  .comment-topic-block.jin{border-color:rgba(46,158,110,.35);border-left:4px solid #2e9e6e;background:color-mix(in srgb,#2e9e6e 4%,var(--surface))}
+  .comment-topic-block.connie{border-color:rgba(180,90,40,.35);border-left:4px solid #b45a28;background:color-mix(in srgb,#b45a28 4%,var(--surface))}
+  .comment-topic-block.matt{border-color:rgba(120,80,180,.35);border-left:4px solid #7850b4;background:color-mix(in srgb,#7850b4 4%,var(--surface))}
+  .comments-rail .cr-item.ming{border-left:3px solid #2a78d6}
+  .comments-rail .cr-item.jin{border-left:3px solid #2e9e6e}
+  .comments-rail .cr-item.connie{border-left:3px solid #b45a28}
+  .comments-rail .cr-item.matt{border-left:3px solid #7850b4}
+  .comment-card.reply{position:relative}
+  .comment-card.reply::before{content:"Reply";position:absolute;top:8px;right:10px;font-size:10px;font-weight:800;
+    color:var(--blue);letter-spacing:.02em;opacity:.85}
+  .comment-reply-line{font-size:11px;font-weight:700;color:var(--blue);margin:0 0 6px}
+  .comment-body{font-size:14px;line-height:1.5;white-space:pre-wrap;overflow-wrap:normal;word-break:normal;overflow-x:auto}
+  .comments-modal-thread .comment-body{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12.5px;line-height:1.35}
+  .comment-actions{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+  .comment-actions button,.comment-compose button{font:inherit;font-size:12px;font-weight:600;
+    padding:5px 10px;border-radius:8px;border:1px solid var(--border);background:var(--surface);
+    color:var(--ink2);cursor:pointer}
+  .comment-actions button:hover,.comment-compose button:hover{background:var(--neutbg);color:var(--ink)}
+  .comment-actions button.primary,.comment-compose button.primary{background:var(--blue);color:#fff;border-color:var(--blue)}
+  .comment-actions button.danger{color:var(--critical)}
+  .comment-compose{border-top:1px solid var(--grid);padding-top:14px;margin-top:4px}
+  .comment-compose label{display:block;font-size:12px;font-weight:700;margin-bottom:4px;color:var(--ink2)}
+  .comment-compose select,.comment-compose textarea,.comment-compose input[type=text]{width:100%;font:inherit;font-size:14px;
+    border:1px solid var(--border);border-radius:10px;padding:8px 10px;background:var(--surface);color:var(--ink)}
+  .comment-compose input[type=text]{margin:0 0 8px}
+  .comment-compose textarea{min-height:220px;height:220px;resize:vertical;margin:8px 0 10px}
+  .comment-compose .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+  .comment-compose .hint{font-size:11.5px;color:var(--muted);flex:1 1 200px}
+  .comment-compose .replying{font-size:12px;color:var(--blue);margin:0 0 8px;font-weight:600}
+  .comment-banner{font-size:12.5px;padding:10px 12px;border-radius:10px;margin-bottom:12px;
+    background:var(--warnbg);border:1px solid color-mix(in srgb,var(--serious) 35%,var(--border))}
+  .comment-banner a{color:var(--blue);font-weight:700}
+  .comment-card.highlight{border-color:var(--blue);box-shadow:0 0 0 2px var(--blue-soft);
+    background:color-mix(in srgb,var(--blue-soft) 25%,var(--plane));position:relative;z-index:1}
+  .comments-done-toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(12px);
+    z-index:320;padding:12px 18px;border-radius:12px;font-size:14px;font-weight:700;color:#fff;
+    background:#1b6b48;box-shadow:0 10px 28px rgba(0,0,0,.22);opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;
+    max-width:min(92vw,420px);text-align:center}
+  .comments-done-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  .comments-modal{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;padding:20px}
+  .comments-modal[hidden]{display:none}
+  .comments-modal-backdrop{position:absolute;inset:0;background:rgba(11,11,11,.45)}
+  .comments-modal-panel{position:relative;width:min(1040px,96vw);max-height:min(94vh,1100px);height:min(94vh,1100px);display:flex;
+    flex-direction:column;background:var(--surface);border:1px solid var(--border);border-radius:16px;
+    box-shadow:0 20px 60px rgba(0,0,0,.18);overflow:hidden}
+  .comments-modal-head{display:flex;align-items:center;justify-content:space-between;gap:12px;
+    padding:16px 18px;border-bottom:1px solid var(--grid);flex-shrink:0}
+  .comments-modal-head h3{margin:0;font-size:17px;letter-spacing:-.01em}
+  .comments-modal-close{font:inherit;font-size:18px;line-height:1;width:32px;height:32px;
+    border:1px solid var(--border);border-radius:8px;background:var(--surface);cursor:pointer;color:var(--ink2)}
+  .comments-modal-close:hover{background:var(--neutbg)}
+  .comments-modal-sub{margin:0;padding:8px 18px 0;font-size:12px;color:var(--muted);flex-shrink:0}
+  .comments-modal-thread{flex:1 1 auto;min-height:0;overflow-y:auto;padding:14px 18px;margin:0;display:flex;flex-direction:column;gap:4px}
+  .comments-modal-back{font:inherit;font-size:12px;font-weight:700;color:var(--blue);background:none;border:0;padding:0;cursor:pointer;margin:0 0 8px;text-align:left}
+  .comments-modal-back:hover{text-decoration:underline}
+  .topic-index-item{display:block;width:100%;text-align:left;font:inherit;cursor:pointer;border:1px solid var(--grid);
+    border-radius:12px;padding:12px 14px;margin:0 0 14px;background:var(--surface);transition:background .15s,border-color .15s}
+  .topic-index-item:hover{background:var(--neutbg);border-color:color-mix(in srgb,var(--blue) 40%,var(--grid))}
+  .topic-index-item .ti-title{font-size:13.5px;font-weight:800;margin:0 0 4px}
+  .topic-index-item .ti-meta{font-size:11px;color:var(--muted);margin:0 0 4px}
+  .topic-index-item .ti-body{font-size:12px;color:var(--ink2);line-height:1.4}
+  .topic-index-filter{width:100%;font:inherit;font-size:13px;padding:8px 10px;border:1px solid var(--border);
+    border-radius:10px;margin:0 0 12px;background:#fff}
+  .comments-modal-foot{padding:10px 18px 12px;border-top:1px solid var(--grid);flex:0 0 auto;background:var(--plane)}
+  .comments-modal.index-mode #comments-modal-compose-slot{display:none}
+  .comments-modal.index-mode .comments-modal-foot{padding:8px 18px 10px}
+  .comments-modal-foot .comment-compose{border-top:0;padding-top:0;margin-top:0}
+  .comments-modal-foot .comment-compose label{margin-bottom:2px}
+  .comments-modal-foot .comment-compose textarea{min-height:120px;max-height:220px;height:140px;margin:4px 0 6px;resize:vertical}
+  .comments-modal-foot .comments-modal-goto{display:inline-block;margin-top:8px;font-size:12px;font-weight:700;color:var(--blue);text-decoration:none}
+  .comments-modal-goto:hover{text-decoration:underline}
+  .comments-modal-banner{margin:8px 18px 0;flex-shrink:0}
+  #comments-compose-home:empty{display:none}
+  .cheat h4{margin:0 0 2px;font-size:13.5px;letter-spacing:-.01em}
+  .cheat .cs{font-size:11px;color:var(--muted);margin:0 0 10px}
+  .cheat .srow{display:flex;gap:9px;align-items:flex-start;padding:6px 0;border-top:1px solid var(--grid);font-size:11.5px;line-height:1.35}
+  .cheat .srow:first-of-type{border-top:0}
+  .cheat .pts{flex:none;font-weight:800;font-variant-numeric:tabular-nums;color:var(--blue);min-width:28px}
+  .cheat a.seelink{color:inherit;text-decoration:none;display:block}
+  .cheat a.seelink:hover{color:var(--blue)}
+  .cheat .seehint{color:var(--blue);font-weight:700;font-size:10px;white-space:nowrap;margin-left:4px}
+  .cheat .tier{display:flex;justify-content:space-between;gap:8px;font-size:11.5px;padding:4px 0}
+  .cheat .tier b{font-weight:700}
+  .cheat .div{border-top:1px solid var(--axis);margin:11px 0 7px}
+  .cheat .strong{font-size:10.5px;color:var(--muted);margin-top:8px;line-height:1.45}
+  .sub{color:var(--muted);font-size:13px;margin:0 0 12px}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.82em;
+    background:var(--neutbg);padding:1px 5px;border-radius:5px;color:var(--ink2)}
+
+  /* headline / review summary */
+  .headline{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--critical);
+    border-radius:12px;padding:16px 20px;margin:0 0 18px;font-size:16px}
+  .headline b{color:var(--critical);font-weight:800}
+  .review-summary{background:var(--surface);border:1px solid var(--border);border-radius:14px;
+    padding:18px 22px;margin:6px 0 0;font-size:15px;line-height:1.55}
+  .review-summary .rs-title{font-size:20px;font-weight:800;margin:0 0 14px;letter-spacing:-.01em}
+  .review-summary h3{font-size:15px;margin:16px 0 6px;font-weight:800}
+  .review-summary h3:first-of-type{margin-top:0}
+  .review-summary > ul{margin:0;padding-left:20px}
+  .review-summary > ul > li{margin:5px 0}
+  .review-summary ul ul{margin:6px 0 0;padding-left:20px}
+  .review-summary ul ul li{margin:3px 0;font-weight:500}
+  .pattern-flow{background:var(--neutbg);border-radius:12px;padding:14px 18px;margin:8px 0 0;
+    font-size:14px;line-height:1.9;text-align:center}
+  .pattern-flow .step{font-weight:700;color:var(--ink)}
+  .pattern-flow .arr{color:var(--muted);font-weight:400;font-size:12px;line-height:1.2}
+  .review-note{margin-top:14px}
+  .review-note h3{margin-top:0}
+  .review-note ul{margin:6px 0 0;padding-left:20px}
+  .review-note li{margin:4px 0}
+
+  /* KPI tiles — fixed row heights so labels, numbers, and subs line up across cards */
+  .kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:12px 0 4px;align-items:stretch}
+  @media (max-width:960px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  @media (max-width:520px){.kpis{grid-template-columns:1fr}}
+  .kpi-funnel-hint{font-size:12.5px;color:var(--muted);margin:0 0 8px;line-height:1.45}
+  .kpi-funnel-hint b{color:var(--ink2);font-weight:600}
+  .tile{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 16px;
+    display:flex;flex-direction:column;height:100%;min-height:148px}
+  .tile .lbl{font-size:12px;color:var(--ink2);font-weight:600;line-height:1.35;
+    min-height:2.7em;margin:0}
+  .tile .val{font-size:30px;font-weight:800;margin:10px 0 0;letter-spacing:-.02em;line-height:1.1;
+    min-height:1.1em;flex:0 0 auto}
+  .tile .sub{font-size:11.5px;color:var(--muted);margin:10px 0 0;line-height:1.45;
+    min-height:4.35em;flex:1 0 auto}
+  .tile.flag .val{color:var(--critical)}
+  .tile.bot .val{color:var(--serious)}
+  .tile.pool .val{color:var(--blue)}
+  .bot-explain{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin:0 0 14px;font-size:14.5px;line-height:1.55}
+  .bot-explain b{font-weight:700}
+  .bot-explain .notthis{color:var(--muted);font-size:13px;margin-top:8px}
+  .bot-kpis{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0 0 10px}
+  @media (max-width:620px){.bot-kpis{grid-template-columns:1fr}}
+  .bot-kpis .tile{min-height:120px}
+  .bot-kpis .tile.ok .val{color:var(--good)}
+  .bot-rule{font-size:12.5px;color:var(--muted);margin:0 0 8px}
+
+  /* filter bar */
+  .filterbar{display:flex;flex-wrap:wrap;gap:18px;align-items:center;background:var(--surface);
+    border:1px solid var(--border);border-radius:12px;padding:12px 16px;margin:16px 0 6px}
+  .fgroup{display:flex;align-items:center;gap:8px}
+  .fgroup .fl{font-size:12px;color:var(--muted);font-weight:600;margin-right:2px}
+  .seg{display:inline-flex;border:1px solid var(--border);border-radius:9px;overflow:hidden;background:var(--plane)}
+  .seg button{font:inherit;font-size:12.5px;padding:5px 12px;border:0;background:transparent;
+    color:var(--ink2);cursor:pointer;line-height:1.3}
+  .seg button.on{background:var(--blue);color:#fff;font-weight:600}
+  .clearbtn{font:inherit;font-size:12px;color:var(--muted);background:transparent;border:0;cursor:pointer;text-decoration:underline;margin-left:auto}
+
+  /* two-column split */
+  .split{display:grid;grid-template-columns:1.15fr .85fr;gap:16px;align-items:stretch}
+  @media (max-width:760px){.split{grid-template-columns:1fr}}
+  .panel{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px 18px;overflow-x:auto}
+  .panel h3{margin:0 0 2px;font-size:14.5px}
+  .panel .pd{font-size:11.5px;color:var(--muted);margin:0 0 12px}
+
+  /* bar chart (div bars) */
+  .bars{display:flex;flex-direction:column;gap:12px;margin-top:6px}
+  .bar-row .top{display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:4px;gap:8px}
+  .bar-row .name{color:var(--ink);font-weight:500;display:flex;align-items:center;gap:7px;min-width:0}
+  .bar-row .name .dot{width:9px;height:9px;border-radius:50%;flex:none}
+  .bar-row .val{color:var(--ink2);font-variant-numeric:tabular-nums;font-weight:600;
+    display:flex;flex-direction:column;align-items:flex-end;gap:1px;line-height:1.35;white-space:normal;text-align:right}
+  .bar-row .val-orders{font-size:11px;font-weight:600;color:var(--muted)}
+  .track{height:16px;background:var(--neutbg);border-radius:5px;overflow:hidden}
+  .fill{height:100%;border-radius:5px;transition:width .35s ease}
+
+  /* Version 2 level charts — Level | Range | Bar+n | meta below (L→R, then down) */
+  .lvl-bars{display:flex;flex-direction:column;gap:14px;margin-top:2px}
+  .lvl-head{display:grid;grid-template-columns:minmax(128px,0.95fr) minmax(88px,0.7fr) minmax(160px,2.2fr) minmax(58px,auto);
+    column-gap:12px;align-items:end;padding:0 0 8px;margin:0 0 4px;
+    border-bottom:1px solid var(--axis);font-size:11.5px;font-weight:700;color:var(--ink2);
+    letter-spacing:.01em}
+  .lvl-head > span{min-width:0;overflow-wrap:anywhere;line-height:1.25}
+  .lvl-head span:last-child{text-align:right;white-space:nowrap;overflow-wrap:normal}
+  .lvl-row{display:grid;grid-template-columns:minmax(128px,0.95fr) minmax(88px,0.7fr) minmax(160px,2.2fr) minmax(58px,auto);
+    column-gap:12px;row-gap:3px;align-items:center}
+  .lvl-row .lvl-name{grid-column:1;font-size:12.5px;font-weight:600;color:var(--ink);
+    display:flex;align-items:center;gap:7px;min-width:0;line-height:1.3}
+  .lvl-row .lvl-name .dot{width:9px;height:9px;border-radius:50%;flex:none}
+  .lvl-row .lvl-range{grid-column:2;font-size:12px;color:var(--ink2);font-variant-numeric:tabular-nums;white-space:nowrap}
+  .lvl-row .lvl-track{grid-column:3;min-width:0}
+  .lvl-row .lvl-track .track{height:14px}
+  .lvl-row .lvl-n{grid-column:4;font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;
+    color:var(--ink);text-align:right}
+  .lvl-row .lvl-meta{grid-column:3 / 5;font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums;
+    line-height:1.35;padding-left:0}
+  .lvl-row.lvl-extreme .lvl-name{color:var(--critical)}
+  .lvl-row.lvl-extreme .lvl-n{color:var(--critical)}
+  table.lvl-table th:nth-child(2),table.lvl-table td:nth-child(2){text-align:left}
+  table.lvl-table td.lvl-share{font-variant-numeric:tabular-nums}
+  /* ⑧a assigned: chart vs summary table — clear visual split */
+  .assigned-orders-panel .assigned-chart-section{margin:0}
+  .assigned-orders-panel .assigned-summary-table{
+    margin-top:28px;padding-top:12px;border-top:1px solid var(--border)}
+  .assigned-orders-panel .assigned-summary-table > .pd{margin-top:10px}
+  table.lvl-table.lvl-table-grouped thead th{
+    color:var(--ink);font-weight:600;font-size:12px;text-align:center;vertical-align:middle;
+    border:none;padding:8px 12px;background:transparent;height:auto}
+  table.lvl-table.lvl-table-grouped thead tr:first-child th{
+    height:auto;padding:8px 12px 6px;border:none;background:transparent;font-weight:600}
+  table.lvl-table.lvl-table-grouped thead tr:first-child th.th-group{
+    border-left:none;border-right:none;border-top:none;
+    border-bottom:1px solid #e5e7eb;padding-bottom:6px}
+  table.lvl-table.lvl-table-grouped thead tr:nth-child(2) th{
+    padding-top:8px;padding-bottom:8px;background:transparent;
+    border-bottom:1px solid var(--axis);font-weight:700}
+  table.lvl-table.lvl-table-grouped thead th.th-corner,
+  table.lvl-table.lvl-table-grouped thead th.th-left,
+  table.lvl-table.lvl-table-grouped thead tr:first-child th[rowspan]{
+    text-align:left;vertical-align:middle;border-bottom:1px solid var(--axis)}
+  table.lvl-table.lvl-table-grouped thead tr:first-child th[rowspan]:not(.th-corner):not(.th-left){
+    text-align:center;vertical-align:middle}
+  table.lvl-table.lvl-table-grouped tbody td{text-align:center;vertical-align:middle}
+  table.lvl-table.lvl-table-grouped tbody td:first-child,
+  table.lvl-table.lvl-table-grouped tbody td:nth-child(2){text-align:left}
+  @media (max-width:640px){
+    .lvl-head{display:none}
+    .lvl-row{grid-template-columns:1fr 40px;column-gap:8px}
+    .lvl-row .lvl-name{grid-column:1}
+    .lvl-row .lvl-range{grid-column:1;padding-left:16px;font-size:11px;color:var(--muted)}
+    .lvl-row .lvl-track{grid-column:1}
+    .lvl-row .lvl-n{grid-column:2;grid-row:3}
+    .lvl-row .lvl-meta{grid-column:1 / 3}
+  }
+
+  /* tables */
+  table{border-collapse:collapse;width:100%;font-size:13px;margin-top:4px}
+  th,td{text-align:right;padding:7px 8px;font-variant-numeric:tabular-nums;white-space:nowrap}
+  th:first-child,td:first-child{text-align:left}
+  thead th{color:var(--muted);font-weight:600;border-bottom:1px solid var(--axis);font-size:11.5px}
+  tbody td{border-bottom:1px solid var(--grid)}
+  tbody tr:last-child td{border-bottom:0}
+  .yes{color:var(--critical);font-weight:700}
+  .no{color:var(--muted)}
+  .sc{font-weight:800}
+
+  /* funnel — 3-column grid: label (left) | bar (center) | change (right) */
+  .funnel{
+    display:grid;
+    grid-template-columns:minmax(220px,1fr) minmax(200px,360px) 80px;
+    column-gap:20px;row-gap:12px;align-items:center;margin-top:8px
+  }
+  .fn-row{display:contents}
+  .fn-side{
+    grid-column:1;font-size:12px;color:var(--ink2);line-height:1.4;
+    padding-right:4px;text-align:left
+  }
+  .fn-side b{color:var(--ink);font-weight:600}
+  .fn-bar-wrap{
+    grid-column:2;width:100%;display:flex;align-items:center;justify-content:flex-start;
+    min-height:38px
+  }
+  .fn-bar{
+    height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;
+    color:#fff;font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;
+    transition:width .35s ease;min-width:48px;box-shadow:inset 0 -1px 0 rgba(0,0,0,.08)
+  }
+  .fn-drop{
+    grid-column:3;font-size:12px;color:var(--muted);text-align:right;
+    font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:600
+  }
+  .fn-drop.pct{color:var(--ink2);font-weight:700}
+  @media (max-width:700px){
+    .funnel{display:flex;flex-direction:column;gap:14px}
+    .fn-row{
+      display:grid;grid-template-columns:1fr auto;grid-template-areas:"label stat" "bar bar";
+      gap:6px 12px;align-items:center
+    }
+    .fn-side{grid-area:label;padding-right:0}
+    .fn-bar-wrap{grid-area:bar;min-height:34px}
+    .fn-drop{grid-area:stat;text-align:right}
+  }
+  /* histogram (vertical columns) */
+  .hist-legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--ink2);margin:2px 0 22px}
+  .hist-legend span{display:inline-flex;align-items:center;gap:6px}
+  .hist-legend .dot{width:9px;height:9px;border-radius:50%}
+  .hist{position:relative;display:flex;align-items:flex-end;gap:6px;height:200px;padding-top:52px;
+    border-bottom:1.5px solid var(--axis)}
+  .hcol{flex:1;display:flex;flex-direction:column-reverse;justify-content:flex-start;height:100%;position:relative;cursor:default}
+  .hcol .seg{width:100%;transition:height .35s ease}
+  .hcol .seg:first-child{border-radius:0 0 3px 3px}
+  .hcol .cnt{position:absolute;top:-16px;left:0;right:0;text-align:center;font-size:10.5px;
+    color:var(--ink2);font-variant-numeric:tabular-nums}
+  .haxis{display:flex;gap:6px;margin-top:6px}
+  .haxis div{flex:1;text-align:center;font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums}
+  .cutoff{position:absolute;top:18px;bottom:0;border-left:2px dashed var(--critical);opacity:.75}
+  .cutoff .lab{position:absolute;top:-22px;left:50%;transform:translateX(-50%);font-size:10px;
+    color:var(--critical);font-weight:700;white-space:nowrap;background:var(--surface);
+    padding:2px 7px;border-radius:6px;border:1px solid var(--border)}
+  .hnote{font-size:12px;color:var(--muted);margin-top:12px}
+
+  .relbox{background:var(--neutbg);border-radius:12px;padding:14px 18px;margin:14px 0;font-size:13.5px}
+  .relbox .big{font-size:15px;font-weight:700;margin-bottom:6px;display:block}
+  .relbox b{font-weight:700}
+  .relbox .arrow{color:var(--critical);font-weight:800}
+
+  /* timelines */
+  .cases{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media (max-width:760px){.cases{grid-template-columns:1fr}}
+  .case{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px 18px}
+  .case h3{margin:0 0 1px;font-size:14.5px}
+  .case .route{color:var(--muted);font-size:12px;margin:0 0 12px}
+  .rail{border-left:2px solid var(--grid);margin-left:5px;padding-left:15px;display:flex;flex-direction:column;gap:9px}
+  .step{display:flex;gap:10px;font-size:13px;position:relative}
+  .step::before{content:"";position:absolute;left:-21px;top:5px;width:9px;height:9px;border-radius:50%;
+    background:var(--muted);border:2px solid var(--surface)}
+  .step.bad::before{background:var(--critical)} .step.good::before{background:var(--good)}
+  .step .t{color:var(--muted);font-size:11.5px;min-width:74px;font-variant-numeric:tabular-nums;flex:none}
+  .step .d b{font-weight:700}
+  .step.bad .d{color:var(--critical)} .step.good .d{color:var(--good)}
+
+  /* caveat */
+  .caveat{background:var(--warnbg);border-radius:12px;padding:14px 18px;margin:16px 0;font-size:13.5px}
+  .caveat b{font-weight:700}
+  .caveat ul{margin:6px 0 0;padding-left:20px} .caveat li{margin:3px 0}
+  .foot{color:var(--muted);font-size:11.5px;margin-top:40px;border-top:1px solid var(--grid);padding-top:14px}
+
+/* Version 2 toggle + panels */
+.v2-toggle{margin-left:auto;display:inline-flex;align-items:center;gap:8px;padding:5px 12px;border-radius:999px;
+  border:1px solid rgba(42,120,214,.35);background:linear-gradient(135deg,#e8f2ff,#fff 55%,#ffe8c8);
+  box-shadow:0 0 0 0 rgba(42,120,214,.45);animation:v2pulse 1.8s ease-in-out infinite;cursor:pointer;
+  font-size:12.5px;font-weight:800;color:#0b0b0b;white-space:nowrap;user-select:none}
+.v2-toggle:hover{filter:brightness(1.03)}
+.v2-toggle.on{background:linear-gradient(135deg,#2a78d6,#1a5fa8);color:#fff;border-color:#1a5fa8;
+  box-shadow:0 0 16px rgba(42,120,214,.55)}
+.v2-toggle .knob{width:34px;height:18px;border-radius:999px;background:rgba(11,11,11,.15);position:relative;flex:none}
+.v2-toggle.on .knob{background:rgba(255,255,255,.35)}
+.v2-toggle .knob::after{content:"";position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;
+  background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:left .15s}
+.v2-toggle.on .knob::after{left:18px}
+@keyframes v2pulse{0%,100%{box-shadow:0 0 0 0 rgba(42,120,214,.35)}50%{box-shadow:0 0 0 6px rgba(42,120,214,0)}}
+body.show-v2 .v1-only{display:none !important}
+body:not(.show-v2) .v2-only{display:none !important}
+/* V2 layout: one section title (③); rulebook sits beside priority bands (④ heading hidden) */
+body.show-v2 #s4-hist-panel{display:none !important}
+body.show-v2 #s4{display:none !important}
+body.show-v2 #s3-s4-layout{
+  display:grid;
+  grid-template-columns:1.15fr .85fr;
+  gap:12px 16px;
+  align-items:start;
+  margin:0 0 8px;
+}
+body.show-v2 #s3-head{grid-column:1 / -1;grid-row:1;margin:0;align-self:start}
+body.show-v2 #s3-intro-body{grid-column:1 / -1;grid-row:2}
+body.show-v2 #s3-tier-split{
+  grid-column:1;grid-row:3;
+  display:flex;flex-direction:column;gap:12px;
+}
+body.show-v2 #s3-tier-split > .panel{width:100%}
+body.show-v2 #s4-split{
+  grid-column:2;grid-row:3;
+  display:block;
+  grid-template-columns:unset;
+}
+body.show-v2 a[data-s="s4"]{display:none !important}
+@media (max-width:760px){
+  body.show-v2 #s3-s4-layout{grid-template-columns:1fr}
+  body.show-v2 #s3-head,
+  body.show-v2 #s3-intro-body,
+  body.show-v2 #s3-tier-split,
+  body.show-v2 #s4-split{grid-column:1;grid-row:auto}
+}
+.v2-banner{margin:12px 0 16px;padding:12px 14px;border-radius:12px;border:1px solid rgba(42,120,214,.28);
+  background:color-mix(in srgb,var(--blue-soft) 35%,var(--plane));font-size:13.5px;line-height:1.5}
+.v2-banner b{color:#1a5fa8}
+/* Compare table: light up the active rule column */
+#sbot-compare-table.rule-col-1s th:nth-child(2),
+#sbot-compare-table.rule-col-1s td:nth-child(2),
+#sbot-compare-table.rule-col-3s th:nth-child(4),
+#sbot-compare-table.rule-col-3s td:nth-child(4){
+  background:color-mix(in srgb,var(--blue-soft) 55%,#fff);
+  box-shadow:inset 0 0 0 1px rgba(42,120,214,.22);
+}
+#sbot-compare-table.rule-col-1s th:nth-child(2),
+#sbot-compare-table.rule-col-3s th:nth-child(4){
+  background:color-mix(in srgb,var(--blue-soft) 75%,#fff);
+  color:#0b0b0b;
+}
+.v2-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:12px 0}
+@media(max-width:900px){.v2-grid{grid-template-columns:1fr}}
+.v2-kpi{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 14px}
+.v2-kpi .chip{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:8px 12px;min-width:110px}
+.v2-kpi .chip .n{font-size:18px;font-weight:800;letter-spacing:-.02em}
+.v2-kpi .chip .l{font-size:11.5px;color:var(--muted)}
+
+.v2-barrow{display:flex;align-items:flex-start;gap:14px;margin:0 0 18px;padding-bottom:14px;border-bottom:1px solid var(--grid)}
+.v2-barrow:last-of-type{border-bottom:0;margin-bottom:8px;padding-bottom:0}
+.v2-barrow .v2-left{width:168px;flex:none;display:flex;flex-direction:column;gap:2px;padding-top:1px}
+.v2-barrow .v2-lvl{width:auto;font-size:13px;font-weight:800;line-height:1.2}
+.v2-barrow .v2-range{font-size:11.5px;font-weight:600;color:var(--ink2);line-height:1.25}
+.v2-barrow .v2-px{font-weight:600;color:var(--muted);font-size:11.5px}
+.v2-barrow .v2-track{flex:1;min-width:0;background:var(--neutbg);border-radius:8px;height:22px;overflow:hidden;margin-top:4px}
+.v2-barrow .v2-fill{height:100%;border-radius:8px}
+.v2-barrow .v2-nums{width:220px;flex:none;font-size:12.5px;line-height:1.35;color:var(--ink)}
+.v2-barrow .v2-nums .n1{font-weight:800}
+.v2-barrow .v2-nums .n2{color:var(--ink2)}
+.v2-barrow .v2-nums .n3{color:var(--ink2);margin-top:2px}
+
+
+
+  .case-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;
+    padding:16px 18px;margin:16px 0 22px}
+  .case-head{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;align-items:flex-start}
+  .case-title{font-size:17px;font-weight:800;letter-spacing:-.01em}
+  .case-meta{font-size:13px;color:var(--ink2);margin-top:4px}
+  .tier-pill{font-size:12.5px;font-weight:800;padding:6px 10px;border-radius:999px;white-space:nowrap}
+  .tier-pill.critical{background:var(--criticalbg);color:var(--critical)}
+  .tier-pill.serious{background:rgba(236,131,90,.15);color:#b85a2a}
+  .tier-pill.good{background:rgba(0,99,0,.10);color:var(--good)}
+  .justify{margin:0 0 12px;padding-left:18px}
+  .justify li{margin:4px 0;font-size:14px}
+  .map-wrap{border:1px solid var(--grid);border-radius:12px;overflow:hidden;height:420px;margin:8px 0 6px;background:#fff}
+  .map-wrap iframe{border:0;width:100%;height:100%}
+  table.cmp{width:100%;border-collapse:collapse;font-size:13px;margin:8px 0 4px}
+  table.cmp th,table.cmp td{border-bottom:1px solid var(--grid);padding:7px 8px;text-align:left}
+  table.cmp th{font-size:11.5px;color:var(--muted);font-weight:700}
+  details{margin:8px 0;font-size:13.5px}
+  details summary{cursor:pointer;font-weight:700;color:var(--ink2)}
+  .answer{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--critical);
+    border-radius:12px;padding:14px 16px;margin:0 0 16px;font-size:15.5px;line-height:1.5}
+  .review-summary{background:var(--bg2,#f8fafc);border:1px solid var(--line,var(--border));border-radius:10px;
+    padding:10px 14px;font-size:12.5px;color:var(--ink2);line-height:1.55}
+  .review-summary ul{margin:6px 0 0;padding-left:18px}
+  .review-summary li{margin:3px 0}
+  .explain-block h3{font-size:17px;margin:18px 0 8px;color:var(--ink)}
+  .explain-block p{font-size:15px;color:var(--ink2);line-height:1.55;margin:0 0 8px}
+  .explain-fig{margin:8px 0 14px;border:1px solid var(--line,var(--border));border-radius:10px;
+    overflow:hidden;background:#fff}
+  .explain-fig img{display:block;width:100%;height:auto;max-height:none;object-fit:contain;background:#f8fafc}
+  .explain-fig figcaption{padding:8px 12px;font-size:12px;color:var(--muted);line-height:1.45;
+    border-top:1px solid var(--line,var(--border))}
+  .explain-callout{background:#fff7ed;border:1px solid #fdba74;border-radius:8px;padding:10px 12px;
+    font-size:12.5px;color:var(--ink2);line-height:1.5;margin:8px 0 12px}
+  .zoom-hit{display:block;cursor:zoom-in;position:relative}
+  .zoom-hit::after{content:"Click to enlarge";position:absolute;right:10px;bottom:10px;
+    background:rgba(15,23,42,.78);color:#fff;font-size:11px;font-weight:700;
+    padding:5px 8px;border-radius:6px;pointer-events:none}
+  .cmp-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:10px 0 14px}
+  @media (max-width:820px){.cmp-grid{grid-template-columns:1fr}}
+  .cmp-banner{background:#0f172a;color:#fff;border-radius:12px;padding:14px 16px;margin:8px 0 12px;
+    font-size:18px;font-weight:800;line-height:1.35;letter-spacing:-.01em}
+  .cmp-banner span{color:#fde68a}
+  .cmp-banner .sub{display:block;margin-top:6px;font-size:14px;font-weight:600;color:#cbd5e1}
+  .cmp-card{border:1px solid var(--border);border-radius:14px;padding:16px 16px 14px;background:#fff}
+  .cmp-card.ok{border-left:5px solid var(--good,#166534)}
+  .cmp-card.flag{border-left:5px solid var(--critical,#b91c1c)}
+  .cmp-card h4{margin:0 0 12px;font-size:17px;line-height:1.3}
+  .cmp-card .badge{display:inline-block;font-size:13px;font-weight:800;padding:4px 10px;
+    border-radius:999px;margin-right:8px;vertical-align:middle}
+  .cmp-card.ok .badge{background:rgba(0,99,0,.12);color:var(--good,#166534)}
+  .cmp-card.flag .badge{background:var(--criticalbg,#fee2e2);color:var(--critical,#b91c1c)}
+  .cmp-card .ping{font-size:14px;color:var(--ink2);line-height:1.55;margin:0 0 6px;
+    font-variant-numeric:tabular-nums}
+  .cmp-card .ping b{color:var(--ink);font-size:14px}
+  .cmp-card .ping .lbl{display:inline-block;min-width:3.2em;color:var(--muted);font-size:13px;font-weight:700}
+  .cmp-card .metric{margin-top:12px;padding:12px 12px;border-radius:10px;background:#f8fafc;
+    border:1px solid #e2e8f0}
+  .cmp-card.flag .metric{background:#fff1f2;border-color:#fecaca}
+  .cmp-card.ok .metric{background:#f0fdf4;border-color:#bbf7d0}
+  .cmp-card .metric .k{font-size:13px;font-weight:700;color:var(--muted);margin:0 0 4px;text-transform:uppercase;
+    letter-spacing:.04em}
+  .cmp-card .metric .v{font-size:28px;font-weight:900;line-height:1.15;letter-spacing:-.02em;margin:0}
+  .cmp-card.ok .metric .v{color:var(--good,#166534)}
+  .cmp-card.flag .metric .v{color:var(--critical,#b91c1c)}
+  .cmp-card .metric .v2{font-size:16px;font-weight:800;margin:8px 0 0;color:var(--ink)}
+  .cmp-card .note{font-size:14px;color:var(--ink2);margin:10px 0 0;line-height:1.5}
+  .btn-pop{display:inline-flex;align-items:center;gap:6px;margin:4px 0 10px;padding:10px 14px;
+    border-radius:8px;border:1px solid var(--border);background:#fff;font-size:14px;
+    font-weight:700;cursor:pointer;color:var(--ink)}
+  .btn-pop:hover{background:#f8fafc}
+  .img-lightbox{position:fixed;inset:0;z-index:9999;background:rgba(15,23,42,.88);
+    display:none;align-items:flex-start;justify-content:center;padding:16px;cursor:zoom-out;
+    overflow:auto}
+  .img-lightbox.is-open{display:flex}
+  .img-lightbox .lb-inner{margin:auto;max-width:none;cursor:default}
+  .img-lightbox img{display:block;width:auto;height:auto;max-width:none;
+    /* show native pixels — scroll to pan; do not shrink to a tiny box */
+    min-width:min(1400px,96vw);border-radius:10px;
+    box-shadow:0 20px 50px rgba(0,0,0,.45);background:#fff}
+  .img-lightbox .lb-cap{position:sticky;left:0;right:0;bottom:0;margin-top:10px;
+    color:#fff;font-size:15px;background:rgba(0,0,0,.7);padding:10px 12px;border-radius:8px;
+    max-width:96vw;text-align:center;line-height:1.4}
+  .compare-modal{position:fixed;inset:0;z-index:10000;background:rgba(15,23,42,.72);
+    display:none;align-items:center;justify-content:center;padding:18px}
+  .compare-modal.is-open{display:flex}
+  .compare-modal .cm-panel{background:#fff;border-radius:14px;max-width:980px;width:100%;
+    max-height:92vh;overflow:auto;padding:18px 20px 20px;box-shadow:0 24px 60px rgba(0,0,0,.35)}
+  .compare-modal .cm-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;
+    margin-bottom:10px}
+  .compare-modal .cm-head h3{margin:0;font-size:20px}
+  .compare-modal .cm-close{border:0;background:#f1f5f9;border-radius:8px;padding:8px 12px;
+    font-size:14px;font-weight:700;cursor:pointer}
+  .compare-modal .cm-hint{font-size:15px;color:var(--ink2);margin:0 0 12px;line-height:1.5}
+
+</style>
+</head>
+<body class="show-v2">
+<div class="viz-root">
+<nav class="nav">
+  <div class="nav-in">
+    <span class="brand">Cheat-app GPS · 1-day</span>
+    <a href="#top" class="active">Cases</a>
+    <a href="#how">How to read</a>
+    <a href="#rule-jump">Jumps</a>
+    <a href="#rule-scribble">Tiny area</a>
+    <a href="#method">Rules</a>
+    <a href="#discussion-cheat_gps" id="nav-notes">Notes</a>
+  </div>
+</nav>
+
+<div class="right-rail">
+<aside class="cheat" aria-label="What we look for">
+  <h4>What we look for</h4>
+  <div class="cs">Spot only · no score · one day · one map</div>
+  <div class="srow"><span class="pts">1</span><span>GPS jumps too fast (≥100 km/h) → red line</span></div>
+  <div class="srow"><span class="pts">2</span><span>Back and forth in a tiny area (see map)</span></div>
+  <div class="div"></div>
+  <div class="tier"><span><span class="dot" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--critical);margin-right:5px;vertical-align:middle"></span>Needs review</span><b>map flags</b></div>
+  <div class="tier"><span><span class="dot" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--good);margin-right:5px;vertical-align:middle"></span>Looks OK</span><b>no flag</b></div>
+</aside>
+<aside class="comments-rail is-collapsed" aria-label="Latest notes">
+  <div class="cr-head">
+    <h4 class="sectoggle" data-target="comments-rail-body" role="button" tabindex="0">Latest notes</h4>
+    <span class="showbar showlabel v2-only" data-target="comments-rail-body" role="button" tabindex="0" title="Expand / collapse notes">More ▾</span>
+  </div>
+  <div id="comments-rail-body">
+    <div id="comments-rail-list"><p class="cr-empty">Loading…</p></div>
+    <button type="button" class="cr-link" id="comments-rail-open">More topics</button>
+    <p class="cr-status" id="comments-rail-status"></p>
+  </div>
+</aside>
+</div>
+
+<div class="wrap" id="top">
+  <h1>Cheat-app GPS — one day, one map</h1>
+  <p class="meta">HK TRANSPORT · pilot fixtures + BQ order metadata · queried 2026-08-03 · Selected driver-days (1 day each)</p>
+
+  <div class="answer">
+    <b>Pilot:</b> Spot cheat-app GPS only — <b>no score</b>. We stitch every <b>order request</b> that day into
+    <b>one map</b> so a reader can <b>see</b> back-and-forth in a tiny area and
+    <b>red lines</b> (GPS jumps too fast). Human review before any ban. <b>No ML model yet.</b>
+  </div>
+
+  <p class="kpi-funnel-hint"><b>Read left → right:</b> how many we checked → who needs a look → who looks OK.</p>
+  <div class="kpis">
+    <div class="tile"><div class="lbl">① Drivers we checked</div><div class="val">3</div><div class="sub">1 day of GPS each</div></div>
+    <div class="tile flag"><div class="lbl">② Needs review</div><div class="val">1</div><div class="sub">map shows a flag</div></div>
+    <div class="tile pool"><div class="lbl">③ Looks OK</div><div class="val">2</div><div class="sub">no flag on map rules</div></div>
+  </div>
+
+  <div class="sect-head" id="how">
+    <h2>How to read</h2>
+  </div>
+  <div class="review-summary" style="display:block;margin-bottom:14px">
+    <ul>
+      <li><b>One card = one driver, one day.</b> Map = all that day’s order requests, sorted by time.</li>
+      <li><b>Red line</b> = GPS jumped too fast for a van (expand rule 1 below).</li>
+        <li><b>What we see</b> = plain reasons — use this to defend a review decision.</li>
+      <li>Do <b>not</b> ban from this page alone. Human review first.</li>
+    </ul>
+  </div>
+
+  <div class="sect-head" id="rule-jump">
+    <h2 class="sectoggle" data-target="rule-jump-body" role="button" tabindex="0">1) GPS jumps too fast — two neighbouring rows</h2>
+    <span class="showbar showlabel" data-target="rule-jump-body" role="button" tabindex="0" title="Expand / collapse">More ▾</span>
+  </div>
+  <div id="rule-jump-body" class="explain-block" style="display:none;margin-bottom:14px">
+    <p>
+      In Admin <b>Trip History</b>, each row is one GPS ping (time + lat + lon).
+      We only compare <b>this row</b> to the <b>row right under it</b>.
+      Time gap is usually about <b>1 minute</b> when the clock shows <code>19:08</code> then <code>19:09</code>
+      (not 1 second). Distance ÷ time = speed. If speed ≥ <b>100 km/h</b>, we mark a red line on the map.
+    </p>
+    <button type="button" class="btn-pop" id="btn-open-jump-compare"
+      data-open-compare="jump-compare-modal">Open comparison popup · OK vs too-fast</button>
+
+    <div class="cmp-banner">
+      Same ~1 minute on both sides.
+      <span>Distance: ~350 m vs ~6 km.</span>
+      <span class="sub">That is why one is OK (~21 km/h) and one is a red line (~360 km/h).</span>
+    </div>
+    <div class="cmp-grid" aria-label="Teaching comparison: normal vs too-fast">
+      <div class="cmp-card ok">
+        <h4><span class="badge">OK</span>Normal city drive</h4>
+        <p class="ping"><span class="lbl">Row A</span> <b>19:08</b> · lat 22.3195 · lon 114.2121</p>
+        <p class="ping"><span class="lbl">Row B</span> <b>19:09</b> · lat 22.3170 · lon 114.2145</p>
+        <div class="metric">
+          <p class="k">Distance between Row A and Row B</p>
+          <p class="v">~350 m</p>
+          <p class="v2">Time ~1 min → speed ~21 km/h</p>
+        </div>
+        <p class="note">A real van can move a few hundred metres in one minute. No red line.</p>
+      </div>
+      <div class="cmp-card flag">
+        <h4><span class="badge">FLAG</span>GPS jumps too fast</h4>
+        <p class="ping"><span class="lbl">Row A</span> <b>11:42</b> · lat 22.2780 · lon 114.1730</p>
+        <p class="ping"><span class="lbl">Row B</span> <b>11:43</b> · lat 22.3100 · lon 114.2250</p>
+        <div class="metric">
+          <p class="k">Distance between Row A and Row B</p>
+          <p class="v">~6 km</p>
+          <p class="v2">Time ~1 min → speed ~360 km/h (≥100 km/h)</p>
+        </div>
+        <p class="note">Impossible for a van → <b>red line</b> on the map.
+          Teaching numbers (no cheat Admin table screenshot yet).</p>
+      </div>
+    </div>
+
+    <figure class="explain-fig">
+      <a class="zoom-hit" href="cheat_gps_explain/admin-gps-original.png"
+         data-lightbox="cheat_gps_explain/admin-gps-original.png"
+         data-caption="Original Admin Trip History (order 117951364, 2026-06-04) — normal driver. Scroll to pan · click dark area or Esc to close.">
+        <img src="cheat_gps_explain/admin-gps-original.png"
+             alt="Original Admin Trip History: route map and GPS table"
+             loading="lazy">
+      </a>
+      <figcaption>
+        Original Admin screenshot (normal driver). Click to open full size.
+        How to read two rows → use the big comparison cards above (distance / speed).
+      </figcaption>
+    </figure>
+  </div>
+
+  <div class="sect-head" id="rule-scribble">
+    <h2 class="sectoggle" data-target="rule-scribble-body" role="button" tabindex="0">2) Back and forth in a tiny area — map shape</h2>
+    <span class="showbar showlabel" data-target="rule-scribble-body" role="button" tabindex="0" title="Expand / collapse">More ▾</span>
+  </div>
+  <div id="rule-scribble-body" class="explain-block" style="display:none;margin-bottom:14px">
+    <p>
+      You do not need the table for this. Open the map: if the blue path keeps
+      <b>crossing itself</b> inside a <b>small neighbourhood</b> for a long time,
+      that is the second rule. Red lines on top mean some of those jumps were also too fast.
+    </p>
+    <button type="button" class="btn-pop" data-open-compare="map-compare-modal">
+      Open map comparison · normal route vs tiny-area scribble
+    </button>
+    <figure class="explain-fig">
+      <a class="zoom-hit" href="cheat_gps_explain/wan-chai-back-and-forth-zoom.png"
+         data-lightbox="cheat_gps_explain/wan-chai-back-and-forth-zoom.png"
+         data-caption="Zoomed Wan Chai path (driver 80657, 2026-07-10) — back and forth in a tiny area.">
+        <img src="cheat_gps_explain/wan-chai-back-and-forth-zoom.png"
+             alt="Zoomed map of Wan Chai showing GPS path going back and forth in a tiny area"
+             loading="lazy">
+      </a>
+      <figcaption>
+        <b>Zoomed map</b> (driver 80657, 2026-07-10, Wan Chai). Path scribbles inside a tiny area.
+        Click to enlarge. Use the comparison popup to put a normal long route next to this.
+      </figcaption>
+    </figure>
+  </div>
+
+  <!-- Comparison popups -->
+  <div class="compare-modal" id="jump-compare-modal" role="dialog" aria-modal="true" aria-labelledby="jump-cmp-title" hidden>
+    <div class="cm-panel">
+      <div class="cm-head">
+        <h3 id="jump-cmp-title">OK vs GPS jumps too fast</h3>
+        <button type="button" class="cm-close" data-close-compare>Close</button>
+      </div>
+      <p class="cm-hint">
+        We turn two lat/lon rows into <b>one distance</b>, then divide by ~1 minute.
+        Right side uses <b>teaching numbers</b> (no real cheat Admin table screenshot yet).
+      </p>
+
+    <div class="cmp-banner">
+      Same ~1 minute on both sides.
+      <span>Distance: ~350 m vs ~6 km.</span>
+      <span class="sub">That is why one is OK (~21 km/h) and one is a red line (~360 km/h).</span>
+    </div>
+    <div class="cmp-grid" aria-label="Teaching comparison: normal vs too-fast">
+      <div class="cmp-card ok">
+        <h4><span class="badge">OK</span>Normal city drive</h4>
+        <p class="ping"><span class="lbl">Row A</span> <b>19:08</b> · lat 22.3195 · lon 114.2121</p>
+        <p class="ping"><span class="lbl">Row B</span> <b>19:09</b> · lat 22.3170 · lon 114.2145</p>
+        <div class="metric">
+          <p class="k">Distance between Row A and Row B</p>
+          <p class="v">~350 m</p>
+          <p class="v2">Time ~1 min → speed ~21 km/h</p>
+        </div>
+        <p class="note">A real van can move a few hundred metres in one minute. No red line.</p>
+      </div>
+      <div class="cmp-card flag">
+        <h4><span class="badge">FLAG</span>GPS jumps too fast</h4>
+        <p class="ping"><span class="lbl">Row A</span> <b>11:42</b> · lat 22.2780 · lon 114.1730</p>
+        <p class="ping"><span class="lbl">Row B</span> <b>11:43</b> · lat 22.3100 · lon 114.2250</p>
+        <div class="metric">
+          <p class="k">Distance between Row A and Row B</p>
+          <p class="v">~6 km</p>
+          <p class="v2">Time ~1 min → speed ~360 km/h (≥100 km/h)</p>
+        </div>
+        <p class="note">Impossible for a van → <b>red line</b> on the map.
+          Teaching numbers (no cheat Admin table screenshot yet).</p>
+      </div>
+    </div>
+
+    </div>
+  </div>
+
+  <div class="compare-modal" id="map-compare-modal" role="dialog" aria-modal="true" aria-labelledby="map-cmp-title" hidden>
+    <div class="cm-panel">
+      <div class="cm-head">
+        <h3 id="map-cmp-title">Normal long route vs tiny-area scribble</h3>
+        <button type="button" class="cm-close" data-close-compare>Close</button>
+      </div>
+      <p class="cm-hint">Left = normal Admin route map. Right = cheat pattern (Wan Chai back and forth).</p>
+      <div class="cmp-grid">
+        <div class="cmp-card ok">
+          <h4><span class="badge">OK</span>Normal route (Admin)</h4>
+          <a class="zoom-hit" href="cheat_gps_explain/admin-gps-original.png"
+             data-lightbox="cheat_gps_explain/admin-gps-original.png"
+             data-caption="Normal Admin route map + table (order 117951364)">
+            <img src="cheat_gps_explain/admin-gps-original.png" alt="Normal Admin route" loading="lazy"
+                 style="width:100%;border-radius:8px;border:1px solid #e2e8f0">
+          </a>
+          <p class="note">Path follows roads across the city. Not stuck scribbling in one block.</p>
+        </div>
+        <div class="cmp-card flag">
+          <h4><span class="badge">FLAG</span>Back and forth (Wan Chai)</h4>
+          <a class="zoom-hit" href="cheat_gps_explain/wan-chai-back-and-forth-zoom.png"
+             data-lightbox="cheat_gps_explain/wan-chai-back-and-forth-zoom.png"
+             data-caption="Cheat pattern zoom — Wan Chai">
+            <img src="cheat_gps_explain/wan-chai-back-and-forth-zoom.png" alt="Wan Chai scribble zoom" loading="lazy"
+                 style="width:100%;border-radius:8px;border:1px solid #e2e8f0">
+          </a>
+          <p class="note">Same tiny neighbourhood, path crosses itself for a long time.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="img-lightbox" id="img-lightbox" role="dialog" aria-modal="true" hidden>
+    <div class="lb-inner">
+      <img src="" alt="Enlarged">
+      <div class="lb-cap"></div>
+    </div>
+  </div>
+
+  
+  <article class="case-card" id="d80657_2026-07-10" style="border-left:4px solid var(--critical)">
+    <div class="case-head">
+      <div>
+        <div class="case-title">Known cheat pattern (GPS back and forth in Wan Chai)</div>
+        <div class="case-meta">Driver <b>CHEUNG WAI KIT</b>
+          · <code>driver_id=80657</code>
+          · day <b>2026-07-10</b>
+          · 2 order request(s) stitched</div>
+      </div>
+      <div class="tier-pill critical">Needs review</div>
+    </div>
+    <div class="kpis" style="grid-template-columns:1fr;margin:12px 0">
+      <div class="tile"><div class="lbl">What stood out</div><div class="val" style="font-size:15px;line-height:1.3">back and forth in a tiny area</div><div class="sub">look at the map · red = jump too fast</div></div>
+    </div>
+    <p class="sub" style="margin:0 0 8px"><b>What we see</b> — short note (the map is the main proof):</p>
+    <ul class="justify"><li>Driving appears normal during this time window (top speed: 10 km/h; distance traveled: 6.2 km).</li><li>However, the GPS trajectory looks unusual:</li><li>About 50% of the turns are sharp U-turns.</li><li>The GPS line goes back and forth in a tiny area — the traveled path is 8.7× longer than that small area on the map.</li></ul>
+    <div class="map-wrap">
+      <iframe title="Day map d80657_2026-07-10" src="cheat_gps_maps/d80657_2026-07-10.html" loading="lazy"></iframe>
+    </div>
+    <p class="sub">Map: coloured lines = each order · <b style="color:var(--critical)">red</b> = GPS jump too fast · one map = full day stitch</p>
+    <details>
+      <summary>Orders that day (BQ / Admin)</summary>
+      <table class="cmp"><thead><tr><th>order_request_id</th><th>pickup → dropoff</th><th>straight km</th><th>status</th></tr></thead>
+      <tbody><tr><td><code>119124406</code></td><td>灣仔 → 小欖</td><td>21.426</td><td>completed</td></tr><tr><td><code>119132419</code></td><td>銅鑼灣 → 秀茂坪</td><td>6.804</td><td>completed</td></tr></tbody></table>
+    </details>
+  </article>
+
+
+  <article class="case-card" id="d25879_2026-07-10" style="border-left:4px solid var(--good)">
+    <div class="case-head">
+      <div>
+        <div class="case-title">Contrast — smooth multi-order day</div>
+        <div class="case-meta">Driver <b>LUI YIU KWOK</b>
+          · <code>driver_id=25879</code>
+          · day <b>2026-07-10</b>
+          · 3 order request(s) stitched</div>
+      </div>
+      <div class="tier-pill good">Looks OK</div>
+    </div>
+    <div class="kpis" style="grid-template-columns:1fr;margin:12px 0">
+      <div class="tile"><div class="lbl">What stood out</div><div class="val" style="font-size:15px;line-height:1.3">none</div><div class="sub">look at the map · red = jump too fast</div></div>
+    </div>
+    <p class="sub" style="margin:0 0 8px"><b>What we see</b> — short note (the map is the main proof):</p>
+    <ul class="justify"><li>Driving appears normal during this time window (top speed: 42 km/h; distance traveled: 26.4 km).</li></ul>
+    <div class="map-wrap">
+      <iframe title="Day map d25879_2026-07-10" src="cheat_gps_maps/d25879_2026-07-10.html" loading="lazy"></iframe>
+    </div>
+    <p class="sub">Map: coloured lines = each order · <b style="color:var(--critical)">red</b> = GPS jump too fast · one map = full day stitch</p>
+    <details>
+      <summary>Orders that day (BQ / Admin)</summary>
+      <table class="cmp"><thead><tr><th>order_request_id</th><th>pickup → dropoff</th><th>straight km</th><th>status</th></tr></thead>
+      <tbody><tr><td><code>119128856</code></td><td>深水埗 → 沙田</td><td>7.172</td><td>completed</td></tr><tr><td><code>119152187</code></td><td>觀塘 → 將軍澳工業邨</td><td>5.714</td><td>completed</td></tr><tr><td><code>119155069</code></td><td>深水埗 → 灣仔</td><td>6.231</td><td>completed</td></tr></tbody></table>
+    </details>
+  </article>
+
+
+  <article class="case-card" id="admin_117951364_2026-06-04" style="border-left:4px solid var(--good)">
+    <div class="case-head">
+      <div>
+        <div class="case-title">Contrast — Admin route table (one order)</div>
+        <div class="case-meta">Driver <b>(from Admin order 117951364)</b>
+          · <code>driver_id=unknown_admin_117951364</code>
+          · day <b>2026-06-04</b>
+          · 1 order request(s) stitched</div>
+      </div>
+      <div class="tier-pill good">Looks OK</div>
+    </div>
+    <div class="kpis" style="grid-template-columns:1fr;margin:12px 0">
+      <div class="tile"><div class="lbl">What stood out</div><div class="val" style="font-size:15px;line-height:1.3">none</div><div class="sub">look at the map · red = jump too fast</div></div>
+    </div>
+    <p class="sub" style="margin:0 0 8px"><b>What we see</b> — short note (the map is the main proof):</p>
+    <ul class="justify"><li>Driving appears normal during this time window (top speed: 41 km/h; distance traveled: 11.0 km).</li></ul>
+    <div class="map-wrap">
+      <iframe title="Day map admin_117951364_2026-06-04" src="cheat_gps_maps/admin_117951364_2026-06-04.html" loading="lazy"></iframe>
+    </div>
+    <p class="sub">Map: coloured lines = each order · <b style="color:var(--critical)">red</b> = GPS jump too fast · one map = full day stitch</p>
+    <details>
+      <summary>Orders that day (BQ / Admin)</summary>
+      <table class="cmp"><thead><tr><th>order_request_id</th><th>pickup → dropoff</th><th>straight km</th><th>status</th></tr></thead>
+      <tbody><tr><td><code>117951364</code></td><td>(Admin map — NW→harbour) → (Admin map)</td><td>11.014</td><td>unknown_not_in_master</td></tr></tbody></table>
+    </details>
+  </article>
+
+
+  <div class="sect-head" id="method">
+    <h2>Method notes</h2>
+  </div>
+  <div class="relbox" style="margin-top:6px">
+    <b>Stitch:</b> Admin shows GPS per order request → list day’s orders from BQ
+    <code>order_master_table_hk</code> → concat pings → sort by timestamp → spot on one map.<br>
+    <b>GPS source (this pilot):</b> Admin Trip History style fixtures (stitched by order_request_id). Bulk analytics_db.driver_location* not readable under current IAM.<br>
+    <b>Order source:</b> gogox-data-science-non-prod.analytics_prod_master.order_master_table_hk （2026-08-03 實查，HK TRANSPORT，driver-days 2026-07-10 / Admin 2026-06-04）<br>
+    <b>Method:</b> Spot only (no score) — Rule-based only (GPS jumps too fast / back and forth in a tiny area / stuck vs far order). No ML model.<br>
+    <b>Packages:</b> <code>pandas</code>-ready CSV · <code>folium</code> maps · rules in
+    <code>python/cheat_gps/rules.py</code>.
+  </div>
+
+  <section class="discussion" id="discussion-cheat_gps">
+    <h2 id="discussion-cheat_gps-title">Team notes</h2>
+    <p class="disc-sub">Review comments for this GPS pilot (same Notes system as other reports).</p>
+    <div id="comments-banner" class="comment-banner" hidden></div>
+    <div id="comment-list" class="comment-list"></div>
+    <div id="comments-compose-home">
+      <div class="comment-compose" id="comment-compose">
+        <div class="replying" id="reply-hint" hidden></div>
+        <label for="c-author">Author</label>
+        <select id="c-author">
+          <option>Ming</option><option>Jin</option><option>Connie</option><option>Matt</option>
+        </select>
+        <label for="c-topic">Topic</label>
+        <input type="text" id="c-topic" placeholder="e.g. Driver 80657 Wan Chai day" autocomplete="off">
+        <label for="c-body">Note</label>
+        <textarea id="c-body" placeholder="Write a note…"></textarea>
+        <div class="row">
+          <button type="button" class="primary" id="c-submit">Post note</button>
+          <button type="button" id="c-cancel-reply" hidden>Cancel reply</button>
+          <span class="hint">Topic required for a new note. Replies keep the same topic.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+</div>
+
+<div id="comments-done-toast" class="comments-done-toast" role="status" aria-live="polite">Done — note saved.</div>
+<div id="comments-modal" class="comments-modal index-mode" hidden>
+  <div class="comments-modal-backdrop" id="comments-modal-backdrop"></div>
+  <div class="comments-modal-panel" role="dialog" aria-modal="true" aria-labelledby="comments-modal-title">
+    <div class="comments-modal-head">
+      <h3 id="comments-modal-title">Topics</h3>
+      <button type="button" class="comments-modal-close" id="comments-modal-close" aria-label="Close">×</button>
+    </div>
+    <p class="comments-modal-sub" id="comments-modal-sub">Pick a topic. Compose stays on the page until you open a thread.</p>
+    <div class="comments-modal-banner" id="comments-modal-banner"></div>
+    <div class="comments-modal-thread" id="comments-modal-thread"></div>
+    <div class="comments-modal-foot">
+      <div id="comments-modal-compose-slot"></div>
+      <a class="comments-modal-goto" href="#discussion-cheat_gps">Go to Team notes on page ↓</a>
+    </div>
+  </div>
+</div>
+
+<script>
+// Team notes — modal + right-rail preview (fetch → Apps Script → Sheet Comments tab)
+(function(){
+  const COMMENTS_API = 'https://script.google.com/macros/s/AKfycbzse8sGGaK1rinzDnkIomJhF3iRb1r5gzaztQfYSEU-BPgqoH-lU5uHR_aPvdzNBu7V/exec';
+  const WIDGET_URL = COMMENTS_API + '?view=widget&section=cheat_gps';
+  const SHEET_ID = '1v2i-enV0Wb7wmwe6gVNuiY87x313pn-mI1W9G3Ztod0';
+  const SECTION = 'cheat_gps';
+  const AUTHORS = ['Ming', 'Jin', 'Connie', 'Matt'];
+  const LS_AUTHOR = 'cheat_gps_comment_author';
+  const $ = id => document.getElementById(id);
+  const railList = $('comments-rail-list');
+  const railStatus = $('comments-rail-status');
+  const railOpen = $('comments-rail-open');
+  const navNotes = $('nav-notes');
+  const banner = $('comments-banner');
+  const modalBanner = $('comments-modal-banner');
+  const authorSel = $('comment-author');
+  const topicIn = $('comment-topic');
+  const bodyIn = $('comment-body');
+  const replyLbl = $('comment-replying');
+  const cancelReply = $('comment-cancel-reply');
+  const submitBtn = $('comment-submit');
+  const modal = $('comments-modal');
+  const modalTitle = $('comments-modal-title');
+  const modalBack = $('comments-modal-back');
+  const modalSub = $('comments-modal-sub');
+  const modalThread = $('comments-modal-thread');
+  const modalGoto = $('comments-modal-goto');
+  const composeEl = $('comment-compose');
+  const composeHome = $('comments-compose-home');
+  const modalComposeSlot = $('comments-modal-compose-slot');
+  let comments = [];
+  let replyParentId = '';
+  let readOnlyFromSheet = false;
+  let modalOpen = false;
+  let modalHighlightId = '';
+  let modalMode = 'index'; // 'index' = topic list · 'topic' = one thread
+  let modalTopicKey = '';
+  let topicFilterQuery = '';
+
+  AUTHORS.forEach(a=>{
+    const o = document.createElement('option');
+    o.value = a; o.textContent = a;
+    authorSel.appendChild(o);
+  });
+  try{
+    const saved = localStorage.getItem(LS_AUTHOR);
+    if(saved && AUTHORS.includes(saved)) authorSel.value = saved;
+  }catch(e){}
+  if(!authorSel.value) authorSel.value = AUTHORS[0];
+  authorSel.addEventListener('change', ()=>{
+    try{ localStorage.setItem(LS_AUTHOR, authorSel.value); }catch(e){}
+    refreshThreads();
+    renderRail();
+  });
+
+  function esc(s){
+    return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+  function fmtTime(iso){
+    if(!iso) return '';
+    try{ return new Date(iso).toLocaleString('en-HK',{dateStyle:'medium',timeStyle:'short'}); }
+    catch(e){ return iso; }
+  }
+  function showBanner(html){
+    banner.hidden = false;
+    banner.innerHTML = html;
+    if(modalBanner){
+      modalBanner.hidden = false;
+      modalBanner.innerHTML = html;
+    }
+  }
+  async function apiCall(action, payload){
+    const body = { action, ...(payload || {}) };
+    // Prefer POST for writes — long note bodies break GET URL length limits.
+    const usePost = action === 'add' || action === 'edit' || action === 'delete';
+    let data = null;
+    if(usePost){
+      try{
+        const res = await fetch(COMMENTS_API, {
+          method: 'POST',
+          cache: 'no-store',
+          redirect: 'follow',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(body)
+        });
+        if(res.ok){
+          data = await res.json();
+        }
+      }catch(e){ data = null; }
+    }
+    if(!data){
+      const params = new URLSearchParams({ action });
+      Object.keys(body).forEach(k=>{
+        if(k === 'action') return;
+        if(body[k] == null) return;
+        params.set(k, String(body[k]));
+      });
+      const url = COMMENTS_API + '?' + params.toString();
+      if(url.length > 1800 && (action === 'add' || action === 'edit')){
+        throw new Error('Note is too long for this browser save. Redeploy Apps Script, or edit topic only / use new-tab widget.');
+      }
+      const res = await fetch(url, { method: 'GET', cache: 'no-store', redirect: 'follow' });
+      if(!res.ok) throw new Error('Could not reach notes API (HTTP ' + res.status + ')');
+      data = await res.json();
+    }
+    if(!data || !data.ok) throw new Error((data && data.error) || 'Request failed');
+    return data;
+  }
+  async function loadViaGviz(){
+    const url = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID +
+      '/gviz/tq?tqx=out:json&sheet=' + encodeURIComponent('Comments');
+    const res = await fetch(url, { cache: 'no-store' });
+    const text = await res.text();
+    if (text.trimStart().startsWith('<')) throw new Error('Sheet not shared for read');
+    const json = JSON.parse(text.replace(/^[\s\S]*?setResponse\(/, '').replace(/\);\s*$/, ''));
+    const cols = (json.table.cols || []).map(c => String(c.label || '').toLowerCase());
+    const idx = name => cols.indexOf(name);
+    return (json.table.rows || []).map(row => {
+      const cell = i => {
+        const c = row.c[i];
+        return c && c.v != null && c.v !== '' ? String(c.v) : '';
+      };
+      return {
+        id: cell(idx('id')),
+        section: cell(idx('section')),
+        topic: cell(idx('topic')),
+        parent_id: cell(idx('parent_id')),
+        author: cell(idx('author')),
+        body: cell(idx('body')),
+        created_at: cell(idx('created_at')),
+        updated_at: cell(idx('updated_at')),
+        deleted: cell(idx('deleted')).toLowerCase() === 'true'
+      };
+    }).filter(r => !r.deleted && r.section === SECTION)
+      .sort((a, b) => String(a.created_at).localeCompare(String(b.created_at)));
+  }
+  function noteTs(c){
+    if(!c || !c.created_at) return NaN;
+    const ts = Date.parse(c.created_at);
+    return Number.isFinite(ts) ? ts : NaN;
+  }
+  /** NEW = newest by timestamp, or posted within the last 1 hour. */
+  function isNewNote(c){
+    const ts = noteTs(c);
+    if(!Number.isFinite(ts)) return false;
+    const ageMs = Date.now() - ts;
+    if(ageMs < 0) return false; // future/bad clock → not NEW
+    if(ageMs <= 60 * 60 * 1000) return true;
+    let latest = -Infinity;
+    comments.forEach(x=>{
+      const t = noteTs(x);
+      if(Number.isFinite(t) && t > latest) latest = t;
+    });
+    return ts === latest;
+  }
+  function newChipHtml(c){
+    return isNewNote(c) ? '<span class="comment-chip new">NEW</span>' : '';
+  }
+  function nestComments(flat){
+    const byId = {};
+    flat.forEach(c=>{ byId[c.id] = { ...c, replies: [] }; });
+    const roots = [];
+    flat.forEach(c=>{
+      const node = byId[c.id];
+      if(c.parent_id && byId[c.parent_id]) byId[c.parent_id].replies.push(node);
+      else roots.push(node);
+    });
+    return roots;
+  }
+  function topicKey(c){
+    const t = String(c.topic || '').trim();
+    return t || 'Untitled';
+  }
+  function authorColorClass(name){
+    const n = String(name || '').trim().toLowerCase();
+    if(n === 'ming') return 'ming';
+    if(n === 'jin') return 'jin';
+    if(n === 'connie') return 'connie';
+    if(n === 'matt') return 'matt';
+    return 'other';
+  }
+  function authorPillHtml(name){
+    const n = String(name || '').trim() || 'Unknown';
+    return `<span class="topic-author-pill ${authorColorClass(n)}">${esc(n)}</span>`;
+  }
+  /** Topic owner = author of the oldest root note in that topic. */
+  function topicOwner(group){
+    if(group.owner) return group.owner;
+    const roots = (group.roots || []).slice().sort((a,b)=> String(a.created_at).localeCompare(String(b.created_at)));
+    return roots.length ? String(roots[0].author || '').trim() : '';
+  }
+  function walkNotes(node, out){
+    out.push(node);
+    (node.replies || []).forEach(r=> walkNotes(r, out));
+    return out;
+  }
+  function latestNoteInTree(node){
+    let best = node;
+    (node.replies || []).forEach(r=>{
+      const child = latestNoteInTree(r);
+      if(String(child.created_at || '') > String(best.created_at || '')) best = child;
+    });
+    return best;
+  }
+  function latestTsInTree(node){
+    return String(latestNoteInTree(node).created_at || '');
+  }
+  function countNotesInTree(node){
+    let n = 1;
+    (node.replies || []).forEach(r=>{ n += countNotesInTree(r); });
+    return n;
+  }
+  /** Topics by latest activity (newest topic first). Within topic: oldest → newest + nested replies. */
+  function groupByTopic(flat){
+    const roots = nestComments(flat);
+    const groups = {};
+    roots.forEach(root=>{
+      const key = topicKey(root);
+      if(!groups[key]) groups[key] = { topic: key, roots: [], latest: '', latestNote: null, count: 0, owner: '' };
+      groups[key].roots.push(root);
+      const latestNote = latestNoteInTree(root);
+      const latest = String(latestNote.created_at || '');
+      if(latest > groups[key].latest){
+        groups[key].latest = latest;
+        groups[key].latestNote = latestNote;
+      }
+      groups[key].count += countNotesInTree(root);
+    });
+    Object.values(groups).forEach(g=>{
+      const sorted = g.roots.slice().sort((a,b)=> String(a.created_at).localeCompare(String(b.created_at)));
+      g.owner = sorted.length ? String(sorted[0].author || '').trim() : '';
+    });
+    return Object.values(groups).sort((a,b)=> String(b.latest).localeCompare(String(a.latest)));
+  }
+  function previewBody(text, n){
+    const s = String(text || '').replace(/\s+/g, ' ').trim();
+    return s.length > n ? s.slice(0, n) + '…' : s;
+  }
+  /** Rail: one card per topic (latest 3 topics). Body shows the newest reply in that thread. */
+  function renderRail(){
+    if(!comments.length){
+      railList.innerHTML = '<p class="cr-empty">No topics yet. More topics or post below.</p>';
+      return;
+    }
+    const groups = groupByTopic(comments).slice(0, 3);
+    railList.innerHTML = groups.map(g=>{
+      const latest = g.latestNote || g.roots[0];
+      const isReply = !!(latest && latest.parent_id);
+      const openId = latest && latest.id ? latest.id : (g.roots[0] && g.roots[0].id) || '';
+      const owner = topicOwner(g);
+      const color = authorColorClass(owner);
+      const latestAuthor = String(latest && latest.author || '').trim();
+      const latestColor = authorColorClass(latestAuthor);
+      const kind = isReply ? 'reply' : 'note';
+      const kindLab = isReply ? 'Reply' : 'Note';
+      return `
+      <div class="cr-item cr-item-btn ${color}" role="button" tabindex="0" data-id="${esc(openId)}" title="Open this topic thread">
+        <div class="cr-labels">
+          <div class="cr-topic ${color}"><span class="topic-author-label">${authorPillHtml(owner)} <span>${esc(g.topic)}</span></span> ${newChipHtml(latest)} <span class="cr-count">${g.count} note(s)</span></div>
+          <div class="cr-latest ${latestColor}"><span class="cr-kind ${kind}">${kindLab}</span><span class="cr-latest-label">${isReply ? 'Latest reply by' : 'Latest by'}</span> ${authorPillHtml(latestAuthor)} <span class="cr-latest-label">· ${esc(fmtTime(latest.created_at))}</span></div>
+        </div>
+        <div class="cr-body">${esc(previewBody(latest.body, 100))}</div>
+      </div>`;
+    }).join('');
+  }
+  function renderCard(c, isReply, highlightId){
+    const me = String(authorSel && authorSel.value || '').trim();
+    const author = String(c.author || '').trim();
+    const edited = c.updated_at && c.created_at && c.updated_at !== c.created_at;
+    const mine = !!me && author === me;
+    const actions = readOnlyFromSheet ? '' : (
+      `<button type="button" data-act="reply" data-id="${esc(c.id)}" data-author="${esc(author)}">Reply</button>` +
+      (mine
+        ? `<button type="button" data-act="edit" data-id="${esc(c.id)}">Edit</button>` +
+          `<button type="button" class="danger" data-act="delete" data-id="${esc(c.id)}">Delete</button>`
+        : '')
+    );
+    const hl = highlightId && c.id === highlightId ? ' highlight' : '';
+    return `<div class="comment-card${isReply?' reply':''}${hl}" data-id="${esc(c.id)}">
+      ${isReply ? '<div class="comment-reply-line">↳ Reply in this topic</div>' : ''}
+      <div class="comment-meta"><span class="author">${esc(c.author)}</span><span>${esc(fmtTime(c.created_at))}</span>${newChipHtml(c)}${edited?'<span class="edited">(edited)</span>':''}</div>
+      <div class="comment-body" data-body>${esc(c.body)}</div>
+      ${actions ? '<div class="comment-actions">' + actions + '</div>' : ''}
+      </div>`;
+  }
+  function findTopicKeyByNoteId(id){
+    if(!id) return '';
+    const groups = groupByTopic(comments);
+    for(const g of groups){
+      for(const root of g.roots){
+        const notes = walkNotes(root, []);
+        if(notes.some(n => n.id === id)) return g.topic;
+      }
+    }
+    return '';
+  }
+  function buildTopicIndexHtml(){
+    let groups = groupByTopic(comments);
+    const q = String(topicFilterQuery || '').trim().toLowerCase();
+    if(q){
+      groups = groups.filter(g =>
+        g.topic.toLowerCase().includes(q) ||
+        String(g.owner||'').toLowerCase().includes(q) ||
+        previewBody((g.latestNote&&g.latestNote.body)||'', 200).toLowerCase().includes(q)
+      );
+    }
+    let html = `<input type="search" class="topic-index-filter" id="topic-index-filter" placeholder="Filter topics…" value="${esc(topicFilterQuery)}" aria-label="Filter topics">`;
+    if(!groups.length){
+      html += '<p class="disc-sub" style="margin:0">No topics yet. Post a note with a topic below.</p>';
+      return html;
+    }
+    html += groups.map(g=>{
+      const latest = g.latestNote || g.roots[0];
+      const owner = topicOwner(g);
+      const color = authorColorClass(owner);
+      const isReply = !!(latest && latest.parent_id);
+      const latestAuthor = String(latest && latest.author || '').trim();
+      return `<button type="button" class="topic-index-item ${color}" data-open-topic="${esc(g.topic)}">
+        <div class="ti-title ${color}"><span class="topic-author-label">${authorPillHtml(owner)} <span>${esc(g.topic)}</span></span> ${newChipHtml(latest)}</div>
+        <div class="ti-meta">${g.count} note(s) · ${isReply?'Latest reply by':'Latest by'} ${authorPillHtml(latestAuthor)} · ${esc(fmtTime(latest.created_at))}</div>
+        <div class="ti-body">${esc(previewBody(latest&&latest.body, 120))}</div>
+      </button>`;
+    }).join('');
+    return html;
+  }
+  function buildThreadHtml(highlightId, topicOnly){
+    let groups = groupByTopic(comments);
+    if(topicOnly) groups = groups.filter(g => g.topic === topicOnly);
+    if(!groups.length) return '<p class="disc-sub" style="margin:0">No notes yet. Write one below.</p>';
+    let html = '';
+    function walk(nodes, isReply){ nodes.forEach(n=>{ html += renderCard(n, isReply, highlightId); if(n.replies.length) walk(n.replies, true); }); }
+    groups.forEach(g=>{
+      const n = g.roots.reduce((acc, r)=>{
+        function count(node){ acc += 1; (node.replies||[]).forEach(count); }
+        count(r); return acc;
+      }, 0);
+      const latest = g.latestNote;
+      const owner = topicOwner(g);
+      const color = authorColorClass(owner);
+      const latestHint = latest
+        ? (latest.parent_id ? 'Latest reply' : 'Latest note') + ': ' + (latest.author || '') + ' · ' + fmtTime(latest.created_at)
+        : 'last ' + fmtTime(g.latest);
+      html += `<div class="comment-topic-block ${color}" data-topic="${esc(g.topic)}">
+        <div class="comment-topic-head">
+          <span class="comment-topic-title ${color}"><span class="topic-author-label">${authorPillHtml(owner)} <span>${esc(g.topic)}</span></span></span>
+          <span class="comment-topic-meta">${n} note(s) · ${esc(latestHint)}</span>
+        </div>`;
+      // within topic: oldest root first
+      g.roots.sort((a,b)=> String(a.created_at).localeCompare(String(b.created_at)));
+      walk(g.roots, false);
+      html += '</div>';
+    });
+    return html;
+  }
+    function renderThread(){
+    /* bottom section is compose-only; history lives in modal */
+  }
+  function scrollToComment(id){
+    if(!id) return;
+    let card = null;
+    try{ card = modalThread.querySelector('[data-id="'+CSS.escape(id)+'"]'); }
+    catch(e){ card = modalThread.querySelector('.comment-card.highlight'); }
+    if(card) requestAnimationFrame(()=> card.scrollIntoView({ block:'center', behavior:'smooth' }));
+  }
+  function syncTopicComposeLock(){
+    if(modalMode === 'topic' && modalTopicKey && modalTopicKey !== 'Untitled'){
+      topicIn.value = modalTopicKey;
+      topicIn.disabled = true;
+    }else if(!replyParentId){
+      topicIn.disabled = readOnlyFromSheet;
+    }
+  }
+  function renderModalThread(){
+    if(modalMode === 'index'){
+      if(modalTitle) modalTitle.textContent = 'Topics';
+      if(modalBack) modalBack.hidden = true;
+      const groups = groupByTopic(comments);
+      modalSub.textContent = groups.length
+        ? groups.length + ' topic(s) · open one thread — not all at once'
+        : 'No topics yet';
+      modalThread.innerHTML = buildTopicIndexHtml();
+      const filter = $('topic-index-filter');
+      if(filter){
+        filter.addEventListener('input', ()=>{
+          topicFilterQuery = filter.value;
+          const keep = filter.selectionStart;
+          renderModalThread();
+          const f2 = $('topic-index-filter');
+          if(f2){ f2.focus(); try{ f2.setSelectionRange(keep, keep); }catch(e){} }
+        });
+      }
+      syncTopicComposeLock();
+      return;
+    }
+    // single topic thread
+    if(modalTitle) modalTitle.textContent = modalTopicKey || 'Topic';
+    if(modalBack) modalBack.hidden = false;
+    modalThread.innerHTML = buildThreadHtml(modalHighlightId, modalTopicKey);
+    const g = groupByTopic(comments).find(x => x.topic === modalTopicKey);
+    modalSub.textContent = g
+      ? g.count + ' note(s) in this topic · oldest → newest · replies nested'
+      : 'Topic thread';
+    syncTopicComposeLock();
+    if(modalHighlightId) scrollToComment(modalHighlightId);
+  }
+  function refreshThreads(){
+    renderThread();
+    if(modalOpen) renderModalThread();
+  }
+  function syncComposeReadonly(){
+    const disable = readOnlyFromSheet;
+    authorSel.disabled = disable;
+    topicIn.disabled = disable || !!replyParentId;
+    bodyIn.disabled = disable;
+    submitBtn.disabled = disable;
+    if(disable) bodyIn.placeholder = 'Read-only here — use new-tab widget to post';
+    else bodyIn.placeholder = 'Ask a question or leave feedback on the bot score rule…';
+  }
+  function goToFullSection(focusCompose){
+    closeCommentsModal();
+    const sec = $('discussion-cheat_gps');
+    if(sec) sec.scrollIntoView({ behavior:'smooth', block:'start' });
+    if(focusCompose && !readOnlyFromSheet){
+      requestAnimationFrame(()=> bodyIn.focus());
+    }
+  }
+  function parkComposeInModal(){
+    if(modalComposeSlot && composeEl && composeEl.parentElement !== modalComposeSlot){
+      modalComposeSlot.appendChild(composeEl);
+    }
+  }
+  function parkComposeHome(){
+    if(composeHome && composeEl && composeEl.parentElement !== composeHome){
+      composeHome.appendChild(composeEl);
+    }
+  }
+  function openTopicThread(topicKey, highlightId){
+    modalMode = 'topic';
+    modalTopicKey = topicKey || '';
+    modalHighlightId = highlightId || '';
+    topicFilterQuery = '';
+    if(!modalOpen){
+      modalOpen = true;
+      modal.hidden = false;
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
+    modal.classList.remove('index-mode');
+    parkComposeInModal();
+    setReply('', '');
+    renderModalThread();
+    syncComposeReadonly();
+    syncTopicComposeLock();
+    if(!readOnlyFromSheet) bodyIn.focus();
+    if(typeof syncRightRailToTeamNotes === 'function') requestAnimationFrame(syncRightRailToTeamNotes);
+  }
+  function openTopicIndex(){
+    const leaveLockedTopic = (modalMode === 'topic' && !!modalTopicKey);
+    modalMode = 'index';
+    modalTopicKey = '';
+    modalHighlightId = '';
+    if(!modalOpen){
+      modalOpen = true;
+      modal.hidden = false;
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
+    // Browse topics only — hide compose so list is not confused with posting.
+    modal.classList.add('index-mode');
+    parkComposeHome();
+    setReply('', '');
+    if(!readOnlyFromSheet){
+      topicIn.disabled = false;
+      // Leaving a locked thread: clear so home Topic is not stuck on that title.
+      if(leaveLockedTopic) topicIn.value = '';
+    }
+    renderModalThread();
+    syncComposeReadonly();
+    if(typeof syncRightRailToTeamNotes === 'function') requestAnimationFrame(syncRightRailToTeamNotes);
+  }
+  function openCommentsModal(id){
+    // With note id → that topic thread only. Without → topic index (not all threads).
+    if(id){
+      const key = findTopicKeyByNoteId(id);
+      openTopicThread(key || topicKey(comments.find(c=>c.id===id)||{}), id);
+      return;
+    }
+    openTopicIndex();
+  }
+  function closeCommentsModal(){
+    modalOpen = false;
+    modalHighlightId = '';
+    modalMode = 'index';
+    modalTopicKey = '';
+    topicFilterQuery = '';
+    modal.classList.remove('index-mode');
+    parkComposeHome();
+    // Home + modal share one compose. Opening a topic locks Topic for that thread —
+    // unlock + clear on close so the blank is editable again (was: stuck filled + disabled).
+    setReply('', '');
+    if(!readOnlyFromSheet){
+      topicIn.disabled = false;
+      topicIn.value = '';
+    }
+    syncComposeReadonly();
+    modal.hidden = true;
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    // Compose returned → Team notes taller again; resync rail (avoid stuck short / page shrink look).
+    requestAnimationFrame(function(){
+      if(typeof syncRightRailToTeamNotes === 'function') syncRightRailToTeamNotes();
+      requestAnimationFrame(function(){
+        if(typeof syncRightRailToTeamNotes === 'function') syncRightRailToTeamNotes();
+      });
+    });
+  }
+  function setReply(parentId, parentAuthor){
+    replyParentId = parentId || '';
+    if(replyParentId){
+      const parent = comments.find(c => c.id === replyParentId);
+      topicIn.value = (parent && parent.topic) || topicKey(parent || {});
+      if(topicIn.value === 'Untitled' && !(parent && parent.topic)) topicIn.value = '';
+      topicIn.disabled = true;
+      replyLbl.hidden = false;
+      replyLbl.textContent = 'Replying to ' + parentAuthor + (topicIn.value ? ' · ' + topicIn.value : '');
+      cancelReply.hidden = false;
+      if(!readOnlyFromSheet) bodyIn.focus();
+    }else{
+      topicIn.disabled = readOnlyFromSheet;
+      replyLbl.hidden = true;
+      cancelReply.hidden = true;
+    }
+  }
+  async function loadComments(){
+    banner.hidden = true;
+    railStatus.textContent = 'Refreshing…';
+    readOnlyFromSheet = false;
+    try{
+      const data = await apiCall('list', { section: SECTION });
+      comments = data.comments || [];
+    }catch(err){
+      try{
+        comments = await loadViaGviz();
+        readOnlyFromSheet = true;
+        showBanner('Showing notes from Sheet (read-only here). To <b>post on this page</b>: Apps Script deploy → <b>Who has access: Anyone</b>. Or <a href="'+WIDGET_URL+'" target="_blank" rel="noopener">post in new tab ↗</a> (already works).');
+      }catch(e2){
+        showBanner('Cannot load notes. Fix (pick one): (1) Apps Script deploy → <b>Anyone</b> (2) Sheet → Share → <b>Anyone with the link</b> → Viewer. Or <a href="'+WIDGET_URL+'" target="_blank" rel="noopener">open new tab ↗</a>.');
+        comments = [];
+        railList.innerHTML = '<p class="cr-empty">Load failed.</p>';
+        railStatus.textContent = '';
+        if(modalOpen) renderModalThread();
+        syncComposeReadonly();
+        return;
+      }
+    }
+    const topicSupported = !comments.length || comments.some(c => Object.prototype.hasOwnProperty.call(c, 'topic'));
+    if(!topicSupported){
+      showBanner('Topic is not enabled on the live Apps Script yet. Paste updated <b>Code.gs</b> → Deploy → <b>New version</b>. Until then, Save topic will not stick.');
+    }
+    renderRail();
+    refreshThreads();
+    syncComposeReadonly();
+    if(!comments.length){
+      railStatus.textContent = '';
+    }else{
+      const topicN = groupByTopic(comments).length;
+      const noteN = comments.length;
+      railStatus.textContent = topicN + ' topic(s) · ' + noteN + ' note(s)';
+    }
+  }
+  function showPostDoneToast(msg){
+    let el = $('comments-done-toast');
+    if(!el){
+      el = document.createElement('div');
+      el.id = 'comments-done-toast';
+      el.className = 'comments-done-toast';
+      el.setAttribute('role', 'status');
+      el.hidden = true;
+      document.body.appendChild(el);
+    }
+    el.textContent = msg || 'Done — note saved.';
+    el.hidden = false;
+    requestAnimationFrame(()=> el.classList.add('show'));
+    clearTimeout(showPostDoneToast._t);
+    showPostDoneToast._t = setTimeout(()=>{
+      el.classList.remove('show');
+      setTimeout(()=>{ el.hidden = true; }, 220);
+    }, 2200);
+  }
+  async function postComment(){
+    if(readOnlyFromSheet) return;
+    const author = authorSel.value;
+    const topic = topicIn.value.trim();
+    const body = bodyIn.value.trim();
+    const wasReply = !!replyParentId;
+    if(!replyParentId && !topic){ topicIn.focus(); return; }
+    if(!body){ bodyIn.focus(); return; }
+    submitBtn.disabled = true;
+    try{
+      await apiCall('add', { section: SECTION, author, topic, body, parent_id: replyParentId });
+      bodyIn.value = '';
+      if(!wasReply) topicIn.value = '';
+      setReply('', '');
+      await loadComments();
+      // Stay on compose — do NOT open topic modal (users mistake it for an edit screen).
+      if(modalOpen) renderModalThread();
+      showPostDoneToast(wasReply ? 'Done — reply saved.' : 'Done — note saved.');
+    }catch(err){
+      showBanner(esc(err.message) + ' — try <a href="'+WIDGET_URL+'" target="_blank" rel="noopener">new tab ↗</a>');
+    }finally{ syncComposeReadonly(); }
+  }
+  async function handleThreadClick(ev){
+    const btn = ev.target.closest('button[data-act]');
+    if(!btn) return;
+    const act = btn.dataset.act, id = btn.dataset.id, me = authorSel.value;
+    if(act === 'reply'){
+      setReply(id, btn.dataset.author);
+      if(modalOpen){
+        parkComposeInModal();
+        if(!readOnlyFromSheet) bodyIn.focus();
+      }
+      return;
+    }
+    if(act === 'delete'){
+      if(!confirm('Delete this note?')) return;
+      try{ await apiCall('delete', { id, author: me }); await loadComments(); }
+      catch(err){ showBanner(esc(err.message)); }
+      return;
+    }
+    if(act === 'edit'){
+      const card = btn.closest('.comment-card');
+      const old = card.querySelector('[data-body]').textContent;
+      const cur = comments.find(c => c.id === id) || {};
+      const actions = card.querySelector('.comment-actions');
+      actions.replaceChildren();
+      const topicEdit = document.createElement('input');
+      topicEdit.type = 'text';
+      topicEdit.value = cur.topic || '';
+      topicEdit.placeholder = 'Topic';
+      topicEdit.maxLength = 120;
+      topicEdit.style.cssText = 'width:100%;font:inherit;padding:8px;border-radius:8px;border:1px solid var(--grid);margin-bottom:6px';
+      const ta = document.createElement('textarea');
+      ta.value = old;
+      ta.style.cssText = 'width:100%;min-height:72px;font:inherit;padding:8px;border-radius:8px;border:1px solid var(--grid)';
+      const err = document.createElement('div');
+      err.style.cssText = 'width:100%;font-size:12px;color:var(--critical);margin:6px 0;display:none';
+      const saveBtn = document.createElement('button');
+      saveBtn.type = 'button'; saveBtn.className = 'primary'; saveBtn.textContent = 'Save';
+      const cancelBtn = document.createElement('button');
+      cancelBtn.type = 'button'; cancelBtn.textContent = 'Cancel';
+      actions.append(topicEdit, ta, err, saveBtn, cancelBtn);
+      cancelBtn.onclick = ()=> refreshThreads();
+      saveBtn.onclick = async ()=>{
+        const nb = ta.value.trim();
+        const nt = topicEdit.value.trim();
+        err.style.display = 'none';
+        if(!nt){ err.textContent = 'Topic is required.'; err.style.display = 'block'; topicEdit.focus(); return; }
+        if(!nb){ err.textContent = 'Note body is required.'; err.style.display = 'block'; ta.focus(); return; }
+        const payload = { id, author: me, topic: nt };
+        // Only send body when changed — keeps request small when fixing Untitled topic.
+        if(nb !== String(old || '').trim()) payload.body = nb;
+        saveBtn.disabled = true; saveBtn.textContent = 'Saving…';
+        try{
+          await apiCall('edit', payload);
+          await loadComments();
+        }catch(e){
+          err.textContent = e.message || 'Save failed';
+          err.style.display = 'block';
+          showBanner(esc(e.message) + ' — if topic never sticks: redeploy Apps Script <b>Code.gs</b> (New version). Or <a href="'+WIDGET_URL+'" target="_blank" rel="noopener">new tab ↗</a>');
+          saveBtn.disabled = false; saveBtn.textContent = 'Save';
+        }
+      };
+    }
+  }
+  modalThread.addEventListener('click', handleThreadClick);
+  modalThread.addEventListener('click', ev=>{
+    const btn = ev.target.closest('[data-open-topic]');
+    if(!btn) return;
+    openTopicThread(btn.getAttribute('data-open-topic'), '');
+  });
+  if(modalBack) modalBack.addEventListener('click', ()=> openTopicIndex());
+  if(modalGoto) modalGoto.addEventListener('click', ev=>{
+    ev.preventDefault();
+    goToFullSection(true);
+  });
+  railList.addEventListener('click', ev=>{
+    const item = ev.target.closest('.cr-item[data-id]');
+    if(!item) return;
+    openCommentsModal(item.dataset.id);
+  });
+  railList.addEventListener('keydown', ev=>{
+    if(ev.key !== 'Enter' && ev.key !== ' ') return;
+    const item = ev.target.closest('.cr-item[data-id]');
+    if(!item) return;
+    ev.preventDefault();
+    openCommentsModal(item.dataset.id);
+  });
+  if(railOpen) railOpen.addEventListener('click', ()=> openCommentsModal(''));
+  if(navNotes) navNotes.addEventListener('click', ev=>{
+    ev.preventDefault();
+    goToFullSection(true);
+    try{ history.replaceState(null, '', '#discussion-cheat_gps'); }catch(_){}
+  });
+  modal.querySelectorAll('[data-close-modal]').forEach(el=>{
+    el.addEventListener('click', closeCommentsModal);
+  });
+  document.addEventListener('keydown', ev=>{
+    if(ev.key === 'Escape' && modalOpen) closeCommentsModal();
+  });
+  submitBtn.addEventListener('click', postComment);
+  cancelReply.addEventListener('click', ()=> setReply('', ''));
+  bodyIn.addEventListener('keydown', e=>{ if((e.metaKey||e.ctrlKey)&&e.key==='Enter'){ e.preventDefault(); postComment(); } });
+
+  // Keep right-rail bottom aligned with Team notes (#discussion-cheat_gps) bottom (wide screens).
+  const rightRail = document.querySelector('.right-rail');
+  const RAIL_TOP = 64;
+  const RAIL_BOTTOM_PAD = 20;
+  function syncRightRailToTeamNotes(){
+    if(!rightRail) return;
+    if(window.matchMedia('(max-width:1579px)').matches){
+      rightRail.style.height = '';
+      rightRail.style.maxHeight = '';
+      return;
+    }
+    const disc = $('discussion-cheat_gps');
+    // Modal parked compose away from Team notes → section is artificially short.
+    // Keep rail at viewport height so closing does not look like the page "shrunk".
+    if(modalOpen && composeEl && composeHome && composeEl.parentElement !== composeHome){
+      rightRail.style.maxHeight = 'calc(100vh - 84px)';
+      rightRail.style.height = 'calc(100vh - 84px)';
+      return;
+    }
+    if(!disc){
+      rightRail.style.height = '';
+      rightRail.style.maxHeight = 'calc(100vh - 84px)';
+      return;
+    }
+    const discBottom = disc.getBoundingClientRect().bottom;
+    const viewportCap = window.innerHeight - RAIL_BOTTOM_PAD;
+    const targetBottom = Math.min(discBottom, viewportCap);
+    const h = Math.max(160, Math.round(targetBottom - RAIL_TOP));
+    rightRail.style.maxHeight = h + 'px';
+    rightRail.style.height = h + 'px';
+  }
+  window.syncRightRailToTeamNotes = syncRightRailToTeamNotes;
+  window.addEventListener('scroll', syncRightRailToTeamNotes, {passive:true});
+  window.addEventListener('resize', syncRightRailToTeamNotes);
+  if(typeof ResizeObserver !== 'undefined'){
+    const disc = $('discussion-cheat_gps');
+    if(disc) new ResizeObserver(syncRightRailToTeamNotes).observe(disc);
+  }
+  syncRightRailToTeamNotes();
+
+  loadComments();
+})();
+
+</script>
+<script>
+  function toggleTarget(targetId, trigger) {
+    const rail = trigger && trigger.closest('.comments-rail');
+    if (rail) {
+      rail.classList.toggle('is-collapsed');
+      const btn = rail.querySelector('.showlabel');
+      if (btn) btn.textContent = rail.classList.contains('is-collapsed') ? 'More ▾' : 'Less ▴';
+      return;
+    }
+    const body = document.getElementById(targetId);
+    if (!body) return;
+    const willOpen = body.style.display === 'none' || getComputedStyle(body).display === 'none';
+    body.style.display = willOpen ? 'block' : 'none';
+    document.querySelectorAll('.showlabel[data-target="' + targetId + '"]').forEach(btn => {
+      btn.textContent = willOpen ? 'Less ▴' : 'More ▾';
+    });
+  }
+  document.querySelectorAll('.showlabel[data-target], .sectoggle[data-target]').forEach(el => {
+    el.addEventListener('click', () => toggleTarget(el.getAttribute('data-target'), el));
+    el.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        toggleTarget(el.getAttribute('data-target'), el);
+      }
+    });
+  });
+
+  const lb = document.getElementById('img-lightbox');
+  const lbImg = lb ? lb.querySelector('img') : null;
+  const lbCap = lb ? lb.querySelector('.lb-cap') : null;
+  function openLightbox(src, caption) {
+    if (!lb || !lbImg) return;
+    lbImg.src = src;
+    if (lbCap) lbCap.textContent = caption || 'Scroll to pan · click dark area or Esc to close';
+    lb.hidden = false;
+    lb.classList.add('is-open');
+    lb.scrollTop = 0;
+  }
+  function closeLightbox() {
+    if (!lb) return;
+    lb.classList.remove('is-open');
+    lb.hidden = true;
+    if (lbImg) lbImg.src = '';
+  }
+  document.querySelectorAll('[data-lightbox]').forEach(el => {
+    el.addEventListener('click', e => {
+      e.preventDefault();
+      openLightbox(el.getAttribute('data-lightbox'), el.getAttribute('data-caption') || '');
+    });
+  });
+  if (lb) {
+    lb.addEventListener('click', e => {
+      if (e.target === lb) closeLightbox();
+    });
+  }
+
+
+  function openCompare(id) {
+    const m = document.getElementById(id);
+    if (!m) return;
+    m.hidden = false;
+    m.classList.add('is-open');
+  }
+  function closeCompare(m) {
+    if (!m) return;
+    m.classList.remove('is-open');
+    m.hidden = true;
+  }
+  document.querySelectorAll('[data-open-compare]').forEach(btn => {
+    btn.addEventListener('click', () => openCompare(btn.getAttribute('data-open-compare')));
+  });
+  document.querySelectorAll('[data-close-compare]').forEach(btn => {
+    btn.addEventListener('click', () => closeCompare(btn.closest('.compare-modal')));
+  });
+  document.querySelectorAll('.compare-modal').forEach(m => {
+    m.addEventListener('click', e => { if (e.target === m) closeCompare(m); });
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Escape') return;
+    closeLightbox();
+    document.querySelectorAll('.compare-modal.is-open').forEach(closeCompare);
+  });
+</script>
+</body>
+</html>

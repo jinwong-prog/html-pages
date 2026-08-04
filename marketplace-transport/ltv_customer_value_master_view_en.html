@@ -1,0 +1,936 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light only">
+<title>Customer value and list priorities — GoGoX HK Platform on-demand</title>
+<style>
+  :root{
+    color-scheme: light only;
+    --blue:#2a78d6; --blue-soft:rgba(42,120,214,.14);
+    --plane:#f9f9f7; --surface:#fcfcfb;
+    --ink:#0b0b0b; --ink2:#52514e; --muted:#898781;
+    --grid:#e1e0d9; --axis:#c3c2b7; --border:rgba(11,11,11,.10);
+    --bad:#d03b3b; --good:#006300; --warn:#b47500;
+    --badbg:rgba(208,59,59,.08); --goodbg:rgba(0,99,0,.08); --warnbg:rgba(237,161,0,.10);
+    --neutbg:rgba(137,135,129,.09);
+    --hi:#2a78d6; --lo:#c3c2b7;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--plane);color:var(--ink);
+    font-family:system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.7;
+    -webkit-font-smoothing:antialiased;font-size:16px}
+  .wrap{max-width:1560px;margin:0 auto;padding:44px 40px 88px}
+  h1{font-size:28px;margin:0 0 6px;letter-spacing:-.01em;line-height:1.34}
+  .meta{color:var(--muted);font-size:13px;margin:0 0 32px;max-width:104ch}
+  .answer{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--good);
+    border-radius:12px;padding:20px 24px;margin:0 0 12px;font-size:17px}
+  .answer .big{font-size:20px;font-weight:700}
+  h2{font-size:20px;margin:46px 0 6px;letter-spacing:-.01em}
+  h3{font-size:16px;margin:26px 0 4px}
+  p{margin:10px 0;max-width:88ch}
+  .lead{font-size:16.5px;font-weight:600;margin:8px 0 2px;max-width:88ch}
+  .hl-bad{color:var(--bad);font-weight:700}
+  .hl-good{color:var(--good);font-weight:700}
+  .box{border-radius:12px;padding:16px 20px;margin:16px 0;font-size:15.5px;max-width:96ch}
+  .box.bad{background:var(--badbg)} .box.good{background:var(--goodbg)} .box.warn{background:var(--warnbg)}
+  .box.neut{background:var(--neutbg)}
+  .box b{font-weight:700}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:16px;
+    padding:8px 22px 18px;margin:18px 0;overflow-x:auto}
+  table{border-collapse:collapse;width:100%;font-size:15px;margin:14px 0}
+  th,td{padding:10px 12px;text-align:right;border-bottom:1px solid var(--grid);
+    font-variant-numeric:tabular-nums;white-space:nowrap;vertical-align:middle}
+  th:first-child,td:first-child{text-align:left}
+  thead th{color:var(--muted);font-weight:600;border-bottom:1px solid var(--axis);font-size:13px}
+  thead th.th-2line{white-space:normal;line-height:1.35;max-width:11em}
+  tbody tr:nth-child(even) td{background:rgba(137,135,129,.045)}
+  tr.top-row td{background:var(--goodbg) !important;font-weight:700}
+  tr.top-row td:first-child{box-shadow:inset 3px 0 0 var(--good)}
+  tr.tail-row td{color:var(--ink2)}
+  tfoot tr.total-row td{border-top:2px solid var(--axis);border-bottom:none;
+    background:rgba(137,135,129,.13);font-weight:700;padding-top:12px}
+  tfoot tr.total-row td.core-col{background:rgba(42,120,214,.14)}
+  caption{caption-side:top;text-align:left;font-size:13px;color:var(--muted);padding:10px 0 2px}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.86em;
+    background:var(--neutbg);padding:1px 5px;border-radius:4px}
+  .kpi{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:16px 0}
+  .kpi .k{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 18px}
+  .kpi .lbl{font-size:12.5px;color:var(--muted)}
+  .kpi .val{font-size:26px;font-weight:800;margin-top:4px;letter-spacing:-.01em}
+  .kpi .sub{font-size:12px;color:var(--ink2);margin-top:6px}
+  ul.plain{padding-left:20px;max-width:92ch} ul.plain li{margin:8px 0}
+  ul.star{list-style:none;padding-left:0;max-width:92ch}
+  ul.star li{margin:9px 0;padding-left:22px;position:relative}
+  ul.star li::before{content:"\2605";position:absolute;left:0;color:var(--blue);font-size:13px;top:2px}
+  ul.warn-list{list-style:none;padding-left:0;max-width:92ch}
+  ul.warn-list li{margin:9px 0;padding-left:22px;position:relative}
+  ul.warn-list li::before{content:"\26A0";position:absolute;left:0;color:#b47500;font-size:13px;top:2px}
+  .src{color:var(--muted);font-size:12px;margin-top:6px}
+  .foot{color:var(--muted);font-size:12px;margin-top:48px;border-top:1px solid var(--grid);
+    padding-top:14px;max-width:104ch}
+  details.fold{margin:22px 0 12px;border:1px solid var(--border);border-radius:12px;
+    background:var(--surface);padding:0 18px 12px}
+  details.fold>summary{cursor:pointer;list-style:none;font-size:18px;font-weight:700;
+    letter-spacing:-.01em;padding:16px 0 8px;user-select:none}
+  details.fold>summary::-webkit-details-marker{display:none}
+  details.fold>summary::before{content:"\25B8 ";color:var(--muted);font-weight:400}
+  details.fold[open]>summary::before{content:"\25BE ";color:var(--muted);font-weight:400}
+  details.fold>summary .hint{font-size:13px;font-weight:500;color:var(--muted);margin-left:8px}
+  /* level dots: low -> extreme */
+  .lvl{display:inline-flex;align-items:center;gap:7px;white-space:nowrap;font-weight:600;font-size:13.5px}
+  .lvl .dot{width:11px;height:11px;border-radius:50%;flex:0 0 auto;box-shadow:0 0 0 2px rgba(255,255,255,.7)}
+  .lvl.extreme .dot{background:#8c1d1d} .lvl.extreme{color:#8c1d1d}
+  .lvl.high    .dot{background:#d03b3b} .lvl.high{color:#b03030}
+  .lvl.medium  .dot{background:#e08a00} .lvl.medium{color:#a86800}
+  .lvl.low     .dot{background:#5f93c8} .lvl.low{color:#3f6f9f}
+  .lvl.vlow    .dot{background:#c3c2b7} .lvl.vlow{color:var(--muted)}
+  /* inline share bar */
+  td.barcell{min-width:210px}
+  .barwrap{display:flex;align-items:center;gap:9px}
+  .bartrack{flex:1 1 auto;height:13px;background:rgba(137,135,129,.16);border-radius:3px;
+    overflow:hidden;min-width:80px}
+  .barfill{height:100%;border-radius:3px;background:#2a78d6}
+  .barfill.extreme{background:#8c1d1d} .barfill.high{background:#d03b3b}
+  .barfill.medium{background:#e08a00} .barfill.low{background:#5f93c8}
+  .barfill.vlow{background:#c3c2b7}
+  .barnum{flex:0 0 auto;font-variant-numeric:tabular-nums;font-weight:700;font-size:13.5px;
+    width:5.2em;text-align:right}
+  td.action{white-space:normal;text-align:left;font-size:13.5px;line-height:1.4;min-width:16em;
+    color:var(--ink2)}
+  .lvl-legend{display:flex;gap:18px;flex-wrap:wrap;font-size:13px;color:var(--ink2);
+    padding:8px 2px 2px;align-items:center}
+  .grp{border-left:2px solid var(--axis)}
+  thead th.grp-hd{text-align:center;color:var(--ink2);font-size:12px;letter-spacing:.02em;
+    border-bottom:1px solid var(--grid);padding-bottom:4px}
+  thead th.core-hd{background:rgba(42,120,214,.10);color:#1b4f88;font-weight:700;font-size:12.5px;
+    border-radius:6px 6px 0 0}
+  th.core-col,td.core-col{background:rgba(42,120,214,.055)}
+  tr.top-row td.core-col{background:rgba(42,120,214,.13) !important}
+  tbody tr:nth-child(even) td.core-col{background:rgba(42,120,214,.085)}
+  .hdr-code{display:block;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10.5px;
+    font-weight:400;color:var(--muted);letter-spacing:0;margin-top:2px}
+  figure{margin:14px 0 4px}
+  figure svg{display:block;width:100%;height:auto;max-width:1040px}
+  .chart-note{color:var(--ink2);font-size:13.5px;margin:2px 0 0;max-width:92ch}
+  /* master table：全部欄一次見到 —— 目標 <= 1250px 內容寬 */
+  .card-wide{padding:6px 12px 16px;overflow-x:auto}
+  @media(min-width:1240px){
+    .card-wide{margin-left:calc(50% - 50vw + 14px);margin-right:calc(50% - 50vw + 14px);
+      max-width:none;overflow-x:auto}
+  }
+  table.master{font-size:12px;table-layout:auto;min-width:0;width:100%}
+  table.master th,table.master td{padding:5px 6px}
+  table.master thead th{font-size:11px;line-height:1.22}
+  table.master thead th.th-2line{max-width:8.4em;white-space:normal}
+  table.master thead th br{line-height:1.25}
+  /* Gamma-Gamma 兩欄之前被 auto layout 拉得過闊，收窄讓位給表頭分行 */
+  table.master th:nth-child(10),table.master td:nth-child(10),
+  table.master th:nth-child(11),table.master td:nth-child(11){max-width:7em}
+  table.master thead th.grp-hd{font-size:11.5px;white-space:normal;line-height:1.3;padding:6px 8px}
+  table.master caption{max-width:104ch;white-space:normal;font-size:12.5px}
+  table.master td.grpcell{white-space:nowrap;line-height:1.25}
+  table.master td.grpcell b{font-size:13px}
+  table.master td.action{font-size:11.5px;min-width:9.2em;max-width:10.5em;white-space:normal;line-height:1.3}
+  table.master td.barcell,table.master th.barcell{min-width:104px;max-width:118px}
+  table.master .barnum{font-size:11.5px;width:4.3em}
+  table.master .bartrack{height:10px;min-width:34px}
+  table.master .lvl{font-size:11px;gap:4px;display:flex;margin-top:1px}
+  table.master .lvl .dot{width:8px;height:8px;box-shadow:none}
+  table.master .src{font-size:9.5px;line-height:1.2}
+  table.master .hdr-code{font-size:9px}
+  .sv-lbl{font:600 12px system-ui,-apple-system,sans-serif;fill:var(--ink2)}
+  .sv-val{font:700 12.5px system-ui,-apple-system,sans-serif;fill:var(--ink)}
+  .sv-ax{font:12px system-ui,-apple-system,sans-serif;fill:var(--muted)}
+  .sv-cap{font:600 12.5px system-ui,-apple-system,sans-serif;fill:var(--muted)}
+  @media(max-width:900px){.wrap{padding:28px 18px 64px}.kpi{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>Customer value and list priorities — GoGoX HK Platform on-demand</h1>
+<p class="meta">
+  All figures queried from BigQuery on <b>2026-08-03</b>.
+  Customers: <b>936,648</b> Platform on-demand shippers (<code>business_segment = 'PlatformOD'</code>), HK van and truck jobs only.
+  Ranking date <b>2026-03-31</b>. Result period <b>2026-04-01 to 2026-06-30</b> (91 days), which the ranking never saw.
+  <b>Two BigQuery headers used throughout:</b>
+  <code>platform_take</code> = what GoGoX keeps (<code>driver_commission</code> + <code>premium_platform_support</code>);
+  <code>gtv</code> = <code>gross_transaction_value</code>, what the customer pays.
+  <b>Every amount on this page is <code>platform_take</code>, never <code>gtv</code></b> &mdash;
+  <code>gtv</code> is roughly 7.4 times larger, so mixing the two changes every conclusion.
+</p>
+
+<div class="answer">
+  <div class="big">The top 10% of customers bring in 69% of the money.</div>
+  The other 90% together bring in 31%. In eight of the ten groups, more than half the customers
+  never ordered again in the next three months. So spreading budget evenly across customers wastes most of it.
+</div>
+
+<h2>Executive summary</h2>
+
+<div class="kpi">
+  <div class="k">
+    <div class="lbl">Top 10% share of revenue</div>
+    <div class="val">68.8%</div>
+    <div class="sub">Next 91 days, 93,665 customers out of 936,648</div>
+  </div>
+  <div class="k">
+    <div class="lbl">Top 20% share of revenue</div>
+    <div class="val">80.9%</div>
+    <div class="sub">Adding the second group gets you four fifths</div>
+  </div>
+  <div class="k">
+    <div class="lbl">Top 500 customers who came back</div>
+    <div class="val">92.8%</div>
+    <div class="sub">They return without any discount</div>
+  </div>
+</div>
+
+<h3>Three findings</h3>
+<ul class="plain">
+  <li><b>Money is very concentrated.</b> The best 10% of customers brought in 68.8% of platform revenue
+    over the next 91 days. The bottom 10% brought in 1.0%. Per customer that is HK$158.7 against HK$2.3 — a 69x gap.</li>
+  <li><b>The gap is about coming back, not about spending more per job.</b> Every group pays roughly
+    HK$20–22 per job. What changes is how often they order: 7.5 jobs per customer in the top group
+    against 0.1 in the bottom. Value follows frequency, not price.</li>
+  <li><b>Our best customers do not need discounts.</b> 92.8% of the top 500 ordered again in the next
+    91 days on their own. A discount sent to them pays for business that was going to happen anyway.</li>
+</ul>
+
+<h3>Three recommendations</h3>
+<ul class="plain">
+  <li><b>Give the top 500 service, not discounts.</b> Named account owner, priority matching,
+    faster support. Move their discount budget to the groups that actually need a reason to come back.</li>
+  <li><b>Set the campaign pool at customers ranked 2,501 to 10,000.</b> They still bring HK$330–480 each
+    over 91 days, and 15–18% of them do not come back on their own — so a nudge can change the outcome.</li>
+  <li><b>Do not run one-by-one campaigns below rank 50,000.</b> Half of that group earns us nothing in a
+    quarter. Reach them with zero-cost channels only, and keep them off the paid list.</li>
+</ul>
+
+<div class="box warn">
+  <b>One limit to state up front.</b> This page ranks customers and that ranking is reliable.
+  It does not promise a dollar amount for any single customer — per-customer error is still high
+  (see <b>Accuracy and coverage</b>). Use it to decide <i>who</i> to spend on, not <i>how much</i> each person is worth.
+</div>
+
+<h2>① Platform revenue by customer group</h2>
+<p class="lead">Customers split into ten equal groups of about 93,665, best on the left of the table.</p>
+<p>Groups are ranked only by what each customer already earned us before 2026-03-31.
+  The result columns come from what actually happened afterwards — nothing here is a forecast.</p>
+
+<div class="card card-wide">
+<table class="master">
+  <caption>Ten equal groups of about 93,665 customers each (936,648 in total). P100 = most valuable tenth, P10 = least valuable tenth.
+    Left to right: the lifetime number first, then the measured 91 days it is built from, then the two models, then the action. <b>Only the first two columns are lifetime figures</b> &mdash; everything else is either real money already counted or a model input.
+    Each money column carries its BigQuery header and the period it covers: <b>27 months</b> = 2024-01-01 to 2026-03-31 (before the ranking), <b>91 days</b> = 2026-04-01 to 2026-06-30 (what actually happened), <b>12 months / 120 months</b> = projected forward from those 91 days. <b>Every money column is <code>platform_take</code></b> (what GoGoX keeps), <b>not <code>gtv</code></b> (what the customer pays).</caption>
+  <thead>
+    <tr>
+      <th colspan="2">&nbsp;</th>
+      <th class="grp-hd grp core-hd" colspan="2">Lifetime value &middot; 120 months<span class="hdr-code">platform_take &middot; projected</span></th>
+      <th class="grp-hd grp" colspan="5">Order-count model (BG/NBD)<br>&mdash; how often they order</th>
+      <th class="grp-hd grp" colspan="2">Order-value model (Gamma-Gamma)<br>&mdash; how much each time<span class="hdr-code">all amounts: platform_take</span></th>
+      <th class="grp-hd grp" colspan="1">Action</th>
+    </tr>
+    <tr>
+      <th>Group<span class="hdr-code">value level</span></th>
+      <th class="th-2line">Customers<span class="hdr-code">head count</span></th>
+      <th class="th-2line grp core-col">Lifetime value<br>per customer &Dagger;<span class="hdr-code">platform_take &middot; 120 months</span></th>
+      <th class="th-2line core-col barcell">Share of<br>lifetime value<span class="hdr-code">platform_take &middot; 120 months</span></th>
+      <th class="th-2line grp">Ordering days<br>before ranking<span class="hdr-code">frequency &middot; 27 months</span></th>
+      <th class="th-2line">Still-active<br>score (0 to 1)<span class="hdr-code">recency_over_T</span></th>
+      <th class="th-2line">Days known<br>to us<span class="hdr-code">T &middot; days</span></th>
+      <th class="th-2line">Jobs in<br>next 91 days<span class="hdr-code">91 days</span></th>
+      <th class="th-2line">Came back<br>within 91 days<span class="hdr-code">91 days</span></th>
+      <th class="th-2line grp">Earned per<br>ordering day<span class="hdr-code">platform_take &middot; 27 months</span></th>
+      <th class="th-2line">Earned<br>per job<span class="hdr-code">platform_take &middot; 91 days</span></th>
+      <th class="action grp">Suggested<br>action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="top-row">
+      <td class="grpcell"><b>P100</b><span class="lvl extreme"><span class="dot"></span>Extreme</span></td>
+      <td>93,665</td>
+      <td class="grp core-col"><b>HK$3,405</b></td>
+      <td class="core-col barcell"><div class="barwrap"><div class="bartrack"><div class="barfill extreme" style="width:68.8%"></div></div><span class="barnum">68.81%</span></div><div class="src" style="margin:2px 0 0">running total 68.81%</div></td>
+      <td class="grp">52.0</td>
+      <td>0.86</td>
+      <td>705</td>
+      <td>7.5</td>
+      <td>65.5%</td>
+      <td class="grp">HK$26.6</td>
+      <td>HK$21.1</td>
+      <td class="action grp">Own account manager. <b>No discounts.</b></td>
+    </tr>
+    <tr>
+      <td class="grpcell"><b>P90</b><span class="lvl high"><span class="dot"></span>High</span></td>
+      <td>93,665</td>
+      <td class="grp core-col"><b>HK$600</b></td>
+      <td class="core-col barcell"><div class="barwrap"><div class="bartrack"><div class="barfill high" style="width:12.1%"></div></div><span class="barnum">12.07%</span></div><div class="src" style="margin:2px 0 0">running total 80.88%</div></td>
+      <td class="grp">10.2</td>
+      <td>0.73</td>
+      <td>630</td>
+      <td>1.3</td>
+      <td>38.8%</td>
+      <td class="grp">HK$26.1</td>
+      <td>HK$21.4</td>
+      <td class="action grp">Loyalty, service upgrade</td>
+    </tr>
+    <tr>
+      <td class="grpcell"><b>P80</b><span class="lvl medium"><span class="dot"></span>Medium</span></td>
+      <td>93,665</td>
+      <td class="grp core-col"><b>HK$294</b></td>
+      <td class="core-col barcell"><div class="barwrap"><div class="bartrack"><div class="barfill medium" style="width:6.0%"></div></div><span class="barnum">5.99%</span></div><div class="src" style="margin:2px 0 0">running total 86.87%</div></td>
+      <td class="grp">4.8</td>
+      <td>0.60</td>
+      <td>578</td>
+      <td>0.6</td>
+      <td>24.9%</td>
+      <td class="grp">HK$26.4</td>
+      <td>HK$21.7</td>
+      <td class="action grp">Regular vouchers</td>
+    </tr>
+    <tr>
+      <td class="grpcell"><b>P70</b><span class="lvl medium"><span class="dot"></span>Medium</span></td>
+      <td>93,665</td>
+      <td class="grp core-col"><b>HK$182</b></td>
+      <td class="core-col barcell"><div class="barwrap"><div class="bartrack"><div class="barfill medium" style="width:3.7%"></div></div><span class="barnum">3.72%</span></div><div class="src" style="margin:2px 0 0">running total 90.59%</div></td>
+      <td class="grp">2.7</td>
+      <td>0.47</td>
+      <td>534</td>
+      <td>0.4</td>
+      <td>17.6%</td>
+      <td class="grp">HK$26.5</td>
+      <td>HK$21.8</td>
+      <td class="action grp">Time-limited offer</td>
+    </tr>
+    <tr>
+      <td class="grpcell"><b>P60</b><span class="lvl low"><span class="dot"></span>Low</span></td>
+      <td>93,665</td>
+      <td class="grp core-col"><b>HK$128</b></td>
+      <td class="core-col barcell"><div class="barwrap"><div class="bartrack"><div class="barfill low" style="width:2.6%"></div></div><span class="barnum">2.59%</span></div><div class="src" style="margin:2px 0 0">running total 93.18%</div></td>
+      <td class="grp">1.6</td>
+      <td>0.35</td>
+      <td>497</td>
+      <td>0.3</td>
+      <td>13.5%</td>
+      <td class="grp">HK$26.5</td>
+      <td>HK$21.7</td>
+      <td class="action grp">General upkeep</td>
+    </tr>
+    <tr>
+      <td class="grpcell"><b>P50</b><span class="lvl low"><span class="dot"></span>Low</span></td>
+      <td>93,665</td>
+      <td class="grp core-col"><b>HK$96</b></td>
+      <td class="core-col barcell"><div class="barwrap"><div class="bartrack"><div class="barfill low" style="width:2.0%"></div></div><span class="barnum">1.98%</span></div><div class="src" style="margin:2px 0 0">running total 95.16%</div></td>
+      <td class="grp">0.9</td>
+      <td>0.24</td>
+      <td>469</td>
+      <td>0.2</td>
+      <td>10.7%</td>
+      <td class="grp">HK$26.0</td>
+      <td>HK$21.3</td>
+      <td class="action grp">Win-back offer</td>
+    </tr>
+    <tr>
+      <td class="grpcell"><b>P40</b><span class="lvl low"><span class="dot"></span>Low</span></td>
+      <td>93,665</td>
+      <td class="grp core-col"><b>HK$75</b></td>
+      <td class="core-col barcell"><div class="barwrap"><div class="bartrack"><div class="barfill low" style="width:1.5%"></div></div><span class="barnum">1.50%</span></div><div class="src" style="margin:2px 0 0">running total 96.67%</div></td>
+      <td class="grp">0.4</td>
+      <td>0.13</td>
+      <td>436</td>
+      <td>0.2</td>
+      <td>8.5%</td>
+      <td class="grp">HK$25.0</td>
+      <td>HK$21.7</td>
+      <td class="action grp">Limited spend</td>
+    </tr>
+    <tr>
+      <td class="grpcell"><b>P30</b><span class="lvl vlow"><span class="dot"></span>Very low</span></td>
+      <td>93,665</td>
+      <td class="grp core-col"><b>HK$59</b></td>
+      <td class="core-col barcell"><div class="barwrap"><div class="bartrack"><div class="barfill vlow" style="width:1.2%"></div></div><span class="barnum">1.19%</span></div><div class="src" style="margin:2px 0 0">running total 97.86%</div></td>
+      <td class="grp">0.1</td>
+      <td>0.04</td>
+      <td>425</td>
+      <td>0.1</td>
+      <td>7.0%</td>
+      <td class="grp">HK$22.3</td>
+      <td>HK$21.6</td>
+      <td class="action grp">No active spend</td>
+    </tr>
+    <tr>
+      <td class="grpcell"><b>P20</b><span class="lvl vlow"><span class="dot"></span>Very low</span></td>
+      <td>93,664</td>
+      <td class="grp core-col"><b>HK$54</b></td>
+      <td class="core-col barcell"><div class="barwrap"><div class="bartrack"><div class="barfill vlow" style="width:1.1%"></div></div><span class="barnum">1.13%</span></div><div class="src" style="margin:2px 0 0">running total 98.99%</div></td>
+      <td class="grp">0.0</td>
+      <td>0.00</td>
+      <td>418</td>
+      <td>0.1</td>
+      <td>6.8%</td>
+      <td class="grp">HK$18.1</td>
+      <td>HK$21.1</td>
+      <td class="action grp">Zero-cost only</td>
+    </tr>
+    <tr class="tail-row">
+      <td class="grpcell"><b>P10</b><span class="lvl vlow"><span class="dot"></span>Very low</span></td>
+      <td>93,664</td>
+      <td class="grp core-col"><b>HK$48</b></td>
+      <td class="core-col barcell"><div class="barwrap"><div class="bartrack"><div class="barfill vlow" style="width:1.0%"></div></div><span class="barnum">1.01%</span></div><div class="src" style="margin:2px 0 0">running total 100.00%</div></td>
+      <td class="grp">0.0</td>
+      <td>0.00</td>
+      <td>410</td>
+      <td>0.1</td>
+      <td>6.4%</td>
+      <td class="grp">HK$13.0</td>
+      <td>HK$20.0</td>
+      <td class="action grp">No spend</td>
+    </tr>
+  </tbody>
+  <tfoot>
+    <tr class="total-row">
+      <td class="grpcell"><b>All customers</b><span class="lvl" style="color:var(--muted)">whole base</span></td>
+      <td><b>936,648</b></td>
+      <td class="grp core-col"><b>HK$495</b><span class="hdr-code">average, not a sum</span></td>
+      <td class="core-col barcell"><div class="barwrap"><div class="bartrack"><div class="barfill" style="width:100%"></div></div><span class="barnum">100.00%</span></div><div class="src" style="margin:2px 0 0">total value HK$464M</div></td>
+      <td class="grp">7.3</td>
+      <td>0.34</td>
+      <td>510</td>
+      <td>1.1</td>
+      <td>20.0%</td>
+      <td class="grp">HK$23.7</td>
+      <td>HK$21.2</td>
+      <td class="action grp">Spend at the top of the list</td>
+    </tr>
+  </tfoot>
+</table>
+<div class="lvl-legend">
+  <span class="lvl extreme"><span class="dot"></span>Extreme &mdash; more than half of all value</span>
+  <span class="lvl high"><span class="dot"></span>High &mdash; 10% to 15%</span>
+  <span class="lvl medium"><span class="dot"></span>Medium &mdash; 3% to 7%</span>
+  <span class="lvl low"><span class="dot"></span>Low &mdash; 1.5% to 3%</span>
+  <span class="lvl vlow"><span class="dot"></span>Very low &mdash; under 1.5%</span>
+</div>
+<p class="src">Source: <code>gogox-ba-sandbox.reporting.pres_ltv_decile_summary</code> and
+  <code>analytics.mart_ltv_customer_tier_baseline</code>
+  (queried 2026-08-03, PlatformOD, ranking date 2026-03-31, result period 2026-04-01 to 2026-06-30).
+  "Still-active score" is <code>recency_over_T</code>; "Earned per ordering day" is
+  <code>monetary_value_platform</code>; "Ordering days before ranking" is <code>frequency</code>;
+  "Days known to us" is <code>T</code>.
+  <b>Two BigQuery headers to know:</b> <code>platform_take</code> = what GoGoX keeps
+  (<code>driver_commission</code> + <code>premium_platform_support</code>) &mdash; every money column here uses it;
+  <code>gtv</code> = <code>gross_transaction_value</code>, what the customer pays, which is roughly
+  7.4 times larger and is <b>not</b> used anywhere on this page.
+  <b>Value level</b> is a reading aid based on each group's share of value, not a system field.</p>
+<div class="box neut" style="max-width:none">
+  <b>How to read the last row.</b> "All customers" is the whole customer base: <b>936,648 people</b>.
+  The HK$495 in that row is an <b>average per customer</b>, not a sum &mdash; the whole base is worth about
+  <b>HK$464 million</b> over 120 months. Ten groups &times; about 93,665 people each = 936,648.
+</div>
+<div class="box neut" style="max-width:none">
+  <b>"Running total" counts customer groups, not months.</b>
+  Work on the top group only and you reach <b>68.8%</b> of the value. Add the second group and you reach
+  <b>80.9%</b>. Keep going down all ten and you reach 100%. It answers one question:
+  <i>how far down the list do we need to go?</i>
+</div>
+<div class="box warn" style="max-width:none">
+  <b>None of the 120 months has happened yet.</b> We measured three months of real money
+  (2026-04-01 to 2026-06-30), turned that into a yearly figure, then assumed ten more years of it,
+  shrinking 15% a year. So the lifetime column is a <b>forecast of the future</b>, not money already
+  collected. Nothing in it has been earned yet.
+</div>
+<p class="src">
+  <b>&Dagger; The lifetime columns are arithmetic, not model output.</b>
+  Revenue per year = revenue per customer over 91 days &times; 365 &divide; 91.
+  Contribution = revenue per year &times; 5.354 &mdash; that is 120 months, with customers declining
+  15% a year (measured from a real group of 372,405 customers), no discounting.
+  The discounted version is deliberately not shown here: the discount rate is a Finance policy, and
+  changing it moves only that one column while Contribution stays the same &mdash; so the business side
+  does not need to wait for Finance. It is kept in <b>Lifetime value scenarios</b> below.
+  Only the first 30 months have real data; the remaining 90 months are projected from the measured
+  decline rate. See <b>Lifetime value scenarios</b> below for the conservative and optimistic versions.
+  <b>Share of lifetime value</b> equals each group's share of 91-day revenue, because the lifetime
+  figure is a fixed multiple of it.
+</p>
+</div>
+
+<div class="box neut">
+  <b>Where HK$3,405 comes from.</b> The lifetime column is not measured over 120 months &mdash;
+  it is worked out from three months of real money. The full working is in
+  <b>&#9315; Customer value over time</b> below.
+</div>
+
+<ul class="star">
+  <li><b>Top two groups = 80.9% of revenue.</b> Everything below P90 adds up to less than a fifth.</li>
+  <li><b>Middle customer earns HK$0.00 in nine of the ten groups.</b> The averages are carried by a
+    minority who keep ordering. Reporting only averages would overstate how healthy these groups are.</li>
+  <li><b>The still-active score drops from 0.86 to 0.00.</b> Top-group customers were ordering right up
+    to the ranking date. Bottom-group customers ordered once and never returned.</li>
+  <li><b>Top-group customers have also been with us longest</b> — 705 days against 410. They are not just
+    busier, they are more loyal.</li>
+</ul>
+
+<h2>② Revenue per customer by group</h2>
+<p class="lead">The same numbers as a picture: the curve is flat for nine groups, then jumps.</p>
+
+<div class="card">
+<figure>
+<svg viewBox="0 0 1040 330" role="img" aria-label="Bar chart of platform revenue per customer for ten customer groups, rising from HK$2.3 in P10 to HK$158.7 in P100">
+  <text x="0" y="14" class="sv-cap">Platform revenue per customer, next 91 days (HK$)</text>
+  <line x1="60" y1="290" x2="1020" y2="290" stroke="#c3c2b7"/>
+  <line x1="60" y1="40" x2="60" y2="290" stroke="#c3c2b7"/>
+  <line x1="60" y1="40" x2="1020" y2="40" stroke="#e1e0d9" stroke-dasharray="3 4"/>
+  <line x1="60" y1="165" x2="1020" y2="165" stroke="#e1e0d9" stroke-dasharray="3 4"/>
+  <text x="54" y="44" text-anchor="end" class="sv-ax">160</text>
+  <text x="54" y="169" text-anchor="end" class="sv-ax">80</text>
+  <text x="54" y="294" text-anchor="end" class="sv-ax">0</text>
+  <!-- bars: 10 groups, x step 96, bar width 54; height = value/160*250 -->
+  <g>
+    <rect x="76"  y="286" width="54" height="4"   fill="#c3c2b7"/><text x="103" y="278" text-anchor="middle" class="sv-val">2.3</text><text x="103" y="308" text-anchor="middle" class="sv-lbl">P10</text>
+    <rect x="172" y="286" width="54" height="4"   fill="#c3c2b7"/><text x="199" y="278" text-anchor="middle" class="sv-val">2.6</text><text x="199" y="308" text-anchor="middle" class="sv-lbl">P20</text>
+    <rect x="268" y="286" width="54" height="4"   fill="#c3c2b7"/><text x="295" y="278" text-anchor="middle" class="sv-val">2.7</text><text x="295" y="308" text-anchor="middle" class="sv-lbl">P30</text>
+    <rect x="364" y="285" width="54" height="5"   fill="#c3c2b7"/><text x="391" y="277" text-anchor="middle" class="sv-val">3.5</text><text x="391" y="308" text-anchor="middle" class="sv-lbl">P40</text>
+    <rect x="460" y="283" width="54" height="7"   fill="#c3c2b7"/><text x="487" y="275" text-anchor="middle" class="sv-val">4.6</text><text x="487" y="308" text-anchor="middle" class="sv-lbl">P50</text>
+    <rect x="556" y="281" width="54" height="9"   fill="#b9c8d8"/><text x="583" y="273" text-anchor="middle" class="sv-val">6.0</text><text x="583" y="308" text-anchor="middle" class="sv-lbl">P60</text>
+    <rect x="652" y="277" width="54" height="13"  fill="#b9c8d8"/><text x="679" y="269" text-anchor="middle" class="sv-val">8.6</text><text x="679" y="308" text-anchor="middle" class="sv-lbl">P70</text>
+    <rect x="748" y="268" width="54" height="22"  fill="#8fb0d0"/><text x="775" y="260" text-anchor="middle" class="sv-val">13.8</text><text x="775" y="308" text-anchor="middle" class="sv-lbl">P80</text>
+    <rect x="844" y="247" width="54" height="43"  fill="#5f93c8"/><text x="871" y="239" text-anchor="middle" class="sv-val">27.8</text><text x="871" y="308" text-anchor="middle" class="sv-lbl">P90</text>
+    <rect x="940" y="42"  width="54" height="248" fill="#2a78d6"/><text x="967" y="34" text-anchor="middle" class="sv-val">158.7</text><text x="967" y="308" text-anchor="middle" class="sv-lbl">P100</text>
+  </g>
+  <text x="1020" y="322" text-anchor="end" class="sv-ax">Customer value: low → high</text>
+</svg>
+</figure>
+<p class="chart-note">Read it this way: nine groups sit almost on the floor. Only the last group stands up.
+  That single group is where the revenue is.</p>
+<p class="src">Source: <code>reporting.pres_ltv_decile_summary</code> (queried 2026-08-03, PlatformOD, 2026-04-01 to 2026-06-30).</p>
+</div>
+
+<h2>③ Return rate by customer group</h2>
+<p class="lead">Share of each group that placed at least one more order in the next 91 days.</p>
+
+<div class="card">
+<figure>
+<svg viewBox="0 0 1040 330" role="img" aria-label="Bar chart of return rate by customer group, from 6.4 percent in P10 to 65.5 percent in P100">
+  <text x="0" y="14" class="sv-cap">Customers who ordered again within 91 days (%)</text>
+  <line x1="60" y1="290" x2="1020" y2="290" stroke="#c3c2b7"/>
+  <line x1="60" y1="40" x2="60" y2="290" stroke="#c3c2b7"/>
+  <line x1="60" y1="40" x2="1020" y2="40" stroke="#e1e0d9" stroke-dasharray="3 4"/>
+  <line x1="60" y1="165" x2="1020" y2="165" stroke="#e1e0d9" stroke-dasharray="3 4"/>
+  <text x="54" y="44" text-anchor="end" class="sv-ax">70%</text>
+  <text x="54" y="169" text-anchor="end" class="sv-ax">35%</text>
+  <text x="54" y="294" text-anchor="end" class="sv-ax">0%</text>
+  <!-- height = value/70*250 -->
+  <g>
+    <rect x="76"  y="267" width="54" height="23"  fill="#c3c2b7"/><text x="103" y="259" text-anchor="middle" class="sv-val">6.4</text><text x="103" y="308" text-anchor="middle" class="sv-lbl">P10</text>
+    <rect x="172" y="266" width="54" height="24"  fill="#c3c2b7"/><text x="199" y="258" text-anchor="middle" class="sv-val">6.8</text><text x="199" y="308" text-anchor="middle" class="sv-lbl">P20</text>
+    <rect x="268" y="265" width="54" height="25"  fill="#c3c2b7"/><text x="295" y="257" text-anchor="middle" class="sv-val">7.0</text><text x="295" y="308" text-anchor="middle" class="sv-lbl">P30</text>
+    <rect x="364" y="260" width="54" height="30"  fill="#c3c2b7"/><text x="391" y="252" text-anchor="middle" class="sv-val">8.5</text><text x="391" y="308" text-anchor="middle" class="sv-lbl">P40</text>
+    <rect x="460" y="252" width="54" height="38"  fill="#b9c8d8"/><text x="487" y="244" text-anchor="middle" class="sv-val">10.7</text><text x="487" y="308" text-anchor="middle" class="sv-lbl">P50</text>
+    <rect x="556" y="242" width="54" height="48"  fill="#b9c8d8"/><text x="583" y="234" text-anchor="middle" class="sv-val">13.5</text><text x="583" y="308" text-anchor="middle" class="sv-lbl">P60</text>
+    <rect x="652" y="227" width="54" height="63"  fill="#8fb0d0"/><text x="679" y="219" text-anchor="middle" class="sv-val">17.6</text><text x="679" y="308" text-anchor="middle" class="sv-lbl">P70</text>
+    <rect x="748" y="201" width="54" height="89"  fill="#8fb0d0"/><text x="775" y="193" text-anchor="middle" class="sv-val">24.9</text><text x="775" y="308" text-anchor="middle" class="sv-lbl">P80</text>
+    <rect x="844" y="151" width="54" height="139" fill="#5f93c8"/><text x="871" y="143" text-anchor="middle" class="sv-val">38.8</text><text x="871" y="308" text-anchor="middle" class="sv-lbl">P90</text>
+    <rect x="940" y="56"  width="54" height="234" fill="#2a78d6"/><text x="967" y="48" text-anchor="middle" class="sv-val">65.5</text><text x="967" y="308" text-anchor="middle" class="sv-lbl">P100</text>
+  </g>
+  <text x="1020" y="322" text-anchor="end" class="sv-ax">Customer value: low → high</text>
+</svg>
+</figure>
+<p class="chart-note">This chart decides where a discount can still change something.
+  At 65.5% the customer is mostly coming back anyway. At 6–9% almost nobody is,
+  and a discount has to work very hard to pay for itself.</p>
+<p class="src">Source: <code>reporting.pres_ltv_decile_summary</code>, column <code>returned_within_91d_pct</code>
+  (queried 2026-08-03, PlatformOD, 2026-04-01 to 2026-06-30).</p>
+</div>
+
+<h2>④ List size and revenue coverage</h2>
+<p class="lead">If we can only work on N customers, this table says where to cut the list.</p>
+<p>Ten equal groups are too coarse for a campaign: the best group alone holds 93,665 people.
+  Here the top 50,000 are split more finely, and everyone below that is one row.</p>
+
+<div class="card">
+<table>
+  <caption>Customers ordered by what they earned us before 2026-03-31. Tier is the operating label used by CRM.</caption>
+  <thead>
+    <tr>
+      <th>List position</th>
+      <th>Tier</th>
+      <th class="th-2line">Customers</th>
+      <th class="th-2line">Running total of customers</th>
+      <th class="th-2line">Earned before ranking, per customer</th>
+      <th class="th-2line">Revenue in next 91 days, per customer</th>
+      <th class="th-2line">Same, middle customer</th>
+      <th class="th-2line">Came back within 91 days</th>
+      <th class="th-2line">Share of revenue</th>
+      <th class="th-2line">Running total</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="top-row"><td>Top 500</td><td>T1</td><td>500</td><td>500</td><td>HK$30,249</td><td>HK$4,195</td><td>HK$1,507</td><td>92.8%</td><td>9.71%</td><td>9.71%</td></tr>
+    <tr><td>501–1,000</td><td>T2</td><td>500</td><td>1,000</td><td>HK$9,682</td><td>HK$984</td><td>HK$929</td><td>90.6%</td><td>2.28%</td><td>11.99%</td></tr>
+    <tr><td>1,001–2,500</td><td>T2</td><td>1,500</td><td>2,500</td><td>HK$6,890</td><td>HK$738</td><td>HK$667</td><td>89.7%</td><td>5.12%</td><td>17.11%</td></tr>
+    <tr><td>2,501–5,000</td><td>T3</td><td>2,500</td><td>5,000</td><td>HK$4,751</td><td>HK$480</td><td>HK$402</td><td>85.1%</td><td>5.55%</td><td>22.66%</td></tr>
+    <tr><td>5,001–10,000</td><td>T3</td><td>5,000</td><td>10,000</td><td>HK$3,270</td><td>HK$330</td><td>HK$268</td><td>82.5%</td><td>7.65%</td><td>30.31%</td></tr>
+    <tr><td>10,001–25,000</td><td>T4</td><td>15,000</td><td>25,000</td><td>HK$1,924</td><td>HK$200</td><td>HK$135</td><td>77.1%</td><td>13.86%</td><td>44.17%</td></tr>
+    <tr><td>25,001–50,000</td><td>T4</td><td>25,000</td><td>50,000</td><td>HK$1,034</td><td>HK$108</td><td>HK$56</td><td>67.6%</td><td>12.55%</td><td>56.72%</td></tr>
+    <tr class="tail-row"><td>50,001 and beyond</td><td>T5</td><td>886,648</td><td>936,648</td><td>HK$100</td><td>HK$10.5</td><td>HK$0.0</td><td>16.9%</td><td>43.28%</td><td>100.00%</td></tr>
+  </tbody>
+</table>
+<p class="src">Source: <code>gogox-ba-sandbox.reporting.pres_ltv_list_granularity</code>
+  (queried 2026-08-03, PlatformOD, ranking date 2026-03-31, result period 2026-04-01 to 2026-06-30).</p>
+</div>
+
+<div class="box good">
+  <b>Coverage at a glance.</b> A list of 2,500 customers covers <b>17%</b> of the next quarter's revenue.
+  10,000 customers covers <b>30%</b>. 50,000 customers covers <b>57%</b>.
+</div>
+
+<ul class="star">
+  <li><b>"Top 1,000" is already too coarse a group.</b> The top 500 bring HK$4,195 each;
+    ranks 501–1,000 bring HK$984 — four times less. Treating them the same wastes the top of the list.</li>
+  <li><b>Ranks 2,501–10,000 are the natural campaign pool.</b> Still HK$330–480 each,
+    and 15–18% of them do not return on their own, so there is something for a campaign to change.</li>
+  <li><b>Below rank 50,000 the middle customer earns us HK$0.00 in a quarter.</b> Not worth per-person work.
+    But note the row still adds up to 43% of revenue — reach them with zero-cost channels, do not write them off.</li>
+</ul>
+
+<div class="box warn">
+  <b>Do not send discounts to the top 500.</b> 92.8% of them came back on their own.
+  Paying them to do something they were already doing produces almost no extra business.
+  Spend on service quality for this group instead.
+</div>
+
+<h2>⑤ Customer value over time</h2>
+<p class="lead">Follow one group of new customers for 25 months and the monthly amount settles instead of dying.</p>
+<p>These are the <b>372,405</b> customers whose first ever order was in the first half of 2024,
+  tracked to their 24th month.</p>
+
+<div class="card">
+<figure>
+<svg viewBox="0 0 1040 340" role="img" aria-label="Line chart of platform revenue per customer per month for the 2024 first-half cohort, falling from HK$39.7 in month 0 to about HK$12 by month 24">
+  <text x="0" y="14" class="sv-cap">Platform revenue per cohort customer, by month after first order (HK$)</text>
+  <line x1="60" y1="290" x2="1020" y2="290" stroke="#c3c2b7"/>
+  <line x1="60" y1="40" x2="60" y2="290" stroke="#c3c2b7"/>
+  <line x1="60" y1="40"  x2="1020" y2="40"  stroke="#e1e0d9" stroke-dasharray="3 4"/>
+  <line x1="60" y1="165" x2="1020" y2="165" stroke="#e1e0d9" stroke-dasharray="3 4"/>
+  <line x1="60" y1="227" x2="1020" y2="227" stroke="#e1e0d9" stroke-dasharray="3 4"/>
+  <text x="54" y="44"  text-anchor="end" class="sv-ax">40</text>
+  <text x="54" y="169" text-anchor="end" class="sv-ax">20</text>
+  <text x="54" y="231" text-anchor="end" class="sv-ax">10</text>
+  <text x="54" y="294" text-anchor="end" class="sv-ax">0</text>
+  <!-- x = 76 + i*37.6 ; y = 290 - value/40*250 -->
+  <polyline fill="none" stroke="#2a78d6" stroke-width="2.5"
+    points="76,42 113.6,185.2 151.2,180.4 188.8,185.2 226.4,185 264,186.7 301.6,183.2 339.2,187.6 376.8,197.1 414.4,197.9 452,199.9 489.6,199.2 527.2,206.2 564.8,223.1 602.4,210.3 640,213.8 677.6,210.1 715.2,209.8 752.8,206.1 790.4,208.0 828,212.6 865.6,210.3 903.2,212.6 940.8,212.5 978.4,212.9"/>
+  <g fill="#2a78d6">
+    <circle cx="76" cy="42" r="4"/><circle cx="113.6" cy="185.2" r="3"/><circle cx="151.2" cy="180.4" r="3"/>
+    <circle cx="188.8" cy="185.2" r="3"/><circle cx="226.4" cy="185" r="3"/><circle cx="264" cy="186.7" r="3"/>
+    <circle cx="301.6" cy="183.2" r="3"/><circle cx="339.2" cy="187.6" r="3"/><circle cx="376.8" cy="197.1" r="3"/>
+    <circle cx="414.4" cy="197.9" r="3"/><circle cx="452" cy="199.9" r="3"/><circle cx="489.6" cy="199.2" r="3"/>
+    <circle cx="527.2" cy="206.2" r="4"/><circle cx="564.8" cy="223.1" r="3"/><circle cx="602.4" cy="210.3" r="3"/>
+    <circle cx="640" cy="213.8" r="3"/><circle cx="677.6" cy="210.1" r="3"/><circle cx="715.2" cy="209.8" r="3"/>
+    <circle cx="752.8" cy="206.1" r="3"/><circle cx="790.4" cy="208" r="3"/><circle cx="828" cy="212.6" r="3"/>
+    <circle cx="865.6" cy="210.3" r="3"/><circle cx="903.2" cy="212.6" r="3"/><circle cx="940.8" cy="212.5" r="3"/>
+    <circle cx="978.4" cy="212.9" r="4"/>
+  </g>
+  <text x="76" y="32" text-anchor="middle" class="sv-val">39.7</text>
+  <text x="527" y="199" text-anchor="middle" class="sv-val">13.4</text>
+  <text x="978" y="205" text-anchor="end" class="sv-val">12.3</text>
+  <text x="76"  y="308" text-anchor="middle" class="sv-lbl">m0</text>
+  <text x="264" y="308" text-anchor="middle" class="sv-lbl">m5</text>
+  <text x="452" y="308" text-anchor="middle" class="sv-lbl">m10</text>
+  <text x="640" y="308" text-anchor="middle" class="sv-lbl">m15</text>
+  <text x="828" y="308" text-anchor="middle" class="sv-lbl">m20</text>
+  <text x="978" y="308" text-anchor="middle" class="sv-lbl">m24</text>
+  <text x="1020" y="330" text-anchor="end" class="sv-ax">Months after first order</text>
+</svg>
+</figure>
+<p class="chart-note">Month 0 is high because it contains the first order itself.
+  From month 12 onward the line is almost flat: month 24 is still HK$12.3, which is 73% of month 1.
+  A customer who is still with us after a year keeps paying at a steady rate.</p>
+<p class="src">Source: <code>gogox-ba-sandbox.foundation.hk_transport_user_daily_txn_since_2024</code>
+  (queried 2026-08-03, PlatformOD, first order 2024-01-01 to 2024-06-30, 372,405 customers, tracked to 2026-06-30).
+  Total collected over months 0–24: <b>HK$379.6</b> per customer — HK$229.6 in the first year (60%),
+  HK$150.1 in the second (40%).</p>
+</div>
+
+<h3>From three months of real money to a 120-month figure</h3>
+<p>Three steps, using the most valuable group (P100) as the example. Nothing is hidden:</p>
+<div class="card">
+<table>
+  <thead><tr><th>Step</th><th>Working</th><th>Result</th><th>Is it real money?</th></tr></thead>
+  <tbody>
+    <tr><td><b>1.</b> Money actually collected</td><td>91 days, 2026-04-01 to 2026-06-30</td><td><b>HK$158.7</b> per customer</td><td class="hl-good">Yes &mdash; counted, not estimated</td></tr>
+    <tr><td><b>2.</b> Turned into one year</td><td>HK$158.7 &times; 365 &divide; 91</td><td><b>HK$636</b> per year</td><td>Arithmetic on real money</td></tr>
+    <tr><td><b>3.</b> Stretched over 120 months</td><td>HK$636 &times; 5.354 &nbsp;(ten years, each year 15% smaller than the last)</td><td><b>HK$3,405</b></td><td class="hl-bad">No &mdash; a projection</td></tr>
+  </tbody>
+</table>
+<p class="src">The multiplier 5.354 is the sum of ten years shrinking 15% a year
+  (1 + 0.85 + 0.85&sup2; + &hellip; + 0.85&#8313;). The 15% comes from the chart above, measured on
+  372,405 real customers (queried 2026-08-03, first order 2024-01-01 to 2024-06-30, tracked to 2026-06-30).
+  Applying the same three steps to the whole customer base gives <b>HK$495</b> per customer,
+  or about <b>HK$464 million</b> in total.</p>
+</div>
+
+<div class="box warn">
+  <b>Step 3 is where the certainty stops.</b> Steps 1 and 2 are money we have counted.
+  Step 3 assumes the next ten years look like the last three months, only shrinking steadily.
+  That is why the lifetime column is marked &Dagger; and why we quote a range, not a single promise.
+</div>
+
+<div class="box neut">
+  <b>Why this chart matters for a lifetime number.</b> Two years of history is not a lifetime.
+  Because the line is flat rather than falling to zero, the part after month 24 has to be estimated
+  rather than ignored — and any lifetime figure we quote must say which decline rate was assumed.
+  See <b>Lifetime value scenarios</b> below.
+</div>
+
+<h2>⑥ Ranking with and without the model</h2>
+<p class="lead">Sorting customers by past earnings already works well. The model does better.</p>
+<p>Both methods pick a "best 10%" list. We then check how much of the next 91 days' revenue
+  that list actually captured. Picking customers at random would capture 10%.</p>
+
+<div class="card">
+<figure>
+<svg viewBox="0 0 1040 250" role="img" aria-label="Comparison of revenue captured by the top ten percent: random 10 percent, past earnings 68.9 percent, model 75.1 percent">
+  <text x="0" y="14" class="sv-cap">Share of next-91-day revenue captured by the chosen best 10% (%)</text>
+  <line x1="230" y1="40" x2="230" y2="215" stroke="#c3c2b7"/>
+  <g>
+    <text x="220" y="72" text-anchor="end" class="sv-lbl">Random pick</text>
+    <rect x="230" y="55" width="76" height="30" fill="#c3c2b7"/>
+    <text x="316" y="76" class="sv-val">10.0%</text>
+    <text x="386" y="76" class="sv-ax">the baseline anyone can beat</text>
+  </g>
+  <g>
+    <text x="220" y="127" text-anchor="end" class="sv-lbl">Past earnings, no model</text>
+    <rect x="230" y="110" width="524" height="30" fill="#5f93c8"/>
+    <text x="764" y="131" class="sv-val">68.9%</text>
+    <text x="834" y="131" class="sv-ax">6.89x better than random</text>
+  </g>
+  <g>
+    <text x="220" y="182" text-anchor="end" class="sv-lbl">Model</text>
+    <rect x="230" y="165" width="571" height="30" fill="#2a78d6"/>
+    <text x="811" y="186" class="sv-val">75.1%</text>
+    <text x="881" y="186" class="sv-ax">7.51x better than random</text>
+  </g>
+  <line x1="230" y1="215" x2="1020" y2="215" stroke="#c3c2b7"/>
+  <text x="230" y="236" class="sv-ax">0%</text>
+  <text x="640" y="236" text-anchor="middle" class="sv-ax">50%</text>
+  <text x="1020" y="236" text-anchor="end" class="sv-ax">100%</text>
+</svg>
+</figure>
+<p class="chart-note">The model captures 6.2 percentage points more than plain sorting, on exactly the
+  same 935,992 customers. That is the reason to run a model at all — but note the simple sort already
+  gets most of the way, so the simple version is a safe fallback if the model ever breaks.</p>
+<p class="src">Source: <code>reporting.pres_ltv_forecast_vs_actual_summary</code> and
+  <code>analytics.mart_ltv_customer_tier_baseline</code> (queried 2026-08-03, PlatformOD,
+  ranking date 2026-03-31, result period 2026-04-01 to 2026-06-30, 935,992 customers).</p>
+</div>
+
+<div class="box good">
+  <b>The advantage grows once the biggest customers are removed.</b> Drop the top 1% and the gap widens
+  to 8.7 points; drop the top 5% and it widens to 11.4 points. So the model is not just recognising a
+  handful of whales — it ranks ordinary customers better too.
+</div>
+
+<h2>⑦ Two models, two jobs</h2>
+<p class="lead">One model estimates how often a customer will order. The other estimates how much each ordering day is worth. They run side by side.</p>
+
+<div class="card">
+<table>
+  <thead>
+    <tr><th>&nbsp;</th><th>Order-count model (BG/NBD)</th><th>Order-value model (Gamma-Gamma)</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Question it answers</td><td>Is this customer still with us, and how many more ordering days?</td><td>How much do we earn on one ordering day?</td></tr>
+    <tr><td>What it reads</td><td><code>frequency</code>, <code>recency</code>, <code>T</code></td><td><code>frequency</code>, <code>monetary_value_platform</code></td></tr>
+    <tr><td>Numbers it learns</td><td>4 (<code>r</code>, <code>α</code>, <code>a</code>, <code>b</code>)</td><td>2 groups: an average and a spread</td></tr>
+    <tr><td>Spread we measured</td><td>Ordering pace differs 29x; return rate differs 32x</td><td>Price per job differs 2.3x</td></tr>
+    <tr><td>Trained on</td><td>All customers</td><td>Only customers with more than one ordering day</td></tr>
+    <tr><td>Applied to</td><td>All customers</td><td>All, including the 38% with a single ordering day</td></tr>
+    <tr><td>Effect on total value</td><td><b>Dominant</b> — counts differ 53–60x</td><td>Secondary — prices differ 1.1–2.3x</td></tr>
+    <tr><td>Still to be added</td><td>Chance the customer is still active, per customer</td><td>—</td></tr>
+  </tbody>
+</table>
+<p class="src">Source: <code>projects/marketplace-transport/docs/ltv-model-spec.md</code> and
+  <code>ltv-master-view.md</code> (spread figures queried 2026-08-03, PlatformOD,
+  ranking date 2026-03-31, result period 2026-04-01 to 2026-06-30).</p>
+</div>
+
+<ul class="star">
+  <li><b>Customer value is roughly "how often" multiplied by "how much per job".</b>
+    Since how often varies 53–60x and how much varies barely 2x, <b>raising frequency beats raising price</b>.</li>
+  <li><b>The two models are not sequential.</b> Neither feeds the other; their outputs are multiplied at the end.</li>
+</ul>
+
+<div class="box warn">
+  <b>One output is not built yet.</b> The per-customer "chance of still being active" number is specified
+  but the code has not been written. Until it exists, the return rates on this page are what actually
+  happened, not a prediction for a named customer.
+</div>
+
+<h2>⑧ Accuracy and coverage</h2>
+<p class="lead">Totals are accurate. Rankings are good. Per-customer amounts are not, and we do not quote them.</p>
+
+<div class="card">
+<table>
+  <thead>
+    <tr><th>Check</th><th>Result</th><th>Verdict</th><th>Plain meaning</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Predicted total revenue against actual</td><td>0.93 (HK$19.98M against HK$21.46M)</td><td class="hl-good">Pass</td><td>Off by 7% across the whole customer base</td></tr>
+    <tr><td>Predicted ordering days against actual</td><td>0.97 (757,870 against 783,107)</td><td class="hl-good">Pass</td><td>Order volume is close</td></tr>
+    <tr><td>Best 10% list, past earnings only</td><td>68.9% of revenue captured (6.89x)</td><td class="hl-good">Usable today</td><td>Works with no model at all</td></tr>
+    <tr><td>Best 10% list, model</td><td>75.1% of revenue captured (7.51x)</td><td class="hl-good">Beats the simple version</td><td>Same 935,992 customers both times</td></tr>
+    <tr><td>Every group in perfect descending order</td><td>No</td><td>Too strict a test</td><td>Small swaps in the middle; does not affect picking the top 10%</td></tr>
+    <tr><td>Error on a single customer's amount</td><td>74% to 153%</td><td class="hl-bad">Not usable</td><td>Never quote a dollar figure for one customer</td></tr>
+    <tr><td>Share of Platform on-demand business covered</td><td>87.8%</td><td>Gap to note</td><td>New customers (8.1%) are not covered</td></tr>
+  </tbody>
+</table>
+<p class="src">Source: <code>gogox-ba-sandbox.reporting.pres_ltv_forecast_vs_actual_summary</code>
+  (queried 2026-08-03, PlatformOD, training up to 2026-03-31, result period 2026-04-01 to 2026-06-30).
+  Error range covers all twelve scenario and segment combinations.</p>
+</div>
+
+<ul class="warn-list">
+  <li><b>Say "covers 87.8% of Platform on-demand business", never "all of Platform on-demand".</b>
+    The missing part is new customers with no history, plus orders with no customer id.</li>
+  <li><b>A customer's past total is not a spending limit.</b> The top 500 earned us HK$30,249 each over
+    more than two years, but only about HK$4,195 in the next 91 days. Taking a percentage of the
+    lifetime figure would overspend by roughly seven times.</li>
+</ul>
+
+<details class="fold">
+  <summary>Inside the top 10% <span class="hint">is it just a few very large customers?</span></summary>
+  <p>The top group was split into ten equal slices of 9,366 customers each.</p>
+  <div class="card">
+  <table>
+    <thead><tr><th>Slice of the top 10%</th><th class="th-2line">Earned before ranking, per customer</th><th class="th-2line">Revenue in next 91 days, per customer</th><th class="th-2line">Same, middle customer</th><th class="th-2line">Share of all revenue</th><th class="th-2line">Came back</th></tr></thead>
+    <tbody>
+      <tr class="top-row"><td>Highest slice (top 1% overall)</td><td>HK$6,056</td><td>HK$679.0</td><td>HK$389.8</td><td>29.47%</td><td>85.3%</td></tr>
+      <tr><td>2nd</td><td>HK$2,210</td><td>HK$229.5</td><td>HK$165.8</td><td>9.96%</td><td>79.1%</td></tr>
+      <tr><td>3rd</td><td>HK$1,506</td><td>HK$156.1</td><td>HK$99.1</td><td>6.78%</td><td>74.0%</td></tr>
+      <tr><td>4th</td><td>HK$1,137</td><td>HK$118.3</td><td>HK$65.3</td><td>5.14%</td><td>69.4%</td></tr>
+      <tr><td>5th</td><td>HK$907</td><td>HK$96.0</td><td>HK$46.0</td><td>4.17%</td><td>65.7%</td></tr>
+      <tr><td>6th</td><td>HK$752</td><td>HK$79.5</td><td>HK$32.8</td><td>3.45%</td><td>61.8%</td></tr>
+      <tr><td>7th</td><td>HK$639</td><td>HK$68.2</td><td>HK$26.0</td><td>2.96%</td><td>59.0%</td></tr>
+      <tr><td>8th</td><td>HK$553</td><td>HK$59.8</td><td>HK$21.0</td><td>2.60%</td><td>56.8%</td></tr>
+      <tr><td>9th</td><td>HK$486</td><td>HK$54.0</td><td>HK$16.0</td><td>2.35%</td><td>53.8%</td></tr>
+      <tr class="tail-row"><td>Lowest slice</td><td>HK$431</td><td>HK$45.3</td><td>HK$0.0</td><td>1.97%</td><td>49.6%</td></tr>
+    </tbody>
+  </table>
+  <p class="src">Source: <code>analytics.mart_ltv_customer_tier_baseline</code> joined to
+    <code>mart_ltv_forecast_check_panel</code> (queried 2026-08-03, PlatformOD, 2026-04-01 to 2026-06-30).</p>
+  </div>
+  <ul class="star">
+    <li><b>The top 1% of all customers alone bring 29.5% of revenue.</b> So yes, the top group is itself very uneven.</li>
+    <li><b>But it is not carried by a few outliers.</b> The middle customer in that slice still earns HK$389.8,
+      and all ten slices beat the company average of HK$23.</li>
+    <li><b>Robustness check:</b> remove the top 1% entirely and the remaining 84,293 customers in the top
+      group still capture 39.3% of revenue — 4.4x better than random. The conclusion holds.</li>
+    <li><b>Action:</b> treat the top 1% as its own tier rather than lumping it into a single top-10% group.</li>
+  </ul>
+</details>
+
+<details class="fold">
+  <summary>Order count alone is misleading <span class="hint">two customers with the same order count can behave completely differently</span></summary>
+  <p>Customers are grouped by how many ordering days they had, then split again by whether they were
+    still ordering near the ranking date.</p>
+  <div class="card">
+  <table>
+    <thead><tr><th>Ordering days before ranking</th><th>Still-active score</th><th class="th-2line">Customers</th><th class="th-2line">Came back within 91 days</th><th class="th-2line">Jobs per year</th><th class="th-2line">Revenue per customer</th></tr></thead>
+    <tbody>
+      <tr class="top-row"><td>20 or more</td><td>0.75–1.00 (still ordering)</td><td>63,219</td><td>82.9%</td><td>42.2</td><td>HK$219.1</td></tr>
+      <tr><td>20 or more</td><td>0.50–0.75</td><td>9,696</td><td>11.2%</td><td>1.6</td><td>HK$8.4</td></tr>
+      <tr><td>20 or more</td><td>0.25–0.50</td><td>3,864</td><td>5.3%</td><td>0.8</td><td>HK$4.4</td></tr>
+      <tr class="tail-row"><td>20 or more</td><td>0–0.25 (long gone)</td><td>1,057</td><td>2.6%</td><td>0.8</td><td>HK$4.3</td></tr>
+      <tr><td>10–19</td><td>0.75–1.00 (still ordering)</td><td>41,762</td><td>62.9%</td><td>10.1</td><td>HK$54.4</td></tr>
+      <tr><td>10–19</td><td>0.50–0.75</td><td>12,913</td><td>19.3%</td><td>2.0</td><td>HK$11.2</td></tr>
+      <tr><td>10–19</td><td>0.25–0.50</td><td>7,133</td><td>8.0%</td><td>0.7</td><td>HK$4.0</td></tr>
+      <tr class="tail-row"><td>10–19</td><td>0–0.25 (long gone)</td><td>2,758</td><td>4.5%</td><td>0.5</td><td>HK$2.7</td></tr>
+    </tbody>
+  </table>
+  <p class="src">Source: <code>analytics.mart_ltv_forecast_check_panel</code>
+    (queried 2026-08-03, PlatformOD, 2026-04-01 to 2026-06-30).</p>
+  </div>
+  <ul class="star">
+    <li><b>Same order count, 32x difference in return rate.</b> Among customers with 20+ ordering days,
+      the still-active ones came back 82.9% of the time and the long-gone ones 2.6%.</li>
+    <li><b>So "has ordered a lot" is not a good target on its own</b> — and neither is a flat rule such as
+      "no order for 180 days means lost". Both miss the pattern.</li>
+  </ul>
+</details>
+
+<details class="fold">
+  <summary>Lifetime value scenarios <span class="hint">business view and finance view, and why they must stay separate</span></summary>
+  <p>Two different rates are involved and they belong to different owners.
+    Customer decline is measured from customer behaviour. The discount rate is a finance policy.</p>
+  <div class="card">
+  <table>
+    <thead><tr><th>Scenario</th><th class="th-2line">Customer decline per year</th><th class="th-2line">Finance discount rate</th><th class="th-2line">Already collected</th><th class="th-2line">Next 120 months, estimated</th><th class="th-2line">Customer contribution</th><th class="th-2line">After discounting</th><th class="th-2line">Share already seen</th></tr></thead>
+    <tbody>
+      <tr><td>Conservative</td><td>21%</td><td>12%</td><td>HK$379</td><td>HK$530</td><td>HK$909</td><td>HK$760</td><td>42%</td></tr>
+      <tr class="top-row"><td>Middle (adopted)</td><td>15%</td><td>10%</td><td>HK$379</td><td>HK$662</td><td>HK$1,041</td><td>HK$864</td><td>36%</td></tr>
+      <tr><td>Optimistic</td><td>7%</td><td>8%</td><td>HK$379</td><td>HK$900</td><td>HK$1,279</td><td>HK$1,055</td><td>30%</td></tr>
+    </tbody>
+  </table>
+  <p class="src">Decline rate measured from the 372,405-customer 2024 first-half group
+    (queried 2026-08-03, tracked to 2026-06-30). Discount rate set by Finance.
+    The HK$379 already collected is real money and is not discounted.</p>
+  </div>
+  <ul class="star">
+    <li><b>Changing the discount rate only changes the last column.</b> The customer contribution figure
+      does not move, so the business side does not have to wait for Finance to agree a rate.</li>
+    <li><b>Always quote a range, not one number</b>, and say which decline rate was assumed.</li>
+  </ul>
+  <ul class="warn-list">
+    <li>These lifetime figures are arithmetic projections built on a measured decline rate.
+      They are not a model output for any individual customer, and they use the 2024 first-half group
+      as the population — so they cannot be compared directly against the per-group figures earlier on this page.</li>
+  </ul>
+</details>
+
+<h2>Data sources and limits</h2>
+<div class="box neut" style="max-width:none">
+  <b>Period used, in one line.</b> Orders from <b>2024-01-01</b> onward.
+  Customers were ranked using everything up to <b>2026-03-31</b>.
+  The result columns use <b>2026-04-01 to 2026-06-30</b> only.
+  <b>No order after 2026-06-30 is used anywhere on this page.</b>
+</div>
+<div class="card">
+<table>
+  <thead><tr><th>Used for</th><th>Source</th><th>Scope and period</th></tr></thead>
+  <tbody>
+    <tr><td>Sections ① ② ③</td><td><code>gogox-ba-sandbox.reporting.pres_ltv_decile_summary</code></td><td>PlatformOD, ranking 2026-03-31, results 2026-04-01 to 2026-06-30</td></tr>
+    <tr><td>Section ④</td><td><code>gogox-ba-sandbox.reporting.pres_ltv_list_granularity</code></td><td>Same</td></tr>
+    <tr><td>Section ⑤ and lifetime scenarios</td><td><code>gogox-ba-sandbox.foundation.hk_transport_user_daily_txn_since_2024</code></td><td>First order 2024-01-01 to 2024-06-30, 372,405 customers, tracked to 2026-06-30</td></tr>
+    <tr><td>Sections ⑥ ⑧</td><td><code>gogox-ba-sandbox.reporting.pres_ltv_forecast_vs_actual_summary</code></td><td>Training to 2026-03-31, results 2026-04-01 to 2026-06-30, 935,992 customers</td></tr>
+    <tr><td>Folded sections</td><td><code>gogox-ba-sandbox.analytics.mart_ltv_customer_tier_baseline</code> + <code>mart_ltv_forecast_check_panel</code></td><td>Same as above</td></tr>
+  </tbody>
+</table>
+</div>
+
+<ul class="warn-list">
+  <li><b>Platform on-demand customers only.</b> Enterprise customers behave differently and must be
+    modelled separately (<code>business_segment = 'EnterpriseOD'</code>). Nothing here applies to them.</li>
+  <li><b>Ranking is reliable, per-customer amounts are not.</b> Use this to choose who to spend on.</li>
+  <li><b>No spending limit per customer is published here.</b> A limit needs expected future value as its
+    base; this page mostly has money already collected. The per-customer future figure is the next
+    piece of work.</li>
+  <li><b>New customers are not covered.</b> They have no history to rank, and they are 8.1% of business.</li>
+  <li><b>Every figure is a snapshot.</b> Late driver settlement means very recent days can move.
+    Re-run the ranking on a date at least three days old.</li>
+</ul>
+
+<p class="foot">
+  GoGoX HK Business Analysis · Platform on-demand customer value · All figures queried from BigQuery on 2026-08-03.
+  Ranking date 2026-03-31; result period 2026-04-01 to 2026-06-30 (91 days).
+  <code>platform_take</code> = <code>driver_commission</code> + <code>premium_platform_support</code> (used for every amount here).
+  <code>gtv</code> = <code>gross_transaction_value</code> (customer payment, not used here).
+  Source specification: <code>projects/marketplace-transport/docs/ltv-master-view.md</code>.
+</p>
+
+</div>
+</body>
+</html>
