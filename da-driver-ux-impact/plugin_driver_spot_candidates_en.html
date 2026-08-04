@@ -473,22 +473,8 @@
   .caveat ul{margin:6px 0 0;padding-left:20px} .caveat li{margin:3px 0}
   .foot{color:var(--muted);font-size:11.5px;margin-top:40px;border-top:1px solid var(--grid);padding-top:14px}
 
-/* Version 2 toggle + panels */
-.v2-toggle{margin-left:auto;display:inline-flex;align-items:center;gap:8px;padding:5px 12px;border-radius:999px;
-  border:1px solid rgba(42,120,214,.35);background:linear-gradient(135deg,#e8f2ff,#fff 55%,#ffe8c8);
-  box-shadow:0 0 0 0 rgba(42,120,214,.45);animation:v2pulse 1.8s ease-in-out infinite;cursor:pointer;
-  font-size:12.5px;font-weight:800;color:#0b0b0b;white-space:nowrap;user-select:none}
-.v2-toggle:hover{filter:brightness(1.03)}
-.v2-toggle.on{background:linear-gradient(135deg,#2a78d6,#1a5fa8);color:#fff;border-color:#1a5fa8;
-  box-shadow:0 0 16px rgba(42,120,214,.55)}
-.v2-toggle .knob{width:34px;height:18px;border-radius:999px;background:rgba(11,11,11,.15);position:relative;flex:none}
-.v2-toggle.on .knob{background:rgba(255,255,255,.35)}
-.v2-toggle .knob::after{content:"";position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;
-  background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:left .15s}
-.v2-toggle.on .knob::after{left:18px}
-@keyframes v2pulse{0%,100%{box-shadow:0 0 0 0 rgba(42,120,214,.35)}50%{box-shadow:0 0 0 6px rgba(42,120,214,0)}}
-body.show-v2 .v1-only{display:none !important}
-body:not(.show-v2) .v2-only{display:none !important}
+/* Version 2 only (V1 removed) */
+.v1-only{display:none !important}
 /* V2 layout: one section title (③); rulebook sits beside priority bands (④ heading hidden) */
 body.show-v2 #s4-hist-panel{display:none !important}
 body.show-v2 #s4{display:none !important}
@@ -566,15 +552,10 @@ body.show-v2 a[data-s="s4"]{display:none !important}
     <a href="#s2" data-s="s2">Funnel</a>
     <a href="#s3" data-s="s3">Tiers</a>
     <a href="#s4" data-s="s4">Score</a>
-    <a href="#s6" data-s="s6" class="v1-only">Churn</a>
-    <a href="#s7" data-s="s7" data-v1-href="#s7" data-v2-href="#v2-rule-7">+3 Loop</a>
-    <a href="#s8" data-s="s8" data-v1-href="#s8" data-v2-href="#v2-rule-8"><span class="v1-only">Bot +3</span><span class="v2-only">Assigned &amp; Release</span></a>
+    <a href="#v2-rule-7" data-s="v2-rule-7">Cancel</a>
+    <a href="#v2-rule-8" data-s="v2-rule-8">Assigned &amp; Release</a>
     <a href="#s9" data-s="s9">Cases</a>
     <a href="#discussion-s8" id="nav-notes">Notes</a>
-    <button type="button" class="v2-toggle on" id="v2-toggle" aria-pressed="true" title="Version 2 scoring (Team notes)">
-      <span class="knob" aria-hidden="true"></span>
-      <span>Version 2</span>
-    </button>
   </div>
 </nav>
 
@@ -590,7 +571,7 @@ body.show-v2 a[data-s="s4"]{display:none !important}
 <aside class="comments-rail is-collapsed" aria-label="Latest notes">
   <div class="cr-head">
     <h4 class="sectoggle" data-target="comments-rail-body" role="button" tabindex="0">Latest notes</h4>
-    <span class="showbar showlabel v2-only" data-target="comments-rail-body" role="button" tabindex="0" title="Expand / collapse notes (Version 2)">More ▾</span>
+    <span class="showbar showlabel" data-target="comments-rail-body" role="button" tabindex="0" title="Expand / collapse notes">More ▾</span>
   </div>
   <div id="comments-rail-body">
     <div id="comments-rail-list"><p class="cr-empty">Loading…</p></div>
@@ -604,15 +585,15 @@ body.show-v2 a[data-s="s4"]{display:none !important}
 
   <h1>Spotting cheat-app (bot) drivers</h1>
   <div class="fnote-row" id="page-scope" style="margin-top:8px;margin-bottom:4px">
-    <p class="fnote-toggle sectoggle" data-target="page-scope-body" role="button" tabindex="0"><b>Scope</b> <span class="rs-teaser">— HK truck · public-pool · 30d</span></p>
+    <p class="fnote-toggle sectoggle" data-target="page-scope-body" role="button" tabindex="0"><b>Scope</b> <span class="rs-teaser">— HK truck · public-pool · 30d · V2</span></p>
     <span class="showbar showlabel" data-target="page-scope-body" role="button" tabindex="0">More ▾</span>
   </div>
   <div id="page-scope-body" style="display:none">
-    <p class="meta" style="margin-bottom:14px">This page is about <b>38 cheat-app (bot) drivers</b>. We looked at all public-pool truck drivers (van / mudou / mudou9; company orders left out), then kept the 38 who run a bot. Almost every order they <b>released</b> is <b>On Demand</b> (<span id="meta-od-share">91% On Demand, 5% Same Day, 4% Next Day</span>). Data pulled 2026-07-23, covering 30 days (24 Apr – 24 May 2026).</p>
+    <p class="meta" style="margin-bottom:14px">This page is about <b>143 cheat-app (bot) drivers</b> (3-second rule). We looked at all public-pool truck drivers (van / mudou / mudou9; company orders left out), then kept drivers who drop 2+ different orders in the same 3 seconds. Source: <code>mart_plugin_driver_harm_score_v2</code>. Score = Assigned + Release + Cancel inside this 30d only. Almost every order they <b>released</b> is <b>On Demand</b> (<span id="meta-od-share">91% On Demand, 5% Same Day, 4% Next Day</span>). Data pulled 2026-08-03, covering 30 days (5 May – 4 Jun 2026).</p>
   </div>
 
   <div class="sect-head">
-    <h2 id="review-summary" class="sectoggle" data-target="review-summary-body" role="button" tabindex="0">Driver Review Summary — <b>30d</b> (24 Apr – 24 May 2026) <span class="rs-teaser" id="summary-teaser">— 4 flagged for manual review</span></h2>
+    <h2 id="review-summary" class="sectoggle" data-target="review-summary-body" role="button" tabindex="0">Driver Review Summary — <b>30d</b> (5 May – 4 Jun 2026) <span class="rs-teaser" id="summary-teaser">— 14 Extreme case</span></h2>
     <span class="showbar showlabel" data-target="review-summary-body" role="button" tabindex="0">More ▾</span>
   </div>
   <div id="review-summary-body" class="review-summary" style="display:none">
@@ -621,51 +602,31 @@ body.show-v2 a[data-s="s4"]{display:none !important}
     <ul>
       <li><b>What this means:</b> not just logged in — they took enough trips that we can judge their behaviour</li>
       <li><b>Rule:</b> ≥30 orders taken (<code>orders_assigned_30d</code>), ≥30 finished (<code>orders_completed_30d</code>)</li>
-      <li><b>Period:</b> <b>30d</b> · 24 Apr – 24 May 2026</li>
+      <li><b>Period:</b> <b>30d</b> · 5 May – 4 Jun 2026</li>
     </ul>
 
     <h3>Top-tier review</h3>
     <ul>
-      <li><b id="hl-flag">4</b> drivers were selected for manual review</li>
-      <li><b>Criteria:</b> warning score ≥6 and at least one serious signal:
-        <ul>
-          <li>Customer churn</li>
-          <li>Higher-price same-driver loop</li>
-        </ul>
-      </li>
+      <li><b id="hl-flag">14</b> drivers in Extreme case (Assigned Extreme · not scored · review alone)</li>
+      <li><b>Criteria (Version 2):</b> Assigned (0–2) + Release (0–4) + Cancel (0–2) → max 8; Extreme Assigned tier pulled out first</li>
     </ul>
-
-    <h3>Most common serious pattern</h3>
-    <div class="pattern-flow" aria-label="Most common serious pattern flow">
-      <div class="step">Take order</div>
-      <div class="arr">↓</div>
-      <div class="step">Release order</div>
-      <div class="arr">↓</div>
-      <div class="step">No other driver accepts</div>
-      <div class="arr">↓</div>
-      <div class="step">Customer re-orders at a higher price</div>
-      <div class="arr">↓</div>
-      <div class="step">Same driver takes it again</div>
-      <div class="arr">↓</div>
-      <div class="step">Trip completed</div>
-    </div>
 
     <div class="review-note">
       <h3>Important note</h3>
       <ul>
-        <li>Not every flagged driver shows this loop.</li>
-        <li>A driver can be flagged because of <b>any</b> serious signal, not only the higher-price same-driver loop.</li>
-        <li>Bot speed (Step 1) is a <b>separate</b> check — not the same as this top-tier harm score.</li>
+        <li>Bot speed (Step 1) finds the pool (3-second rule).</li>
+        <li>Review priority (③) ranks harm inside that pool: Extreme case first, then Assigned + Release + Cancel → max 8.</li>
+        <li>Score = Assigned + Release + Cancel inside this 30d. Source: <code>mart_plugin_driver_harm_score_v2</code>.</li>
       </ul>
     </div>
   </div>
 
   <p class="kpi-funnel-hint"><b>Read left → right:</b> everyone on the platform → drivers <b>actually taking trips</b> (not just online) → cheat-app bot speed → highest harm scores for a person to review.</p>
   <div class="kpis">
-    <div class="tile"><div class="lbl">① Drivers we checked</div><div class="val" id="k-total">6,199</div><div class="sub" id="k-total-sub">all public-pool truck drivers — went online or did some work in the <b>30d</b> (24 Apr – 24 May 2026)</div></div>
-    <div class="tile pool"><div class="lbl">② Drivers actually working on GoGoX</div><div class="val" id="k-pool">3,247</div><div class="sub" id="k-pool-sub">took 30+ orders, finished 30+ in the <b>30d</b></div></div>
-    <div class="tile bot"><div class="lbl" id="k-bot-lbl">③ Suspected cheat-app drivers (bot pool)</div><div class="val" id="k-botpool">38</div><div class="sub" id="k-botsub">grabbed &amp; let go of 2+ different orders in the same 1 second · 38 in bot pool · same cohort<b>30d</b></div></div>
-    <div class="tile flag"><div class="lbl" id="k-flag-lbl">④ Highest harm scores → check by hand</div><div class="val" id="k-flag">4</div><div class="sub" id="k-flagpct">warning score 6–8 · same <b>30d</b></div></div>
+    <div class="tile"><div class="lbl">① Drivers we checked</div><div class="val" id="k-total">6,196</div><div class="sub" id="k-total-sub">all public-pool truck drivers — went online or did some work in the <b>30d</b> (5 May – 4 Jun 2026)</div></div>
+    <div class="tile pool"><div class="lbl">② Drivers actually working on GoGoX</div><div class="val" id="k-pool">3,233</div><div class="sub" id="k-pool-sub">took 30+ orders, finished 30+ in the <b>30d</b></div></div>
+    <div class="tile bot"><div class="lbl" id="k-bot-lbl">③ Suspected cheat-app drivers (bot pool · 3 sec)</div><div class="val" id="k-botpool">143</div><div class="sub" id="k-botsub">grabbed &amp; let go of 2+ different orders in the same <b>3 seconds</b> · 143 of 3,233 working drivers (4.4%) · (queried 2026-08-03)</div></div>
+    <div class="tile flag"><div class="lbl" id="k-flag-lbl">④ Extreme case (not scored)</div><div class="val" id="k-flag">14</div><div class="sub" id="k-flagpct">Extreme case · 14 of 143 bot drivers (9.8%) · (queried 2026-08-03)</div></div>
   </div>
 
   <div class="sect-head">
@@ -673,10 +634,10 @@ body.show-v2 a[data-s="s4"]{display:none !important}
     <span class="showbar showlabel" data-target="defs-body" role="button" tabindex="0">More ▾</span>
   </div>
   <div id="defs-body" class="relbox" style="margin-top:6px;margin-bottom:0;display:none">
-    <b>Released vs cancelled</b> — <b>Released</b> = driver took the order then <b>released</b> it (<code>event_type_cd = 4</code>, <code>actor_type = 'Driver'</code>). <b>Cancelled</b> = the order later ended with no driver (<code>status = 'cancelled'</code>, cd 8 or 11) — used in section ⑥. Pool entry does <b>not</b> require a release (since 2026-07-27).<br>
-    <b>Who gets a score</b> — mature cohort (T−90 to T−60): must <b>took ≥30 orders</b> (<code>orders_assigned_30d</code>), <b>finished ≥30</b> (<code>orders_completed_30d</code>), not OA. If any rule fails → <code>outside_analysis_pool</code> (not scored yet; can still work).<br>
-    <b>Orders (booking-type mix on the top)</b> — for the On Demand / Same Day / Next Day share only: each order counted <b>once</b>. That mix is <b>not</b> used in the +1 / +2 steps below.<br>
-    <b class="v1-only">Customer-churn steps (section ⑥)</b><span class="v1-only"> — <b>bot pool only</b> (38 drivers). We <b>add up</b> each driver’s counts from the mart (<code>released_orders_90d</code> → <code>released_then_no_driver_90d</code> → <code>customer_no_return_60d_90d</code>). Step 1 total = <span id="def-giveback-sum">19,249</span>. If two bot drivers both released the same order, that order can appear twice in the sum — that is fine. All % in ⑥ use this same sum so they match BigQuery.</span>
+    <b>Released vs cancelled</b> — <b>Released</b> = driver took the order then <b>released</b> it (<code>event_type_cd = 4</code>, <code>actor_type = 'Driver'</code>). <b>Cancelled</b> = the order later ended with no driver (<code>status = 'cancelled'</code>, cd 8 or 11). Pool entry does <b>not</b> require a release.<br>
+    <b>Who gets a score</b> — in this 30d: must <b>took ≥30 orders</b> (<code>orders_assigned_30d</code>), <b>finished ≥30</b> (<code>orders_completed_30d</code>), not OA. If any rule fails → <code>outside_analysis_pool</code> (not scored yet; can still work).<br>
+    <b>Bot pool</b> — 2+ different grace-drops in the same <b>3 seconds</b> (<code>is_bot_pool_v2</code>). Review bands = Extreme case (not scored) + Assigned (0–2) + Release (0–4) + Cancel (0–2) → max 8.<br>
+    <b>Orders (booking-type mix on the top)</b> — for the On Demand / Same Day / Next Day share only: each order counted <b>once</b>.
   </div>
 
   <div class="filterbar">
@@ -716,43 +677,43 @@ body.show-v2 a[data-s="s4"]{display:none !important}
   </div>
   <div id="sbot-body">
   <div class="bot-explain" id="bot-explain">
-    <b>We flag drivers who drop 2+ different orders in the same 1 second.</b><br>
-    Dropping 2+ different orders at the same moment = suspected bot driver.
+    <b>We flag drivers who drop 2+ different orders in the same <b>3 seconds</b>.</b><br>
+    Dropping 2+ different orders in that window = suspected bot driver. Bot pool = <b>143</b> / 3,233 (4.4%).
     <div class="notthis">Not this: how long one order took.</div>
   </div>
   <div class="bot-kpis">
     <div class="tile ok">
       <div class="lbl">Non-bot drivers</div>
-      <div class="val" id="bot-ok-n">3,209 / 3,247</div>
-      <div class="sub" id="bot-ok-sub">Never dropped 2+ different orders in the same 1 second (98.8%)</div>
+      <div class="val" id="bot-ok-n">3,090 / 3,233</div>
+      <div class="sub" id="bot-ok-sub">Never dropped 2+ different orders in the same 3 seconds (95.6%)</div>
     </div>
     <div class="tile bot">
       <div class="lbl">Suspected bot drivers</div>
-      <div class="val" id="bot-check-n">38 / 3,247</div>
-      <div class="sub" id="bot-check-sub">Dropped 2+ different orders in the same 1 second (1.2%)</div>
+      <div class="val" id="bot-check-n">143 / 3,233</div>
+      <div class="sub" id="bot-check-sub">Dropped 2+ different orders in the same 3 seconds (4.4%)</div>
     </div>
   </div>
-  <p class="bot-rule" id="bot-rule">Rule window = <b>1 second</b> (this decides the bot pool). 2 / 3 / 4 / 6 sec = compare only. (queried 2026-07-27 · HK TRANSPORT · mature cohort T−90 to T−60)</p>
+  <p class="bot-rule" id="bot-rule">Rule window = <b>3 seconds</b> (this decides the bot pool). 1 / 2 / 4 / 6 sec = compare only. (queried 2026-08-03, HK TRANSPORT, 30d 2026-05-05 to 2026-06-04)</p>
   <div class="fnote-row">
-    <p class="fnote-toggle sectoggle" data-target="sbot-detail-table" role="button" tabindex="0"><b>More detail — 1 / 2 / 3 / 4 / 6 sec table</b> <span class="rs-teaser">— compare only</span></p>
+    <p class="fnote-toggle sectoggle" data-target="sbot-detail-table" role="button" tabindex="0"><b>More detail — 1 / 2 / 3 / 4 / 6 sec table</b> <span class="rs-teaser">— rule = 3 sec</span></p>
     <span class="showbar showlabel" data-target="sbot-detail-table" role="button" tabindex="0">Less ▴</span>
   </div>
   <div id="sbot-detail-table">
   <div class="panel" style="margin-top:6px" id="sbot-compare-panel">
     <h3>Of 3,247 drivers: how many different orders did they drop in a short time?</h3>
     <div style="overflow-x:auto">
-    <table id="sbot-compare-table" class="rule-col-1s">
+    <table id="sbot-compare-table" class="rule-col-3s">
       <thead><tr>
         <th>How many different orders did they drop in the same short time?</th>
-        <th id="th-1s">1 second <span style="font-weight:400;color:var(--muted)">(the rule)</span></th>
+        <th id="th-1s">1 second <span style="font-weight:400;color:var(--muted)">(compare only)</span></th>
         <th id="th-2s">2 sec <span style="font-weight:400;color:var(--muted)">(compare only)</span></th>
-        <th id="th-3s">3 sec <span style="font-weight:400;color:var(--muted)">(compare only)</span></th>
+        <th id="th-3s">3 sec <span style="font-weight:400;color:var(--muted)">(the rule)</span></th>
         <th id="th-4s">4 sec <span style="font-weight:400;color:var(--muted)">(compare only)</span></th>
         <th id="th-6s">6 sec <span style="font-weight:400;color:var(--muted)">(compare only)</span></th>
       </tr></thead>
       <tbody>
-        <tr id="row-nonbot"><td><b>1 or fewer</b> (non-bot)</td><td>3,209 (98.8%)</td><td>3,162 (97.4%)</td><td id="cell-3s-nonbot">3,091 (95.2%)</td><td>2,999 (92.4%)</td><td>2,817 (86.8%)</td></tr>
-        <tr id="row-bot"><td id="row-bot-label"><b>2 or more</b> (suspected bot) 🟠 — we use the <b>1-second</b> column</td><td id="cell-1s-bot"><b>38 (1.2%)</b></td><td>85 (2.6%)</td><td id="cell-3s-bot">156 (4.8%)</td><td>248 (7.6%)</td><td>430 (13.2%)</td></tr>
+        <tr id="row-nonbot"><td><b>1 or fewer</b> (non-bot)</td><td>3,209 (98.8%)</td><td>3,162 (97.4%)</td><td id="cell-3s-nonbot">3,090 (95.6%)</td><td>2,999 (92.4%)</td><td>2,817 (86.8%)</td></tr>
+        <tr id="row-bot"><td id="row-bot-label"><b>2 or more</b> (suspected bot) 🟠 — we use the <b>3-second</b> column</td><td id="cell-1s-bot">38 (1.2%)</td><td>85 (2.6%)</td><td id="cell-3s-bot"><b>143 (4.4%)</b></td><td>248 (7.6%)</td><td>430 (13.2%)</td></tr>
         <tr><td><b>3 or more</b> (very hard for a human) 🔴 — part of the row above</td><td>1 (0.0%)</td><td>2 (0.1%)</td><td>3 (0.1%)</td><td>4 (0.1%)</td><td>9 (0.3%)</td></tr>
         <tr><td>Highest count for any one driver</td><td>3</td><td>3</td><td>3</td><td>4</td><td>4</td></tr>
       </tbody>
@@ -763,7 +724,7 @@ body.show-v2 a[data-s="s4"]{display:none !important}
       <span class="showbar showlabel" data-target="sbot-table1-note" role="button" tabindex="0">More ▾</span>
     </div>
     <div id="sbot-table1-note" style="display:none">
-    <p class="pd" id="sbot-table1-note-text">Base = <b>3,247</b> drivers who took ≥30 and finished ≥30 orders (not OA). Drop = grace-drop (BQ <code>event_type_cd = 21</code>, actor = Driver; OA orders excluded). Of the 3,209 non-bot drivers: 239 never dropped this way; 2,970 did, but never 2 different orders in the same 1 second. <b>Rule = 1-second column only</b>; other columns are compare only. (queried 2026-07-27 · HK TRANSPORT · mature cohort T−90 to T−60)</p>
+    <p class="pd" id="sbot-table1-note-text">Base = <b>3,233</b> drivers who took ≥30 and finished ≥30 orders (not OA). <b>Rule = 3-second column</b>: bot pool = <b>143</b> / 3,233 (4.4%) from <code>mart_plugin_driver_harm_score_v2</code>. Other columns are compare only. KPI cards above follow Vehicle / Membership filters. (queried 2026-08-03, HK TRANSPORT, 30d 2026-05-05 to 2026-06-04)</p>
     </div>
   </div>
   </div>
@@ -776,7 +737,7 @@ body.show-v2 a[data-s="s4"]{display:none !important}
     <span class="showbar showlabel" data-target="funnel-intro-body" role="button" tabindex="0">More ▾</span>
   </div>
   <div id="funnel-intro-body" style="display:none">
-  <p class="sub" id="funnel-intro-sub"><b>Step 1 (bot detection).</b> Each step filters <b>drivers</b> (not orders). Bar 1 = everyone we checked. Bar 2 = met <b>minimum activity rules</b> (enough orders to analyse — not a bot test). Bar 3 = <b>bot pool</b> by grab-and-drop speed (2+ in the same 1 second). Columns: <code>meets_minimum_activity_rules</code>, <code>bot_speed_tier</code>.</p>
+  <p class="sub" id="funnel-intro-sub"><b>Step 1 (bot detection).</b> Each step filters <b>drivers</b> (not orders). Bar 1 = everyone we checked. Bar 2 = met <b>minimum activity rules</b>. Bar 3 = <b>bot pool</b> by grab-and-drop speed (2+ in the same <b>3 seconds</b>). Vehicle / Membership filters update these bars.</p>
   </div>
   <div class="panel">
     <div class="funnel" id="funnel"></div>
@@ -785,7 +746,7 @@ body.show-v2 a[data-s="s4"]{display:none !important}
       <span class="showbar showlabel" data-target="funnel-hnote-body" role="button" tabindex="0">More ▾</span>
     </div>
     <div id="funnel-hnote-body" style="display:none">
-    <p class="hnote" id="funnel-hnote"><b>Bot spotting ends at the bot pool (bar 3).</b> The funnel answers <b>“who is running a bot?”</b> — <span id="funnel-botpool">38</span> in the bot pool (<span id="funnel-cbot">1</span> at machine speed; see Step 1 above). <a href="#s3">③ Harm tiers</a> below then answers, <b>within this bot pool only</b>: <b>“how much harm did each bot driver cause?”</b> — a 0–8 score from churned customers, drivers cancelling a lot, and high assigned + release. Bot speed = <i>detect the pool</i>; the score = <i>rank the damage inside it</i>.</p>
+    <p class="hnote" id="funnel-hnote"><b>Bot spotting ends at the bot pool (bar 3).</b> The 3-second rule — <span id="funnel-botpool">143</span> / 3,233 working drivers (4.4%). <a href="#s3">③ Review priority</a> then ranks drivers inside this pool (Assigned + Release + Cancel → max 8). (queried 2026-08-03, HK TRANSPORT, 30d 2026-05-05 to 2026-06-04)</p>
     </div>
   </div>
 
@@ -793,11 +754,11 @@ body.show-v2 a[data-s="s4"]{display:none !important}
   <a id="harm-start"></a>
   <div id="s3-s4-layout">
   <div class="sect-head" id="s3-head">
-    <h2 id="s3" class="sectoggle" data-target="s3-intro-body" role="button" tabindex="0">③ Harm tiers — warning score 0–8 → who to review (bot pool only) <span class="rs-teaser">— who we score</span></h2>
+    <h2 id="s3" class="sectoggle" data-target="s3-intro-body" role="button" tabindex="0">③ Review priority of suspected bot drivers <span class="rs-teaser">— 3 sec · 143 drivers</span></h2>
     <span class="showbar showlabel" data-target="s3-intro-body" role="button" tabindex="0">More ▾</span>
   </div>
   <div id="s3-intro-body" style="display:none">
-    <p class="sub">Bot spotting is done. From here we score the bot pool drivers in the <b>30d</b> (24 Apr – 24 May 2026) — the rest are set aside. Each bot driver gets a warning score (0–8) and lands in a review band (<code>review_priority</code>). Higher score = more suspicious signs. Top band = score <b>6–8</b>. How points are added → <a href="#s4">④</a>. Share % = among the bot pool.</p>
+    <p class="sub">Bot spotting is done. We score the <b>143</b> bot drivers (3-second rule). Each driver sits in <b>one</b> review band. <b>Extreme case</b> (14 drivers) comes first — <b>not scored</b> (not in the max-8 sum). Remaining drivers use Review Priority = Assigned (0–2) + Release (0–4) + Cancel (0–2) → max 8 → bands <b>6–8 / 4–5 / 0–3</b>. Detail: <a href="#v2-rule-8">Assigned &amp; Release</a> · <a href="#v2-rule-7">Cancel</a>. (queried 2026-08-03, HK TRANSPORT, 30d 2026-05-05 to 2026-06-04)</p>
   </div>
 
 <!-- V2_INJECT_START -->
@@ -811,7 +772,6 @@ body.show-v2 a[data-s="s4"]{display:none !important}
       <h3 id="tier-table-title">Table</h3>
       <p class="pd" id="tier-table-pd">share % = among the bot pool drivers</p>
       <table><thead><tr><th>Tier</th><th>Drivers</th><th>Share</th></tr></thead><tbody id="tier-tbody"></tbody></table>
-      <p class="pd v1-only" style="margin-top:10px" id="v1-archive-note">Version 1 rule: 1-second bot pool (38 drivers). Switch on Version 2 for the 3-second pool.</p>
     </div>
   </div>
 
@@ -914,7 +874,7 @@ body.show-v2 a[data-s="s4"]{display:none !important}
     <tr style="background:var(--neutbg)"><td><b>Total</b></td><td>—</td><td class="lvl-share"><b>143 (100%)</b></td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
   </tbody>
   </table>
-  <p class="pd">Cut lines for <b>assigned order count</b> among bot pool: P10 57 · P25 87 · P50 141 · P75 213 · P90 277 orders. <b>Median Release</b> / <b>Max Release</b> = median / max of <code>released_order_rate_30d</code> inside each assigned-order range. Dot colors follow Release Score bands (baseline 20%): 🔵 &lt;20% (0) · 🟡 20–&lt;30% (1) · 🟠 30–&lt;40% (2) · 🟥 40–&lt;50% (3) · 🔴 ≥50% (4). <b>Highest assigned orders (max)</b> = max <code>orders_assigned_30d</code> in that range. (queried 2026-07-31, HK TRANSPORT, mature cohort 2026-05-01 to 2026-05-31)</p>
+  <p class="pd">Cut lines for <b>assigned order count</b> among bot pool: P10 57 · P25 87 · P50 141 · P75 213 · P90 277 orders. <b>Median Release</b> / <b>Max Release</b> = median / max of <code>released_order_rate_30d</code> inside each assigned-order range. Dot colors follow Release Score bands (baseline 20%): 🔵 &lt;20% (0) · 🟡 20–&lt;30% (1) · 🟠 30–&lt;40% (2) · 🟥 40–&lt;50% (3) · 🔴 ≥50% (4). <b>Highest assigned orders (max)</b> = max <code>orders_assigned_30d</code> in that range. (queried 2026-07-31, HK TRANSPORT, 30d 2026-05-05 to 2026-06-04)</p>
   </div>
 </div>
 
@@ -941,7 +901,7 @@ body.show-v2 a[data-s="s4"]{display:none !important}
           <tr style="background:var(--criticalbg)"><td><b>Extreme (&gt; P90)</b></td><td>285 – 590</td><td>14</td><td><b>2</b></td></tr>
         </tbody>
       </table>
-      <p class="pd" style="margin-top:8px">Cuts among bot pool: P10 57 · P25 87 · P50 141 · P75 213 · P90 277. Review priority = Release (0–4) + Cancel (0–2) + Assigned (0–2) → max 8. (queried 2026-07-31, HK TRANSPORT, mature cohort 2026-05-01 to 2026-05-31)</p>
+      <p class="pd" style="margin-top:8px">Cuts among bot pool: P10 57 · P25 87 · P50 141 · P75 213 · P90 277. Review priority = Release (0–4) + Cancel (0–2) + Assigned (0–2) → max 8. (queried 2026-07-31, HK TRANSPORT, 30d 2026-05-05 to 2026-06-04)</p>
     </div>
 
     <div class="panel" style="margin-top:12px">
@@ -963,7 +923,7 @@ body.show-v2 a[data-s="s4"]{display:none !important}
           <tr style="background:var(--criticalbg)"><td><b>≥50%</b></td><td>4</td><td><b>4</b></td></tr>
         </tbody>
       </table>
-      <p class="pd" style="margin-top:8px">n = 136 bot drivers with a release rate (null rate excluded). Baseline = 20%. Review priority = Release (0–4) + Cancel (0–2) + Assigned (0–2) → max 8. (queried 2026-07-31, HK TRANSPORT, mature cohort 2026-05-01 to 2026-05-31)</p>
+      <p class="pd" style="margin-top:8px">n = 136 bot drivers with a release rate (null rate excluded). Baseline = 20%. Review priority = Release (0–4) + Cancel (0–2) + Assigned (0–2) → max 8. (queried 2026-07-31, HK TRANSPORT, 30d 2026-05-05 to 2026-06-04)</p>
     </div>
 
     <h3 id="v2-rule-7" style="margin:22px 0 6px;scroll-margin-top:60px">Cancel Rate Distribution by Tier</h3>
@@ -1034,7 +994,7 @@ body.show-v2 a[data-s="s4"]{display:none !important}
     <tr style="background:var(--neutbg)"><td><b>Total</b></td><td>—</td><td class="lvl-share"><b>143 (100%)</b></td><td>—</td><td>—</td></tr>
   </tbody>
   </table>
-  <p class="pd" style="margin-top:8px">Cut lines for <b>cancel rate</b> among bot pool: P10 0.6% · P25 2.6% · P50 5.7% · P75 10.3% · P90 17.6%. Formula: <code>driver_cancel_30d ÷ (orders_completed_30d + driver_cancel_30d)</code>. Cancel ÷ grabs is <b>not</b> used here. (queried 2026-08-03, HK TRANSPORT, mature cohort T−90 to T−60)</p>
+  <p class="pd" style="margin-top:8px">Cut lines for <b>cancel rate</b> among bot pool: P10 0.6% · P25 2.6% · P50 5.7% · P75 10.3% · P90 17.6%. Formula: <code>driver_cancel_30d ÷ (orders_completed_30d + driver_cancel_30d)</code>. Cancel ÷ grabs is <b>not</b> used here. (queried 2026-08-03, HK TRANSPORT, 30d 2026-05-05 to 2026-06-04)</p>
 </div>
 
     <div class="panel" style="margin-top:12px">
@@ -1054,102 +1014,15 @@ body.show-v2 a[data-s="s4"]{display:none !important}
           <tr style="background:var(--criticalbg)"><td><b>&gt; P75 (High + Extreme)</b></td><td>35</td><td><b>2</b></td></tr>
         </tbody>
       </table>
-      <p class="pd" style="margin-top:8px">n = 143 bot drivers. Score 2 = High + Extreme = 35 (same &gt; P75 cut as the cancel level chart). Review priority = Release (0–4) + Cancel (0–2) + Assigned (0–2) → max 8. (queried 2026-08-03, HK TRANSPORT, mature cohort T−90 to T−60)</p>
+      <p class="pd" style="margin-top:8px">n = 143 bot drivers. Score 2 = High + Extreme = 35 (same &gt; P75 cut as the cancel level chart). Review priority = Release (0–4) + Cancel (0–2) + Assigned (0–2) → max 8. (queried 2026-08-03, HK TRANSPORT, 30d 2026-05-05 to 2026-06-04)</p>
     </div>
   </div>
 <!-- V2_INJECT_END -->
 
 
-  <!-- CHURN SEGMENT — Version 1 only (removed from Version 2 score) -->
-  <div class="v1-only" id="s6-block">
-  <h2 id="s6">⑥ Definition: "Customer churn" (+2) — what it means and how serious it is</h2>
-
-  <div class="fnote-row" style="margin-top:6px;margin-bottom:4px">
-    <p class="fnote-toggle sectoggle" data-target="s6-steps-body" role="button" tabindex="0"><b>How we define churn</b> <span class="rs-teaser">— forward 60 days + prior 90 days ≥1</span></p>
-    <span class="showbar showlabel" data-target="s6-steps-body" role="button" tabindex="0">More ▾</span>
-  </div>
-  <div id="s6-steps-body" style="display:none">
-    <p class="sub" style="margin-top:0"><b>Churn definition:</b> after the driver’s release, nobody else took the order and it cancelled — then that <b>same customer places no new order for 60 days</b>, <b>and</b> they had <b>at least 1 order in the 90 days before</b> → <b>+2</b> (<code>customer_no_return_60d_90d</code>). Customers with <b>0 orders in the prior 90 days</b> (new / dormant) are <b>not counted</b> and <b>not scored</b>. Numbers = <b>bot pool only</b> (38 drivers), mature cohort T−90 to T−60 (queried 2026-07-27).</p>
-    <div class="relbox" style="margin:6px 0 14px">
-      <span class="big">Step by step (bot pool)</span>
-      <b>Step 1 — driver released an order</b> (<code>event_type_cd = 4</code>): <b id="st-giveback">18,751</b> times.<br>
-      <b>Step 2 — nobody else took it → order cancelled:</b> <b id="st-nodriver">1,362</b> (<b id="st-step2pct">—</b> of Step 1).<br>
-      <b>Step 3 — customer churn (forward 60 days + prior 90 days ≥1 order):</b> <b id="st-lost60">155</b> (<b id="st-step3pct">—</b> of Step 2) → <b>+2</b> (<code>customer_no_return_60d_90d</code>).<br>
-      <b>Contrast (not scored):</b> <b id="st-lost30">175</b> had no new order within <b>30 days</b> (<code>customer_no_return_30d_90d</code>).
-    </div>
-  </div>
-  <p class="hnote" style="margin:0 0 10px">Chart below: among <b>scored churn</b> only (forward 60 days <b>and</b> ≥1 order in the prior 90 days). Score is a flat <b>+2</b>. Prior-90 = 0 (new / dormant) is excluded — not shown, not counted.</p>
-  <div class="split">
-    <div class="panel">
-      <h3>The <span id="churn-total-h">155</span> churned customers — orders in their prior 90 days</h3>
-      <p class="pd">scored churn only · prior 90 days ≥1 (<code>churn_cust_recent_low/med/high_90d</code>) · prior-90 = 0 excluded</p>
-      <div class="bars" id="churn-bars"></div>
-    </div>
-    <div class="panel">
-      <h3>Past 90 days (among scored churn)</h3>
-      <div class="relbox">
-        <span class="big">Prior-90 = 0 is excluded.</span>
-        MEDIUM + HIGH = <span class="arrow" id="churn-medhigh">—</span> had <b>3 or more orders in the 90 days before</b>. Average among scored churn = <b id="churn-avg-prior">~1.73 orders in the prior 90 days</b>.
-      </div>
-      <div class="relbox">
-        <span class="big">Churn = forward 60 days with no new order, and prior 90 days ≥1.</span>
-        Total scored churn in this bot pool: <span class="arrow" id="churn-60pair">155</span>.
-      </div>
-    </div>
-  </div>
-  </div>
-
-  <!-- +3 LOOP / BOT +3 — Version 1 archive only (hidden when Version 2 is on) -->
-  <div class="v1-only" id="s7-s8-v1-archive">
-  <!-- +3 LOOP DEFINITION -->
-  <h2 id="s7">⑦ Definition: driver cancels too many of their own orders (+3)</h2>
-  <p class="sub"><b>Rule (bot drivers only):</b> driver cancel rate above bot-pool p75 → <b>+3</b> (bad service).</p>
-  <div class="panel">
-    <h3>Cut-off (bot-pool p75)</h3>
-    <table>
-      <thead><tr><th></th><th>Bot-pool p75</th><th>Score if</th></tr></thead>
-      <tbody>
-        <tr><td><b>Cancels their own orders</b></td><td><b>3.3%</b></td><td>&gt; 3.3%</td></tr>
-      </tbody>
-    </table>
-    <div class="fnote-row" style="margin-top:10px">
-      <p class="fnote-toggle sectoggle" data-target="s7-count-body" role="button" tabindex="0"><b>How we count</b> <span class="rs-teaser">— why p75, field names</span></p>
-      <span class="showbar showlabel" data-target="s7-count-body" role="button" tabindex="0">More ▾</span>
-    </div>
-    <div id="s7-count-body" class="hnote" style="display:none;margin-top:6px">
-      <b>Why the worst quarter (p75), not the average:</b> a few drivers cancel a lot and drag the average up, so the average is unstable. The worst-quarter line barely moves when a few extreme drivers change.<br>
-      <b>Driver cancel</b> = cancels by the driver themselves (<code>event_type_cd = 3 AND actor_type = 'Driver'</code>). Admin, system, and customer cancels are <b>not</b> counted.<br>
-      <b>Rate</b> = driver cancels ÷ orders grabbed (<code>driver_cancel_rate_30d</code>). Above the bot-pool p75 (<code>botpool_p75_driver_cancel_rate_30d</code>, 3.3%) → +3 (<code>driver_cancel_rate_above_botpool_p75_flag</code>). Hits <b>8</b> / <b>38</b> bot drivers.
-    </div>
-  </div>
-
-  <!-- +3 BOT ASSIGNED + RELEASE ABOVE BOT MEDIAN -->
-  <h2 id="s8">⑧ Definition: Bot score — assigned orders and order release rate both above bot median (+3)</h2>
-  <p class="sub"><b>Rule (bot drivers only):</b> If <b>assigned orders</b> (30-day total) <b>and</b> <b>order release rate</b> are both higher than the typical bot driver (median) → <b>+3</b>.</p>
-  <div class="panel">
-    <h3>Cut-offs (bot-pool median)</h3>
-    <table>
-      <thead><tr><th></th><th>Bot median</th><th>Score if</th></tr></thead>
-      <tbody>
-        <tr><td><b>Assigned orders</b> (30-day total)</td><td><b>136</b></td><td>&gt; 136</td></tr>
-        <tr><td><b>Order release rate</b></td><td><b>19%</b></td><td>&gt; 19%</td></tr>
-      </tbody>
-    </table>
-    <div class="fnote-row" style="margin-top:10px">
-      <p class="fnote-toggle sectoggle" data-target="s8-count-body" role="button" tabindex="0"><b>How we count</b> <span class="rs-teaser">— field names</span></p>
-      <span class="showbar showlabel" data-target="s8-count-body" role="button" tabindex="0">More ▾</span>
-    </div>
-    <div id="s8-count-body" class="hnote" style="display:none;margin-top:6px">
-      <b>Assigned orders</b> = <code>orders_assigned_30d</code> (count).<br>
-      <b>Order release rate</b> = releases ÷ assigned (<code>released_order_rate_30d</code>).<br>
-      Both above median → +3 (<code>bot_assigned_and_release_above_bot_median_flag</code>). Hits <b>11</b> / <b>38</b> bot drivers.
-    </div>
-  </div>
-  </div>
-
   <!-- CASES -->
   <h2 id="s9">⑨ Real example: bot speed</h2>
-  <p class="sub">One real driver grabbed and let go of orders too fast for a human hand. Left = all 4 drops. Right = the <b>1-second rule</b> (2 different orders).</p>
+  <p class="sub">One real driver grabbed and let go of orders too fast for a human hand. Left = all 4 drops. Right = zoom on a sub-second pair (illustrates speed; page rule = <b>3 seconds</b>).</p>
   <div class="split">
     <div class="panel">
       <h3>Bot speed — 4 orders in 4.2s · driver 20667 · score 6</h3>
@@ -1194,11 +1067,11 @@ body.show-v2 a[data-s="s4"]{display:none !important}
   </div>
 
   <p class="foot">
-    Source: <code>gogox-ba-sandbox.analytics.mart_driver_release_then_cancelled_candidates_90d</code> (BigQuery, us-east4). One row per driver. Mature cohort T−90 to T−60 (queried 2026-07-27): pool = assigned ≥30 + completed ≥30 + not OA (released ≥1 <b>no longer required</b>). Bot pool = 1-second grace-drop burst ≥2. Per-booking filter counts in embedded <code>DATA_BT</code> may still use older booking-type rules. HK TRANSPORT public-pool; OA excluded via <code>event_type_cd = 26</code>.
+    Source: <code>gogox-ba-sandbox.analytics.mart_plugin_driver_harm_score_v2</code> (BigQuery, us-east4). Period 2026-05-05 to 2026-06-04 (queried 2026-08-03). Pool = assigned ≥30 + completed ≥30 + not OA. Bot pool = 3-second grace-drop burst ≥2 (<code>is_bot_pool_v2</code>). Score = Assigned + Release + Cancel inside this 30d. HK TRANSPORT public-pool; OA excluded via <code>event_type_cd = 26</code>.
   </p>
   <div class="panel" style="margin-top:12px;border:1px solid color-mix(in srgb,var(--blue) 45%,var(--border));border-left:4px solid var(--blue);background:color-mix(in srgb,var(--blue-soft) 55%,var(--surface))">
     <h3 style="color:var(--blue)">Bot pool driver IDs by harm tier</h3>
-    <p class="pd">High priority / Watch closely / Keep monitoring — open the list in Google Sheet. Documentation: how we count this in BigQuery (Version 1).</p>
+    <p class="pd">High priority / Watch closely / Keep monitoring / Extreme case — open the list in Google Sheet. Prefer Connecting to <code>mart_plugin_driver_harm_score_v2</code> (<code>WHERE is_bot_pool_v2</code>).</p>
     <p style="margin:0;display:flex;flex-wrap:wrap;gap:10px;align-items:center">
       <a href="https://docs.google.com/spreadsheets/d/1v2i-enV0Wb7wmwe6gVNuiY87x313pn-mI1W9G3Ztod0/edit?usp=sharing" target="_blank" rel="noopener noreferrer" style="display:inline-block;padding:8px 14px;border-radius:10px;background:var(--blue);color:#fff;font-weight:700;text-decoration:none">Open Google Sheet ↗</a>
       <a href="https://docs.google.com/document/d/1ZkV0UQaRXK0HOVz_Zd_0KhUsc9_qi2hTlP3CYWRq3rA/edit?usp=sharing" target="_blank" rel="noopener noreferrer" style="display:inline-block;padding:8px 14px;border-radius:10px;border:1.5px solid var(--blue);background:#fff;color:var(--blue);font-weight:700;text-decoration:none">Documentation ↗</a>
@@ -1266,7 +1139,6 @@ const SIGNALS = [
   // "No other driver took it" (released_then_no_driver_flag) dropped from scoring 2026-07-24:
   //   its cancel rate ~6.3% ≈ the all-driver baseline 5.45%, and it is already captured by
   //   "Customer churn" (+2). Cross-tab removed; adds 0 points when not scored.
-  {i:6, pts:'+2', label:'Customer churn — no new order for 60 days, and ≥1 order in prior 90 days', href:'#s6', see:'⑥'},
   {i:7, pts:'+3', label:'Driver cancels their own orders far more than other bot drivers', href:'#s7', see:'⑦'},
   {i:9, pts:'+3', label:'Bot: assigned orders and order release rate both above bot median', href:'#s8', see:'⑧'},
 ];
@@ -1274,7 +1146,7 @@ const fmt = n => n.toLocaleString('en-US');
 let fV='all', fM='all', fBT='all';
 const BT_LABEL = {ondemand:'On Demand', sameday:'Same Day', nextday:'Next Day'};
 
-// Narrative SSOT — queried 2026-07-23, mature cohort 24 Apr–24 May 2026, HK TRANSPORT pool drivers
+// Narrative SSOT — queried 2026-08-03, 30d 5 May – 4 Jun 2026, HK TRANSPORT pool drivers
 const REPORT_STATS = {
   // Harm totals — BOT POOL ONLY (1-second rule; pool = assigned≥30 + completed≥30 + not OA). Queried 2026-07-27.
   // lost60 = scored churn only (prior90≥1). prior90=0 excluded from count and +2.
@@ -1413,15 +1285,12 @@ function render(){
   if(kTotalSub){
     if(fBT!=='all') kTotalSub.textContent = `${BT_LABEL[fBT]} driver rows (per booking-type rules; not unique drivers)`;
     else if(fV!=='all' || fM!=='all') kTotalSub.textContent = 'public-pool truck drivers in this slice — went online or did some work';
-    else kTotalSub.innerHTML = 'all public-pool truck drivers — went online or did some work in the <b>30d</b> (24 Apr – 24 May 2026)';
+    else kTotalSub.innerHTML = 'all public-pool truck drivers — went online or did some work in the <b>30d</b> (5 May – 4 Jun 2026)';
   }
 
-  // Version 2 hero / Step 1 numbers (3-sec bot pool) — override after V1 KPI fill
-  // Always re-apply V2 SSOT so Vehicle/Membership filters cannot leave stale V1 slice numbers on the cards.
-  if(typeof applyVersion2Numbers === 'function' && document.body.classList.contains('show-v2')){
-    applyVersion2Numbers(true);
-  } else if(typeof applyVersion2Numbers === 'function'){
-    applyVersion2Numbers(false, {N:N, botpool:botpool, flagged:flagged, Nbot:Nbot, normalBot:normalBot});
+  // Always apply Version 2 SSOT (3-sec bot pool) after KPI fill
+  if(typeof applyVersion2Numbers === 'function'){
+    applyVersion2Numbers();
   }
 
   // BOT SPEED (scored drivers in this slice)
@@ -1477,8 +1346,8 @@ function render(){
     ['bot-confirmed-n','bot-confirmed-pct','bot-pool-n','bot-pool-conf','bot-pool-sus','bot-pool-n2','bot-pool-denom','funnel-botpool','funnel-cbot'].forEach(id=>setTxt(id,'—'));
   }
 
-  // TIERS — bot pool only; Version 2 reuses the same #tier-bars chart
-  const v2On = document.body.classList.contains('show-v2');
+  // TIERS — Version 2 only
+  const v2On = true;
   const TIER_BANDS = TIERS.filter(t=>t.key!=='outside_analysis_pool');
   const tcount = {}; TIERS.forEach(t=>tcount[t.key]=0);
   botScored.forEach(r=>{ if(tcount[r[2]]!==undefined) tcount[r[2]]++; });
@@ -1486,7 +1355,7 @@ function render(){
   // Version 2 review bands — mutually exclusive
   // Score = Assigned (0–2) + Release (0–4) + Cancel (0–2) → max 8
   // Extreme case (Assigned Extreme tier, 14) = not scored — not in max-8
-  // (queried 2026-08-03, HK TRANSPORT, mature cohort T−90 to T−60 · bot pool 143 · BQ mart_plugin_driver_harm_score_v2)
+  // (queried 2026-08-03, HK TRANSPORT, 30d 2026-05-05 to 2026-06-04 · bot pool 143 · BQ mart_plugin_driver_harm_score_v2)
   const V2_TIERS = [
     {key:'review_alone', label:'Extreme case (not scored)', color:'var(--critical)', n:14, share:'9.8%'},
     {key:'high_priority_review', label:'High priority (score 6–8)', color:'var(--critical)', n:7, share:'4.9%'},
@@ -1501,7 +1370,7 @@ function render(){
     ).join('');
   })();
 
-  if(v2On){
+  {
     document.getElementById('tier-bars').innerHTML = v2TierBarsHtml;
     document.getElementById('tier-tbody').innerHTML = V2_TIERS.map(t=>
       `<tr><td><span class="dot" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${t.color};margin-right:6px"></span>${t.label}</td><td>${fmt(t.n)}</td><td>${t.share}</td></tr>`
@@ -1510,46 +1379,23 @@ function render(){
     setTxt('tier-bars-pd', 'One band per driver · among 143 bot drivers (3-sec pool)');
     setTxt('tier-table-title', 'Table');
     const tpd = document.getElementById('tier-table-pd');
-    if(tpd) tpd.innerHTML = 'share % = among the <b>143</b> bot pool drivers · Extreme case first (not scored · not in max-8) · remaining score = Assigned (0–2) + Release (0–4) + Cancel (0–2) → max 8 · (queried 2026-08-03, HK TRANSPORT, mature cohort T−90 to T−60)';
+    if(tpd) tpd.innerHTML = 'share % = among the <b>143</b> bot pool drivers · Extreme case first (not scored · not in max-8) · remaining score = Assigned (0–2) + Release (0–4) + Cancel (0–2) → max 8 · (queried 2026-08-03, HK TRANSPORT, 30d 2026-05-05 to 2026-06-04)';
     const s3h = document.querySelector('#s3');
     if(s3h) s3h.innerHTML = '③ Review priority of suspected bot drivers <span class="rs-teaser">— 3 sec · 143 drivers</span>';
     const s3sub = document.querySelector('#s3-intro-body .sub');
-    if(s3sub) s3sub.innerHTML = 'Bot spotting is done. We score the <b>143</b> bot drivers (3-second rule). Each driver sits in <b>one</b> review band. <b>Extreme case</b> (14 drivers) comes first — <b>not scored</b> (not in the max-8 sum). Remaining drivers use Review Priority = Assigned (0–2) + Release (0–4) + Cancel (0–2) → max 8 → bands <b>6–8 / 4–5 / 0–3</b>. Detail: <a href="#v2-rule-8">Assigned &amp; Release</a> · <a href="#v2-rule-7">Cancel</a>. (queried 2026-08-03, HK TRANSPORT, mature cohort T−90 to T−60)';
-  } else {
-    const tmax = Math.max(1,...TIER_BANDS.map(t=>tcount[t.key]));
-    document.getElementById('tier-bars').innerHTML = TIER_BANDS.map(t=>{
-      const v=tcount[t.key];
-      return `<div class="bar-row"><div class="top"><span class="name"><span class="dot" style="background:${t.color}"></span>${t.label}</span><span class="val">${fmt(v)}</span></div>
-      <div class="track"><div class="fill" style="width:${v/tmax*100}%;background:${t.color}"></div></div></div>`;
-    }).join('');
-    document.getElementById('tier-tbody').innerHTML = TIER_BANDS.map(t=>{
-      const v=tcount[t.key];
-      const share = Nbot?Math.round(v/Nbot*100)+'%':'—';
-      return `<tr><td><span class="dot" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${t.color};margin-right:6px"></span>${t.label.replace(/^\S+\s/,'')}</td><td>${fmt(v)}</td><td>${share}</td></tr>`;
-    }).join('');
-    setTxt('tier-bars-title', 'Drivers in each tier');
-    setTxt('tier-bars-pd', 'bar length = number of drivers');
-    setTxt('tier-table-title', 'Table');
-    const tpd = document.getElementById('tier-table-pd');
-    if(tpd) tpd.textContent = 'share % = among the bot pool drivers';
-    const s3h = document.querySelector('#s3');
-    if(s3h) s3h.innerHTML = '③ Harm tiers — warning score 0–8 → who to review (bot pool only) <span class="rs-teaser">— who we score</span>';
-    const s3sub = document.querySelector('#s3-intro-body .sub');
-    if(s3sub) s3sub.innerHTML = 'Bot spotting is done. From here we score the bot pool drivers in the <b>30d</b> (24 Apr – 24 May 2026) — the rest are set aside. Each bot driver gets a warning score (0–8) and lands in a review band (<code>review_priority</code>). Higher score = more suspicious signs. Top band = score <b>6–8</b>. How points are added → <a href="#s4">④</a>. Share % = among the bot pool.';
-  }
+    if(s3sub) s3sub.innerHTML = 'Bot spotting is done. We score the <b>143</b> bot drivers (3-second rule). Each driver sits in <b>one</b> review band. <b>Extreme case</b> (14 drivers) comes first — <b>not scored</b> (not in the max-8 sum). Remaining drivers use Review Priority = Assigned (0–2) + Release (0–4) + Cancel (0–2) → max 8 → bands <b>6–8 / 4–5 / 0–3</b>. Detail: <a href="#v2-rule-8">Assigned &amp; Release</a> · <a href="#v2-rule-7">Cancel</a>. (queried 2026-08-03, HK TRANSPORT, 30d 2026-05-05 to 2026-06-04)';
+    }
 
   // FUNNEL (pyramid) — how the crowd narrows
   const botPool = r => r[12]==='confirmed_bot' || r[12]==='suspected_bot';
   const v2SliceNow = (typeof getV2Slice === 'function')
     ? getV2Slice(fV || 'all', fM || 'all')
     : {checked:6196, working:3233, bot:143, review_alone:14};
-  const funnelBotN = v2On ? v2SliceNow.bot : pool.filter(botPool).length;
-  const funnelBotLabel = v2On
-    ? 'Bot pool — grabbed & let go of 2+ different orders in the same 3 seconds (Version 2)'
-    : 'Bot pool — grabbed & let go of 2+ different orders in the same 1 second';
+  const funnelBotN = v2SliceNow.bot;
+  const funnelBotLabel = 'Bot pool — grabbed & let go of 2+ different orders in the same 3 seconds';
   const stages = [
-    {label:'All drivers we checked (public-pool trucks)', n: v2On ? v2SliceNow.checked : rows.length, c:'var(--muted)'},
-    {label:'Met minimum activity rules (took 30+, finished 30+, 30d)', n: v2On ? v2SliceNow.working : N, c:'var(--blue)'},
+    {label:'All drivers we checked (public-pool trucks)', n: v2SliceNow.checked, c:'var(--muted)'},
+    {label:'Met minimum activity rules (took 30+, finished 30+, 30d)', n: v2SliceNow.working, c:'var(--blue)'},
     {label:funnelBotLabel, n:funnelBotN, c:'var(--serious)'},
   ];
   const fmax = Math.max(1, stages[0].n);
@@ -1563,22 +1409,17 @@ function render(){
       <div class="fn-drop${idx===0?' pct':''}">${idx===0?pctAll+'%':drop}</div>
     </div>`;
   }).join('');
-  if(v2On){
+  {
     setTxt('funnel-botpool', fmt(funnelBotN));
     const fh = document.getElementById('funnel-hnote');
     const botPct = v2SliceNow.working ? Math.round(v2SliceNow.bot/v2SliceNow.working*1000)/10 : 0;
-    if(fh) fh.innerHTML = `<b>Bot spotting ends at the bot pool (bar 3).</b> The 3-second rule — <span id="funnel-botpool">${fmt(funnelBotN)}</span> / ${fmt(v2SliceNow.working)} working drivers (${botPct}%). <a href="#s3">③ Review priority</a> then ranks drivers inside this pool (Assigned + Release + Cancel → max 8). (queried 2026-07-31 · HK TRANSPORT · mature cohort 2026-05-01 to 2026-05-31)`;
+    if(fh) fh.innerHTML = `<b>Bot spotting ends at the bot pool (bar 3).</b> The 3-second rule — <span id="funnel-botpool">${fmt(funnelBotN)}</span> / ${fmt(v2SliceNow.working)} working drivers (${botPct}%). <a href="#s3">③ Review priority</a> then ranks drivers inside this pool (Assigned + Release + Cancel → max 8). (queried 2026-08-03, HK TRANSPORT, 30d 2026-05-05 to 2026-06-04)`;
     const fi = document.getElementById('funnel-intro-sub');
     if(fi) fi.innerHTML = `<b>Step 1 (bot detection).</b> Each step filters <b>drivers</b> (not orders). Bar 1 = everyone we checked. Bar 2 = met <b>minimum activity rules</b>. Bar 3 = <b>bot pool</b> by grab-and-drop speed (2+ in the same <b>3 seconds</b>). Vehicle / Membership filters update these bars.`;
-  } else {
-    const fh = document.getElementById('funnel-hnote');
-    if(fh) fh.innerHTML = `<b>Bot spotting ends at the bot pool (bar 3).</b> The funnel answers <b>“who is running a bot?”</b> — <span id="funnel-botpool">${fmt(funnelBotN)}</span> in the bot pool (<span id="funnel-cbot">1</span> at machine speed; see Step 1 above). <a href="#s3">③ Harm tiers</a> below then answers, <b>within this bot pool only</b>: <b>“how much harm did each bot driver cause?”</b> — a 0–8 score from churned customers, drivers cancelling a lot, and high assigned + release. Bot speed = <i>detect the pool</i>; the score = <i>rank the damage inside it</i>.`;
-    const fi = document.getElementById('funnel-intro-sub');
-    if(fi) fi.innerHTML = `<b>Step 1 (bot detection).</b> Each step filters <b>drivers</b> (not orders). Bar 1 = everyone we checked. Bar 2 = met <b>minimum activity rules</b> (enough orders to analyse — not a bot test). Bar 3 = <b>bot pool</b> by grab-and-drop speed (2+ in the same 1 second). Columns: <code>meets_minimum_activity_rules</code>, <code>bot_speed_tier</code>.`;
-  }
+    }
 
-  // SCORE DISTRIBUTION — Version 2: hide duplicate bars (same as ③); keep rulebook only
-  if(v2On){
+  // SCORE DISTRIBUTION — rulebook only (hist hidden in V2)
+  {
     // Left hist panel is CSS-hidden in V2 (duplicates #tier-bars). Skip filling it.
     const ruleHead = document.querySelector('#s4-rulebook-panel thead tr');
     if(ruleHead) ruleHead.innerHTML = '<th>Score / note</th><th>Tier</th><th>Drivers</th>';
@@ -1593,54 +1434,6 @@ function render(){
     setTxt('rulebook-pd', 'Extreme case first · then Assigned + Release + Cancel (max 8)');
     const s4h = document.getElementById('s4');
     if(s4h) s4h.textContent = '④ How the score works, and why a driver lands in a tier';
-  } else {
-    const histEl = document.getElementById('hist');
-    histEl.className = 'hist';
-    histEl.style.height = '';
-    histEl.style.paddingTop = '';
-    const ruleHead = document.querySelector('#s4-rulebook-panel thead tr');
-    if(ruleHead) ruleHead.innerHTML = '<th>Score</th><th>Tier</th><th>Drivers</th>';
-    const s4h = document.getElementById('s4');
-    if(s4h) s4h.textContent = '④ How the score works, and why a driver lands in a tier';
-    const buckets = Array.from({length:9},()=>({high:0,watch:0,mon:0,total:0}));
-    botScored.forEach(r=>{
-      const b=buckets[Math.min(r[4],8)]; b.total++;
-      if(r[2]==='high_priority_review') b.high++;
-      else if(r[2]==='watch_closely') b.watch++;
-      else b.mon++;
-    });
-    const hmax = Math.max(1,...buckets.map(b=>b.total));
-    if(Nbot===0){
-      document.getElementById('hist').innerHTML = `<div style="margin:auto;color:var(--muted);font-size:14px">— &nbsp; None: no drivers in the pool for this slice</div>`;
-      document.getElementById('haxis').innerHTML = '';
-    } else {
-      document.getElementById('hist').innerHTML = buckets.map((b,sc)=>{
-        const seg=(v,col)=> v? `<div class="seg" style="height:${v/hmax*100}%;background:${col}"></div>`:'';
-        return `<div class="hcol" title="Score ${sc}: ${fmt(b.total)} drivers">
-          <div class="cnt">${b.total||''}</div>
-          ${seg(b.mon,'var(--blue)')}${seg(b.watch,'var(--serious)')}${seg(b.high,'var(--critical)')}
-        </div>`;
-      }).join('') + `<div class="cutoff" style="left:calc(${6/9*100}% - 3px)"><span class="lab">≥6 flagged →</span></div>`;
-      document.getElementById('haxis').innerHTML = buckets.map((b,sc)=>`<div>${sc}</div>`).join('');
-    }
-    setTxt('hist-title', 'Drivers at each warning score');
-    const hpd = document.getElementById('hist-pd');
-    if(hpd) hpd.textContent = `column height = number of bot pool drivers at that score (${fmt(Nbot)} total)`;
-    setTxt('hist-hnote', 'Most drivers score low (peak at 1–2). Only a small tail reaches 6+.');
-    const legend = document.getElementById('hist-legend');
-    if(legend) legend.innerHTML =
-      '<span><span class="dot" style="background:var(--critical)"></span>High priority</span>'+
-      '<span><span class="dot" style="background:var(--serious)"></span>Watch closely</span>'+
-      '<span><span class="dot" style="background:var(--blue)"></span>Keep monitoring</span>';
-    const rules=[
-      {r:'6–8',t:'🔴 High priority',k:'high_priority_review'},
-      {r:'4–5',t:'🟠 Watch closely',k:'watch_closely'},
-      {r:'0–3',t:'🔵 Keep monitoring',k:'continue_monitoring'},
-    ];
-    document.getElementById('rule-tbody').innerHTML = rules.map(x=>
-      `<tr><td>${x.r}</td><td>${x.t}</td><td>${fmt(tcount[x.k])}</td></tr>`).join('');
-    setTxt('rulebook-title', 'The rulebook');
-    setTxt('rulebook-pd', 'how the score maps to a tier');
   }
 
   // Scoring cheat sheet signs (among bot pool)
@@ -2496,10 +2289,10 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
 </script>
 
 <script>
-/* Version 2 toggle — local only; own numbers for hero KPI + Step 1 + section ③ */
+/* Version 2 only — hero KPI + Step 1 + funnel from mart_plugin_driver_harm_score_v2 */
 (function(){
   // Vehicle × Membership slices from mart_plugin_driver_harm_score_v2
-  // (queried 2026-07-31, HK TRANSPORT, mature cohort 2026-05-01 to 2026-05-31)
+  // (queried 2026-08-03, HK TRANSPORT, 30d 2026-05-05 to 2026-06-04)
   const V2_SLICES = [
     {v:'', m:'None', checked:1, working:0, bot:0, review_alone:0},
     {v:'mudou', m:'Bronze', checked:113, working:26, bot:1, review_alone:0},
@@ -2520,6 +2313,8 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
   const V2 = {
     windowSec: 3,
     queried: '2026-08-03',
+    cohortLabel: '5 May – 4 Jun 2026',
+    cohortCode: '2026-05-05 to 2026-06-04',
   };
   function pct1(n, d){
     return d ? Math.round(n / d * 1000) / 10 : 0;
@@ -2539,176 +2334,98 @@ document.querySelectorAll('.showbar, .sectoggle').forEach(el=>{
   function fmt(n){
     return (n==null || n==='') ? '—' : Number(n).toLocaleString('en-US');
   }
-  window.getV2Slice = v2Slice;
-  window.applyVersion2Numbers = function(on, v1){
-    const be = document.getElementById('bot-explain');
-    const br = document.getElementById('bot-rule');
-    if(on){
-      const el = id => document.getElementById(id);
-      const vehicle = (typeof fV !== 'undefined' && fV) ? fV : 'all';
-      const membership = (typeof fM !== 'undefined' && fM) ? fM : 'all';
-      const s = v2Slice(vehicle, membership);
-      const botPct = pct1(s.bot, s.working);
-      const raPct = pct1(s.review_alone, s.bot);
-      const workPct = pct1(s.working, s.checked);
-      const nonBot = Math.max(0, s.working - s.bot);
-      const nonBotPct = pct1(nonBot, s.working);
-      const sliceBits = [];
-      if(vehicle !== 'all') sliceBits.push(vehicle);
-      if(membership !== 'all') sliceBits.push(membership);
-      const sliceNote = sliceBits.length ? ` · filter: ${sliceBits.join(' + ')}` : '';
-
-      if(el('k-total')) el('k-total').textContent = fmt(s.checked);
-      if(el('k-pool')) el('k-pool').textContent = s.working > 0 ? fmt(s.working) : 'None';
-      const kPoolSub = el('k-pool-sub');
-      if(kPoolSub) kPoolSub.innerHTML = s.working > 0
-        ? `${fmt(s.working)} of ${fmt(s.checked)} checked drivers (${workPct}%) — took 30+ orders, finished 30+ in the <b>30d</b>${sliceNote}`
-        : `no drivers met these trip counts in this slice${sliceNote}`;
-      const kTotalSub = el('k-total-sub');
-      if(kTotalSub) kTotalSub.innerHTML = sliceBits.length
-        ? `public-pool truck drivers in this slice${sliceNote}`
-        : 'all public-pool truck drivers — went online or did some work in the <b>30d</b> (24 Apr – 24 May 2026)';
-      if(el('k-botpool')) el('k-botpool').textContent = s.bot > 0 ? fmt(s.bot) : 'None';
-      if(el('k-botsub')) el('k-botsub').innerHTML = s.bot > 0
-        ? `grabbed &amp; let go of 2+ different orders in the same <b>${V2.windowSec} seconds</b> · ${fmt(s.bot)} of ${fmt(s.working)} working drivers (${botPct}%) · Version 2 bot pool${sliceNote} · (queried ${V2.queried})`
-        : `no bot-pool drivers in this slice${sliceNote} · (queried ${V2.queried})`;
-      if(el('k-flag')) el('k-flag').textContent = s.review_alone > 0 ? fmt(s.review_alone) : 'None';
-      if(el('hl-flag')) el('hl-flag').textContent = s.review_alone > 0 ? fmt(s.review_alone) : 'None';
-      if(el('k-flag-lbl')) el('k-flag-lbl').textContent = '④ Extreme case (not scored)';
-      if(el('k-flagpct')) el('k-flagpct').innerHTML = s.bot > 0
-        ? `Extreme case · ${fmt(s.review_alone)} of ${fmt(s.bot)} bot drivers (${raPct}%)${sliceNote} · (queried ${V2.queried})`
-        : `no bot pool in this slice${sliceNote}`;
-      if(el('k-bot-lbl')) el('k-bot-lbl').textContent = '③ Suspected cheat-app drivers (bot pool · 3 sec)';
-      setTxt('summary-teaser', s.review_alone > 0
-        ? `— ${fmt(s.review_alone)} Extreme case`
-        : (s.bot > 0 ? '— no Extreme case in this slice' : '— no bot pool in this slice'));
-      if(el('bot-ok-n')) el('bot-ok-n').textContent = `${fmt(nonBot)} / ${fmt(s.working)}`;
-      if(el('bot-ok-sub')) el('bot-ok-sub').textContent =
-        `Never dropped 2+ different orders in the same ${V2.windowSec} seconds (${nonBotPct}%)${sliceNote}`;
-      if(el('bot-check-n')) el('bot-check-n').textContent = `${fmt(s.bot)} / ${fmt(s.working)}`;
-      if(el('bot-check-sub')) el('bot-check-sub').textContent =
-        `Dropped 2+ different orders in the same ${V2.windowSec} seconds (${botPct}%)${sliceNote}`;
-      if(be) be.innerHTML =
-        `<b>Version 2:</b> we flag drivers who drop 2+ different orders in the same <b>${V2.windowSec} seconds</b>.<br>`+
-        `Dropping 2+ different orders in that window = suspected bot driver. Bot pool = <b>${fmt(s.bot)}</b> / ${fmt(s.working)} (${botPct}%)${sliceNote}.`+
-        `<div class="notthis">Not this: the old 1-second rule (38 drivers). That stays in Version 1.</div>`;
-      if(br) br.innerHTML =
-        `Rule window = <b>${V2.windowSec} seconds</b> (Version 2 bot pool). 1 sec = Version 1 only. (queried ${V2.queried} · HK TRANSPORT · mature cohort T−90 to T−60)`;
-      setTxt('funnel-botpool', fmt(s.bot));
-      // Compare table: keep full-pool SSOT (not sliced) so the rule table stays stable
-      const full = v2Slice('all', 'all');
-      const fullBotPct = pct1(full.bot, full.working);
-      const fullNonBot = Math.max(0, full.working - full.bot);
-      const fullNonBotPct = pct1(fullNonBot, full.working);
-      const cmpTable = document.getElementById('sbot-compare-table');
-      if(cmpTable){ cmpTable.classList.remove('rule-col-1s'); cmpTable.classList.add('rule-col-3s'); }
-      const th1 = document.getElementById('th-1s');
-      const th3 = document.getElementById('th-3s');
-      if(th1) th1.innerHTML = '1 second <span style="font-weight:400;color:var(--muted)">(Version 1)</span>';
-      if(th3) th3.innerHTML = '3 sec <span style="font-weight:400;color:var(--muted)">(the rule · Version 2)</span>';
-      const rowBotLabel = document.getElementById('row-bot-label');
-      if(rowBotLabel) rowBotLabel.innerHTML = `<b>2 or more</b> (suspected bot) 🟠 — we use the <b>3-second</b> column`;
-      const cell1 = document.getElementById('cell-1s-bot');
-      if(cell1) cell1.innerHTML = '38 (1.2%)';
-      const cell3b = document.getElementById('cell-3s-bot');
-      if(cell3b) cell3b.innerHTML = `<b>${fmt(full.bot)} (${fullBotPct}%)</b>`;
-      const cell3n = document.getElementById('cell-3s-nonbot');
-      if(cell3n) cell3n.textContent = `${fmt(fullNonBot)} (${fullNonBotPct}%)`;
-      const note = document.getElementById('sbot-table1-note-text');
-      if(note) note.innerHTML =
-        `Base = <b>${fmt(full.working)}</b> drivers who took ≥30 and finished ≥30 orders (not OA). <b>Version 2 rule = 3-second column</b>: bot pool = <b>${fmt(full.bot)}</b> / ${fmt(full.working)} (${fullBotPct}%) from <code>mart_plugin_driver_harm_score_v2</code>. 1-second column stays Version 1 (38). KPI cards above follow Vehicle / Membership filters. (queried ${V2.queried} · HK TRANSPORT · mature cohort 2026-05-01 to 2026-05-31)`;
-      const teaser = document.querySelector('[data-target="sbot-detail-table"] .rs-teaser');
-      if(teaser) teaser.textContent = '— Version 2 rule = 3 sec';
-    } else if(v1){
-      // V1 numbers already filled by render(); only restore Step 1 static copy
-      const el = id => document.getElementById(id);
-      if(el('k-bot-lbl')) el('k-bot-lbl').textContent = '③ Suspected cheat-app drivers (bot pool)';
-      if(el('k-flag-lbl')) el('k-flag-lbl').textContent = '④ Highest harm scores → check by hand';
-      if(be) be.innerHTML =
-        `<b>We flag drivers who drop 2+ different orders in the same 1 second.</b><br>`+
-        `Dropping 2+ different orders at the same moment = suspected bot driver.`+
-        `<div class="notthis">Not this: how long one order took.</div>`;
-      if(br) br.innerHTML =
-        `Rule window = <b>1 second</b> (this decides the bot pool). 2 / 3 / 4 / 6 sec = compare only. (queried 2026-07-27 · HK TRANSPORT · mature cohort T−90 to T−60)`;
-      if(el('bot-ok-n') && v1.N) el('bot-ok-n').textContent = `${fmt(v1.normalBot)} / ${fmt(v1.N)}`;
-      if(el('bot-ok-sub') && v1.N) el('bot-ok-sub').textContent =
-        `Never dropped 2+ different orders in the same 1 second (${v1.N?Math.round(v1.normalBot/v1.N*1000)/10:0}%)`;
-      if(el('bot-check-n') && v1.N) el('bot-check-n').textContent = `${fmt(v1.botpool)} / ${fmt(v1.N)}`;
-      if(el('bot-check-sub') && v1.N) el('bot-check-sub').textContent =
-        `Dropped 2+ different orders in the same 1 second (${v1.N?Math.round(v1.botpool/v1.N*1000)/10:0}%)`;
-      const cmpTable = document.getElementById('sbot-compare-table');
-      if(cmpTable){ cmpTable.classList.remove('rule-col-3s'); cmpTable.classList.add('rule-col-1s'); }
-      const th1 = document.getElementById('th-1s');
-      const th3 = document.getElementById('th-3s');
-      if(th1) th1.innerHTML = '1 second <span style="font-weight:400;color:var(--muted)">(the rule)</span>';
-      if(th3) th3.innerHTML = '3 sec <span style="font-weight:400;color:var(--muted)">(compare only)</span>';
-      const rowBotLabel = document.getElementById('row-bot-label');
-      if(rowBotLabel) rowBotLabel.innerHTML = `<b>2 or more</b> (suspected bot) 🟠 — we use the <b>1-second</b> column`;
-      const cell1 = document.getElementById('cell-1s-bot');
-      if(cell1) cell1.innerHTML = '<b>38 (1.2%)</b>';
-      const cell3b = document.getElementById('cell-3s-bot');
-      if(cell3b) cell3b.textContent = '156 (4.8%)';
-      const cell3n = document.getElementById('cell-3s-nonbot');
-      if(cell3n) cell3n.textContent = '3,091 (95.2%)';
-      const note = document.getElementById('sbot-table1-note-text');
-      if(note) note.innerHTML =
-        `Base = <b>3,247</b> drivers who took ≥30 and finished ≥30 orders (not OA). Drop = grace-drop (BQ <code>event_type_cd = 21</code>, actor = Driver; OA orders excluded). Of the 3,209 non-bot drivers: 239 never dropped this way; 2,970 did, but never 2 different orders in the same 1 second. <b>Rule = 1-second column only</b>; other columns are compare only. (queried 2026-07-27 · HK TRANSPORT · mature cohort T−90 to T−60)`;
-      const teaser = document.querySelector('[data-target="sbot-detail-table"] .rs-teaser');
-      if(teaser) teaser.textContent = '— compare only';
-    }
-  };
   function setTxt(id, t){
     const el = document.getElementById(id);
     if(el) el.textContent = t;
   }
-  const btn = document.getElementById('v2-toggle');
-  if(!btn) return;
-  const KEY = 'plugin_spot_v2_default_on'; // reset preference when V2 became default
-  function apply(on, opts){
-    document.body.classList.toggle('show-v2', on);
-    btn.classList.toggle('on', on);
-    btn.setAttribute('aria-pressed', on ? 'true' : 'false');
-    try{ localStorage.setItem(KEY, on ? '1' : '0'); }catch(e){}
-    document.querySelectorAll('a[data-v1-href][data-v2-href]').forEach(a=>{
-      const href = on ? a.getAttribute('data-v2-href') : a.getAttribute('data-v1-href');
-      a.setAttribute('href', href);
-      if(a.hasAttribute('data-s')) a.setAttribute('data-s', href.replace(/^#/, ''));
-    });
-    // Version 2: Latest notes card starts collapsed; leave V2 → reopen
-    const rail = document.querySelector('.comments-rail');
-    if(rail){
-      if(on){
-        rail.classList.add('is-collapsed');
-        document.querySelectorAll('.showbar[data-target="comments-rail-body"]').forEach(bar=>{
-          bar.textContent = bar.classList.contains('showlabel') ? 'More ▾' : 'Show more ▾';
-        });
-      } else {
-        rail.classList.remove('is-collapsed');
-        document.querySelectorAll('.showbar[data-target="comments-rail-body"]').forEach(bar=>{
-          bar.textContent = bar.classList.contains('showlabel') ? 'Less ▴' : 'Show less ▴';
-        });
-      }
-    }
-    if(typeof render === 'function') render();
-    else applyVersion2Numbers(on);
-    if(on && opts && opts.scroll){
-      const t = document.getElementById('s3-tier-split') || document.getElementById('s3-v2') || document.getElementById('s3');
-      if(t) t.scrollIntoView({behavior:'smooth', block:'start'});
-    }
+  window.getV2Slice = v2Slice;
+  window.applyVersion2Numbers = function(){
+    const be = document.getElementById('bot-explain');
+    const br = document.getElementById('bot-rule');
+    const el = id => document.getElementById(id);
+    const vehicle = (typeof fV !== 'undefined' && fV) ? fV : 'all';
+    const membership = (typeof fM !== 'undefined' && fM) ? fM : 'all';
+    const s = v2Slice(vehicle, membership);
+    const botPct = pct1(s.bot, s.working);
+    const raPct = pct1(s.review_alone, s.bot);
+    const workPct = pct1(s.working, s.checked);
+    const nonBot = Math.max(0, s.working - s.bot);
+    const nonBotPct = pct1(nonBot, s.working);
+    const sliceBits = [];
+    if(vehicle !== 'all') sliceBits.push(vehicle);
+    if(membership !== 'all') sliceBits.push(membership);
+    const sliceNote = sliceBits.length ? ` · filter: ${sliceBits.join(' + ')}` : '';
+
+    if(el('k-total')) el('k-total').textContent = fmt(s.checked);
+    if(el('k-pool')) el('k-pool').textContent = s.working > 0 ? fmt(s.working) : 'None';
+    const kPoolSub = el('k-pool-sub');
+    if(kPoolSub) kPoolSub.innerHTML = s.working > 0
+      ? `${fmt(s.working)} of ${fmt(s.checked)} checked drivers (${workPct}%) — took 30+ orders, finished 30+ in the <b>30d</b>${sliceNote}`
+      : `no drivers met these trip counts in this slice${sliceNote}`;
+    const kTotalSub = el('k-total-sub');
+    if(kTotalSub) kTotalSub.innerHTML = sliceBits.length
+      ? `public-pool truck drivers in this slice${sliceNote}`
+      : `all public-pool truck drivers — went online or did some work in the <b>30d</b> (${V2.cohortLabel})`;
+    if(el('k-botpool')) el('k-botpool').textContent = s.bot > 0 ? fmt(s.bot) : 'None';
+    if(el('k-botsub')) el('k-botsub').innerHTML = s.bot > 0
+      ? `grabbed &amp; let go of 2+ different orders in the same <b>${V2.windowSec} seconds</b> · ${fmt(s.bot)} of ${fmt(s.working)} working drivers (${botPct}%) · bot pool${sliceNote} · (queried ${V2.queried})`
+      : `no bot-pool drivers in this slice${sliceNote} · (queried ${V2.queried})`;
+    if(el('k-flag')) el('k-flag').textContent = s.review_alone > 0 ? fmt(s.review_alone) : 'None';
+    if(el('hl-flag')) el('hl-flag').textContent = s.review_alone > 0 ? fmt(s.review_alone) : 'None';
+    if(el('k-flag-lbl')) el('k-flag-lbl').textContent = '④ Extreme case (not scored)';
+    if(el('k-flagpct')) el('k-flagpct').innerHTML = s.bot > 0
+      ? `Extreme case · ${fmt(s.review_alone)} of ${fmt(s.bot)} bot drivers (${raPct}%)${sliceNote} · (queried ${V2.queried})`
+      : `no bot pool in this slice${sliceNote}`;
+    if(el('k-bot-lbl')) el('k-bot-lbl').textContent = '③ Suspected cheat-app drivers (bot pool · 3 sec)';
+    setTxt('summary-teaser', s.review_alone > 0
+      ? `— ${fmt(s.review_alone)} Extreme case`
+      : (s.bot > 0 ? '— no Extreme case in this slice' : '— no bot pool in this slice'));
+    if(el('bot-ok-n')) el('bot-ok-n').textContent = `${fmt(nonBot)} / ${fmt(s.working)}`;
+    if(el('bot-ok-sub')) el('bot-ok-sub').textContent =
+      `Never dropped 2+ different orders in the same ${V2.windowSec} seconds (${nonBotPct}%)${sliceNote}`;
+    if(el('bot-check-n')) el('bot-check-n').textContent = `${fmt(s.bot)} / ${fmt(s.working)}`;
+    if(el('bot-check-sub')) el('bot-check-sub').textContent =
+      `Dropped 2+ different orders in the same ${V2.windowSec} seconds (${botPct}%)${sliceNote}`;
+    if(be) be.innerHTML =
+      `<b>We flag drivers who drop 2+ different orders in the same <b>${V2.windowSec} seconds</b>.</b><br>`+
+      `Dropping 2+ different orders in that window = suspected bot driver. Bot pool = <b>${fmt(s.bot)}</b> / ${fmt(s.working)} (${botPct}%)${sliceNote}.`+
+      `<div class="notthis">Not this: how long one order took.</div>`;
+    if(br) br.innerHTML =
+      `Rule window = <b>${V2.windowSec} seconds</b> (bot pool). 1 / 2 / 4 / 6 sec = compare only. (queried ${V2.queried} · HK TRANSPORT · 30d ${V2.cohortCode})`;
+    setTxt('funnel-botpool', fmt(s.bot));
+    const full = v2Slice('all', 'all');
+    const fullBotPct = pct1(full.bot, full.working);
+    const fullNonBot = Math.max(0, full.working - full.bot);
+    const fullNonBotPct = pct1(fullNonBot, full.working);
+    const cmpTable = document.getElementById('sbot-compare-table');
+    if(cmpTable){ cmpTable.classList.remove('rule-col-1s'); cmpTable.classList.add('rule-col-3s'); }
+    const th1 = document.getElementById('th-1s');
+    const th3 = document.getElementById('th-3s');
+    if(th1) th1.innerHTML = '1 second <span style="font-weight:400;color:var(--muted)">(compare only)</span>';
+    if(th3) th3.innerHTML = '3 sec <span style="font-weight:400;color:var(--muted)">(the rule)</span>';
+    const rowBotLabel = document.getElementById('row-bot-label');
+    if(rowBotLabel) rowBotLabel.innerHTML = `<b>2 or more</b> (suspected bot) 🟠 — we use the <b>3-second</b> column`;
+    const cell1 = document.getElementById('cell-1s-bot');
+    if(cell1) cell1.innerHTML = '38 (1.2%)';
+    const cell3b = document.getElementById('cell-3s-bot');
+    if(cell3b) cell3b.innerHTML = `<b>${fmt(full.bot)} (${fullBotPct}%)</b>`;
+    const cell3n = document.getElementById('cell-3s-nonbot');
+    if(cell3n) cell3n.textContent = `${fmt(fullNonBot)} (${fullNonBotPct}%)`;
+    const note = document.getElementById('sbot-table1-note-text');
+    if(note) note.innerHTML =
+      `Base = <b>${fmt(full.working)}</b> drivers who took ≥30 and finished ≥30 orders (not OA). <b>Rule = 3-second column</b>: bot pool = <b>${fmt(full.bot)}</b> / ${fmt(full.working)} (${fullBotPct}%) from <code>mart_plugin_driver_harm_score_v2</code>. Other columns are compare only. KPI cards above follow Vehicle / Membership filters. (queried ${V2.queried} · HK TRANSPORT · 30d ${V2.cohortCode})`;
+    const teaser = document.querySelector('[data-target="sbot-detail-table"] .rs-teaser');
+    if(teaser) teaser.textContent = '— rule = 3 sec';
+  };
+  document.body.classList.add('show-v2');
+  function boot(){
+    if(typeof applyVersion2Numbers === 'function') applyVersion2Numbers();
   }
-  let on = true; // Version 2 is the default view
-  try{
-    const saved = localStorage.getItem(KEY);
-    if(saved === '0') on = false;
-    else if(saved === '1') on = true;
-  }catch(e){}
-  // Defer so DATA/render exist
   if(document.readyState === 'loading'){
-    document.addEventListener('DOMContentLoaded', ()=> apply(on));
+    document.addEventListener('DOMContentLoaded', ()=> setTimeout(boot, 0));
   } else {
-    setTimeout(()=> apply(on), 0);
+    setTimeout(boot, 0);
   }
-  btn.addEventListener('click', ()=> apply(!document.body.classList.contains('show-v2'), {scroll:true}));
 })();
 </script>
 
