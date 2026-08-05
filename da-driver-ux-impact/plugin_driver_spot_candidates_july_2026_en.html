@@ -578,7 +578,7 @@ body.show-v2 a[data-s="s4"]{display:none !important}
   <p class="meta" style="margin:0 0 8px;color:var(--muted)">July 2026 freeze · local preview · source <code>mart_cheat_app_driver_review_priority_july_2026</code></p>
   <div class="fnote-row" id="page-scope" style="margin-top:8px;margin-bottom:4px">
     <p class="fnote-toggle sectoggle" data-target="page-scope-body" role="button" tabindex="0"><b>Scope</b> <span class="rs-teaser">— HK truck · public-pool · 30d · V2</span></p>
-    <span class="showbar showlabel" data-target="page-scope-body" role="button" tabindex="0">More ▾</span>
+    <span class="showbar showlabel" data-target="page-scope-body" role="button" tabindex="0">Expand ▾</span>
   </div>
   <div id="page-scope-body" style="display:none">
     <p class="meta" style="margin-bottom:14px">This page is about <b>134 cheat-app (bot) drivers</b> (3-second rule). We looked at all public-pool truck drivers (van / mudou / mudou9; company orders left out), then kept drivers who drop 2+ different orders in the same 3 seconds. Source: <code>mart_cheat_app_driver_review_priority_july_2026</code>. Score = Assigned + Release + Cancel inside this 30d only. Almost every order they <b>released</b> is <b>On Demand</b> (<span id="meta-od-share">91% On Demand, 4% Same Day, 6% Next Day</span>). Data pulled 2026-08-04, covering 30 days (1 Jul – 31 Jul 2026).</p>
@@ -586,7 +586,7 @@ body.show-v2 a[data-s="s4"]{display:none !important}
 
   <div class="sect-head">
     <h2 id="review-summary" class="sectoggle" data-target="review-summary-body" role="button" tabindex="0">Driver Review Summary — <b>30d</b> (1 Jul – 31 Jul 2026) <span class="rs-teaser" id="summary-teaser">— 13 Extreme case</span></h2>
-    <span class="showbar showlabel" data-target="review-summary-body" role="button" tabindex="0">More ▾</span>
+    <span class="showbar showlabel" data-target="review-summary-body" role="button" tabindex="0">Expand ▾</span>
   </div>
   <div id="review-summary-body" class="review-summary" style="display:none">
 
@@ -623,7 +623,7 @@ body.show-v2 a[data-s="s4"]{display:none !important}
 
   <div class="sect-head">
     <h2 id="defs" class="sectoggle" data-target="defs-body" role="button" tabindex="0">How we count (read this once)</h2>
-    <span class="showbar showlabel" data-target="defs-body" role="button" tabindex="0">More ▾</span>
+    <span class="showbar showlabel" data-target="defs-body" role="button" tabindex="0">Expand ▾</span>
   </div>
   <div id="defs-body" class="relbox" style="margin-top:6px;margin-bottom:0;display:none">
     <b>OA excluded</b> — Auto-accept (OA) orders and OA drivers are out of this page — via <code>event_type_cd = 26</code>.<br>
@@ -664,17 +664,23 @@ body.show-v2 a[data-s="s4"]{display:none !important}
     </div>
     <button class="clearbtn" id="clearf">Reset</button>
   </div>
-  <p id="booking-breakdown" class="sub" style="margin:8px 0 12px;padding:10px 12px;background:var(--neutbg);border-radius:8px;border-left:3px solid var(--blue)">
-    <b>細拆 (read this)</b> — Figure 1 above = totals. Use filters to break them down.
+  <div class="sect-head" style="margin-top:8px;margin-bottom:0">
+    <p class="fnote-toggle sectoggle" data-target="booking-breakdown-body" role="button" tabindex="0" style="margin:0"><b>細拆</b> <span class="rs-teaser">— how filters break down the totals</span></p>
+    <span class="showbar showlabel" data-target="booking-breakdown-body" role="button" tabindex="0" title="Expand / collapse">Collapse ▴</span>
+  </div>
+  <div id="booking-breakdown-body" style="margin:6px 0 12px">
+  <p id="booking-breakdown" class="sub" style="margin:0;padding:10px 12px;background:var(--neutbg);border-radius:8px;border-left:3px solid var(--blue)">
+    <b>Read this</b> — Figure 1 above = totals. Use filters to break them down.
     <span id="bt-break-text" style="display:block;margin-top:6px;line-height:1.55"></span>
   </p>
+  </div>
 
   <!-- TIERS (= Step 2 harm scoring — one block, not two) -->
   <a id="harm-start"></a>
   <div id="s3-s4-layout">
   <div class="sect-head" id="s3-head">
     <h2 id="s3" class="sectoggle" data-target="s3-intro-body" role="button" tabindex="0">③ Review priority of suspected bot drivers <span class="rs-teaser" id="s3-teaser">— 3 sec · 134 drivers</span></h2>
-    <span class="showbar showlabel" data-target="s3-intro-body" role="button" tabindex="0">More ▾</span>
+    <span class="showbar showlabel" data-target="s3-intro-body" role="button" tabindex="0">Expand ▾</span>
   </div>
   <div id="s3-intro-body" style="display:none">
     <p class="sub" id="s3-intro-sub">Bot spotting is done. We score the <b>134</b> bot drivers (3-second rule). Each driver sits in <b>one</b> review band. <b>Extreme case</b> (13 drivers) comes first — <b>not scored</b> (not in the max-8 sum). Remaining drivers use Review Priority = Assigned (0–2) + Release (0–4) + Cancel (0–2) → max 8 → bands <b>6–8 / 4–5 / 0–3</b>. Detail: <a href="#v2-rule-8">Assigned &amp; Release</a> · <a href="#v2-rule-7">Cancel</a>. (queried 2026-08-04, HK TRANSPORT, 30d 2026-07-01 to 2026-07-31)</p>
@@ -687,7 +693,7 @@ body.show-v2 a[data-s="s4"]{display:none !important}
   <!-- BOT DETECTION (grace-drop speed) -->
   <div class="sect-head">
     <h2 id="sbot" class="sectoggle" data-target="sbot-body" role="button" tabindex="0">🤖 Step 1 — spot the cheat-app bots (grab-and-drop speed) <span class="rs-teaser">— how we spot bots</span></h2>
-    <span class="showbar showlabel" data-target="sbot-body" role="button" tabindex="0">Less ▴</span>
+    <span class="showbar showlabel" data-target="sbot-body" role="button" tabindex="0">Collapse ▴</span>
   </div>
   <div id="sbot-body">
   <div class="bot-explain" id="bot-explain">
@@ -710,7 +716,7 @@ body.show-v2 a[data-s="s4"]{display:none !important}
   <p class="bot-rule" id="bot-rule">Rule window = <b>3 seconds</b> (this decides the bot pool). 1 / 2 / 4 / 6 sec = compare only. (queried 2026-08-04, HK TRANSPORT, 30d 2026-07-01 to 2026-07-31)</p>
   <div class="fnote-row">
     <p class="fnote-toggle sectoggle" data-target="sbot-detail-table" role="button" tabindex="0"><b>More detail — 1 / 2 / 3 / 4 / 6 sec table</b> <span class="rs-teaser">— rule = 3 sec</span></p>
-    <span class="showbar showlabel" data-target="sbot-detail-table" role="button" tabindex="0">Less ▴</span>
+    <span class="showbar showlabel" data-target="sbot-detail-table" role="button" tabindex="0">Collapse ▴</span>
   </div>
   <div id="sbot-detail-table">
   <div class="panel" style="margin-top:6px" id="sbot-compare-panel">
@@ -746,7 +752,7 @@ body.show-v2 a[data-s="s4"]{display:none !important}
     </div>
     <div class="fnote-row">
       <p class="fnote-toggle sectoggle" data-target="sbot-table1-note" role="button" tabindex="0"><b>What these numbers mean</b> <span class="rs-teaser">— click to expand / collapse</span></p>
-      <span class="showbar showlabel" data-target="sbot-table1-note" role="button" tabindex="0">More ▾</span>
+      <span class="showbar showlabel" data-target="sbot-table1-note" role="button" tabindex="0">Expand ▾</span>
     </div>
     <div id="sbot-table1-note" style="display:none">
     <p class="pd" id="sbot-table1-note-text">Base = <b>3,347</b> drivers who took ≥30 and finished ≥30 orders (not OA). Each column is that driver’s <b>fastest</b> window of that length — <b>not</b> average pace, and <b>not</b> “one order per second.” <b>Rule = 3-second column</b>: bot pool = <b>134</b> / 3,347 (4.0%) from <code>mart_cheat_app_driver_review_priority_july_2026</code>. Other columns are compare only. KPI cards above follow Vehicle / Membership filters. (queried 2026-08-04, HK TRANSPORT, 30d 2026-07-01 to 2026-07-31)</p>
@@ -759,7 +765,7 @@ body.show-v2 a[data-s="s4"]{display:none !important}
   <!-- FUNNEL -->
   <div class="sect-head">
     <h2 id="s2" class="sectoggle" data-target="funnel-intro-body" role="button" tabindex="0">② How the crowd narrows down to the bot pool <span class="rs-teaser">— Step 1: how to read each bar</span></h2>
-    <span class="showbar showlabel" data-target="funnel-intro-body" role="button" tabindex="0">More ▾</span>
+    <span class="showbar showlabel" data-target="funnel-intro-body" role="button" tabindex="0">Expand ▾</span>
   </div>
   <div id="funnel-intro-body" style="display:none">
   <p class="sub" id="funnel-intro-sub"><b>Step 1 (bot detection).</b> Each step filters <b>drivers</b> (not orders). Bar 1 = everyone we checked. Bar 2 = met <b>minimum activity rules</b>. Bar 3 = <b>bot pool</b> by grab-and-drop speed (2+ in the same <b>3 seconds</b>). Vehicle / Membership filters update these bars.</p>
@@ -768,7 +774,7 @@ body.show-v2 a[data-s="s4"]{display:none !important}
     <div class="funnel" id="funnel"></div>
     <div class="fnote-row">
       <p class="fnote-toggle sectoggle" data-target="funnel-hnote-body" role="button" tabindex="0"><b>Bot spotting vs harm scoring</b> <span class="rs-teaser">— two separate checks</span></p>
-      <span class="showbar showlabel" data-target="funnel-hnote-body" role="button" tabindex="0">More ▾</span>
+      <span class="showbar showlabel" data-target="funnel-hnote-body" role="button" tabindex="0">Expand ▾</span>
     </div>
     <div id="funnel-hnote-body" style="display:none">
     <p class="hnote" id="funnel-hnote"><b>Bot spotting ends at the bot pool (bar 3).</b> The 3-second rule — <span id="funnel-botpool">134</span> / 3,347 working drivers (4.0%). <a href="#s3">③ Review priority</a> then ranks drivers inside this pool (Assigned + Release + Cancel → max 8). (queried 2026-08-04, HK TRANSPORT, 30d 2026-07-01 to 2026-07-31)</p>
@@ -1417,9 +1423,7 @@ function pct0(n, d){ return d ? Math.round(n / d * 100) : 0; }
         b.style.display = hidden ? '' : 'none';
         document.querySelectorAll('.showbar[data-target="'+target+'"]').forEach(bar=>{
           const short = bar.classList.contains('showlabel');
-          bar.textContent = hidden
-            ? (short ? 'Less ▴' : 'Show less ▴')
-            : (short ? 'More ▾' : 'Show more ▾');
+          bar.textContent = hidden ? 'Collapse ▴' : 'Expand ▾';
         });
       };
       el.addEventListener('click', toggle);
