@@ -632,7 +632,7 @@ body.show-v2 a[data-s="s4"]{display:none !important}
     <b>Released vs driver cancel</b> — <b>Released</b> = driver took the order then <b>released</b> it back to the pool (<code>event_type_cd = 4</code>, <code>actor_type = 'Driver'</code>). <b>Driver cancel</b> (used in Cancel rate) = driver cancelled the order (<code>event_type_cd = 3</code>, <code>actor_type = 'Driver'</code>). Release returns the order to the pool; cancel ends the order. Pool entry does <b>not</b> require a release.<br>
     <b>Who gets a score</b> — in this 30d: must <b>took ≥30 orders</b> (<code>orders_assigned_30d</code>), <b>finished ≥30</b> (<code>orders_completed_30d</code>), not OA. If any rule fails → <code>outside_analysis_pool</code> (not scored yet; can still work).<br>
     <b>Bot pool</b> — 2+ different grace-drops (grabbed then let go fast, <code>event_type_cd = 21</code>) in the same <b>3 seconds</b> (<code>is_bot_pool_v2</code>). Review bands = Extreme case (not scored) + Assigned (0–2) + Release (0–4) + Cancel (0–2) → max 8.<br>
-    <b>How to read filters</b> — <b>Figure 1 (①–④) = driver totals</b>. <b>Vehicle / Membership</b> break down the <b>134 bot drivers</b> (and the checked/working universe): van + mudou + mudou9 = 134; membership tiers = 134. <b>Booking</b> breaks down <b>released orders</b> among those bots (On Demand / Same Day / Next Day %); each order once; <b>sums to 100%</b> — not 134 people. Booking does <b>not</b> change ①–④.
+    <b>How to read filters</b> — <b>Figure 1 (①–④)</b> follow <b>Booking × Vehicle × Membership</b>. <b>Booking = All</b>: unique drivers (Vehicle + Membership bot counts sum to 134). <b>Booking = On Demand / Same Day / Next Day</b>: cards recount drivers who met ≥30 assigned + ≥30 completed <b>inside that booking type</b> (same idea as May; not unique across types — a driver can appear in more than one booking). Released-order mix in the blue bar is separate (order %, sums 100%).
   </div>
 
   <div class="filterbar">
@@ -1113,11 +1113,52 @@ body.show-v2 a[data-s="s4"]{display:none !important}
     {v:'van', m:'Platinum', checked:33, working:18, bot:1, review_alone:0},
     {v:'van', m:'Silver', checked:43, working:21, bot:2, review_alone:0},
   ];
-  // Booking = ORDER mix among bot drivers' released orders (sums 100%). Not driver headcount.
+  // Booking KPI slices = driver rows meeting ≥30 assigned + ≥30 completed WITHIN that booking_type
+  // (not unique across booking types). Same grain idea as May DATA_BT.
+  // BQ SSOT rebuild (queried 2026-08-05, HK TRANSPORT, 30d 2026-07-01 to 2026-07-31; OA excluded)
+  const V2_BT_SLICES = [
+    {bt:'nextday', v:'mudou', m:'Bronze', checked:38, working:1, bot:0, review_alone:0},
+    {bt:'nextday', v:'mudou', m:'Gold', checked:131, working:0, bot:0, review_alone:0},
+    {bt:'nextday', v:'mudou', m:'Platinum', checked:10, working:0, bot:0, review_alone:0},
+    {bt:'nextday', v:'mudou', m:'Silver', checked:2, working:0, bot:0, review_alone:0},
+    {bt:'nextday', v:'mudou9', m:'Bronze', checked:56, working:0, bot:0, review_alone:0},
+    {bt:'nextday', v:'mudou9', m:'Gold', checked:173, working:0, bot:0, review_alone:0},
+    {bt:'nextday', v:'mudou9', m:'Platinum', checked:9, working:0, bot:0, review_alone:0},
+    {bt:'nextday', v:'mudou9', m:'Silver', checked:2, working:0, bot:0, review_alone:0},
+    {bt:'nextday', v:'van', m:'Bronze', checked:716, working:1, bot:0, review_alone:0},
+    {bt:'nextday', v:'van', m:'Gold', checked:992, working:12, bot:0, review_alone:0},
+    {bt:'nextday', v:'van', m:'None', checked:2, working:0, bot:0, review_alone:0},
+    {bt:'nextday', v:'van', m:'Platinum', checked:13, working:0, bot:0, review_alone:0},
+    {bt:'nextday', v:'van', m:'Silver', checked:14, working:0, bot:0, review_alone:0},
+    {bt:'ondemand', v:'mudou', m:'Bronze', checked:122, working:32, bot:1, review_alone:0},
+    {bt:'ondemand', v:'mudou', m:'Gold', checked:222, working:106, bot:3, review_alone:0},
+    {bt:'ondemand', v:'mudou', m:'Platinum', checked:13, working:8, bot:0, review_alone:0},
+    {bt:'ondemand', v:'mudou', m:'Silver', checked:3, working:2, bot:0, review_alone:0},
+    {bt:'ondemand', v:'mudou9', m:'Bronze', checked:192, working:38, bot:2, review_alone:0},
+    {bt:'ondemand', v:'mudou9', m:'Gold', checked:328, working:173, bot:8, review_alone:0},
+    {bt:'ondemand', v:'mudou9', m:'Platinum', checked:14, working:6, bot:0, review_alone:0},
+    {bt:'ondemand', v:'mudou9', m:'Silver', checked:5, working:3, bot:0, review_alone:0},
+    {bt:'ondemand', v:'van', m:'Bronze', checked:2869, working:1302, bot:42, review_alone:1},
+    {bt:'ondemand', v:'van', m:'Gold', checked:2331, working:1607, bot:71, review_alone:12},
+    {bt:'ondemand', v:'van', m:'None', checked:11, working:2, bot:0, review_alone:0},
+    {bt:'ondemand', v:'van', m:'Platinum', checked:32, working:20, bot:1, review_alone:0},
+    {bt:'ondemand', v:'van', m:'Silver', checked:43, working:19, bot:1, review_alone:0},
+    {bt:'sameday', v:'mudou', m:'Bronze', checked:75, working:0, bot:0, review_alone:0},
+    {bt:'sameday', v:'mudou', m:'Gold', checked:178, working:0, bot:0, review_alone:0},
+    {bt:'sameday', v:'mudou', m:'Platinum', checked:11, working:0, bot:0, review_alone:0},
+    {bt:'sameday', v:'mudou', m:'Silver', checked:3, working:0, bot:0, review_alone:0},
+    {bt:'sameday', v:'mudou9', m:'Bronze', checked:115, working:0, bot:0, review_alone:0},
+    {bt:'sameday', v:'mudou9', m:'Gold', checked:244, working:1, bot:0, review_alone:0},
+    {bt:'sameday', v:'mudou9', m:'Platinum', checked:10, working:0, bot:0, review_alone:0},
+    {bt:'sameday', v:'mudou9', m:'Silver', checked:3, working:0, bot:0, review_alone:0},
+    {bt:'sameday', v:'van', m:'Bronze', checked:1692, working:2, bot:0, review_alone:0},
+    {bt:'sameday', v:'van', m:'Gold', checked:1779, working:4, bot:0, review_alone:0},
+    {bt:'sameday', v:'van', m:'None', checked:8, working:0, bot:0, review_alone:0},
+    {bt:'sameday', v:'van', m:'Platinum', checked:23, working:0, bot:0, review_alone:0},
+    {bt:'sameday', v:'van', m:'Silver', checked:32, working:0, bot:0, review_alone:0}
+  ];
+  // Released-order mix among bots (secondary; sums 100% of released orders — not driver headcount)
   // BQ SSOT: gogox-ba-sandbox.reporting.pres_cheat_app_july_2026_bot_released_orders_by_booking
-  // Vehicle / Membership driver KPIs = V2_SLICES from mart (bot counts sum to 134).
-  // BQ SSOT: gogox-ba-sandbox.reporting.pres_cheat_app_july_2026_bot_drivers_by_vehicle_membership
-  // (queried 2026-08-05, HK TRANSPORT, 30d 2026-07-01 to 2026-07-31; OA excluded; release = event_type_cd=4 + Driver)
   const V2_BT_RELEASE_MIX = [
     {v:'mudou', m:'Bronze', bt:'nextday', n:1},
     {v:'mudou', m:'Bronze', bt:'ondemand', n:28},
@@ -1160,8 +1201,10 @@ body.show-v2 a[data-s="s4"]{display:none !important}
   function pct1(n, d){
     return d ? Math.round(n / d * 1000) / 10 : 0;
   }
-  function v2Slice(vehicle, membership){
-    const rows = V2_SLICES.filter(r =>
+  function v2Slice(vehicle, membership, booking){
+    booking = (booking === undefined || booking === null || booking === '') ? 'all' : booking;
+    const src = (booking === 'all') ? V2_SLICES : V2_BT_SLICES.filter(r => r.bt === booking);
+    const rows = src.filter(r =>
       (vehicle === 'all' || r.v === vehicle) &&
       (membership === 'all' || r.m === membership)
     );
@@ -1197,9 +1240,9 @@ function pct0(n, d){ return d ? Math.round(n / d * 100) : 0; }
     const vehicle = (typeof fV !== 'undefined' && fV) ? fV : 'all';
     const membership = (typeof fM !== 'undefined' && fM) ? fM : 'all';
     const booking = (typeof fBT !== 'undefined' && fBT) ? fBT : 'all';
-    // Figure 1 KPI = Vehicle × Membership only (Booking is order-% breakdown, does not change cards)
-    const s = v2Slice(vehicle, membership);
-    const full = v2Slice('all', 'all');
+    // Figure 1 KPI = Booking × Vehicle × Membership (Booking uses V2_BT_SLICES when not All)
+    const s = v2Slice(vehicle, membership, booking);
+    const full = v2Slice('all', 'all', 'all');
     const mix = btReleaseMix(vehicle, membership);
     const botPct = pct1(s.bot, s.working);
     const raPct = pct1(s.review_alone, s.bot);
@@ -1207,14 +1250,15 @@ function pct0(n, d){ return d ? Math.round(n / d * 100) : 0; }
     const nonBot = Math.max(0, s.working - s.bot);
     const nonBotPct = pct1(nonBot, s.working);
     const vmBits = [];
+    if(booking !== 'all') vmBits.push(BT_LABEL[booking] || booking);
     if(vehicle !== 'all') vmBits.push(vehicle);
     if(membership !== 'all') vmBits.push(membership);
     const vmNote = vmBits.length ? ` · filter: ${vmBits.join(' + ')}` : '';
-    const sliceNote = vmNote; // KPI cards ignore Booking
+    const sliceNote = vmNote;
 
     // Vehicle / Membership breakdown of bots (from mart slices) — must sum to bot total in scope
-    const vParts = ['van','mudou','mudou9'].map(v => ({k:v, n:v2Slice(v, membership).bot}));
-    const mParts = ['Platinum','Gold','Silver','Bronze','None'].map(m => ({k:m, n:v2Slice(vehicle, m).bot}));
+    const vParts = ['van','mudou','mudou9'].map(v => ({k:v, n:v2Slice(v, membership, booking).bot}));
+    const mParts = ['Platinum','Gold','Silver','Bronze','None'].map(m => ({k:m, n:v2Slice(vehicle, m, booking).bot}));
     const vSum = vParts.reduce((a,x)=>a+x.n,0);
     const mSum = mParts.reduce((a,x)=>a+x.n,0);
     const odP = pct0(mix.ondemand, mix.total), sdP = pct0(mix.sameday, mix.total), ndP = pct0(mix.nextday, mix.total);
@@ -1230,23 +1274,22 @@ function pct0(n, d){ return d ? Math.round(n / d * 100) : 0; }
     const btLive = el('bt-live');
     if(btLive){
       if(booking === 'all'){
-        btLive.innerHTML = `<b>Booking</b> = released-order mix (not driver headcount). Now showing all: ${mixLine}. Click On Demand / Same Day / Next Day to highlight one type — cards ①–④ stay the same.`;
+        btLive.innerHTML = `<b>Booking = All</b> — cards ①–④ = unique drivers (Vehicle × Membership). Released-order mix among bots: ${mixLine}. Click On Demand / Same Day / Next Day to filter cards by booking-type activity rules.`;
       } else {
         const nSel = mix[booking] || 0;
-        btLive.innerHTML = `<b>Booking selected: ${BT_LABEL[booking]}</b> — <b>${fmt(nSel)}</b> / ${fmt(mix.total)} released orders (<b>${pct0(nSel, mix.total)}%</b>). Full mix: ${mixLine}. Cards ①–④ do <b>not</b> change (they are driver totals).`;
+        btLive.innerHTML = `<b>Booking selected: ${BT_LABEL[booking]}</b> — cards ①–④ update to drivers who met ≥30 assigned + ≥30 completed <b>in this booking type</b> (not unique across types): checked <b>${fmt(s.checked)}</b> · working <b>${fmt(s.working)}</b> · bot <b>${fmt(s.bot)}</b> · Extreme <b>${fmt(s.review_alone)}</b>. Released-order mix (bots, all bookings in this Vehicle/Membership): ${mixLine}.`;
       }
     }
     const btBreak = el('bt-break-text');
     if(btBreak){
       let sel = '';
       if(booking !== 'all'){
-        const nSel = mix[booking] || 0;
-        sel = `<br>Booking selected <b>${BT_LABEL[booking]}</b>: <b>${fmt(nSel)}</b> / ${fmt(mix.total)} released (<b>${pct0(nSel, mix.total)}%</b>). Cards ①–④ stay the driver totals above.`;
+        sel = `<br>Booking selected <b>${BT_LABEL[booking]}</b> (cards update): checked <b>${fmt(s.checked)}</b> · working <b>${fmt(s.working)}</b> · bot <b>${fmt(s.bot)}</b> · Extreme <b>${fmt(s.review_alone)}</b> — activity rules counted inside this booking type only.`;
       }
       btBreak.innerHTML =
-        `<b>Vehicle</b> (bot drivers; must add up): van ${fmt(v2Slice('van', membership).bot)} · mudou ${fmt(v2Slice('mudou', membership).bot)} · mudou9 ${fmt(v2Slice('mudou9', membership).bot)} · <b>= ${fmt(vSum)}</b>${membership!=='all'?` (within ${membership})`:''}` +
-        `<br><b>Membership</b> (bot drivers; must add up): Platinum ${fmt(v2Slice(vehicle,'Platinum').bot)} · Gold ${fmt(v2Slice(vehicle,'Gold').bot)} · Silver ${fmt(v2Slice(vehicle,'Silver').bot)} · Bronze ${fmt(v2Slice(vehicle,'Bronze').bot)} · None ${fmt(v2Slice(vehicle,'None').bot)} · <b>= ${fmt(mSum)}</b>${vehicle!=='all'?` (within ${vehicle})`:''}` +
-        `<br><b>Booking</b> (released orders among bots in this Vehicle/Membership; <b>sum 100%</b>, not 134 people): ${mixLine}` +
+        `<b>Vehicle</b> (bot drivers in current Booking filter): van ${fmt(v2Slice('van', membership, booking).bot)} · mudou ${fmt(v2Slice('mudou', membership, booking).bot)} · mudou9 ${fmt(v2Slice('mudou9', membership, booking).bot)} · <b>= ${fmt(vSum)}</b>${membership!=='all'?` (within ${membership})`:''}` +
+        `<br><b>Membership</b> (bot drivers in current Booking filter): Platinum ${fmt(v2Slice(vehicle,'Platinum', booking).bot)} · Gold ${fmt(v2Slice(vehicle,'Gold', booking).bot)} · Silver ${fmt(v2Slice(vehicle,'Silver', booking).bot)} · Bronze ${fmt(v2Slice(vehicle,'Bronze', booking).bot)} · None ${fmt(v2Slice(vehicle,'None', booking).bot)} · <b>= ${fmt(mSum)}</b>${vehicle!=='all'?` (within ${vehicle})`:''}` +
+        `<br><b>Released-order mix</b> among bots (Vehicle/Membership; sum 100% of released orders): ${mixLine}` +
         sel;
     }
 
@@ -1257,9 +1300,11 @@ function pct0(n, d){ return d ? Math.round(n / d * 100) : 0; }
       ? `${fmt(s.working)} of ${fmt(s.checked)} checked drivers (${workPct}%) — met mart activity rules (meets_minimum_activity_rules) in the <b>30d</b>${vmNote}`
       : `no drivers met these trip counts in this slice${vmNote}`;
     const kTotalSub = el('k-total-sub');
-    if(kTotalSub) kTotalSub.innerHTML = vmBits.length
-      ? `public-pool truck drivers in this slice${vmNote}`
-      : `all public-pool truck drivers — went online or did some work in the <b>30d</b> (${V2.cohortLabel})`;
+    if(kTotalSub){
+      if(booking !== 'all') kTotalSub.textContent = `${BT_LABEL[booking]} driver rows (met ≥30 assigned + ≥30 completed in this booking type; not unique across types)`;
+      else if(vmBits.length) kTotalSub.innerHTML = `public-pool truck drivers in this slice${vmNote}`;
+      else kTotalSub.innerHTML = `all public-pool truck drivers — went online or did some work in the <b>30d</b> (${V2.cohortLabel})`;
+    }
     if(el('k-botpool')) el('k-botpool').textContent = s.bot > 0 ? fmt(s.bot) : 'None';
     if(el('k-botsub')) el('k-botsub').innerHTML = s.bot > 0
       ? `grabbed &amp; let go of 2+ different orders in the same <b>${V2.windowSec} seconds</b> · ${fmt(s.bot)} of ${fmt(s.working)} working drivers (${botPct}%) · bot pool${vmNote} · (queried ${V2.queried})`
@@ -1302,7 +1347,7 @@ function pct0(n, d){ return d ? Math.round(n / d * 100) : 0; }
     if(s3intro){
       s3intro.innerHTML =
         `Bot spotting is done. In this view: <b>${fmt(s.bot)}</b> bot drivers (3-second rule)${vmNote}. ` +
-        `<b>Vehicle / Membership</b> break down the 134 bot drivers (must add up). <b>Booking</b> breaks down their <b>released orders</b> (OD/SD/ND % sum to 100%) — it does not change this driver count. ` +
+        `<b>Booking / Vehicle / Membership</b> filters update the cards above. With Booking = All, Vehicle + Membership bot counts must add up to 134. ` +
         `Priority bands below = full July bot pool (<b>${fmt(full.bot)}</b>). ` +
         `Each driver sits in <b>one</b> review band. <b>Extreme case</b> (${fmt(full.review_alone)} drivers) comes first — <b>not scored</b> (not in the max-8 sum). ` +
         `Remaining drivers use Review Priority = Assigned (0–2) + Release (0–4) + Cancel (0–2) → max 8 → bands <b>6–8 / 4–5 / 0–3</b>. ` +
@@ -1329,7 +1374,7 @@ function pct0(n, d){ return d ? Math.round(n / d * 100) : 0; }
     if(cell3n) cell3n.textContent = `${fmt(fullNonBot)} (${fullNonBotPct}%)`;
     const note = document.getElementById('sbot-table1-note-text');
     if(note) note.innerHTML =
-      `Base = <b>${fmt(full.working)}</b> drivers who took ≥30 and finished ≥30 orders (not OA). Each column is that driver’s <b>fastest</b> window of that length — <b>not</b> average pace, and <b>not</b> “one order per second.” <b>Rule = 3-second column</b>: bot pool = <b>${fmt(full.bot)}</b> / ${fmt(full.working)} (${fullBotPct}%) from <code>mart_cheat_app_driver_review_priority_july_2026</code>. Other columns are compare only. ①–④ follow Vehicle / Membership; Booking is released-order mix among bots (sums 100%). (queried ${V2.queried} · HK TRANSPORT · 30d ${V2.cohortCode})`;
+      `Base = <b>${fmt(full.working)}</b> drivers who took ≥30 and finished ≥30 orders (not OA). Each column is that driver’s <b>fastest</b> window of that length — <b>not</b> average pace, and <b>not</b> “one order per second.” <b>Rule = 3-second column</b>: bot pool = <b>${fmt(full.bot)}</b> / ${fmt(full.working)} (${fullBotPct}%) from <code>mart_cheat_app_driver_review_priority_july_2026</code>. Other columns are compare only. ①–④ follow Booking × Vehicle × Membership (Booking ≠ All uses per-booking activity rules). (queried ${V2.queried} · HK TRANSPORT · 30d ${V2.cohortCode})`;
     const teaser = document.querySelector('[data-target="sbot-detail-table"] .rs-teaser');
     if(teaser) teaser.textContent = '— rule = 3 sec';
 
