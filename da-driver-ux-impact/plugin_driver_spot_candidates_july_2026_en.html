@@ -1102,49 +1102,51 @@ body.show-v2 a[data-s="s4"]{display:none !important}
     {v:'van', m:'Platinum', checked:33, working:18, bot:1, review_alone:0},
     {v:'van', m:'Silver', checked:43, working:21, bot:2, review_alone:0},
   ];
-  // Booking × Vehicle × Membership — working / bot counted inside that booking type
-  // (≥30 assigned & ≥30 completed in that booking; bot flag from July mart)
-  // (queried 2026-08-05, HK TRANSPORT, 30d 2026-07-01 to 2026-07-31; OA excluded via event_type_cd=26)
+  // Booking × Vehicle × Membership — SAME mart rules as All
+  // Driver in slice = had ≥1 assigned (event_type_cd=2) on that booking_type in July (OA excluded).
+  // working / bot / extreme = mart flags only: meets_minimum_activity_rules / is_bot_pool_v2 / is_extreme_assigned_only
+  // (does NOT re-apply 30/30 inside the booking type — keeps one rule family with the July mart)
+  // (queried 2026-08-05, HK TRANSPORT, 30d 2026-07-01 to 2026-07-31)
   const V2_BT_SLICES = [
-    {bt:'nextday', v:'mudou', m:'Bronze', checked:38, working:1, bot:0, review_alone:0},
-    {bt:'nextday', v:'mudou', m:'Gold', checked:131, working:0, bot:0, review_alone:0},
-    {bt:'nextday', v:'mudou', m:'Platinum', checked:10, working:0, bot:0, review_alone:0},
-    {bt:'nextday', v:'mudou', m:'Silver', checked:2, working:0, bot:0, review_alone:0},
-    {bt:'nextday', v:'mudou9', m:'Bronze', checked:56, working:0, bot:0, review_alone:0},
-    {bt:'nextday', v:'mudou9', m:'Gold', checked:173, working:0, bot:0, review_alone:0},
-    {bt:'nextday', v:'mudou9', m:'Platinum', checked:9, working:0, bot:0, review_alone:0},
-    {bt:'nextday', v:'mudou9', m:'Silver', checked:2, working:0, bot:0, review_alone:0},
-    {bt:'nextday', v:'van', m:'Bronze', checked:716, working:1, bot:0, review_alone:0},
-    {bt:'nextday', v:'van', m:'Gold', checked:992, working:12, bot:0, review_alone:0},
+    {bt:'nextday', v:'mudou', m:'Bronze', checked:33, working:17, bot:1, review_alone:0},
+    {bt:'nextday', v:'mudou', m:'Gold', checked:123, working:75, bot:2, review_alone:0},
+    {bt:'nextday', v:'mudou', m:'Platinum', checked:10, working:8, bot:0, review_alone:0},
+    {bt:'nextday', v:'mudou', m:'Silver', checked:2, working:1, bot:0, review_alone:0},
+    {bt:'nextday', v:'mudou9', m:'Bronze', checked:43, working:18, bot:0, review_alone:0},
+    {bt:'nextday', v:'mudou9', m:'Gold', checked:149, working:102, bot:6, review_alone:0},
+    {bt:'nextday', v:'mudou9', m:'Platinum', checked:9, working:5, bot:0, review_alone:0},
+    {bt:'nextday', v:'mudou9', m:'Silver', checked:1, working:1, bot:0, review_alone:0},
+    {bt:'nextday', v:'van', m:'Bronze', checked:562, working:392, bot:19, review_alone:0},
+    {bt:'nextday', v:'van', m:'Gold', checked:862, working:669, bot:28, review_alone:5},
     {bt:'nextday', v:'van', m:'None', checked:2, working:0, bot:0, review_alone:0},
-    {bt:'nextday', v:'van', m:'Platinum', checked:13, working:0, bot:0, review_alone:0},
-    {bt:'nextday', v:'van', m:'Silver', checked:14, working:0, bot:0, review_alone:0},
-    {bt:'ondemand', v:'mudou', m:'Bronze', checked:122, working:32, bot:1, review_alone:0},
-    {bt:'ondemand', v:'mudou', m:'Gold', checked:222, working:106, bot:3, review_alone:0},
-    {bt:'ondemand', v:'mudou', m:'Platinum', checked:13, working:8, bot:0, review_alone:0},
+    {bt:'nextday', v:'van', m:'Platinum', checked:12, working:9, bot:0, review_alone:0},
+    {bt:'nextday', v:'van', m:'Silver', checked:14, working:11, bot:2, review_alone:0},
+    {bt:'ondemand', v:'mudou', m:'Bronze', checked:108, working:36, bot:1, review_alone:0},
+    {bt:'ondemand', v:'mudou', m:'Gold', checked:215, working:117, bot:5, review_alone:0},
+    {bt:'ondemand', v:'mudou', m:'Platinum', checked:12, working:9, bot:0, review_alone:0},
     {bt:'ondemand', v:'mudou', m:'Silver', checked:3, working:2, bot:0, review_alone:0},
-    {bt:'ondemand', v:'mudou9', m:'Bronze', checked:192, working:38, bot:2, review_alone:0},
-    {bt:'ondemand', v:'mudou9', m:'Gold', checked:328, working:173, bot:8, review_alone:0},
-    {bt:'ondemand', v:'mudou9', m:'Platinum', checked:14, working:6, bot:0, review_alone:0},
-    {bt:'ondemand', v:'mudou9', m:'Silver', checked:5, working:3, bot:0, review_alone:0},
-    {bt:'ondemand', v:'van', m:'Bronze', checked:2869, working:1302, bot:42, review_alone:1},
-    {bt:'ondemand', v:'van', m:'Gold', checked:2331, working:1607, bot:71, review_alone:12},
+    {bt:'ondemand', v:'mudou9', m:'Bronze', checked:177, working:44, bot:2, review_alone:0},
+    {bt:'ondemand', v:'mudou9', m:'Gold', checked:322, working:178, bot:8, review_alone:0},
+    {bt:'ondemand', v:'mudou9', m:'Platinum', checked:13, working:6, bot:0, review_alone:0},
+    {bt:'ondemand', v:'mudou9', m:'Silver', checked:4, working:3, bot:0, review_alone:0},
+    {bt:'ondemand', v:'van', m:'Bronze', checked:2709, working:1332, bot:43, review_alone:1},
+    {bt:'ondemand', v:'van', m:'Gold', checked:2285, working:1579, bot:72, review_alone:12},
     {bt:'ondemand', v:'van', m:'None', checked:11, working:2, bot:0, review_alone:0},
-    {bt:'ondemand', v:'van', m:'Platinum', checked:32, working:20, bot:1, review_alone:0},
-    {bt:'ondemand', v:'van', m:'Silver', checked:43, working:19, bot:1, review_alone:0},
-    {bt:'sameday', v:'mudou', m:'Bronze', checked:75, working:0, bot:0, review_alone:0},
-    {bt:'sameday', v:'mudou', m:'Gold', checked:178, working:0, bot:0, review_alone:0},
-    {bt:'sameday', v:'mudou', m:'Platinum', checked:11, working:0, bot:0, review_alone:0},
-    {bt:'sameday', v:'mudou', m:'Silver', checked:3, working:0, bot:0, review_alone:0},
-    {bt:'sameday', v:'mudou9', m:'Bronze', checked:115, working:0, bot:0, review_alone:0},
-    {bt:'sameday', v:'mudou9', m:'Gold', checked:244, working:1, bot:0, review_alone:0},
-    {bt:'sameday', v:'mudou9', m:'Platinum', checked:10, working:0, bot:0, review_alone:0},
-    {bt:'sameday', v:'mudou9', m:'Silver', checked:3, working:0, bot:0, review_alone:0},
-    {bt:'sameday', v:'van', m:'Bronze', checked:1692, working:2, bot:0, review_alone:0},
-    {bt:'sameday', v:'van', m:'Gold', checked:1779, working:4, bot:0, review_alone:0},
-    {bt:'sameday', v:'van', m:'None', checked:8, working:0, bot:0, review_alone:0},
-    {bt:'sameday', v:'van', m:'Platinum', checked:23, working:0, bot:0, review_alone:0},
-    {bt:'sameday', v:'van', m:'Silver', checked:32, working:0, bot:0, review_alone:0},
+    {bt:'ondemand', v:'van', m:'Platinum', checked:29, working:18, bot:1, review_alone:0},
+    {bt:'ondemand', v:'van', m:'Silver', checked:40, working:21, bot:2, review_alone:0},
+    {bt:'sameday', v:'mudou', m:'Bronze', checked:61, working:29, bot:1, review_alone:0},
+    {bt:'sameday', v:'mudou', m:'Gold', checked:163, working:103, bot:4, review_alone:0},
+    {bt:'sameday', v:'mudou', m:'Platinum', checked:10, working:8, bot:0, review_alone:0},
+    {bt:'sameday', v:'mudou', m:'Silver', checked:3, working:2, bot:0, review_alone:0},
+    {bt:'sameday', v:'mudou9', m:'Bronze', checked:87, working:33, bot:0, review_alone:0},
+    {bt:'sameday', v:'mudou9', m:'Gold', checked:221, working:154, bot:7, review_alone:0},
+    {bt:'sameday', v:'mudou9', m:'Platinum', checked:10, working:5, bot:0, review_alone:0},
+    {bt:'sameday', v:'mudou9', m:'Silver', checked:3, working:3, bot:0, review_alone:0},
+    {bt:'sameday', v:'van', m:'Bronze', checked:1420, working:1009, bot:40, review_alone:1},
+    {bt:'sameday', v:'van', m:'Gold', checked:1596, working:1302, bot:61, review_alone:11},
+    {bt:'sameday', v:'van', m:'None', checked:6, working:1, bot:0, review_alone:0},
+    {bt:'sameday', v:'van', m:'Platinum', checked:20, working:15, bot:1, review_alone:0},
+    {bt:'sameday', v:'van', m:'Silver', checked:27, working:19, bot:2, review_alone:0}
   ];
   const BT_LABEL = {ondemand:'On Demand', sameday:'Same Day', nextday:'Next Day'};
   const V2 = {
@@ -1211,7 +1213,7 @@ body.show-v2 a[data-s="s4"]{display:none !important}
     if(el('k-pool')) el('k-pool').textContent = s.working > 0 ? fmt(s.working) : 'None';
     const kPoolSub = el('k-pool-sub');
     if(kPoolSub) kPoolSub.innerHTML = s.working > 0
-      ? `${fmt(s.working)} of ${fmt(s.checked)} checked drivers (${workPct}%) — took 30+ orders, finished 30+${booking !== 'all' ? ' in this booking type' : ''} in the <b>30d</b>${sliceNote}`
+      ? `${fmt(s.working)} of ${fmt(s.checked)} checked drivers (${workPct}%) — met mart activity rules (meets_minimum_activity_rules)${booking !== 'all' ? ' · also had ≥1 assigned in this booking type' : ''} in the <b>30d</b>${sliceNote}`
       : `no drivers met these trip counts in this slice${sliceNote}`;
     const kTotalSub = el('k-total-sub');
     if(kTotalSub) kTotalSub.innerHTML = sliceBits.length
@@ -1259,12 +1261,9 @@ body.show-v2 a[data-s="s4"]{display:none !important}
     }
     const s3intro = el('s3-intro-sub');
     if(s3intro){
-      const gapNote = (booking !== 'all' && s.bot !== full.bot)
-        ? ` Full July bot pool is still <b>${fmt(full.bot)}</b> — the gap is bots who do <b>not</b> meet “30+ assigned &amp; 30+ finished” <b>inside this booking type</b> alone.`
-        : '';
       s3intro.innerHTML =
-        `Bot spotting is done. In this view we show <b>${fmt(s.bot)}</b> bot drivers (3-second rule)${sliceNote}.${gapNote} ` +
-        `Priority bands below stay on the <b>full</b> July bot pool (<b>${fmt(full.bot)}</b>). ` +
+        `Bot spotting is done. In this view: <b>${fmt(s.bot)}</b> bot drivers (3-second rule · same mart flags as All)${sliceNote}. ` +
+        `Priority bands below = full July bot pool (<b>${fmt(full.bot)}</b>). ` +
         `Each driver sits in <b>one</b> review band. <b>Extreme case</b> (${fmt(full.review_alone)} drivers) comes first — <b>not scored</b> (not in the max-8 sum). ` +
         `Remaining drivers use Review Priority = Assigned (0–2) + Release (0–4) + Cancel (0–2) → max 8 → bands <b>6–8 / 4–5 / 0–3</b>. ` +
         `Detail: <a href="#v2-rule-8">Assigned &amp; Release</a> · <a href="#v2-rule-7">Cancel</a>. ` +
