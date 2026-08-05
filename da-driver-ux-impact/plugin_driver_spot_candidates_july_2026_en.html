@@ -632,7 +632,7 @@ body.show-v2 a[data-s="s4"]{display:none !important}
     <b>Released vs driver cancel</b> — <b>Released</b> = driver took the order then <b>released</b> it back to the pool (<code>event_type_cd = 4</code>, <code>actor_type = 'Driver'</code>). <b>Driver cancel</b> (used in Cancel rate) = driver cancelled the order (<code>event_type_cd = 3</code>, <code>actor_type = 'Driver'</code>). Release returns the order to the pool; cancel ends the order. Pool entry does <b>not</b> require a release.<br>
     <b>Who gets a score</b> — in this 30d: must <b>took ≥30 orders</b> (<code>orders_assigned_30d</code>), <b>finished ≥30</b> (<code>orders_completed_30d</code>), not OA. If any rule fails → <code>outside_analysis_pool</code> (not scored yet; can still work).<br>
     <b>Bot pool</b> — 2+ different grace-drops (grabbed then let go fast, <code>event_type_cd = 21</code>) in the same <b>3 seconds</b> (<code>is_bot_pool_v2</code>). Review bands = Extreme case (not scored) + Assigned (0–2) + Release (0–4) + Cancel (0–2) → max 8.<br>
-    <b>Filters = 細拆 of bot pool (134)</b> — Booking / Vehicle / Membership all break down the same <b>134</b> bots. Booking = each bot’s <b>primary</b> booking (most assigned in July; tie → On Demand); On Demand + Same Day + Next Day = 134. Vehicle van + mudou + mudou9 = 134. Membership tiers = 134. ③④ follow all three; ①② follow Vehicle / Membership only.
+    <b>How to read filters</b> — <b>Figure 1 (①–④) = driver totals</b>. <b>Vehicle / Membership</b> = 細拆 the <b>134 bot drivers</b> (and the checked/working universe): van + mudou + mudou9 = 134; membership tiers = 134. <b>Booking</b> = 細拆 <b>released orders</b> among those bots (On Demand / Same Day / Next Day %); each order once; <b>sums to 100%</b> — not 134 people. Booking does <b>not</b> change ①–④.
   </div>
 
   <div class="filterbar">
@@ -665,9 +665,8 @@ body.show-v2 a[data-s="s4"]{display:none !important}
     <button class="clearbtn" id="clearf">Reset</button>
   </div>
   <p id="booking-breakdown" class="sub" style="margin:8px 0 12px;padding:10px 12px;background:var(--neutbg);border-radius:8px;border-left:3px solid var(--blue)">
-    <b>Filters = 細拆 of the 134 bot drivers</b> — Booking / Vehicle / Membership each partition the bot pool (must add up).
-    Booking primary = most assigned orders in that booking type (tie → On Demand). ①② = Vehicle/Membership driver universe; ③④ = all three filters on the bot pool.
-    <span id="bt-break-text" style="display:block;margin-top:4px"></span>
+    <b>細拆 (read this)</b> — Figure 1 above = totals. Use filters to break them down.
+    <span id="bt-break-text" style="display:block;margin-top:6px;line-height:1.55"></span>
   </p>
 
   <!-- TIERS (= Step 2 harm scoring — one block, not two) -->
@@ -1107,21 +1106,31 @@ body.show-v2 a[data-s="s4"]{display:none !important}
     {v:'van', m:'Platinum', checked:33, working:18, bot:1, review_alone:0},
     {v:'van', m:'Silver', checked:43, working:21, bot:2, review_alone:0},
   ];
-  // All filters = 細拆 of the 134 bot drivers (must reconcile to 134).
-  // Booking primary = booking_type with most assigned (event_type_cd=2) in July; tie → On Demand.
-  // OD+SD+ND = 134; van+mudou+mudou9 = 134; membership tiers = 134.
-  // (queried 2026-08-05, HK TRANSPORT, 30d 2026-07-01 to 2026-07-31; OA excluded)
-  const V2_BOT_PRIMARY = [
-    {bt:'nextday', v:'van', m:'Bronze', bot:1, review_alone:0},
-    {bt:'nextday', v:'van', m:'Silver', bot:1, review_alone:0},
-    {bt:'ondemand', v:'mudou', m:'Bronze', bot:1, review_alone:0},
-    {bt:'ondemand', v:'mudou', m:'Gold', bot:5, review_alone:0},
-    {bt:'ondemand', v:'mudou9', m:'Bronze', bot:2, review_alone:0},
-    {bt:'ondemand', v:'mudou9', m:'Gold', bot:8, review_alone:0},
-    {bt:'ondemand', v:'van', m:'Bronze', bot:42, review_alone:1},
-    {bt:'ondemand', v:'van', m:'Gold', bot:72, review_alone:12},
-    {bt:'ondemand', v:'van', m:'Platinum', bot:1, review_alone:0},
-    {bt:'ondemand', v:'van', m:'Silver', bot:1, review_alone:0}
+  // Booking = ORDER mix among bot drivers' released orders (sums 100%). Not driver headcount.
+  // Vehicle / Membership driver KPIs = V2_SLICES from mart (bot counts sum to 134).
+  // (queried 2026-08-05, HK TRANSPORT, 30d 2026-07-01 to 2026-07-31; OA excluded; release = event_type_cd=4 + Driver)
+  const V2_BT_RELEASE_MIX = [
+    {v:'mudou', m:'Bronze', bt:'nextday', n:1},
+    {v:'mudou', m:'Bronze', bt:'ondemand', n:28},
+    {v:'mudou', m:'Bronze', bt:'sameday', n:1},
+    {v:'mudou', m:'Gold', bt:'nextday', n:27},
+    {v:'mudou', m:'Gold', bt:'ondemand', n:84},
+    {v:'mudou', m:'Gold', bt:'sameday', n:14},
+    {v:'mudou9', m:'Bronze', bt:'ondemand', n:11},
+    {v:'mudou9', m:'Gold', bt:'nextday', n:23},
+    {v:'mudou9', m:'Gold', bt:'ondemand', n:221},
+    {v:'mudou9', m:'Gold', bt:'sameday', n:25},
+    {v:'van', m:'Bronze', bt:'nextday', n:38},
+    {v:'van', m:'Bronze', bt:'ondemand', n:1153},
+    {v:'van', m:'Bronze', bt:'sameday', n:38},
+    {v:'van', m:'Gold', bt:'nextday', n:84},
+    {v:'van', m:'Gold', bt:'ondemand', n:2473},
+    {v:'van', m:'Gold', bt:'sameday', n:94},
+    {v:'van', m:'Platinum', bt:'ondemand', n:75},
+    {v:'van', m:'Platinum', bt:'sameday', n:2},
+    {v:'van', m:'Silver', bt:'nextday', n:77},
+    {v:'van', m:'Silver', bt:'ondemand', n:45},
+    {v:'van', m:'Silver', bt:'sameday', n:3}
   ];
   const BT_LABEL = {ondemand:'On Demand', sameday:'Same Day', nextday:'Next Day'};
   const V2 = {
@@ -1143,7 +1152,6 @@ body.show-v2 a[data-s="s4"]{display:none !important}
     return d ? Math.round(n / d * 1000) / 10 : 0;
   }
   function v2Slice(vehicle, membership){
-    // ①② driver universe — Vehicle × Membership (mart)
     const rows = V2_SLICES.filter(r =>
       (vehicle === 'all' || r.v === vehicle) &&
       (membership === 'all' || r.m === membership)
@@ -1155,36 +1163,16 @@ body.show-v2 a[data-s="s4"]{display:none !important}
       review_alone: a.review_alone + r.review_alone,
     }), {checked:0, working:0, bot:0, review_alone:0});
   }
-  function v2BotBreak(vehicle, membership, booking){
-    // ③④ 細拆 of 134 bots — Booking = primary (mutually exclusive)
-    const rows = V2_BOT_PRIMARY.filter(r =>
-      (booking === 'all' || r.bt === booking) &&
+  function btReleaseMix(vehicle, membership){
+    const rows = V2_BT_RELEASE_MIX.filter(r =>
       (vehicle === 'all' || r.v === vehicle) &&
       (membership === 'all' || r.m === membership)
     );
-    return rows.reduce((a, r) => ({
-      bot: a.bot + r.bot,
-      review_alone: a.review_alone + r.review_alone,
-    }), {bot:0, review_alone:0});
+    const out = {ondemand:0, sameday:0, nextday:0, total:0};
+    rows.forEach(r => { out[r.bt] = (out[r.bt]||0) + r.n; out.total += r.n; });
+    return out;
   }
-  function botDimTotals(vehicle, membership){
-    const rows = V2_BOT_PRIMARY.filter(r =>
-      (vehicle === 'all' || r.v === vehicle) &&
-      (membership === 'all' || r.m === membership)
-    );
-    const byBt = {ondemand:0, sameday:0, nextday:0};
-    const byV = {van:0, mudou:0, mudou9:0};
-    const byM = {Platinum:0, Gold:0, Silver:0, Bronze:0, None:0};
-    let total = 0;
-    rows.forEach(r => {
-      byBt[r.bt] = (byBt[r.bt]||0) + r.bot;
-      byV[r.v] = (byV[r.v]||0) + r.bot;
-      byM[r.m] = (byM[r.m]||0) + r.bot;
-      total += r.bot;
-    });
-    return {byBt, byV, byM, total};
-  }
-  function pct0(n, d){ return d ? Math.round(n / d * 100) : 0; }
+function pct0(n, d){ return d ? Math.round(n / d * 100) : 0; }
   function fmt(n){
     return (n==null || n==='') ? '—' : Number(n).toLocaleString('en-US');
   }
@@ -1200,46 +1188,43 @@ body.show-v2 a[data-s="s4"]{display:none !important}
     const vehicle = (typeof fV !== 'undefined' && fV) ? fV : 'all';
     const membership = (typeof fM !== 'undefined' && fM) ? fM : 'all';
     const booking = (typeof fBT !== 'undefined' && fBT) ? fBT : 'all';
-    const uni = v2Slice(vehicle, membership); // ①②
-    const botsVM = v2BotBreak(vehicle, membership, 'all'); // bots in V×M (=134 when All/All)
-    const bb = v2BotBreak(vehicle, membership, booking); // ③④ after Booking 細拆
-    const fullBots = v2BotBreak('all', 'all', 'all');
-    const s = {
-      checked: uni.checked,
-      working: uni.working,
-      bot: bb.bot,
-      review_alone: bb.review_alone,
-      bots_in_vm: botsVM.bot,
-    };
+    // Figure 1 KPI = Vehicle × Membership only (Booking is order-% 細拆, does not change cards)
+    const s = v2Slice(vehicle, membership);
+    const full = v2Slice('all', 'all');
+    const mix = btReleaseMix(vehicle, membership);
     const botPct = pct1(s.bot, s.working);
-    const botOfPoolPct = pct1(s.bot, s.bots_in_vm || fullBots.bot);
     const raPct = pct1(s.review_alone, s.bot);
     const workPct = pct1(s.working, s.checked);
-    const nonBot = Math.max(0, uni.working - uni.bot); // Step1 uses V×M bot total, not booking slice
-    const nonBotPct = pct1(nonBot, uni.working);
-    const sliceBits = [];
-    if(booking !== 'all') sliceBits.push(BT_LABEL[booking] || booking);
-    if(vehicle !== 'all') sliceBits.push(vehicle);
-    if(membership !== 'all') sliceBits.push(membership);
-    const sliceNote = sliceBits.length ? ` · filter: ${sliceBits.join(' + ')}` : '';
+    const nonBot = Math.max(0, s.working - s.bot);
+    const nonBotPct = pct1(nonBot, s.working);
     const vmBits = [];
     if(vehicle !== 'all') vmBits.push(vehicle);
     if(membership !== 'all') vmBits.push(membership);
     const vmNote = vmBits.length ? ` · filter: ${vmBits.join(' + ')}` : '';
+    const sliceNote = vmNote; // KPI cards ignore Booking
 
-    const dims = botDimTotals(vehicle, membership);
-    const btLine = `On Demand ${fmt(dims.byBt.ondemand||0)} · Same Day ${fmt(dims.byBt.sameday||0)} · Next Day ${fmt(dims.byBt.nextday||0)} (=${fmt(dims.total)})`;
-    const vLine = `van ${fmt(dims.byV.van||0)} · mudou ${fmt(dims.byV.mudou||0)} · mudou9 ${fmt(dims.byV.mudou9||0)} (=${fmt(dims.total)})`;
-    const mLine = `Gold ${fmt(dims.byM.Gold||0)} · Bronze ${fmt(dims.byM.Bronze||0)} · Silver ${fmt(dims.byM.Silver||0)} · Platinum ${fmt(dims.byM.Platinum||0)} · None ${fmt(dims.byM.None||0)} (=${fmt(dims.total)})`;
-    setTxt('meta-od-share', `On Demand ${dims.byBt.ondemand||0}, Same Day ${dims.byBt.sameday||0}, Next Day ${dims.byBt.nextday||0} (sum ${dims.total} bots)`);
+    // Vehicle / Membership 細拆 of bots (from mart slices) — must sum to bot total in scope
+    const vParts = ['van','mudou','mudou9'].map(v => ({k:v, n:v2Slice(v, membership).bot}));
+    const mParts = ['Platinum','Gold','Silver','Bronze','None'].map(m => ({k:m, n:v2Slice(vehicle, m).bot}));
+    const vSum = vParts.reduce((a,x)=>a+x.n,0);
+    const mSum = mParts.reduce((a,x)=>a+x.n,0);
+    const odP = pct0(mix.ondemand, mix.total), sdP = pct0(mix.sameday, mix.total), ndP = pct0(mix.nextday, mix.total);
+    const mixLine = mix.total
+      ? `${odP}% On Demand (${fmt(mix.ondemand)}) · ${sdP}% Same Day (${fmt(mix.sameday)}) · ${ndP}% Next Day (${fmt(mix.nextday)}) · <b>sum 100%</b> · ${fmt(mix.total)} released orders`
+      : 'no released orders among bots in this Vehicle/Membership slice';
+    setTxt('meta-od-share', mix.total ? `${odP}% On Demand, ${sdP}% Same Day, ${ndP}% Next Day` : '—');
     const btBreak = el('bt-break-text');
     if(btBreak){
+      let sel = '';
+      if(booking !== 'all'){
+        const nSel = mix[booking] || 0;
+        sel = `<br>Booking selected <b>${BT_LABEL[booking]}</b>: <b>${fmt(nSel)}</b> / ${fmt(mix.total)} released (<b>${pct0(nSel, mix.total)}%</b>). Cards ①–④ stay the driver totals above.`;
+      }
       btBreak.innerHTML =
-        `<b>Filters 細拆 the bot pool</b> — numbers must add up. Scope now: <b>${fmt(dims.total)}</b> / ${fmt(fullBots.bot)} bots.` +
-        `<br>Booking (primary by assigned): ${btLine}` +
-        `<br>Vehicle: ${vLine}` +
-        `<br>Membership: ${mLine}` +
-        (sliceBits.length ? `<br>③ after filters: <b>${fmt(s.bot)}</b>${sliceNote}.` : '');
+        `<b>Vehicle</b> (bot drivers; must add up): van ${fmt(v2Slice('van', membership).bot)} · mudou ${fmt(v2Slice('mudou', membership).bot)} · mudou9 ${fmt(v2Slice('mudou9', membership).bot)} · <b>= ${fmt(vSum)}</b>${membership!=='all'?` (within ${membership})`:''}` +
+        `<br><b>Membership</b> (bot drivers; must add up): Platinum ${fmt(v2Slice(vehicle,'Platinum').bot)} · Gold ${fmt(v2Slice(vehicle,'Gold').bot)} · Silver ${fmt(v2Slice(vehicle,'Silver').bot)} · Bronze ${fmt(v2Slice(vehicle,'Bronze').bot)} · None ${fmt(v2Slice(vehicle,'None').bot)} · <b>= ${fmt(mSum)}</b>${vehicle!=='all'?` (within ${vehicle})`:''}` +
+        `<br><b>Booking</b> (released orders among bots in this Vehicle/Membership; <b>sum 100%</b>, not 134 people): ${mixLine}` +
+        sel;
     }
 
     if(el('k-total')) el('k-total').textContent = fmt(s.checked);
@@ -1249,13 +1234,13 @@ body.show-v2 a[data-s="s4"]{display:none !important}
       ? `${fmt(s.working)} of ${fmt(s.checked)} checked drivers (${workPct}%) — met mart activity rules (meets_minimum_activity_rules) in the <b>30d</b>${vmNote}`
       : `no drivers met these trip counts in this slice${vmNote}`;
     const kTotalSub = el('k-total-sub');
-    if(kTotalSub) kTotalSub.innerHTML = sliceBits.length
-      ? `public-pool truck drivers in this slice${sliceNote}`
+    if(kTotalSub) kTotalSub.innerHTML = vmBits.length
+      ? `public-pool truck drivers in this slice${vmNote}`
       : `all public-pool truck drivers — went online or did some work in the <b>30d</b> (${V2.cohortLabel})`;
     if(el('k-botpool')) el('k-botpool').textContent = s.bot > 0 ? fmt(s.bot) : 'None';
     if(el('k-botsub')) el('k-botsub').innerHTML = s.bot > 0
-      ? `grabbed &amp; let go of 2+ different orders in the same <b>${V2.windowSec} seconds</b> · <b>${fmt(s.bot)}</b> of <b>${fmt(s.bots_in_vm)}</b> bots in Vehicle/Membership (${botOfPoolPct}%)${sliceNote} · also ${fmt(s.bot)} of ${fmt(s.working)} working (${botPct}%) · (queried ${V2.queried})`
-      : `no bot-pool drivers in this slice${sliceNote} · (queried ${V2.queried})`;
+      ? `grabbed &amp; let go of 2+ different orders in the same <b>${V2.windowSec} seconds</b> · ${fmt(s.bot)} of ${fmt(s.working)} working drivers (${botPct}%) · bot pool${vmNote} · (queried ${V2.queried})`
+      : `no bot-pool drivers in this slice${vmNote} · (queried ${V2.queried})`;
     if(el('k-flag')) el('k-flag').textContent = s.review_alone > 0 ? fmt(s.review_alone) : 'None';
     if(el('hl-flag')) el('hl-flag').textContent = s.review_alone > 0 ? fmt(s.review_alone) : 'None';
     if(el('k-flag-lbl')) el('k-flag-lbl').textContent = '④ Extreme case (not scored)';
@@ -1266,36 +1251,35 @@ body.show-v2 a[data-s="s4"]{display:none !important}
     setTxt('summary-teaser', s.review_alone > 0
       ? `— ${fmt(s.review_alone)} Extreme case`
       : (s.bot > 0 ? '— no Extreme case in this slice' : '— no bot pool in this slice'));
-    if(el('bot-ok-n')) el('bot-ok-n').textContent = `${fmt(nonBot)} / ${fmt(uni.working)}`;
+    if(el('bot-ok-n')) el('bot-ok-n').textContent = `${fmt(nonBot)} / ${fmt(s.working)}`;
     if(el('bot-ok-sub')) el('bot-ok-sub').textContent =
       `Never dropped 2+ different orders in the same ${V2.windowSec} seconds (${nonBotPct}%)${vmNote}`;
-    if(el('bot-check-n')) el('bot-check-n').textContent = `${fmt(uni.bot)} / ${fmt(uni.working)}`;
+    if(el('bot-check-n')) el('bot-check-n').textContent = `${fmt(s.bot)} / ${fmt(s.working)}`;
     if(el('bot-check-sub')) el('bot-check-sub').textContent =
-      `Dropped 2+ different orders in the same ${V2.windowSec} seconds (${pct1(uni.bot, uni.working)}%)${vmNote}`;
+      `Dropped 2+ different orders in the same ${V2.windowSec} seconds (${botPct}%)${vmNote}`;
     if(be) be.innerHTML =
       `<b>We flag drivers who drop 2+ different orders in the same <b>${V2.windowSec} seconds</b>.</b><br>`+
-      `Dropping 2+ different orders in that window = suspected bot driver. Bot pool = <b>${fmt(uni.bot)}</b> / ${fmt(uni.working)} (${pct1(uni.bot, uni.working)}%)${vmNote}. ③ after Booking filter = <b>${fmt(s.bot)}</b>${sliceNote}.`+
+      `Dropping 2+ different orders in that window = suspected bot driver. Bot pool = <b>${fmt(s.bot)}</b> / ${fmt(s.working)} (${botPct}%)${vmNote}.`+
       `<div class="notthis">Not this: how long one order took. Not this: “one order per second.”</div>`;
     if(br) br.innerHTML =
       `Rule window = <b>${V2.windowSec} seconds</b> (bot pool). 1 / 2 / 4 / 6 sec = compare only. (queried ${V2.queried} · HK TRANSPORT · 30d ${V2.cohortCode})`;
     const fh = el('funnel-hnote');
     if(fh) fh.innerHTML =
-      `<b>Bot spotting ends at the bot pool (bar 3).</b> The 3-second rule — <span id="funnel-botpool">${s.bot > 0 ? fmt(s.bot) : 'None'}</span> / ${fmt(s.working)} working drivers (${botPct}%)${sliceNote}. ` +
-      `<a href="#s3">③ Review priority</a> then ranks drivers inside the <b>full</b> July bot pool (Assigned + Release + Cancel → max 8). ` +
+      `<b>Bot spotting ends at the bot pool (bar 3).</b> The 3-second rule — <span id="funnel-botpool">${s.bot > 0 ? fmt(s.bot) : 'None'}</span> / ${fmt(s.working)} working drivers (${botPct}%)${vmNote}. ` +
+      `<a href="#s3">③ Review priority</a> then ranks drivers inside this pool (Assigned + Release + Cancel → max 8). ` +
       `(queried ${V2.queried}, HK TRANSPORT, 30d ${V2.cohortCode})`;
-    const full = v2Slice('all', 'all');
     const fullBotPct = pct1(full.bot, full.working);
     const s3teaser = el('s3-teaser');
     if(s3teaser){
       s3teaser.textContent = s.bot > 0
-        ? `— 3 sec · ${fmt(s.bot)} drivers${sliceNote}`
-        : `— 3 sec · none in this slice${sliceNote}`;
+        ? `— 3 sec · ${fmt(s.bot)} drivers${vmNote}`
+        : `— 3 sec · none in this slice${vmNote}`;
     }
     const s3intro = el('s3-intro-sub');
     if(s3intro){
       s3intro.innerHTML =
-        `Bot spotting is done. Driver total in this view: <b>${fmt(s.bot)}</b> bot drivers (3-second rule)${sliceNote}. ` +
-        `Filters above 細拆 this bot pool (Booking primary / Vehicle / Membership — each must add up). ` +
+        `Bot spotting is done. In this view: <b>${fmt(s.bot)}</b> bot drivers (3-second rule)${vmNote}. ` +
+        `<b>Vehicle / Membership</b> 細拆 the 134 bot drivers (must add up). <b>Booking</b> 細拆 their <b>released orders</b> (OD/SD/ND % sum to 100%) — it does not change this driver count. ` +
         `Priority bands below = full July bot pool (<b>${fmt(full.bot)}</b>). ` +
         `Each driver sits in <b>one</b> review band. <b>Extreme case</b> (${fmt(full.review_alone)} drivers) comes first — <b>not scored</b> (not in the max-8 sum). ` +
         `Remaining drivers use Review Priority = Assigned (0–2) + Release (0–4) + Cancel (0–2) → max 8 → bands <b>6–8 / 4–5 / 0–3</b>. ` +
@@ -1322,7 +1306,7 @@ body.show-v2 a[data-s="s4"]{display:none !important}
     if(cell3n) cell3n.textContent = `${fmt(fullNonBot)} (${fullNonBotPct}%)`;
     const note = document.getElementById('sbot-table1-note-text');
     if(note) note.innerHTML =
-      `Base = <b>${fmt(full.working)}</b> drivers who took ≥30 and finished ≥30 orders (not OA). Each column is that driver’s <b>fastest</b> window of that length — <b>not</b> average pace, and <b>not</b> “one order per second.” <b>Rule = 3-second column</b>: bot pool = <b>${fmt(full.bot)}</b> / ${fmt(full.working)} (${fullBotPct}%) from <code>mart_cheat_app_driver_review_priority_july_2026</code>. Other columns are compare only. ①② follow Vehicle / Membership; ③④ follow Booking + Vehicle + Membership (細拆 of 134). (queried ${V2.queried} · HK TRANSPORT · 30d ${V2.cohortCode})`;
+      `Base = <b>${fmt(full.working)}</b> drivers who took ≥30 and finished ≥30 orders (not OA). Each column is that driver’s <b>fastest</b> window of that length — <b>not</b> average pace, and <b>not</b> “one order per second.” <b>Rule = 3-second column</b>: bot pool = <b>${fmt(full.bot)}</b> / ${fmt(full.working)} (${fullBotPct}%) from <code>mart_cheat_app_driver_review_priority_july_2026</code>. Other columns are compare only. ①–④ follow Vehicle / Membership; Booking is released-order mix among bots (sums 100%). (queried ${V2.queried} · HK TRANSPORT · 30d ${V2.cohortCode})`;
     const teaser = document.querySelector('[data-target="sbot-detail-table"] .rs-teaser');
     if(teaser) teaser.textContent = '— rule = 3 sec';
 
