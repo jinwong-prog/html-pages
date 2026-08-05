@@ -1401,19 +1401,7 @@ function pct0(n, d){ return d ? Math.round(n / d * 100) : 0; }
         if(typeof applyVersion2Numbers === 'function') applyVersion2Numbers();
       });
     }
-    function setBookingBreakdownOpen(open){
-      const body = document.getElementById('booking-breakdown-body');
-      if(!body) return;
-      body.style.display = open ? '' : 'none';
-      document.querySelectorAll('.showbar[data-target="booking-breakdown-body"]').forEach(bar=>{
-        bar.textContent = open ? 'Collapse ▴' : 'Expand ▾';
-      });
-    }
-    bindSeg('seg-bt', b => {
-      fBT = b.dataset.bt || 'all';
-      // Booking does not change KPI cards — open the breakdown so the click is visible
-      if(fBT !== 'all') setBookingBreakdownOpen(true);
-    });
+    bindSeg('seg-bt', b => { fBT = b.dataset.bt || 'all'; });
     bindSeg('seg-v', b => { fV = b.dataset.v || 'all'; });
     bindSeg('seg-m', b => { fM = b.dataset.m || 'all'; });
     const clearf = document.getElementById('clearf');
@@ -1427,7 +1415,6 @@ function pct0(n, d){ return d ? Math.round(n / d * 100) : 0; }
         if(aV) aV.classList.add('on');
         if(aM) aM.classList.add('on');
         if(aB) aB.classList.add('on');
-        setBookingBreakdownOpen(false);
         if(typeof applyVersion2Numbers === 'function') applyVersion2Numbers();
       });
     }
