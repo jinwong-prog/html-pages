@@ -669,11 +669,11 @@ body.show-v2 a[data-s="s4"]{display:none !important}
   <a id="harm-start"></a>
   <div id="s3-s4-layout">
   <div class="sect-head" id="s3-head">
-    <h2 id="s3" class="sectoggle" data-target="s3-intro-body" role="button" tabindex="0">③ Review priority of suspected bot drivers <span class="rs-teaser">— 3 sec · 134 drivers</span></h2>
+    <h2 id="s3" class="sectoggle" data-target="s3-intro-body" role="button" tabindex="0">③ Review priority of suspected bot drivers <span class="rs-teaser" id="s3-teaser">— 3 sec · 134 drivers</span></h2>
     <span class="showbar showlabel" data-target="s3-intro-body" role="button" tabindex="0">More ▾</span>
   </div>
   <div id="s3-intro-body" style="display:none">
-    <p class="sub">Bot spotting is done. We score the <b>134</b> bot drivers (3-second rule). Each driver sits in <b>one</b> review band. <b>Extreme case</b> (13 drivers) comes first — <b>not scored</b> (not in the max-8 sum). Remaining drivers use Review Priority = Assigned (0–2) + Release (0–4) + Cancel (0–2) → max 8 → bands <b>6–8 / 4–5 / 0–3</b>. Detail: <a href="#v2-rule-8">Assigned &amp; Release</a> · <a href="#v2-rule-7">Cancel</a>. (queried 2026-08-04, HK TRANSPORT, 30d 2026-07-01 to 2026-07-31)</p>
+    <p class="sub" id="s3-intro-sub">Bot spotting is done. We score the <b>134</b> bot drivers (3-second rule). Each driver sits in <b>one</b> review band. <b>Extreme case</b> (13 drivers) comes first — <b>not scored</b> (not in the max-8 sum). Remaining drivers use Review Priority = Assigned (0–2) + Release (0–4) + Cancel (0–2) → max 8 → bands <b>6–8 / 4–5 / 0–3</b>. Detail: <a href="#v2-rule-8">Assigned &amp; Release</a> · <a href="#v2-rule-7">Cancel</a>. (queried 2026-08-04, HK TRANSPORT, 30d 2026-07-01 to 2026-07-31)</p>
   </div>
 
 
@@ -1102,9 +1102,54 @@ body.show-v2 a[data-s="s4"]{display:none !important}
     {v:'van', m:'Platinum', checked:33, working:18, bot:1, review_alone:0},
     {v:'van', m:'Silver', checked:43, working:21, bot:2, review_alone:0},
   ];
+  // Booking × Vehicle × Membership — working / bot counted inside that booking type
+  // (≥30 assigned & ≥30 completed in that booking; bot flag from July mart)
+  // (queried 2026-08-05, HK TRANSPORT, 30d 2026-07-01 to 2026-07-31; OA excluded via event_type_cd=26)
+  const V2_BT_SLICES = [
+    {bt:'nextday', v:'mudou', m:'Bronze', checked:38, working:1, bot:0, review_alone:0},
+    {bt:'nextday', v:'mudou', m:'Gold', checked:131, working:0, bot:0, review_alone:0},
+    {bt:'nextday', v:'mudou', m:'Platinum', checked:10, working:0, bot:0, review_alone:0},
+    {bt:'nextday', v:'mudou', m:'Silver', checked:2, working:0, bot:0, review_alone:0},
+    {bt:'nextday', v:'mudou9', m:'Bronze', checked:56, working:0, bot:0, review_alone:0},
+    {bt:'nextday', v:'mudou9', m:'Gold', checked:173, working:0, bot:0, review_alone:0},
+    {bt:'nextday', v:'mudou9', m:'Platinum', checked:9, working:0, bot:0, review_alone:0},
+    {bt:'nextday', v:'mudou9', m:'Silver', checked:2, working:0, bot:0, review_alone:0},
+    {bt:'nextday', v:'van', m:'Bronze', checked:716, working:1, bot:0, review_alone:0},
+    {bt:'nextday', v:'van', m:'Gold', checked:992, working:12, bot:0, review_alone:0},
+    {bt:'nextday', v:'van', m:'None', checked:2, working:0, bot:0, review_alone:0},
+    {bt:'nextday', v:'van', m:'Platinum', checked:13, working:0, bot:0, review_alone:0},
+    {bt:'nextday', v:'van', m:'Silver', checked:14, working:0, bot:0, review_alone:0},
+    {bt:'ondemand', v:'mudou', m:'Bronze', checked:122, working:32, bot:1, review_alone:0},
+    {bt:'ondemand', v:'mudou', m:'Gold', checked:222, working:106, bot:3, review_alone:0},
+    {bt:'ondemand', v:'mudou', m:'Platinum', checked:13, working:8, bot:0, review_alone:0},
+    {bt:'ondemand', v:'mudou', m:'Silver', checked:3, working:2, bot:0, review_alone:0},
+    {bt:'ondemand', v:'mudou9', m:'Bronze', checked:192, working:38, bot:2, review_alone:0},
+    {bt:'ondemand', v:'mudou9', m:'Gold', checked:328, working:173, bot:8, review_alone:0},
+    {bt:'ondemand', v:'mudou9', m:'Platinum', checked:14, working:6, bot:0, review_alone:0},
+    {bt:'ondemand', v:'mudou9', m:'Silver', checked:5, working:3, bot:0, review_alone:0},
+    {bt:'ondemand', v:'van', m:'Bronze', checked:2869, working:1302, bot:42, review_alone:1},
+    {bt:'ondemand', v:'van', m:'Gold', checked:2331, working:1607, bot:71, review_alone:12},
+    {bt:'ondemand', v:'van', m:'None', checked:11, working:2, bot:0, review_alone:0},
+    {bt:'ondemand', v:'van', m:'Platinum', checked:32, working:20, bot:1, review_alone:0},
+    {bt:'ondemand', v:'van', m:'Silver', checked:43, working:19, bot:1, review_alone:0},
+    {bt:'sameday', v:'mudou', m:'Bronze', checked:75, working:0, bot:0, review_alone:0},
+    {bt:'sameday', v:'mudou', m:'Gold', checked:178, working:0, bot:0, review_alone:0},
+    {bt:'sameday', v:'mudou', m:'Platinum', checked:11, working:0, bot:0, review_alone:0},
+    {bt:'sameday', v:'mudou', m:'Silver', checked:3, working:0, bot:0, review_alone:0},
+    {bt:'sameday', v:'mudou9', m:'Bronze', checked:115, working:0, bot:0, review_alone:0},
+    {bt:'sameday', v:'mudou9', m:'Gold', checked:244, working:1, bot:0, review_alone:0},
+    {bt:'sameday', v:'mudou9', m:'Platinum', checked:10, working:0, bot:0, review_alone:0},
+    {bt:'sameday', v:'mudou9', m:'Silver', checked:3, working:0, bot:0, review_alone:0},
+    {bt:'sameday', v:'van', m:'Bronze', checked:1692, working:2, bot:0, review_alone:0},
+    {bt:'sameday', v:'van', m:'Gold', checked:1779, working:4, bot:0, review_alone:0},
+    {bt:'sameday', v:'van', m:'None', checked:8, working:0, bot:0, review_alone:0},
+    {bt:'sameday', v:'van', m:'Platinum', checked:23, working:0, bot:0, review_alone:0},
+    {bt:'sameday', v:'van', m:'Silver', checked:32, working:0, bot:0, review_alone:0},
+  ];
+  const BT_LABEL = {ondemand:'On Demand', sameday:'Same Day', nextday:'Next Day'};
   const V2 = {
     windowSec: 3,
-    queried: '2026-08-04',
+    queried: '2026-08-05',
     cohortLabel: '1 Jul – 31 Jul 2026',
     cohortCode: '2026-07-01 to 2026-07-31',
     botPool: 134,
@@ -1116,11 +1161,15 @@ body.show-v2 a[data-s="s4"]{display:none !important}
     {key:'watch_closely', label:'Watch closely (score 4–5)', color:'var(--serious)', n:20, share:'14.9%'},
     {key:'continue_monitoring', label:'Keep monitoring (score 0–3)', color:'var(--blue)', n:96, share:'71.6%'},
   ];
+  let fV = 'all', fM = 'all', fBT = 'all';
   function pct1(n, d){
     return d ? Math.round(n / d * 1000) / 10 : 0;
   }
-  function v2Slice(vehicle, membership){
-    const rows = V2_SLICES.filter(r =>
+  function v2Slice(vehicle, membership, booking){
+    const bt = booking || 'all';
+    const src = (bt === 'all') ? V2_SLICES : V2_BT_SLICES;
+    const rows = src.filter(r =>
+      (bt === 'all' || r.bt === bt) &&
       (vehicle === 'all' || r.v === vehicle) &&
       (membership === 'all' || r.m === membership)
     );
@@ -1145,13 +1194,15 @@ body.show-v2 a[data-s="s4"]{display:none !important}
     const el = id => document.getElementById(id);
     const vehicle = (typeof fV !== 'undefined' && fV) ? fV : 'all';
     const membership = (typeof fM !== 'undefined' && fM) ? fM : 'all';
-    const s = v2Slice(vehicle, membership);
+    const booking = (typeof fBT !== 'undefined' && fBT) ? fBT : 'all';
+    const s = v2Slice(vehicle, membership, booking);
     const botPct = pct1(s.bot, s.working);
     const raPct = pct1(s.review_alone, s.bot);
     const workPct = pct1(s.working, s.checked);
     const nonBot = Math.max(0, s.working - s.bot);
     const nonBotPct = pct1(nonBot, s.working);
     const sliceBits = [];
+    if(booking !== 'all') sliceBits.push(BT_LABEL[booking] || booking);
     if(vehicle !== 'all') sliceBits.push(vehicle);
     if(membership !== 'all') sliceBits.push(membership);
     const sliceNote = sliceBits.length ? ` · filter: ${sliceBits.join(' + ')}` : '';
@@ -1160,7 +1211,7 @@ body.show-v2 a[data-s="s4"]{display:none !important}
     if(el('k-pool')) el('k-pool').textContent = s.working > 0 ? fmt(s.working) : 'None';
     const kPoolSub = el('k-pool-sub');
     if(kPoolSub) kPoolSub.innerHTML = s.working > 0
-      ? `${fmt(s.working)} of ${fmt(s.checked)} checked drivers (${workPct}%) — took 30+ orders, finished 30+ in the <b>30d</b>${sliceNote}`
+      ? `${fmt(s.working)} of ${fmt(s.checked)} checked drivers (${workPct}%) — took 30+ orders, finished 30+${booking !== 'all' ? ' in this booking type' : ''} in the <b>30d</b>${sliceNote}`
       : `no drivers met these trip counts in this slice${sliceNote}`;
     const kTotalSub = el('k-total-sub');
     if(kTotalSub) kTotalSub.innerHTML = sliceBits.length
@@ -1192,9 +1243,33 @@ body.show-v2 a[data-s="s4"]{display:none !important}
       `<div class="notthis">Not this: how long one order took. Not this: “one order per second.”</div>`;
     if(br) br.innerHTML =
       `Rule window = <b>${V2.windowSec} seconds</b> (bot pool). 1 / 2 / 4 / 6 sec = compare only. (queried ${V2.queried} · HK TRANSPORT · 30d ${V2.cohortCode})`;
-    setTxt('funnel-botpool', fmt(s.bot));
+    const fh = el('funnel-hnote');
+    if(fh) fh.innerHTML =
+      `<b>Bot spotting ends at the bot pool (bar 3).</b> The 3-second rule — <span id="funnel-botpool">${s.bot > 0 ? fmt(s.bot) : 'None'}</span> / ${fmt(s.working)} working drivers (${botPct}%)${sliceNote}. ` +
+      `<a href="#s3">③ Review priority</a> then ranks drivers inside the <b>full</b> July bot pool (Assigned + Release + Cancel → max 8). ` +
+      `(queried ${V2.queried}, HK TRANSPORT, 30d ${V2.cohortCode})`;
     const full = v2Slice('all', 'all');
     const fullBotPct = pct1(full.bot, full.working);
+    // Section ③ title must follow the same filter as KPI cards (was stuck at full-pool 134)
+    const s3teaser = el('s3-teaser');
+    if(s3teaser){
+      s3teaser.textContent = s.bot > 0
+        ? `— 3 sec · ${fmt(s.bot)} drivers${sliceNote}`
+        : `— 3 sec · none in this slice${sliceNote}`;
+    }
+    const s3intro = el('s3-intro-sub');
+    if(s3intro){
+      const gapNote = (booking !== 'all' && s.bot !== full.bot)
+        ? ` Full July bot pool is still <b>${fmt(full.bot)}</b> — the gap is bots who do <b>not</b> meet “30+ assigned &amp; 30+ finished” <b>inside this booking type</b> alone.`
+        : '';
+      s3intro.innerHTML =
+        `Bot spotting is done. In this view we show <b>${fmt(s.bot)}</b> bot drivers (3-second rule)${sliceNote}.${gapNote} ` +
+        `Priority bands below stay on the <b>full</b> July bot pool (<b>${fmt(full.bot)}</b>). ` +
+        `Each driver sits in <b>one</b> review band. <b>Extreme case</b> (${fmt(full.review_alone)} drivers) comes first — <b>not scored</b> (not in the max-8 sum). ` +
+        `Remaining drivers use Review Priority = Assigned (0–2) + Release (0–4) + Cancel (0–2) → max 8 → bands <b>6–8 / 4–5 / 0–3</b>. ` +
+        `Detail: <a href="#v2-rule-8">Assigned &amp; Release</a> · <a href="#v2-rule-7">Cancel</a>. ` +
+        `(queried ${V2.queried}, HK TRANSPORT, 30d ${V2.cohortCode})`;
+    }
     const fullNonBot = Math.max(0, full.working - full.bot);
     const fullNonBotPct = pct1(fullNonBot, full.working);
     const cmpTable = document.getElementById('sbot-compare-table');
@@ -1215,7 +1290,7 @@ body.show-v2 a[data-s="s4"]{display:none !important}
     if(cell3n) cell3n.textContent = `${fmt(fullNonBot)} (${fullNonBotPct}%)`;
     const note = document.getElementById('sbot-table1-note-text');
     if(note) note.innerHTML =
-      `Base = <b>${fmt(full.working)}</b> drivers who took ≥30 and finished ≥30 orders (not OA). Each column is that driver’s <b>fastest</b> window of that length — <b>not</b> average pace, and <b>not</b> “one order per second.” <b>Rule = 3-second column</b>: bot pool = <b>${fmt(full.bot)}</b> / ${fmt(full.working)} (${fullBotPct}%) from <code>mart_cheat_app_driver_review_priority_july_2026</code>. Other columns are compare only. KPI cards above follow Vehicle / Membership filters. (queried ${V2.queried} · HK TRANSPORT · 30d ${V2.cohortCode})`;
+      `Base = <b>${fmt(full.working)}</b> drivers who took ≥30 and finished ≥30 orders (not OA). Each column is that driver’s <b>fastest</b> window of that length — <b>not</b> average pace, and <b>not</b> “one order per second.” <b>Rule = 3-second column</b>: bot pool = <b>${fmt(full.bot)}</b> / ${fmt(full.working)} (${fullBotPct}%) from <code>mart_cheat_app_driver_review_priority_july_2026</code>. Other columns are compare only. KPI cards above follow Vehicle / Membership / Booking filters. (queried ${V2.queried} · HK TRANSPORT · 30d ${V2.cohortCode})`;
     const teaser = document.querySelector('[data-target="sbot-detail-table"] .rs-teaser');
     if(teaser) teaser.textContent = '— rule = 3 sec';
 
@@ -1275,6 +1350,35 @@ body.show-v2 a[data-s="s4"]{display:none !important}
       const el=document.getElementById(id);
       if(el) el.style.display='none';
     });
+    function bindSeg(id, cb){
+      const root = document.getElementById(id);
+      if(!root) return;
+      root.addEventListener('click', e=>{
+        const b = e.target.closest('button');
+        if(!b || !root.contains(b)) return;
+        [...root.children].forEach(x => x.classList.remove('on'));
+        b.classList.add('on');
+        cb(b);
+        if(typeof applyVersion2Numbers === 'function') applyVersion2Numbers();
+      });
+    }
+    bindSeg('seg-bt', b => { fBT = b.dataset.bt || 'all'; });
+    bindSeg('seg-v', b => { fV = b.dataset.v || 'all'; });
+    bindSeg('seg-m', b => { fM = b.dataset.m || 'all'; });
+    const clearf = document.getElementById('clearf');
+    if(clearf){
+      clearf.addEventListener('click', ()=>{
+        fV = 'all'; fM = 'all'; fBT = 'all';
+        document.querySelectorAll('#seg-v button,#seg-m button,#seg-bt button').forEach(x => x.classList.remove('on'));
+        const aV = document.querySelector('#seg-v [data-v="all"]');
+        const aM = document.querySelector('#seg-m [data-m="all"]');
+        const aB = document.querySelector('#seg-bt [data-bt="all"]');
+        if(aV) aV.classList.add('on');
+        if(aM) aM.classList.add('on');
+        if(aB) aB.classList.add('on');
+        if(typeof applyVersion2Numbers === 'function') applyVersion2Numbers();
+      });
+    }
     (function(){
       const links = [...document.querySelectorAll('.nav a')];
       const map = {}; links.forEach(a=>map[a.dataset.s]=a);
