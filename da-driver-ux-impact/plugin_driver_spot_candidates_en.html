@@ -634,7 +634,10 @@ body.show-v2 a[data-s="s4"]{display:none !important}
     <span class="showbar showlabel" data-target="defs-body" role="button" tabindex="0">More ▾</span>
   </div>
   <div id="defs-body" class="relbox" style="margin-top:6px;margin-bottom:0;display:none">
-    <b>Released vs cancelled</b> — <b>Released</b> = driver took the order then <b>released</b> it (<code>event_type_cd = 4</code>, <code>actor_type = 'Driver'</code>). <b>Cancelled</b> = the order later ended with no driver (<code>status = 'cancelled'</code>, cd 8 or 11). Pool entry does <b>not</b> require a release.<br>
+    <b>OA excluded</b> — Auto-accept (OA) orders and OA drivers are out of this page — via <code>event_type_cd = 26</code>.<br>
+    <b>Release rate</b> (scoring) — releases ÷ <b>assigned</b> (<code>releases_by_driver_30d ÷ orders_assigned_30d</code>). <b>Not</b> completed + cancelled.<br>
+    <b>Cancel rate</b> (scoring) — <b>driver cancel</b> ÷ (completed + driver cancel) = <code>driver_cancel_30d ÷ (orders_completed_30d + driver_cancel_30d)</code>. Driver cancel = <code>event_type_cd = 3</code> + <code>actor_type = 'Driver'</code>. Different base from Release — do not mix them.<br>
+    <b>Released vs driver cancel</b> — <b>Released</b> = driver took the order then <b>released</b> it back to the pool (<code>event_type_cd = 4</code>, <code>actor_type = 'Driver'</code>). <b>Driver cancel</b> (used in Cancel rate) = driver cancelled the order (<code>event_type_cd = 3</code>, <code>actor_type = 'Driver'</code>). Release returns the order to the pool; cancel ends the order. Pool entry does <b>not</b> require a release.<br>
     <b>Who gets a score</b> — in this 30d: must <b>took ≥30 orders</b> (<code>orders_assigned_30d</code>), <b>finished ≥30</b> (<code>orders_completed_30d</code>), not OA. If any rule fails → <code>outside_analysis_pool</code> (not scored yet; can still work).<br>
     <b>Bot pool</b> — 2+ different grace-drops in the same <b>3 seconds</b> (<code>is_bot_pool_v2</code>). Review bands = Extreme case (not scored) + Assigned (0–2) + Release (0–4) + Cancel (0–2) → max 8.<br>
     <b>Orders (booking-type mix on the top)</b> — for the On Demand / Same Day / Next Day share only: each order counted <b>once</b>.

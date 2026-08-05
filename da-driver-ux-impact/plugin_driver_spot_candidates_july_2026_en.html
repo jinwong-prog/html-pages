@@ -626,9 +626,12 @@ body.show-v2 a[data-s="s4"]{display:none !important}
     <span class="showbar showlabel" data-target="defs-body" role="button" tabindex="0">More ▾</span>
   </div>
   <div id="defs-body" class="relbox" style="margin-top:6px;margin-bottom:0;display:none">
-    <b>Released vs cancelled</b> — <b>Released</b> = driver took the order then <b>released</b> it (<code>event_type_cd = 4</code>, <code>actor_type = 'Driver'</code>). <b>Cancelled</b> = the order later ended with no driver (<code>status = 'cancelled'</code>, cd 8 or 11). Pool entry does <b>not</b> require a release.<br>
+    <b>OA excluded</b> — Auto-accept (OA) orders and OA drivers are out of this page — via <code>event_type_cd = 26</code>.<br>
+    <b>Release rate</b> (scoring) — releases ÷ <b>assigned</b> (<code>releases_by_driver_30d ÷ orders_assigned_30d</code>). <b>Not</b> completed + cancelled.<br>
+    <b>Cancel rate</b> (scoring) — <b>driver cancel</b> ÷ (completed + driver cancel) = <code>driver_cancel_30d ÷ (orders_completed_30d + driver_cancel_30d)</code>. Driver cancel = <code>event_type_cd = 3</code> + <code>actor_type = 'Driver'</code>. Different base from Release — do not mix them.<br>
+    <b>Released vs driver cancel</b> — <b>Released</b> = driver took the order then <b>released</b> it back to the pool (<code>event_type_cd = 4</code>, <code>actor_type = 'Driver'</code>). <b>Driver cancel</b> (used in Cancel rate) = driver cancelled the order (<code>event_type_cd = 3</code>, <code>actor_type = 'Driver'</code>). Release returns the order to the pool; cancel ends the order. Pool entry does <b>not</b> require a release.<br>
     <b>Who gets a score</b> — in this 30d: must <b>took ≥30 orders</b> (<code>orders_assigned_30d</code>), <b>finished ≥30</b> (<code>orders_completed_30d</code>), not OA. If any rule fails → <code>outside_analysis_pool</code> (not scored yet; can still work).<br>
-    <b>Bot pool</b> — 2+ different grace-drops in the same <b>3 seconds</b> (<code>is_bot_pool_v2</code>). Review bands = Extreme case (not scored) + Assigned (0–2) + Release (0–4) + Cancel (0–2) → max 8.<br>
+    <b>Bot pool</b> — 2+ different grace-drops (grabbed then let go fast, <code>event_type_cd = 21</code>) in the same <b>3 seconds</b> (<code>is_bot_pool_v2</code>). Review bands = Extreme case (not scored) + Assigned (0–2) + Release (0–4) + Cancel (0–2) → max 8.<br>
     <b>Orders (booking-type mix on the top)</b> — for the On Demand / Same Day / Next Day share only: each order counted <b>once</b>.
   </div>
 
@@ -708,7 +711,7 @@ body.show-v2 a[data-s="s4"]{display:none !important}
   <div id="sbot-detail-table">
   <div class="panel" style="margin-top:6px" id="sbot-compare-panel">
     <h3>Of 3,347 drivers: in their fastest short window, how many different orders did they drop?</h3>
-    <p class="pd" id="sbot-compare-howto" style="margin:0 0 10px">How to read: each cell = drivers whose <b>max</b> distinct grace-drops in any window of that length is in that row. It is <b>not</b> “orders per second.” Only the <b>3-sec</b> column sets the bot pool; other columns are compare only.</p>
+    <p class="pd" id="sbot-compare-howto" style="margin:0 0 10px">How to read: each cell = drivers whose <b>max</b> distinct grace-drops (grabbed then let go fast, <code>event_type_cd = 21</code>) in any window of that length is in that row. It is <b>not</b> “orders per second.” Only the <b>3-sec</b> column sets the bot pool; other columns are compare only.</p>
     <div style="overflow-x:auto">
     <table id="sbot-compare-table" class="rule-col-3s">
       <thead><tr>
@@ -879,7 +882,7 @@ body.show-v2 a[data-s="s4"]{display:none !important}
     <tr style="background:var(--neutbg)"><td><b>Total</b></td><td>—</td><td class="lvl-share"><b>134 (100%)</b></td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
   </tbody>
   </table>
-  <p class="pd">Cut lines for <b>assigned order count</b> among bot pool: P10 58 · P25 86 · P50 128 · P75 198 · P90 275 orders. <b>Median Release</b> / <b>Max Release</b> = median / max of <code>released_order_rate_30d</code> inside each assigned-order range. Dot colors follow Release Score bands (baseline 20%): 🔵 &lt;20% (0) · 🟡 20–&lt;30% (1) · 🟠 30–&lt;40% (2) · 🟥 40–&lt;50% (3) · 🔴 ≥50% (4). <b>Highest assigned orders (max)</b> = max <code>orders_assigned_30d</code> in that range. (queried 2026-08-04, HK TRANSPORT, 30d 2026-07-01 to 2026-07-31)</p>
+  <p class="pd">Cut lines for <b>assigned order count</b> among bot pool: P10 58 · P25 86 · P50 128 · P75 198 · P90 275 orders. <b>Median Release</b> / <b>Max Release</b> = median / max of <code>released_order_rate_30d</code> (= releases ÷ assigned) inside each assigned-order range. Dot colors follow Release Score bands (baseline 20%): 🔵 &lt;20% (0) · 🟡 20–&lt;30% (1) · 🟠 30–&lt;40% (2) · 🟥 40–&lt;50% (3) · 🔴 ≥50% (4). <b>Highest assigned orders (max)</b> = max <code>orders_assigned_30d</code> in that range. (queried 2026-08-04, HK TRANSPORT, 30d 2026-07-01 to 2026-07-31)</p>
   </div>
 </div>
 
@@ -912,7 +915,7 @@ body.show-v2 a[data-s="s4"]{display:none !important}
 
     <div class="panel" style="margin-top:12px">
       <h3 style="margin-top:0">Release Rate Score (Drop Impact: 0–4)</h3>
-      <p class="pd" style="margin:0 0 10px">Drop Impact = how often they drop orders. Baseline release rate = 20%. Higher release rate → higher review priority.</p>
+      <p class="pd" style="margin:0 0 10px">Drop Impact = how often they drop orders after being assigned. <b>Release rate = releases ÷ assigned</b> (<code>released_order_rate_30d</code> = <code>releases_by_driver_30d ÷ orders_assigned_30d</code>). <b>Not</b> completed + cancelled. Baseline = 20%. Higher release rate → higher review priority.</p>
       <table>
         <thead>
           <tr>
@@ -929,7 +932,7 @@ body.show-v2 a[data-s="s4"]{display:none !important}
           <tr style="background:var(--criticalbg)"><td><b>≥50%</b></td><td>2</td><td><b>4</b></td></tr>
         </tbody>
       </table>
-      <p class="pd" style="margin-top:8px">n = 133 bot drivers with a release rate (null rate excluded). Baseline = 20%. Review priority = Release (0–4) + Cancel (0–2) + Assigned (0–2) → max 8. (queried 2026-08-04, HK TRANSPORT, 30d 2026-07-01 to 2026-07-31)</p>
+      <p class="pd" style="margin-top:8px">n = 133 bot drivers with a release rate (null rate excluded). Formula = releases ÷ assigned. Baseline = 20%. Cancel score uses a <b>different</b> base (completed + cancel) — do not mix. Review priority = Release (0–4) + Cancel (0–2) + Assigned (0–2) → max 8. (queried 2026-08-04, HK TRANSPORT, 30d 2026-07-01 to 2026-07-31)</p>
     </div>
 
     <h3 id="v2-rule-7" style="margin:22px 0 6px;scroll-margin-top:60px">Cancel Rate Distribution by Tier</h3>
@@ -995,7 +998,7 @@ body.show-v2 a[data-s="s4"]{display:none !important}
     <tr style="background:var(--neutbg)"><td><b>Total</b></td><td>—</td><td class="lvl-share"><b>134 (100%)</b></td><td>—</td><td>—</td></tr>
   </tbody>
   </table>
-  <p class="pd" style="margin-top:8px">Cut lines for <b>cancel rate</b> among bot pool: P10 0% · P25 1.4% · P50 5.5% · P75 9.3% · P90 15.7%. Formula: <code>driver_cancel_30d ÷ (orders_completed_30d + driver_cancel_30d)</code>. Cancel ÷ grabs is <b>not</b> used here. (queried 2026-08-04, HK TRANSPORT, 30d 2026-07-01 to 2026-07-31)</p>
+  <p class="pd" style="margin-top:8px">Cut lines for <b>cancel rate</b> among bot pool: P10 0% · P25 1.4% · P50 5.5% · P75 9.3% · P90 15.7%. Formula: <code>driver_cancel_30d ÷ (orders_completed_30d + driver_cancel_30d)</code>. This base is <b>not</b> the same as Release (releases ÷ assigned). Cancel ÷ grabs is <b>not</b> used here. (queried 2026-08-04, HK TRANSPORT, 30d 2026-07-01 to 2026-07-31)</p>
 </div>
 
     <div class="panel" style="margin-top:12px">
