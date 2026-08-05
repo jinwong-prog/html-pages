@@ -664,6 +664,7 @@ body.show-v2 a[data-s="s4"]{display:none !important}
     </div>
     <button class="clearbtn" id="clearf">Reset</button>
   </div>
+  <p id="bt-live" class="sub" style="margin:0 0 10px;padding:8px 12px;background:var(--blue-soft);border-radius:8px;border-left:3px solid var(--blue);line-height:1.5"></p>
   <div class="sect-head" style="margin-top:8px;margin-bottom:0">
     <p class="fnote-toggle sectoggle" data-target="booking-breakdown-body" role="button" tabindex="0" style="margin:0"><b>Filter breakdown</b> <span class="rs-teaser">— how filters break down the totals</span></p>
     <span class="showbar showlabel" data-target="booking-breakdown-body" role="button" tabindex="0" title="Expand / collapse">Expand ▾</span>
@@ -1220,7 +1221,21 @@ function pct0(n, d){ return d ? Math.round(n / d * 100) : 0; }
     const mixLine = mix.total
       ? `${odP}% On Demand (${fmt(mix.ondemand)}) · ${sdP}% Same Day (${fmt(mix.sameday)}) · ${ndP}% Next Day (${fmt(mix.nextday)}) · <b>sum 100%</b> · ${fmt(mix.total)} released orders`
       : 'no released orders among bots in this Vehicle/Membership slice';
-    setTxt('meta-od-share', mix.total ? `${odP}% On Demand, ${sdP}% Same Day, ${ndP}% Next Day` : '—');
+    if(booking === 'all'){
+      setTxt('meta-od-share', mix.total ? `${odP}% On Demand, ${sdP}% Same Day, ${ndP}% Next Day` : '—');
+    } else {
+      const nSel = mix[booking] || 0;
+      setTxt('meta-od-share', `${BT_LABEL[booking]} ${pct0(nSel, mix.total)}% (${fmt(nSel)} / ${fmt(mix.total)} released)`);
+    }
+    const btLive = el('bt-live');
+    if(btLive){
+      if(booking === 'all'){
+        btLive.innerHTML = `<b>Booking</b> = released-order mix (not driver headcount). Now showing all: ${mixLine}. Click On Demand / Same Day / Next Day to highlight one type — cards ①–④ stay the same.`;
+      } else {
+        const nSel = mix[booking] || 0;
+        btLive.innerHTML = `<b>Booking selected: ${BT_LABEL[booking]}</b> — <b>${fmt(nSel)}</b> / ${fmt(mix.total)} released orders (<b>${pct0(nSel, mix.total)}%</b>). Full mix: ${mixLine}. Cards ①–④ do <b>not</b> change (they are driver totals).`;
+      }
+    }
     const btBreak = el('bt-break-text');
     if(btBreak){
       let sel = '';
@@ -1386,7 +1401,19 @@ function pct0(n, d){ return d ? Math.round(n / d * 100) : 0; }
         if(typeof applyVersion2Numbers === 'function') applyVersion2Numbers();
       });
     }
-    bindSeg('seg-bt', b => { fBT = b.dataset.bt || 'all'; });
+    function setBookingBreakdownOpen(open){
+      const body = document.getElementById('booking-breakdown-body');
+      if(!body) return;
+      body.style.display = open ? '' : 'none';
+      document.querySelectorAll('.showbar[data-target="booking-breakdown-body"]').forEach(bar=>{
+        bar.textContent = open ? 'Collapse ▴' : 'Expand ▾';
+      });
+    }
+    bindSeg('seg-bt', b => {
+      fBT = b.dataset.bt || 'all';
+      // Booking does not change KPI cards — open the breakdown so the click is visible
+      if(fBT !== 'all') setBookingBreakdownOpen(true);
+    });
     bindSeg('seg-v', b => { fV = b.dataset.v || 'all'; });
     bindSeg('seg-m', b => { fM = b.dataset.m || 'all'; });
     const clearf = document.getElementById('clearf');
@@ -1400,6 +1427,7 @@ function pct0(n, d){ return d ? Math.round(n / d * 100) : 0; }
         if(aV) aV.classList.add('on');
         if(aM) aM.classList.add('on');
         if(aB) aB.classList.add('on');
+        setBookingBreakdownOpen(false);
         if(typeof applyVersion2Numbers === 'function') applyVersion2Numbers();
       });
     }
