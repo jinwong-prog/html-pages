@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light only">
+<title>Gamma-Gamma · Spend per order — GoGoX HK Platform on-demand</title>
+<style>
+  :root{
+    color-scheme: light only;
+    --blue:#2a78d6; --plane:#f9f9f7; --surface:#fcfcfb;
+    --ink:#0b0b0b; --ink2:#52514e; --muted:#898781;
+    --grid:#e1e0d9; --axis:#c3c2b7; --border:rgba(11,11,11,.10);
+    --bad:#d03b3b; --good:#006300; --warn:#b47500;
+    --serious:#e08a00; --critical:#8c1d1d;
+    --badbg:rgba(208,59,59,.08); --goodbg:rgba(0,99,0,.08);
+    --warnbg:rgba(237,161,0,.12); --criticalbg:rgba(140,29,29,.10);
+    --neutbg:rgba(137,135,129,.09);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--plane);color:var(--ink);
+    font-family:system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.4;
+    -webkit-font-smoothing:antialiased;font-size:15px}
+  .wrap{max-width:1280px;margin:0 auto;padding:20px 20px 48px}
+  h1{font-size:24px;margin:0 0 4px;letter-spacing:-.01em;line-height:1.25}
+  h2{font-size:17px;margin:22px 0 6px;letter-spacing:-.01em}
+  h3{font-size:14.5px;margin:14px 0 6px}
+  .meta{color:var(--muted);font-size:12px;margin:0 0 10px;max-width:110ch;line-height:1.4}
+  .answer{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--blue);
+    border-radius:10px;padding:12px 16px;margin:0 0 12px}
+  .answer.bad{border-left-color:var(--bad)}
+  .answer .big{font-size:20px;font-weight:800;letter-spacing:-.01em;line-height:1.25}
+  .answer .sub{font-size:15px;color:var(--ink2);margin-top:6px;line-height:1.4;max-width:72ch}
+  .kpi{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 12px}
+  .kpi .k{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 12px}
+  .kpi .lbl{font-size:11.5px;color:var(--muted)}
+  .kpi .val{font-size:22px;font-weight:800;margin-top:1px;letter-spacing:-.01em}
+  .kpi .sub{font-size:11px;color:var(--ink2);margin-top:2px}
+  .panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;
+    padding:12px 14px;margin:8px 0;overflow-x:auto}
+  .panel h3{margin:0 0 8px;font-size:16px;line-height:1.3;font-weight:800}
+  .panel .pd{font-size:14px;color:var(--ink2);margin:0 0 8px;line-height:1.4}
+  .panel p{margin:0 0 8px;font-size:14.5px;color:var(--ink);line-height:1.4}
+  .panel p:last-child{margin-bottom:0}
+  .hl-bad{color:var(--bad);font-weight:700}
+  .hl-good{color:var(--good);font-weight:700}
+  a{color:var(--blue)}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.86em;
+    background:var(--neutbg);padding:0 4px;border-radius:3px}
+  .src{color:var(--muted);font-size:11px;margin-top:6px}
+  .foot{color:var(--muted);font-size:11.5px;margin-top:24px;border-top:1px solid var(--grid);padding-top:8px}
+  table.mini{border-collapse:collapse;width:100%;font-size:12.5px;margin:0 0 8px}
+  table.mini th,table.mini td{padding:5px 8px;border-bottom:1px solid var(--grid);
+    text-align:left;font-variant-numeric:tabular-nums}
+  table.mini th{color:var(--muted);font-size:11px;border-bottom:1px solid var(--axis)}
+  table.mini td.num,table.mini th.num{text-align:right}
+  table.mini tr:last-child td{border-bottom:0}
+  .two-lines{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0}
+  .line-box{border-radius:10px;padding:10px 12px;border:1px solid var(--border)}
+  .line-box.a{background:#eef5fc;border-color:#2a78d6}
+  .line-box.b{background:#f7f7f5}
+  .line-box h4{margin:0 0 4px;font-size:14px;font-weight:800}
+  .line-box p{margin:0;font-size:13.5px;color:var(--ink2);line-height:1.4}
+  .ceo-box{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--blue);
+    border-radius:10px;padding:12px 14px;margin:8px 0 12px}
+  .ceo-box .ttl{font-size:14px;font-weight:800;margin:0 0 6px}
+  .ceo-box ol,.ceo-box ul{margin:0;padding-left:1.2em;font-size:13.5px;line-height:1.4;color:var(--ink)}
+  .ceo-box li{margin:4px 0}
+  .story-step{margin:0 0 12px;padding:0 0 10px;border-bottom:1px solid var(--grid)}
+  .story-step:last-child{border-bottom:0;margin:0;padding:0}
+  .story-step .q{font-size:12.5px;font-weight:700;color:var(--blue);margin:0 0 4px}
+  .story-step h4{margin:0 0 6px;font-size:14px}
+  .story-step .one{font-size:13.5px;color:var(--ink);margin:6px 0 0;line-height:1.35}
+  .flow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:6px 0}
+  .flow .node{background:var(--plane);border:1px solid var(--border);border-radius:8px;
+    padding:7px 10px;font-size:12.5px;font-weight:600;text-align:center;min-width:7em}
+  .flow .node.hi{background:#eef5fc;border-color:#2a78d6;color:#1b4f88}
+  .flow .arrow{color:var(--muted);font-weight:700}
+  /* Vertical LTV logic flowchart */
+  .ltv-flow{display:flex;flex-direction:column;align-items:center;gap:0;max-width:640px;margin:8px auto 0}
+  .ltv-flow .step{width:100%;background:var(--plane);border:1px solid var(--border);border-radius:10px;
+    padding:10px 14px;text-align:center;font-size:13.5px;line-height:1.35;color:var(--ink)}
+  .ltv-flow .step b{display:block;font-size:14px;margin-bottom:2px}
+  .ltv-flow .step .note{display:block;font-size:11.5px;color:var(--muted);font-weight:500;margin-top:3px}
+  .ltv-flow .step.hi{background:#eef5fc;border-color:#2a78d6;border-width:2px}
+  .ltv-flow .step.hi b{color:#1b4f88}
+  .ltv-flow .step.soft{background:#f7f7f5;color:var(--ink2);font-size:12.5px}
+  .ltv-flow .step table.mini{margin:8px 0 4px;text-align:left}
+  .ltv-flow .step table.mini th,.ltv-flow .step table.mini td{text-align:left}
+  .ltv-flow .step table.mini th.num,.ltv-flow .step table.mini td.num{text-align:right}
+  .ltv-flow .step .hi-box{display:inline-block;margin-top:6px;padding:6px 12px;background:#f0f0ec;border-radius:8px;
+    font-size:13px;font-weight:700;color:var(--ink)}
+  .ltv-flow .v-arrow{color:var(--muted);font-size:16px;font-weight:700;line-height:1.2;padding:4px 0}
+  .ltv-flow .aside{font-size:11.5px;color:var(--muted);text-align:center;margin:2px 0 0;max-width:36em}
+  .ltv-hflow{display:flex;flex-wrap:wrap;align-items:stretch;justify-content:center;gap:8px;margin:10px 0 8px}
+  .ltv-hflow .hbox{flex:1 1 160px;max-width:240px;background:var(--surface);border:1px solid var(--border);
+    border-radius:10px;padding:12px 10px;text-align:center;display:flex;flex-direction:column;justify-content:center;gap:6px}
+  .ltv-hflow .hbox.hi{background:#eef5fc;border-color:#2a78d6;border-width:2px}
+  .ltv-hflow .hbox .lbl{font-size:12px;font-weight:700;color:var(--ink);line-height:1.25}
+  .ltv-hflow .hbox.hi .lbl{color:#1b4f88}
+  .ltv-hflow .hbox .amt{font-size:20px;font-weight:800;letter-spacing:-.01em;line-height:1.15}
+  .ltv-hflow .hbox.mid .lbl{color:var(--ink2)}
+  .ltv-hflow .hbox .sub{font-size:11px;color:var(--muted);line-height:1.25}
+  .ltv-hflow .hbox .scope{font-size:10.5px;color:var(--ink2);line-height:1.3;margin-top:2px;padding-top:6px;
+    border-top:1px solid var(--grid)}
+  .ltv-hflow .h-arrow{align-self:center;color:var(--muted);font-size:18px;font-weight:700;padding:0 2px}
+  details.fold{margin:10px 0;border:1px solid var(--border);border-radius:10px;background:var(--surface);padding:0 12px 10px;
+    box-shadow:0 1px 0 rgba(11,11,11,.03)}
+  details.fold>summary{cursor:pointer;list-style:none;font-size:14px;font-weight:700;padding:12px 0 8px;
+    display:flex;align-items:center;flex-wrap:wrap;gap:6px;border-bottom:1px solid transparent}
+  details.fold[open]>summary{border-bottom-color:var(--grid);margin-bottom:8px}
+  details.fold>summary::-webkit-details-marker{display:none}
+  details.fold>summary::before{content:"▸ ";color:var(--muted);font-weight:700}
+  details.fold[open]>summary::before{content:"▾ "}
+  details.fold>summary::after{content:"expand / collapse";margin-left:auto;font-size:11px;font-weight:500;color:var(--muted)}
+  /* separate borders so the 8px corners actually render (collapse ignores border-radius);
+     cells draw right+bottom only, the table draws the outer frame → still a 1px grid */
+  table.mini.decline{border:1px solid #eceff3;border-radius:8px;
+    border-collapse:separate;border-spacing:0;width:100%;overflow:hidden}
+  table.mini.decline th,table.mini.decline td{border:0;
+    border-right:1px solid #eceff3;border-bottom:1px solid #eceff3;
+    padding:8px 10px;vertical-align:top;color:#111827}
+  table.mini.decline th:last-child,table.mini.decline td:last-child{border-right:0}
+  table.mini.decline tr:last-child td{border-bottom:0}
+  table.mini.decline thead th{background:#fafafa;font-weight:600;color:#6b7280;border-color:#eceff3}
+  table.mini.decline tr.adopt td{background:#f8fbff;font-weight:600;padding-top:14px;padding-bottom:14px;border-color:#eceff3}
+  table.mini.decline tr.adopt td:first-child{border-left:4px solid #2563eb}
+  table.mini.decline tr.adopt .num{color:#0f4c81;font-weight:700;font-size:13.5px}
+  .site-nav{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--plane) 92%,transparent);
+    backdrop-filter:saturate(1.1) blur(8px);border-bottom:1px solid var(--border);margin:0}
+  .site-nav-in{max-width:1280px;margin:0 auto;padding:8px 16px;display:flex;gap:4px;flex-wrap:wrap;
+    align-items:center;overflow-x:auto}
+  .site-nav .brand{font-size:12.5px;font-weight:800;margin-right:6px;color:var(--ink);white-space:nowrap}
+  .site-nav a{font-size:12px;color:var(--ink2);text-decoration:none;padding:5px 10px;border-radius:8px;white-space:nowrap}
+  .site-nav a:hover{background:var(--neutbg);color:var(--ink)}
+  .site-nav a.on{background:var(--blue);color:#fff;font-weight:600}
+  .wrap,h1,h2,.panel{scroll-margin-top:52px}
+  @media(max-width:900px){
+    .wrap{padding:14px 12px 36px}
+    .kpi,.two-lines{grid-template-columns:1fr}
+    .ltv-hflow{flex-direction:column;align-items:center}
+    .ltv-hflow .hbox{max-width:280px;width:100%}
+    .ltv-hflow .h-arrow{transform:rotate(90deg);padding:2px 0}
+  }
+</style>
+</head>
+<body>
+<nav class="site-nav" aria-label="LTV lessons">
+  <div class="site-nav-in">
+    <span class="brand">Customer LTV · 10y</span>
+    <a href="ltv_customer_value_master_view_en.html">Overview</a> <a href="ltv_lesson1_en.html">LTV</a> <a href="ltv_lesson_bg_nbd_en.html">BG/NBD</a> <a href="ltv_lesson_gamma_gamma_en.html" class="on">Gamma-Gamma</a> <a href="ltv_lesson5_en.html">Training</a>
+  </div>
+</nav>
+<div class="wrap">
+<h1>Gamma-Gamma · Spend per order</h1>
+<p class="meta">PlatformOD · Queried <b>2026-07-29</b> · Ranking through <b>2026-03-31</b> · Validation / completed window <b>2026-04-01 to 2026-06-30</b></p>
+
+<div class="answer">
+  <div class="big">Gamma-Gamma explains spend per order</div>
+  <div class="sub">Orders per active day · earned per order. Gap in lifetime value is mostly how often — not ticket size.</div>
+</div>
+
+<div class="kpi">
+  <div class="k"><div class="lbl">Earned per order (median)</div><div class="val">~HK$21</div><div class="sub">Similar across most customers</div></div>
+  <div class="k"><div class="lbl">If only 1 job</div><div class="val">2.7×</div><div class="sub">High vs low earn — noisy</div></div>
+  <div class="k"><div class="lbl">If 30+ jobs</div><div class="val">1.5×</div><div class="sub">Much more stable</div></div>
+</div>
+
+<div class="panel">
+  <h3>How often × spend per order</h3>
+  <table class="mini">
+    <thead><tr><th>Part</th><th>What it answers</th><th>Example</th></tr></thead>
+    <tbody>
+      <tr><td>BG/NBD</td><td>How often they order</td><td>~32 order days</td></tr>
+      <tr><td>Gamma-Gamma</td><td>Earned per order</td><td>~HK$21</td></tr>
+      <tr><td><b>Together (not LTV)</b></td><td>Behaviour explanation</td><td>32 × 20.2 ≈ HK$646 future</td></tr>
+    </tbody>
+  </table>
+  <p>Lifetime value is a separate estimate. Do not call BG × GG “lifetime value”.</p>
+</div>
+
+<div class="panel">
+  <h3>Vehicle type changes earn — most jobs are vans</h3>
+  <table class="mini">
+    <thead><tr><th>Vehicle</th><th class="num">Share of jobs</th><th class="num">Customer GTV</th><th class="num">Earned (<code>platform_take</code>)</th></tr></thead>
+    <tbody>
+      <tr><td><code>van</code></td><td class="num">93.4%</td><td class="num">HK$145.0</td><td class="num">HK$19.7</td></tr>
+      <tr><td><code>mudou</code></td><td class="num">6.2%</td><td class="num">HK$316.9</td><td class="num">HK$42.1</td></tr>
+      <tr><td><code>mudou9</code></td><td class="num">0.4%</td><td class="num">HK$525.1</td><td class="num">HK$64.1</td></tr>
+    </tbody>
+  </table>
+  <p class="src">（2026-07-29 queried，HK TRANSPORT PlatformOD completed，2026-04-01 to 2026-06-30）</p>
+</div>
+
+<div class="panel">
+  <h3>Why we do not trust a short history average</h3>
+  <div class="two-lines">
+    <div class="line-box b">
+      <h4>Only 2 jobs</h4>
+      <p>HK$8 then HK$120 → average HK$64. Next job is often a van (~HK$20). Too high if we trust that average.</p>
+    </div>
+    <div class="line-box a">
+      <h4>Many jobs (e.g. 150)</h4>
+      <p>Average ~HK$21 is stable. We trust their own history.</p>
+    </div>
+  </div>
+  <p class="pd">Earned per order in validation — by how many orders they had</p>
+  <table class="mini">
+    <thead><tr><th>Jobs in next 91 days</th><th class="num">Customers</th><th>Low → mid → high earn</th><th class="num">Spread</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td class="num">73,681</td><td>HK$13 → 20 → 35</td><td class="num">2.7×</td></tr>
+      <tr><td>2–3</td><td class="num">52,155</td><td>HK$14 → 21 → 32</td><td class="num">2.2×</td></tr>
+      <tr><td>4–9</td><td class="num">38,006</td><td>HK$15 → 20 → 29</td><td class="num">1.9×</td></tr>
+      <tr><td>10–29</td><td class="num">18,281</td><td>HK$16 → 20 → 27</td><td class="num">1.7×</td></tr>
+      <tr><td>30+</td><td class="num">4,765</td><td>HK$16 → 20 → 25</td><td class="num">1.5×</td></tr>
+    </tbody>
+  </table>
+  <p class="src">（2026-07-29 queried，PlatformOD，validation 2026-04-01 to 2026-06-30，91 days）</p>
+</div>
+
+<div class="panel">
+  <h3>Simple rule</h3>
+  <p><b>Few jobs → move toward the overall average (~HK$21).</b> Many jobs → trust that customer’s own average.</p>
+  <p>One big truck move should not make someone a high-value voucher target.</p>
+</div>
+
+<div class="ceo-box">
+  <div class="ttl">Example (behaviour only — not Estimated LTV)</div>
+  <ul>
+    <li>How often (BG) ≈ 32 order days</li>
+    <li>Earned per order (GG) ≈ HK$21</li>
+    <li>Future behaviour money ≈ HK$646 · plus recent observed HK$380 ≈ <b>~HK$1,026</b></li>
+    <li>Estimated LTV stays a separate estimate</li>
+  </ul>
+</div>
+
+<p class="foot">
+  GoGoX HK BA · ranking for who is valuable · validation for actual results ·
+  lifetime is an independent estimate
+</p>
+</div>
+</body>
+</html>

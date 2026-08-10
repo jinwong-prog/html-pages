@@ -1,0 +1,1817 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light only">
+<title>LTV operationalize validation — GoGoX HK PlatformOD</title>
+<style>
+
+:root {
+  color-scheme: light only;
+  --plane:#f9f9f7; --surface:#fcfcfb;
+  --ink:#0b0b0b; --ink2:#52514e; --muted:#898781;
+  --grid:#e1e0d9; --axis:#c3c2b7; --border:rgba(11,11,11,.10);
+  --blue:#2a78d6; --good:#006300; --bad:#d03b3b; --warn:#b47500;
+  --badbg:rgba(208,59,59,.08); --goodbg:rgba(0,99,0,.08);
+  --warnbg:rgba(237,161,0,.10); --neutbg:rgba(137,135,129,.09);
+}
+*{box-sizing:border-box}
+html,body{background:#f9f9f7;color:#0b0b0b}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+  line-height:1.65;-webkit-font-smoothing:antialiased;font-size:16px;overflow-x:hidden}
+.wrap{max-width:1080px;margin:0 auto;padding:28px 20px 72px}
+h1{font-size:26px;margin:0 0 6px;letter-spacing:-.01em;line-height:1.3}
+.meta{color:var(--muted);font-size:13px;margin:0 0 22px;max-width:92ch}
+h2{font-size:18px;margin:36px 0 6px;letter-spacing:-.01em;scroll-margin-top:64px}
+h3{font-size:15px;margin:0 0 8px}
+p{margin:8px 0;max-width:88ch}
+.lead{font-weight:600;margin:6px 0 8px}
+.answer{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--bad);
+  border-radius:12px;padding:18px 20px;margin:0 0 14px}
+.answer .big{font-size:19px;font-weight:800;margin:0 0 8px}
+.kpi{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:14px 0 8px}
+.kpi .k{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px}
+.kpi .lbl{font-size:12px;color:var(--muted)}
+.kpi .val{font-size:24px;font-weight:800;margin-top:4px;letter-spacing:-.01em}
+.kpi .val.warn{color:var(--warn)}
+.kpi .sub{font-size:12px;color:var(--ink2);margin-top:6px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  padding:14px 16px 16px;margin:12px 0;overflow-x:auto}
+.chart-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+.chart-box h3{margin-top:0}
+@media(max-width:800px){.kpi,.chart-row{grid-template-columns:1fr}}
+.box{border-radius:12px;padding:14px 16px;margin:14px 0;font-size:15px;max-width:96ch}
+.box.bad{background:var(--badbg)} .box.good{background:var(--goodbg)}
+.box.warn{background:var(--warnbg)} .box.neut{background:var(--neutbg)}
+table.cmp{border-collapse:collapse;width:100%;font-size:14px;margin:8px 0}
+table.cmp th,table.cmp td{padding:9px 10px;text-align:left;border-bottom:1px solid var(--grid);
+  vertical-align:top}
+table.cmp thead th{color:var(--muted);font-size:12px;border-bottom:1px solid var(--axis)}
+table.cmp caption{caption-side:top;text-align:left;font-size:12.5px;color:var(--muted);padding:0 0 8px}
+.tag{display:inline-block;font-size:11px;font-weight:800;padding:2px 8px;border-radius:999px;border:1px solid var(--grid)}
+.tag.good{background:var(--goodbg);color:var(--good);border-color:rgba(0,99,0,.25)}
+.tag.bad{background:var(--badbg);color:var(--bad);border-color:rgba(208,59,59,.25)}
+.tag.warn{background:var(--warnbg);color:var(--warn);border-color:rgba(180,117,0,.3)}
+.tag.neut{background:var(--neutbg);color:var(--ink2)}
+.hl-good{color:var(--good);font-weight:700}
+.hl-bad{color:var(--bad);font-weight:700}
+ol.chain,ol.plain,ul.plain{padding-left:20px;max-width:92ch}
+ol.chain li,ul.plain li,ol.plain li{margin:8px 0}
+ul.warn-list{list-style:none;padding-left:0;max-width:92ch}
+ul.warn-list li{margin:8px 0;padding-left:22px;position:relative}
+ul.warn-list li::before{content:"\26A0";position:absolute;left:0;color:var(--warn);font-size:13px}
+.src{color:var(--muted);font-size:12px;margin-top:8px}
+.foot{color:var(--muted);font-size:12px;margin-top:40px;border-top:1px solid var(--grid);padding-top:12px}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.86em;
+  background:var(--neutbg);padding:1px 5px;border-radius:4px}
+pre.formula{background:var(--neutbg);padding:12px 14px;border-radius:10px;overflow-x:auto;font-size:13.5px}
+.matrix td.hi{background:var(--goodbg);font-weight:600}
+.matrix th{white-space:nowrap}
+.triad svg{width:100%;max-width:720px;height:auto;display:block;margin:4px auto}
+.sv-t{font:700 13px system-ui,sans-serif;fill:var(--ink)}
+.sv-s{font:12px system-ui,sans-serif;fill:var(--ink2)}
+.nav{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--plane) 88%,transparent);
+  backdrop-filter:saturate(1.1) blur(8px);border-bottom:1px solid var(--border);margin:0 0 18px}
+.nav-in{max-width:1080px;margin:0 auto;padding:9px 20px;display:flex;gap:4px;flex-wrap:wrap;align-items:center}
+.nav .brand{font-size:13px;font-weight:800;margin-right:8px}
+.nav a{font-size:12.5px;color:var(--ink2);text-decoration:none;padding:5px 10px;border-radius:8px}
+.nav a:hover{background:var(--neutbg);color:var(--ink)}
+
+
+
+  .acc-wrap{overflow-x:auto;margin:8px 0 4px}
+  .acc-table{border-collapse:collapse;width:100%;font-size:12.5px;min-width:1280px}
+  .acc-table th,.acc-table td{padding:6px 8px;border-bottom:1px solid var(--grid);vertical-align:bottom}
+  .acc-table thead th{color:var(--ink2);font-size:11px;font-weight:700;line-height:1.2;
+    border-bottom:1px solid var(--axis);text-align:right}
+  .acc-table thead th:first-child,.acc-table tbody td:first-child{text-align:left}
+  .acc-table thead th:last-child,.acc-table tbody td:last-child{text-align:left}
+  /* Header group colours — same family as master table Behaviour / Earn / Validate */
+  .acc-table thead th.acc-g-money,
+  table.cmp thead th.acc-g-money{background:rgba(180,117,0,.10)}
+  .acc-table thead th.acc-g-money .acc-hs,
+  table.cmp thead th.acc-g-money .acc-hs{color:#8a5a00}
+  .acc-table thead th.acc-g-mae,
+  table.cmp thead th.acc-g-mae{background:rgba(15,118,110,.10)}
+  .acc-table thead th.acc-g-mae .acc-hs,
+  table.cmp thead th.acc-g-mae .acc-hs{color:#0f766e}
+  .acc-table thead th.acc-g-days,
+  table.cmp thead th.acc-g-days{background:rgba(42,120,214,.08)}
+  .acc-table thead th.acc-g-days .acc-hs,
+  table.cmp thead th.acc-g-days .acc-hs{color:#1b4f88}
+  .acc-table thead th.acc-g-closer,
+  table.cmp thead th.acc-g-closer{background:rgba(0,99,0,.08)}
+  .acc-table thead th.acc-g-closer .acc-hs,
+  table.cmp thead th.acc-g-closer .acc-hs{color:#006300}
+  .acc-table thead th.acc-grp,
+  table.cmp thead th.acc-grp{text-align:center;vertical-align:bottom}
+  .acc-hs{display:block;margin-top:2px;font-weight:400;font-size:10.5px;line-height:1.15}
+  .acc-box{border-radius:10px;padding:10px 12px;margin:10px 0;font-size:13px;line-height:1.4}
+  .acc-box.good{background:var(--goodbg)} .acc-box.warn{background:var(--warnbg)}
+  .acc-box.bad{background:var(--badbg)}
+  .acc-box.neut{background:var(--neutbg);border:1px solid var(--border)}
+  .acc-tag{display:inline-block;font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:999px;
+    border:1px solid var(--grid);white-space:nowrap}
+  .acc-tag.good{background:var(--goodbg);color:var(--good)}
+  .acc-tag.warn{background:var(--warnbg);color:var(--warn)}
+  .acc-tag.neut{background:var(--neutbg);color:var(--ink2)}
+  .acc-note{font-size:10px;line-height:1.2;color:var(--muted);font-weight:500}
+  .acc-box ul{margin:6px 0 0;padding-left:1.2em}
+  .acc-box li{margin:3px 0}
+  details.acc-fold{margin:10px 0 12px;border:1px solid var(--border);border-radius:10px;
+    background:var(--surface, #fcfcfb);padding:0 12px 2px}
+  details.acc-fold>summary{cursor:pointer;list-style:none;display:flex;align-items:center;
+    gap:8px;flex-wrap:wrap;font-size:13px;font-weight:700;padding:10px 0;color:var(--ink)}
+  details.acc-fold>summary::-webkit-details-marker{display:none}
+  details.acc-fold>summary::before{content:"▸ ";color:var(--muted);font-weight:700}
+  details.acc-fold[open]>summary::before{content:"▾ "}
+  details.acc-fold>summary .acc-fold-hint{margin-left:auto;font-size:11px;font-weight:500;color:var(--muted)}
+  details.acc-fold .acc-box{margin:0 0 10px}
+  details.acc-fold .acc-box:last-child{margin-bottom:8px}
+  /* Column filters — independent on/off (like master + Behaviour / + Earn / + Validate) */
+  .acc-segbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 8px}
+  .acc-seg{display:inline-flex;border:1px solid var(--border);border-radius:8px;overflow:hidden;
+    background:var(--plane, #f9f9f7)}
+  .acc-seg button{font:inherit;font-size:12px;padding:4px 10px;border:0;background:transparent;
+    color:var(--ink2);cursor:pointer;line-height:1.25}
+  .acc-seg button.on{background:var(--blue);color:#fff;font-weight:600}
+  .acc-seghint{font-size:11.5px;color:var(--muted)}
+  .acc-filter-root:not([data-acc-money="1"]) .acc-col-money,
+  .acc-filter-root:not([data-acc-mae="1"]) .acc-col-mae,
+  .acc-filter-root:not([data-acc-days="1"]) .acc-col-days{display:none !important}
+
+
+h2.sectoggle{cursor:pointer;user-select:none}
+
+h2.sectoggle:hover{color:var(--ink2)}
+
+h2.sectoggle .rs-teaser{font-weight:500;color:var(--muted);font-size:14px}
+
+.sect-head{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;margin:34px 0 3px}
+
+.sect-head > h2{flex:1 1 200px;margin:0;scroll-margin-top:60px}
+
+.sect-head > .showlabel{flex:none;margin:0}
+
+.fnote-toggle.sectoggle{cursor:pointer;user-select:none;margin:0;font-size:13px;color:var(--ink2);line-height:1.45}
+
+.fnote-toggle.sectoggle:hover{color:var(--ink)}
+
+.fnote-toggle.sectoggle .rs-teaser{font-weight:500;color:var(--muted);font-size:12px}
+
+.nav{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--plane) 88%,transparent);
+    backdrop-filter:saturate(1.1) blur(8px);border-bottom:1px solid var(--border);margin:0 0 22px}
+
+.nav-in{max-width:1080px;margin:0 auto;padding:9px 20px;display:flex;gap:4px;flex-wrap:wrap;
+    align-items:center;overflow-x:auto}
+
+.nav .brand{font-size:13px;font-weight:800;letter-spacing:-.01em;margin-right:8px;white-space:nowrap}
+
+.nav a{font-size:12.5px;color:var(--ink2);text-decoration:none;padding:5px 10px;border-radius:8px;
+    white-space:nowrap;line-height:1.2}
+
+.nav a:hover{background:var(--neutbg);color:var(--ink)}
+
+.nav a.active{background:var(--blue);color:#fff;font-weight:600}
+
+.showbar{cursor:pointer;user-select:none;text-align:center;font-size:12.5px;font-weight:700;letter-spacing:.02em;color:var(--ink2);background:var(--neutbg);border:1px solid var(--border);border-radius:10px;padding:9px;margin:12px 0 10px;transition:background .12s,color .12s}
+
+.showbar:hover{background:var(--blue);color:#fff;border-color:var(--blue)}
+
+.showbar.showlabel{
+    display:inline-block;width:auto;text-align:left;font-size:11.5px;font-weight:600;
+    padding:3px 10px;margin:2px 0 10px;border-radius:999px;letter-spacing:0;line-height:1.35
+  }
+
+.fnote-row .showlabel{margin:0;flex:none}
+
+.sect-head + [id$="-body"],
+  .fnote-row + [id$="-body"]{margin-top:6px}
+
+.right-rail{display:none}
+
+@media (min-width:1580px){
+    .right-rail{display:flex;flex-direction:column;gap:12px;position:fixed;top:64px;right:24px;
+      width:280px;max-height:calc(100vh - 84px);overflow:hidden;z-index:40}
+    .cheat{display:block;position:static;width:auto;max-height:none;flex:0 0 auto;
+      background:var(--surface);border:1px solid var(--border);border-radius:14px;
+      padding:14px 16px;box-shadow:0 6px 24px rgba(0,0,0,.06)}
+    .comments-rail{display:flex;flex-direction:column;flex:1 1 auto;min-height:0;
+      background:var(--surface);border:1px solid var(--border);
+      border-radius:14px;padding:14px 16px;box-shadow:0 6px 24px rgba(0,0,0,.06)}
+    .comments-rail #comments-rail-body{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;overflow:hidden}
+    .comments-rail #comments-rail-list{flex:1 1 auto;min-height:0;overflow-y:auto}
+    .comments-rail .cr-link,.comments-rail .cr-status{flex:0 0 auto}
+  }
+
+.comments-rail h4{margin:0;font-size:13.5px;letter-spacing:-.01em}
+
+.comments-rail .cr-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 10px}
+
+.comments-rail .cr-head h4{flex:1 1 auto;min-width:0}
+
+.comments-rail .cr-head .showlabel{margin:0;flex:none}
+
+body:not(.show-v2) .comments-rail .cr-head .showlabel{display:none}
+
+body:not(.show-v2) .comments-rail.is-collapsed{flex:1 1 auto;min-height:0;padding:14px 16px}
+
+body:not(.show-v2) .comments-rail.is-collapsed .cr-head{margin:0 0 10px}
+
+body:not(.show-v2) #comments-rail-body{display:flex !important}
+
+body.show-v2 .comments-rail.is-collapsed{
+    flex:0 0 auto;min-height:0;padding:10px 14px}
+
+body.show-v2 .comments-rail.is-collapsed .cr-head{margin:0}
+
+body.show-v2 .comments-rail.is-collapsed #comments-rail-body{display:none !important}
+
+.comments-rail .cr-sub{font-size:11px;color:var(--muted);margin:0 0 10px}
+
+.comments-rail .cr-item{font-size:11.5px;line-height:1.4}
+
+.comments-rail .cr-item.cr-item-btn{cursor:pointer;border:1px solid var(--grid);border-radius:10px;
+    margin:0 0 16px;padding:10px 10px;background:var(--surface);transition:background .15s,border-color .15s}
+
+.comments-rail .cr-item.cr-item-btn:last-child{margin-bottom:4px}
+
+.comments-rail .cr-item.cr-item-btn:hover{background:var(--neutbg);border-color:color-mix(in srgb,var(--blue) 35%,var(--grid))}
+
+.comments-rail .cr-meta{color:var(--muted);font-size:10.5px;margin-bottom:3px}
+
+.comments-rail .cr-meta b{color:var(--ink);font-weight:700}
+
+.comments-rail .cr-body{white-space:pre-wrap;word-break:break-word;font-size:11.5px;color:var(--ink);line-height:1.4}
+
+.comments-rail .cr-empty{color:var(--muted);font-size:11.5px}
+
+.comments-rail .cr-link{display:inline-block;margin-top:8px;font-size:11px;font-weight:700;color:var(--blue);text-decoration:none;background:none;border:0;padding:0;cursor:pointer;font-family:inherit}
+
+.comments-rail .cr-link:hover{text-decoration:underline}
+
+.comments-rail .cr-status{font-size:10.5px;color:var(--muted);margin-top:6px}
+
+.discussion{margin:28px 0 0;padding:18px 20px;background:var(--surface);border:1px solid var(--border);
+    border-radius:14px;scroll-margin-top:72px}
+
+.discussion h2{margin:0 0 4px;font-size:18px}
+
+.discussion .disc-sub{color:var(--muted);font-size:13px;margin:0 0 16px}
+
+.comment-list{display:flex;flex-direction:column;gap:12px;margin-bottom:16px}
+
+.comment-card{border:1px solid var(--grid);border-radius:12px;padding:12px 14px;background:var(--plane)}
+
+.comment-card.reply{margin-left:22px;border-left:3px solid var(--blue);background:color-mix(in srgb,var(--blue-soft) 18%,var(--plane))}
+
+.comment-topic-block{display:flex;flex-direction:column;gap:12px;margin:0 0 28px;padding:14px 14px 16px;
+    border:1px solid var(--grid);border-radius:14px;background:var(--surface);
+    box-shadow:0 1px 0 rgba(11,11,11,.04)}
+
+.comment-topic-block:last-child{margin-bottom:12px}
+
+.comment-topic-head{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0;padding:0 0 10px;
+    border-bottom:1px dashed var(--grid)}
+
+.comment-topic-title{font-size:14px;font-weight:800;color:var(--blue);letter-spacing:-.01em}
+
+.comment-topic-meta{font-size:11px;color:var(--muted)}
+
+.comment-topic{font-size:13px;font-weight:800;color:var(--blue);margin:0 0 4px;letter-spacing:-.01em}
+
+.comment-meta{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin-bottom:6px;font-size:12px;color:var(--muted)}
+
+.comment-meta .author{font-weight:800;color:var(--ink)}
+
+.comment-meta .edited{font-style:italic}
+
+.comment-chip{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.04em;padding:2px 6px;border-radius:999px;line-height:1.2}
+
+.comment-chip.new{background:rgba(237,161,0,.18);color:#9a6b00;border:1px solid rgba(237,161,0,.35)}
+
+.comments-rail .cr-labels{display:flex;flex-direction:column;align-items:flex-start;gap:5px;margin:0 0 8px;
+    padding:0 0 8px;border-bottom:1px dashed var(--grid)}
+
+.comments-rail .cr-topic{font-size:11px;font-weight:800;color:var(--blue);margin:0;display:flex;flex-wrap:wrap;
+    align-items:center;gap:5px;width:100%}
+
+.comments-rail .cr-chip{margin-left:0;vertical-align:middle}
+
+.comments-rail .cr-kind{display:inline-block;font-size:9.5px;font-weight:800;letter-spacing:.03em;padding:1px 6px;
+    border-radius:999px;line-height:1.3;border:1px solid transparent}
+
+.comments-rail .cr-kind.note{background:var(--neutbg);color:var(--ink2);border-color:var(--grid)}
+
+.comments-rail .cr-kind.reply{background:rgba(42,120,214,.10);color:#1a5fa8;border-color:rgba(42,120,214,.28)}
+
+.comments-rail .cr-latest{font-size:10.5px;font-weight:700;margin:0;display:flex;flex-wrap:wrap;align-items:center;gap:4px;width:100%}
+
+.comments-rail .cr-latest.ming{color:#1a5fa8}
+
+.comments-rail .cr-latest.jin{color:#1b6b48}
+
+.comments-rail .cr-latest.connie{color:#8a4518}
+
+.comments-rail .cr-latest.matt{color:#5a3a8a}
+
+.comments-rail .cr-latest.other{color:var(--ink2)}
+
+.comments-rail .cr-latest .cr-latest-label{color:var(--muted);font-weight:600}
+
+.topic-index-item .ti-meta .topic-author-pill{vertical-align:middle}
+
+.comments-rail .cr-count{font-size:10px;color:var(--muted);font-weight:600}
+
+.topic-author-label{display:inline-flex;align-items:center;gap:5px;flex-wrap:wrap}
+
+.topic-author-pill{display:inline-block;font-size:10px;font-weight:800;padding:2px 7px;border-radius:999px;
+    letter-spacing:.02em;border:1px solid transparent;line-height:1.3;white-space:nowrap}
+
+.topic-author-pill.ming{background:rgba(42,120,214,.14);color:#1a5fa8;border-color:rgba(42,120,214,.35)}
+
+.topic-author-pill.jin{background:rgba(46,158,110,.14);color:#1b6b48;border-color:rgba(46,158,110,.35)}
+
+.topic-author-pill.connie{background:rgba(180,90,40,.12);color:#8a4518;border-color:rgba(180,90,40,.35)}
+
+.topic-author-pill.matt{background:rgba(120,80,180,.12);color:#5a3a8a;border-color:rgba(120,80,180,.35)}
+
+.topic-author-pill.other{background:var(--neutbg);color:var(--ink2);border-color:var(--grid)}
+
+.comment-topic-title.ming,.comments-rail .cr-topic.ming{color:#1a5fa8}
+
+.comment-topic-title.jin,.comments-rail .cr-topic.jin{color:#1b6b48}
+
+.comment-topic-title.connie,.comments-rail .cr-topic.connie{color:#8a4518}
+
+.comment-topic-title.matt,.comments-rail .cr-topic.matt{color:#5a3a8a}
+
+.comment-topic-block.ming{border-color:rgba(42,120,214,.35);border-left:4px solid #2a78d6;background:color-mix(in srgb,#2a78d6 4%,var(--surface))}
+
+.comment-topic-block.jin{border-color:rgba(46,158,110,.35);border-left:4px solid #2e9e6e;background:color-mix(in srgb,#2e9e6e 4%,var(--surface))}
+
+.comment-topic-block.connie{border-color:rgba(180,90,40,.35);border-left:4px solid #b45a28;background:color-mix(in srgb,#b45a28 4%,var(--surface))}
+
+.comment-topic-block.matt{border-color:rgba(120,80,180,.35);border-left:4px solid #7850b4;background:color-mix(in srgb,#7850b4 4%,var(--surface))}
+
+.comments-rail .cr-item.ming{border-left:3px solid #2a78d6}
+
+.comments-rail .cr-item.jin{border-left:3px solid #2e9e6e}
+
+.comments-rail .cr-item.connie{border-left:3px solid #b45a28}
+
+.comments-rail .cr-item.matt{border-left:3px solid #7850b4}
+
+.comment-card.reply{position:relative}
+
+.comment-card.reply::before{content:"Reply";position:absolute;top:8px;right:10px;font-size:10px;font-weight:800;
+    color:var(--blue);letter-spacing:.02em;opacity:.85}
+
+.comment-reply-line{font-size:11px;font-weight:700;color:var(--blue);margin:0 0 6px}
+
+.comment-body{font-size:14px;line-height:1.5;white-space:pre-wrap;overflow-wrap:normal;word-break:normal;overflow-x:auto}
+
+.comments-modal-thread .comment-body{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12.5px;line-height:1.35}
+
+.comment-actions{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+
+.comment-actions button,.comment-compose button{font:inherit;font-size:12px;font-weight:600;
+    padding:5px 10px;border-radius:8px;border:1px solid var(--border);background:var(--surface);
+    color:var(--ink2);cursor:pointer}
+
+.comment-actions button:hover,.comment-compose button:hover{background:var(--neutbg);color:var(--ink)}
+
+.comment-actions button.primary,.comment-compose button.primary{background:var(--blue);color:#fff;border-color:var(--blue)}
+
+.comment-actions button.danger{color:var(--critical)}
+
+.comment-compose{border-top:1px solid var(--grid);padding-top:14px;margin-top:4px}
+
+.comment-compose label{display:block;font-size:12px;font-weight:700;margin-bottom:4px;color:var(--ink2)}
+
+.comment-compose select,.comment-compose textarea,.comment-compose input[type=text]{width:100%;font:inherit;font-size:14px;
+    border:1px solid var(--border);border-radius:10px;padding:8px 10px;background:var(--surface);color:var(--ink)}
+
+.comment-compose input[type=text]{margin:0 0 8px}
+
+.comment-compose textarea{min-height:220px;height:220px;resize:vertical;margin:8px 0 10px}
+
+.comment-compose .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+
+.comment-compose .hint{font-size:11.5px;color:var(--muted);flex:1 1 200px}
+
+.comment-compose .replying{font-size:12px;color:var(--blue);margin:0 0 8px;font-weight:600}
+
+.comment-banner{font-size:12.5px;padding:10px 12px;border-radius:10px;margin-bottom:12px;
+    background:var(--warnbg);border:1px solid color-mix(in srgb,var(--serious) 35%,var(--border))}
+
+.comment-banner a{color:var(--blue);font-weight:700}
+
+.comment-card.highlight{border-color:var(--blue);box-shadow:0 0 0 2px var(--blue-soft);
+    background:color-mix(in srgb,var(--blue-soft) 25%,var(--plane));position:relative;z-index:1}
+
+.comments-done-toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(12px);
+    z-index:320;padding:12px 18px;border-radius:12px;font-size:14px;font-weight:700;color:#fff;
+    background:#1b6b48;box-shadow:0 10px 28px rgba(0,0,0,.22);opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;
+    max-width:min(92vw,420px);text-align:center}
+
+.comments-done-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+.comments-modal{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;padding:20px}
+
+.comments-modal[hidden]{display:none}
+
+.comments-modal-backdrop{position:absolute;inset:0;background:rgba(11,11,11,.45)}
+
+.comments-modal-panel{position:relative;width:min(1040px,96vw);max-height:min(94vh,1100px);height:min(94vh,1100px);display:flex;
+    flex-direction:column;background:var(--surface);border:1px solid var(--border);border-radius:16px;
+    box-shadow:0 20px 60px rgba(0,0,0,.18);overflow:hidden}
+
+.comments-modal-head{display:flex;align-items:center;justify-content:space-between;gap:12px;
+    padding:16px 18px;border-bottom:1px solid var(--grid);flex-shrink:0}
+
+.comments-modal-head h3{margin:0;font-size:17px;letter-spacing:-.01em}
+
+.comments-modal-close{font:inherit;font-size:18px;line-height:1;width:32px;height:32px;
+    border:1px solid var(--border);border-radius:8px;background:var(--surface);cursor:pointer;color:var(--ink2)}
+
+.comments-modal-close:hover{background:var(--neutbg)}
+
+.comments-modal-sub{margin:0;padding:8px 18px 0;font-size:12px;color:var(--muted);flex-shrink:0}
+
+.comments-modal-thread{flex:1 1 auto;min-height:0;overflow-y:auto;padding:14px 18px;margin:0;display:flex;flex-direction:column;gap:4px}
+
+.comments-modal-back{font:inherit;font-size:12px;font-weight:700;color:var(--blue);background:none;border:0;padding:0;cursor:pointer;margin:0 0 8px;text-align:left}
+
+.comments-modal-back:hover{text-decoration:underline}
+
+.comments-modal-foot{padding:10px 18px 12px;border-top:1px solid var(--grid);flex:0 0 auto;background:var(--plane)}
+
+.comments-modal.index-mode #comments-modal-compose-slot{display:none}
+
+.comments-modal.index-mode .comments-modal-foot{padding:8px 18px 10px}
+
+.comments-modal-foot .comment-compose{border-top:0;padding-top:0;margin-top:0}
+
+.comments-modal-foot .comment-compose label{margin-bottom:2px}
+
+.comments-modal-foot .comment-compose textarea{min-height:120px;max-height:220px;height:140px;margin:4px 0 6px;resize:vertical}
+
+.comments-modal-foot .comments-modal-goto{display:inline-block;margin-top:8px;font-size:12px;font-weight:700;color:var(--blue);text-decoration:none}
+
+.comments-modal-goto:hover{text-decoration:underline}
+
+.comments-modal-banner{margin:8px 18px 0;flex-shrink:0}
+
+#comments-compose-home:empty{display:none}
+
+.rail{border-left:2px solid var(--grid);margin-left:5px;padding-left:15px;display:flex;flex-direction:column;gap:9px}
+
+body.show-v2 #s4-hist-panel{display:none !important}
+
+body.show-v2 #s4{display:none !important}
+
+body.show-v2 #s3-s4-layout{
+  display:grid;
+  grid-template-columns:1.15fr .85fr;
+  gap:12px 16px;
+  align-items:start;
+  margin:0 0 8px;
+}
+
+body.show-v2 #s3-tier-split{
+  grid-column:1;grid-row:1;
+  display:flex;flex-direction:column;gap:12px;
+}
+
+body.show-v2 #s3-tier-split > .panel{width:100%}
+
+body.show-v2 #s4-split{
+  grid-column:2;grid-row:1;
+  display:block;
+  grid-template-columns:unset;
+}
+
+body.show-v2 a[data-s="s4"]{display:none !important}
+
+@media (max-width:760px){
+  body.show-v2 #s3-s4-layout{grid-template-columns:1fr}
+  body.show-v2 #s3-tier-split,
+  body.show-v2 #s4-split{grid-column:1;grid-row:auto}
+}
+</style>
+</head>
+<body class="show-v2">
+<nav class="nav" aria-label="Report sections">
+  <div class="nav-in">
+    <span class="brand">LTV validation</span>
+    <a href="#answer">Answer</a>
+    <a href="#chain">Decision chain</a>
+    <a href="#zones">A / B zones</a>
+    <a href="#sanity">Sanity checks</a>
+    <a href="#accuracy">Model vs simple</a>
+    <a href="#pass-grid">Pass grid</a>
+    <a href="#triad">Triangulation</a>
+    <a href="#recency">Recency</a>
+    <a href="#next">Next</a>
+    <a href="#discussion-ltv_val_en" id="nav-notes">Notes</a>
+  </div>
+</nav>
+
+<div class="right-rail">
+<aside class="comments-rail is-collapsed" aria-label="Latest notes">
+  <div class="cr-head">
+    <h4 class="sectoggle" data-target="comments-rail-body" role="button" tabindex="0">Latest notes</h4>
+    <span class="showbar showlabel" data-target="comments-rail-body" role="button" tabindex="0" title="Expand / collapse notes">More ▾</span>
+  </div>
+  <div id="comments-rail-body">
+    <div id="comments-rail-list"><p class="cr-empty">Loading…</p></div>
+    <button type="button" class="cr-link" id="comments-rail-open">More topics</button>
+    <p class="cr-status" id="comments-rail-status"></p>
+  </div>
+</aside>
+</div>
+
+<div class="wrap">
+
+<h1>Can we trust this LTV model for CRM and budget?</h1>
+<p class="meta">
+  Spec: <code>ltv-operationalize-validation.md</code>.
+  Customers: <b>936,648</b> Platform on-demand (<code>business_segment = 'PlatformOD'</code>), HK TRANSPORT.
+  Ranking date <b>2026-03-31</b>. Holdout <b>2026-04-01 to 2026-06-30</b> (91 days).
+  Figures queried <b>2026-08-03</b> (PlatformOD HK TRANSPORT; ranking 2026-03-31; holdout 2026-04-01 to 2026-06-30).
+  Calibration ratios also note <b>2026-07-06 for calibration ratios; ranking/lift rechecked 2026-08-03</b>.
+  Money = <code>platform_take</code> (<code>driver_commission</code> + <code>premium_platform_support</code>), not GTV.
+</p>
+
+<div class="answer" id="answer">
+  <div class="big">Not yet ready as an operational Pass.</div>
+  <p>Whole-base forecast is close (about 7% off). That is only a <b>sanity check</b>.
+  Spec says we must pass <b>Tier × Recency</b> cells on 30 / 90 / 180 day windows, with
+  LTV and BG/NBD+Gamma-Gamma each checked against Actual. That grid has <b>not been run</b>.
+  Do not drive budget from “whole base Pass” alone.</p>
+</div>
+
+<div class="kpi">
+  <div class="k">
+    <div class="lbl">Accuracy Validation (ops gate)</div>
+    <div class="val warn">Not run</div>
+    <div class="sub">Tier × Recency × 30/90/180d</div>
+  </div>
+  <div class="k">
+    <div class="lbl">Whole-base revenue ratio</div>
+    <div class="val">0.931</div>
+    <div class="sub">Sanity only · HK$19.98M vs HK$21.46M</div>
+  </div>
+  <div class="k">
+    <div class="lbl">120-month lifetime figures</div>
+    <div class="val warn">Projection</div>
+    <div class="sub">Cannot claim accuracy · B zone</div>
+  </div>
+</div>
+
+<h2 id="chain">① Decision chain (what validation must support)</h2>
+<p class="lead">One flow, not four separate models.</p>
+<div class="card">
+  <ol class="chain">
+    <li><b>Tier (value band)</b> — is this customer worth spending on? (P100–P10 or list T1–T5)</li>
+    <li><b>BG/NBD + Gamma-Gamma</b> — inside the same Tier, who first, and how hard?</li>
+    <li><b>Recency group</b> — act now? ≤90 / 91–180 / &gt;180 days since last completed job</li>
+    <li><b>Marketing / CRM action</b> — service, push, offer, or no spend</li>
+    <li><b>Validation</b> — prove each Tier × Recency cell is reliable in hard windows</li>
+  </ol>
+  <p class="src">Core line from spec: Tier decides worth; BG/NBD+GG decides who and how hard;
+    Recency decides now or later; Validation proves it is safe to use.</p>
+</div>
+
+<h2 id="zones">② Accuracy vs Projection</h2>
+<div class="chart-row">
+  <div class="card chart-box">
+    <h3>A zone · Accuracy Validation</h3>
+    <p>Windows with real orders: <b>30 / 90 / 180 days</b> (and existing main_90d / sens_180d).</p>
+    <p>Compare forecast to <b>Actual</b>. Report Bias, calibration ratio, Pass / Fail.</p>
+    <p class="hl-good">This is the only place we may say “accurate enough for ops”.</p>
+  </div>
+  <div class="card chart-box">
+    <h3>B zone · Projection Validation</h3>
+    <p>Beyond holdout out to <b>120 months</b>.</p>
+    <p>Check path shape, decline assumption (~15%/year), scenario bands.</p>
+    <p class="hl-bad">Never say “10-year error is X%”. There is no 10-year answer.</p>
+  </div>
+</div>
+
+<div class="box warn">
+  <b>Forbidden claim:</b> “Future 120 months is accurate within X%.”
+  <b>Allowed claim (after A-zone Pass):</b> well calibrated on the observable horizon;
+  path consistent with an independent BG/NBD + Gamma-Gamma forecast.
+</div>
+
+<h2 id="sanity">③ What we already measured (sanity — not ops Pass)</h2>
+<p class="lead">Useful evidence. Spec forbids treating whole-base Pass as the CRM gate.</p>
+<div class="card">
+<table class="cmp">
+  <thead>
+    <tr><th>Check</th><th>Result</th><th>Spec role</th><th>Plain meaning</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Predicted total revenue ÷ actual</td>
+      <td>0.931 (HK$19.98M vs HK$21.46M)</td>
+      <td><span class="tag neut">Sanity</span></td>
+      <td>About 7% low across the whole base — can hide canceling errors by Tier</td>
+    </tr>
+    <tr>
+      <td>Predicted ordering days ÷ actual</td>
+      <td>0.968 (757,870 vs 783,107)</td>
+      <td><span class="tag neut">Sanity</span></td>
+      <td>Frequency totals are close</td>
+    </tr>
+    <tr>
+      <td>Best 10% list · past earnings only</td>
+      <td>68.9% of holdout revenue (6.89×)</td>
+      <td><span class="tag good">Ranking usable</span></td>
+      <td>Who to spend on — not how much each person is worth</td>
+    </tr>
+    <tr>
+      <td>Best 10% list · model</td>
+      <td>75.1% (7.51×) · 935,992 customers</td>
+      <td><span class="tag good">Ranking usable</span></td>
+      <td>Beats simple sort; still not cell-level Accuracy Pass</td>
+    </tr>
+    <tr>
+      <td>Error on one customer’s amount</td>
+      <td>74% to 153%</td>
+      <td><span class="tag bad">Do not use</span></td>
+      <td>Never quote a dollar figure for one customer (MAPE is not the ops gate)</td>
+    </tr>
+    <tr>
+      <td>Share of PlatformOD business covered</td>
+      <td>87.8%</td>
+      <td><span class="tag warn">Gap</span></td>
+      <td>Say “covers 87.8%”, never “all PlatformOD”. New customers ~8.1% missing</td>
+    </tr>
+    <tr>
+      <td>Tier × Recency Bias Pass table</td>
+      <td>—</td>
+      <td><span class="tag bad">Not run</span></td>
+      <td>This is the real ops gate in the validation spec</td>
+    </tr>
+  </tbody>
+</table>
+<p class="src">Source: <code>gogox-ba-sandbox.reporting.pres_ltv_forecast_vs_actual_summary</code>
+  (+ ranking tables). Calibration ratios queried 2026-07-06; ranking/lift rechecked 2026-08-03.
+  Scope: PlatformOD, holdout 2026-04-01 to 2026-06-30.</p>
+</div>
+
+<h2 id="accuracy">③b Model vs simple arithmetic — by tier</h2>
+
+<div class="acc-filter-root" data-acc-money="1" data-acc-mae="0" data-acc-days="0">
+<h3>Which method best predicts the next 91 days?</h3>
+<p>
+  Side-by-side for each Tier (Value group):
+  <b>Actual</b> (holdout) vs <b>Predicted LTV</b> vs <b>Estimated LTV</b>.
+  Both forecasts use a clear formula — not a random guess.
+  Cut-off <b>2026-03-31</b> · check <b>2026-04-01 to 2026-06-30</b> (91 days).
+  Scores sit next to the <b>$</b> columns:
+  <b>+/− % deviation</b> (signed bias · 0% = spot on) and <b>MAE</b> (average miss per customer in HK$ · lower is better).
+</p>
+<details class="acc-fold">
+  <summary>
+    <span><b>Predicted LTV closer.</b> Result · formulas · MAE example</span>
+    <span class="acc-fold-hint">expand / collapse</span>
+  </summary>
+  <div class="box good"><b>Predicted LTV closer.</b> Closer to 0% by tier: Predicted 10 · Estimated 1 of 11. All-customers deviation: Predicted -7.0% · Estimated +54.7%.</div>
+  <div class="box neut">
+    <b>How the two formulas work</b>
+    <ul>
+      <li><b>Predicted LTV</b> = BG/NBD (how many more customer order days) × Gamma-Gamma
+        (<code>platform_take</code> per order day).
+        More flexible on history window: can use about <b>90 days</b>, <b>1 year</b>, or the full ranking span
+        (~<b>821 days</b>) to build frequency / recency / <code>T</code>, then forecast forward 91 days (or longer).</li>
+      <li><b>Estimated LTV</b> = ranking <b>Year 1</b> × (91 ÷ 365) for this short test.
+        Year 1 = <code>calib_platform_take × 365 ÷ GREATEST(T, 91)</code> — only money up to the cut-off.
+        Less flexible on behaviour (no per-customer recency rhythm), but Year 1 can still be defined from
+        ~90d / 1y / full ranking money. <b>Yearly decay</b> (P100 3.0%/yr · P99 18.1%/yr · P90 30.1%/yr) turns Year 1 into the
+        <b>10-year</b> Estimated LTV on the homepage (<code>Year1 × lifetime_mult_10y</code>) — not copied from holdout.</li>
+    </ul>
+  </div>
+  
+<div class="box neut">
+  <b>What MAE means (easy example · P100 Predicted)</b>
+  <ul>
+    <li><b>MAE HK$322.7</b> = for each customer, take
+      <code>|Predicted $ − Actual $|</code>, then average.
+      That is the average miss per customer. Lower is better. Always ≥ 0
+      (no plus/minus — only “how far off”).</li>
+    <li><b>|595.8 − 682.9| = HK$87.1</b>
+      = difference of the two <b>averages</b> (group bias).
+      This matches the <b>+/− % deviation</b>
+      (-12.8%), not MAE.</li>
+    <li><b>Why they differ:</b> some customers are over-predicted, some under.
+      Over and under partly cancel in the averages → only about 87 left.
+      MAE takes absolute miss first, so misses do <b>not</b> cancel → 323.
+      So -12.8% ↔ the 87 bias;
+      323 = average dollars wrong per customer.</li>
+  </ul>
+</div>
+</details>
+<div class="acc-segbar" role="group" aria-label="Accuracy column filters">
+  <div class="acc-seg">
+    <button type="button" class="on" data-acc-layer="money" aria-pressed="true"
+      title="platform_take $ + $ % deviation">platform_take $</button>
+    <button type="button" data-acc-layer="mae" aria-pressed="false"
+      title="MAE — average miss per customer">+ MAE</button>
+    <button type="button" data-acc-layer="days" aria-pressed="false"
+      title="Order days + order-day %">+ Order days</button>
+  </div>
+  <span class="acc-seghint" data-acc-hint>Showing platform_take $ · click + MAE / + Order days to add or remove (multi-select)</span>
+</div>
+<div class="card">
+<table class="cmp">
+  <thead>
+    <tr>
+      <th rowspan="2">Tier</th>
+      <th rowspan="2" style="text-align:right">Customers</th>
+      <th class="acc-grp acc-g-money acc-col-money" colspan="3"><code>platform_take</code> $ per customer · 91 days
+        <span class="acc-hs">Actual vs Predicted LTV vs Estimated LTV</span></th>
+      <th class="acc-grp acc-g-money acc-col-money" colspan="2">$ +/− % deviation
+        <span class="acc-hs">vs Actual $ · 0% = spot on · not MAPE</span></th>
+      <th class="acc-grp acc-g-mae acc-col-mae" colspan="3">$ MAE — average miss per customer
+        <span class="acc-hs">How many HK$ we miss on average · lower is better</span></th>
+      <th class="acc-grp acc-g-days acc-col-days" colspan="3">Order days per customer · 91 days
+        <span class="acc-hs">Actual vs Predicted · Est has no order-day formula</span></th>
+      <th class="acc-grp acc-g-days acc-col-days" colspan="2">Order days +/− % deviation
+        <span class="acc-hs">vs Actual days · Predicted only</span></th>
+      <th class="acc-g-closer" rowspan="2">Closer
+        <span class="acc-hs">to 0% on $</span></th>
+    </tr>
+    <tr>
+      <th class="acc-g-money acc-col-money" style="text-align:right">Actual</th>
+      <th class="acc-g-money acc-col-money" style="text-align:right">Predicted LTV</th>
+      <th class="acc-g-money acc-col-money" style="text-align:right">Estimated LTV</th>
+      <th class="acc-g-money acc-col-money" style="text-align:right">Predicted</th>
+      <th class="acc-g-money acc-col-money" style="text-align:right">Estimated</th>
+      <th class="acc-g-mae acc-col-mae" style="text-align:right">Actual $</th>
+      <th class="acc-g-mae acc-col-mae" style="text-align:right">Predicted MAE</th>
+      <th class="acc-g-mae acc-col-mae" style="text-align:right">Estimated MAE</th>
+      <th class="acc-g-days acc-col-days" style="text-align:right">Actual</th>
+      <th class="acc-g-days acc-col-days" style="text-align:right">Predicted LTV</th>
+      <th class="acc-g-days acc-col-days" style="text-align:right;color:var(--muted)">Estimated LTV</th>
+      <th class="acc-g-days acc-col-days" style="text-align:right">Predicted</th>
+      <th class="acc-g-days acc-col-days" style="text-align:right;color:var(--muted)">Estimated</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td><b>P100</b></td><td style="text-align:right">9,359</td><td class="acc-col-money" style="text-align:right">HK$682.9</td><td class="acc-col-money" style="text-align:right">HK$595.8</td><td class="acc-col-money" style="text-align:right">HK$737.0</td><td class="acc-col-money" style="text-align:right;color:var(--warn);font-weight:400">-12.8%</td><td class="acc-col-money" style="text-align:right;font-weight:700;background:var(--goodbg);color:var(--good)">+7.9% ✓</td><td class="acc-col-mae" style="text-align:right">HK$682.9</td><td class="acc-col-mae" style="text-align:right;font-weight:700;background:var(--goodbg)">HK$322.7 ✓</td><td class="acc-col-mae" style="text-align:right;font-weight:400">HK$417.7</td><td class="acc-col-days" style="text-align:right">17.77</td><td class="acc-col-days" style="text-align:right">17.27</td><td class="acc-col-days" style="text-align:right;color:var(--muted)">—<div class="acc-note">no Est order-day formula</div></td><td class="acc-col-days" style="text-align:right;color:var(--good);font-weight:400">-2.8%</td><td class="acc-col-days" style="text-align:right;color:var(--muted)">—<div class="acc-note">no Est order-day %</div></td><td><span class="tag warn">Estimated LTV</span></td></tr><tr><td><b>P99</b></td><td style="text-align:right">84,185</td><td class="acc-col-money" style="text-align:right">HK$100.8</td><td class="acc-col-money" style="text-align:right">HK$91.5</td><td class="acc-col-money" style="text-align:right">HK$138.3</td><td class="acc-col-money" style="text-align:right;font-weight:700;background:var(--goodbg);color:var(--good)">-9.2% ✓</td><td class="acc-col-money" style="text-align:right;color:var(--bad);font-weight:400">+37.2%</td><td class="acc-col-mae" style="text-align:right">HK$100.8</td><td class="acc-col-mae" style="text-align:right;font-weight:700;background:var(--goodbg)">HK$70.6 ✓</td><td class="acc-col-mae" style="text-align:right;font-weight:400">HK$104.2</td><td class="acc-col-days" style="text-align:right">3.99</td><td class="acc-col-days" style="text-align:right">3.68</td><td class="acc-col-days" style="text-align:right;color:var(--muted)">—<div class="acc-note">no Est order-day formula</div></td><td class="acc-col-days" style="text-align:right;color:var(--good);font-weight:400">-7.8%</td><td class="acc-col-days" style="text-align:right;color:var(--muted)">—<div class="acc-note">no Est order-day %</div></td><td><span class="tag good">Predicted LTV</span></td></tr><tr><td><b>P90</b></td><td style="text-align:right">93,551</td><td class="acc-col-money" style="text-align:right">HK$27.8</td><td class="acc-col-money" style="text-align:right">HK$26.6</td><td class="acc-col-money" style="text-align:right">HK$48.0</td><td class="acc-col-money" style="text-align:right;font-weight:700;background:var(--goodbg);color:var(--good)">-4.6% ✓</td><td class="acc-col-money" style="text-align:right;color:var(--bad);font-weight:400">+72.5%</td><td class="acc-col-mae" style="text-align:right">HK$27.8</td><td class="acc-col-mae" style="text-align:right;font-weight:700;background:var(--goodbg)">HK$28.4 ✓</td><td class="acc-col-mae" style="text-align:right;font-weight:400">HK$43.9</td><td class="acc-col-days" style="text-align:right">1.14</td><td class="acc-col-days" style="text-align:right">1.09</td><td class="acc-col-days" style="text-align:right;color:var(--muted)">—<div class="acc-note">no Est order-day formula</div></td><td class="acc-col-days" style="text-align:right;color:var(--good);font-weight:400">-4.4%</td><td class="acc-col-days" style="text-align:right;color:var(--muted)">—<div class="acc-note">no Est order-day %</div></td><td><span class="tag good">Predicted LTV</span></td></tr><tr><td><b>P80</b></td><td style="text-align:right">93,577</td><td class="acc-col-money" style="text-align:right">HK$13.8</td><td class="acc-col-money" style="text-align:right">HK$13.9</td><td class="acc-col-money" style="text-align:right">HK$29.3</td><td class="acc-col-money" style="text-align:right;font-weight:700;background:var(--goodbg);color:var(--good)">+0.8% ✓</td><td class="acc-col-money" style="text-align:right;color:var(--bad);font-weight:400">+111.9%</td><td class="acc-col-mae" style="text-align:right">HK$13.8</td><td class="acc-col-mae" style="text-align:right;font-weight:700;background:var(--goodbg)">HK$17.6 ✓</td><td class="acc-col-mae" style="text-align:right;font-weight:400">HK$29.1</td><td class="acc-col-days" style="text-align:right">0.57</td><td class="acc-col-days" style="text-align:right">0.58</td><td class="acc-col-days" style="text-align:right;color:var(--muted)">—<div class="acc-note">no Est order-day formula</div></td><td class="acc-col-days" style="text-align:right;color:var(--good);font-weight:400">+1.8%</td><td class="acc-col-days" style="text-align:right;color:var(--muted)">—<div class="acc-note">no Est order-day %</div></td><td><span class="tag good">Predicted LTV</span></td></tr><tr><td><b>P70</b></td><td style="text-align:right">93,574</td><td class="acc-col-money" style="text-align:right">HK$8.6</td><td class="acc-col-money" style="text-align:right">HK$8.7</td><td class="acc-col-money" style="text-align:right">HK$21.3</td><td class="acc-col-money" style="text-align:right;font-weight:700;background:var(--goodbg);color:var(--good)">+1.1% ✓</td><td class="acc-col-money" style="text-align:right;color:var(--bad);font-weight:400">+148.8%</td><td class="acc-col-mae" style="text-align:right">HK$8.6</td><td class="acc-col-mae" style="text-align:right;font-weight:700;background:var(--goodbg)">HK$12.3 ✓</td><td class="acc-col-mae" style="text-align:right;font-weight:400">HK$22.0</td><td class="acc-col-days" style="text-align:right">0.35</td><td class="acc-col-days" style="text-align:right">0.37</td><td class="acc-col-days" style="text-align:right;color:var(--muted)">—<div class="acc-note">no Est order-day formula</div></td><td class="acc-col-days" style="text-align:right;color:var(--good);font-weight:400">+5.7%</td><td class="acc-col-days" style="text-align:right;color:var(--muted)">—<div class="acc-note">no Est order-day %</div></td><td><span class="tag good">Predicted LTV</span></td></tr><tr><td><b>P60</b></td><td style="text-align:right">93,549</td><td class="acc-col-money" style="text-align:right">HK$6.0</td><td class="acc-col-money" style="text-align:right">HK$5.9</td><td class="acc-col-money" style="text-align:right">HK$16.7</td><td class="acc-col-money" style="text-align:right;font-weight:700;background:var(--goodbg);color:var(--good)">-0.4% ✓</td><td class="acc-col-money" style="text-align:right;color:var(--bad);font-weight:400">+179.4%</td><td class="acc-col-mae" style="text-align:right">HK$6.0</td><td class="acc-col-mae" style="text-align:right;font-weight:700;background:var(--goodbg)">HK$9.1 ✓</td><td class="acc-col-mae" style="text-align:right;font-weight:400">HK$17.6</td><td class="acc-col-days" style="text-align:right">0.25</td><td class="acc-col-days" style="text-align:right">0.26</td><td class="acc-col-days" style="text-align:right;color:var(--muted)">—<div class="acc-note">no Est order-day formula</div></td><td class="acc-col-days" style="text-align:right;color:var(--good);font-weight:400">+4.0%</td><td class="acc-col-days" style="text-align:right;color:var(--muted)">—<div class="acc-note">no Est order-day %</div></td><td><span class="tag good">Predicted LTV</span></td></tr><tr><td><b>P50</b></td><td style="text-align:right">93,506</td><td class="acc-col-money" style="text-align:right">HK$4.5</td><td class="acc-col-money" style="text-align:right">HK$4.3</td><td class="acc-col-money" style="text-align:right">HK$13.2</td><td class="acc-col-money" style="text-align:right;font-weight:700;background:var(--goodbg);color:var(--good)">-4.7% ✓</td><td class="acc-col-money" style="text-align:right;color:var(--bad);font-weight:400">+191.4%</td><td class="acc-col-mae" style="text-align:right">HK$4.5</td><td class="acc-col-mae" style="text-align:right;font-weight:700;background:var(--goodbg)">HK$7.1 ✓</td><td class="acc-col-mae" style="text-align:right;font-weight:400">HK$14.3</td><td class="acc-col-days" style="text-align:right">0.19</td><td class="acc-col-days" style="text-align:right">0.20</td><td class="acc-col-days" style="text-align:right;color:var(--muted)">—<div class="acc-note">no Est order-day formula</div></td><td class="acc-col-days" style="text-align:right;color:var(--good);font-weight:400">+5.3%</td><td class="acc-col-days" style="text-align:right;color:var(--muted)">—<div class="acc-note">no Est order-day %</div></td><td><span class="tag good">Predicted LTV</span></td></tr><tr><td><b>P40</b></td><td style="text-align:right">93,454</td><td class="acc-col-money" style="text-align:right">HK$3.4</td><td class="acc-col-money" style="text-align:right">HK$3.5</td><td class="acc-col-money" style="text-align:right">HK$10.7</td><td class="acc-col-money" style="text-align:right;font-weight:700;background:var(--goodbg);color:var(--good)">+2.2% ✓</td><td class="acc-col-money" style="text-align:right;color:var(--bad);font-weight:400">+212.0%</td><td class="acc-col-mae" style="text-align:right">HK$3.4</td><td class="acc-col-mae" style="text-align:right;font-weight:700;background:var(--goodbg)">HK$5.8 ✓</td><td class="acc-col-mae" style="text-align:right;font-weight:400">HK$11.8</td><td class="acc-col-days" style="text-align:right">0.15</td><td class="acc-col-days" style="text-align:right">0.16</td><td class="acc-col-days" style="text-align:right;color:var(--muted)">—<div class="acc-note">no Est order-day formula</div></td><td class="acc-col-days" style="text-align:right;color:var(--good);font-weight:400">+6.7%</td><td class="acc-col-days" style="text-align:right;color:var(--muted)">—<div class="acc-note">no Est order-day %</div></td><td><span class="tag good">Predicted LTV</span></td></tr><tr><td><b>P30</b></td><td style="text-align:right">93,428</td><td class="acc-col-money" style="text-align:right">HK$2.7</td><td class="acc-col-money" style="text-align:right">HK$3.2</td><td class="acc-col-money" style="text-align:right">HK$8.4</td><td class="acc-col-money" style="text-align:right;font-weight:700;background:var(--goodbg);color:var(--warn)">+18.5% ✓</td><td class="acc-col-money" style="text-align:right;color:var(--bad);font-weight:400">+208.3%</td><td class="acc-col-mae" style="text-align:right">HK$2.7</td><td class="acc-col-mae" style="text-align:right;font-weight:700;background:var(--goodbg)">HK$5.1 ✓</td><td class="acc-col-mae" style="text-align:right;font-weight:400">HK$9.4</td><td class="acc-col-days" style="text-align:right">0.12</td><td class="acc-col-days" style="text-align:right">0.13</td><td class="acc-col-days" style="text-align:right;color:var(--muted)">—<div class="acc-note">no Est order-day formula</div></td><td class="acc-col-days" style="text-align:right;color:var(--good);font-weight:400">+8.3%</td><td class="acc-col-days" style="text-align:right;color:var(--muted)">—<div class="acc-note">no Est order-day %</div></td><td><span class="tag good">Predicted LTV</span></td></tr><tr><td><b>P20</b></td><td style="text-align:right">93,381</td><td class="acc-col-money" style="text-align:right">HK$2.6</td><td class="acc-col-money" style="text-align:right">HK$3.2</td><td class="acc-col-money" style="text-align:right">HK$6.5</td><td class="acc-col-money" style="text-align:right;font-weight:700;background:var(--goodbg);color:var(--warn)">+25.9% ✓</td><td class="acc-col-money" style="text-align:right;color:var(--bad);font-weight:400">+153.3%</td><td class="acc-col-mae" style="text-align:right">HK$2.6</td><td class="acc-col-mae" style="text-align:right;font-weight:700;background:var(--goodbg)">HK$5.0 ✓</td><td class="acc-col-mae" style="text-align:right;font-weight:400">HK$7.7</td><td class="acc-col-days" style="text-align:right">0.11</td><td class="acc-col-days" style="text-align:right">0.12</td><td class="acc-col-days" style="text-align:right;color:var(--muted)">—<div class="acc-note">no Est order-day formula</div></td><td class="acc-col-days" style="text-align:right;color:var(--good);font-weight:400">+9.1%</td><td class="acc-col-days" style="text-align:right;color:var(--muted)">—<div class="acc-note">no Est order-day %</div></td><td><span class="tag good">Predicted LTV</span></td></tr><tr><td><b>P10</b></td><td style="text-align:right">93,329</td><td class="acc-col-money" style="text-align:right">HK$2.3</td><td class="acc-col-money" style="text-align:right">HK$3.3</td><td class="acc-col-money" style="text-align:right">HK$4.7</td><td class="acc-col-money" style="text-align:right;font-weight:700;background:var(--goodbg);color:var(--bad)">+41.5% ✓</td><td class="acc-col-money" style="text-align:right;color:var(--bad);font-weight:400">+104.2%</td><td class="acc-col-mae" style="text-align:right">HK$2.3</td><td class="acc-col-mae" style="text-align:right;font-weight:700;background:var(--goodbg)">HK$4.8 ✓</td><td class="acc-col-mae" style="text-align:right;font-weight:400">HK$6.1</td><td class="acc-col-days" style="text-align:right">0.11</td><td class="acc-col-days" style="text-align:right">0.13</td><td class="acc-col-days" style="text-align:right;color:var(--muted)">—<div class="acc-note">no Est order-day formula</div></td><td class="acc-col-days" style="text-align:right;color:var(--warn);font-weight:400">+18.2%</td><td class="acc-col-days" style="text-align:right;color:var(--muted)">—<div class="acc-note">no Est order-day %</div></td><td><span class="tag good">Predicted LTV</span></td></tr>
+    <tr style="border-top:2px solid var(--axis);font-weight:700"><td>All customers</td><td style="text-align:right">934,893</td><td class="acc-col-money" style="text-align:right">HK$23.1</td><td class="acc-col-money" style="text-align:right">HK$21.5</td><td class="acc-col-money" style="text-align:right">HK$35.7</td><td class="acc-col-money" style="text-align:right;font-weight:700;background:var(--goodbg);color:var(--good)">-7.0% ✓</td><td class="acc-col-money" style="text-align:right;color:var(--bad);font-weight:400">+54.7%</td><td class="acc-col-mae" style="text-align:right">HK$23.1</td><td class="acc-col-mae" style="text-align:right;font-weight:700;background:var(--goodbg)">HK$19.1 ✓</td><td class="acc-col-mae" style="text-align:right;font-weight:400">HK$29.8</td><td class="acc-col-days" style="text-align:right">0.84</td><td class="acc-col-days" style="text-align:right">0.81</td><td class="acc-col-days" style="text-align:right;color:var(--muted)">—<div class="acc-note">no Est order-day formula</div></td><td class="acc-col-days" style="text-align:right;color:var(--good);font-weight:400">-3.3%</td><td class="acc-col-days" style="text-align:right;color:var(--muted)">—<div class="acc-note">no Est order-day %</div></td><td><span class="tag good">Predicted LTV closer</span></td></tr>
+  </tbody>
+</table>
+</div>
+<p class="src">
+  <b>Actual</b> = holdout <code>platform_take</code> / <code>actual_txn_days</code>.
+  <b>Predicted LTV</b> = <code>predicted_platform_take_91d</code> · <code>predicted_order_days_91d</code>
+  (BG/NBD × Gamma-Gamma; history to cut-off only).
+  <b>Estimated LTV (91-day test)</b> = ranking Year 1 × 91÷365
+  = <code>calib_platform_take × 91 ÷ GREATEST(T, 91)</code> — formula from ranking money, not holdout.
+  Homepage 10-year Estimated LTV still uses Year 1 × each tier’s <code>lifetime_mult_10y</code> (decay).
+  <b>$ +/− % deviation</b> = (forecast $ − actual $) ÷ actual $ × 100 · signed group bias · <b>not MAPE</b>
+  (same idea as |avg forecast − avg actual|).
+  <b>$ MAE</b> = average miss per customer = average <code>|forecast $ − actual $|</code>
+  (<code>predicted_miss</code> · <code>est_method_miss</code>) · lower better · always ≥ 0.
+  MAE ≠ |avg Predicted − avg Actual| — over/under cancel in averages, not in MAE.
+  MAE group shows Actual $ (scale) · Predicted MAE · Estimated MAE.
+  <b>Order days +/− % deviation</b> = (avg Predicted days − avg Actual days) ÷ avg Actual days × 100
+  · Predicted only · Est = — (no Est order-day formula).
+  Closer rule: Pred vs Est on <b>$</b> % deviation only — smaller |dev| wins (green ✓).
+  Column filters: Tier / Customers / Closer always on ·
+  <code>platform_take $</code> / <code>+ MAE</code> / <code>+ Order days</code> multi-select.
+  Source: <code>reporting.pres_ltv_forecast_accuracy_by_tier_10_groups</code>.
+  (queried 2026-08-10, HK TRANSPORT <code>business_segment = 'PlatformOD'</code>,
+  ranking through 2026-03-31, check 2026-04-01 to 2026-06-30, 91 days, 934,893 customers)
+</p>
+<script>
+(function () {
+  var roots = document.querySelectorAll(".acc-filter-root");
+  roots.forEach(function (root) {
+    if (root.getAttribute("data-acc-bound") === "1") return;
+    root.setAttribute("data-acc-bound", "1");
+    var buttons = root.querySelectorAll(".acc-seg button[data-acc-layer]");
+    var hint = root.querySelector("[data-acc-hint]");
+    function isOn(name) {
+      return root.getAttribute("data-acc-" + name) === "1";
+    }
+    function setOn(name, on) {
+      root.setAttribute("data-acc-" + name, on ? "1" : "0");
+    }
+    function sync() {
+      var money = isOn("money");
+      var mae = isOn("mae");
+      var days = isOn("days");
+      /* Keep at least platform_take $ on (like LTV always on above) */
+      if (!money && !mae && !days) {
+        money = true;
+        setOn("money", true);
+      }
+      buttons.forEach(function (b) {
+        var layer = b.getAttribute("data-acc-layer");
+        var pressed = layer === "money" ? money : layer === "mae" ? mae : days;
+        b.classList.toggle("on", pressed);
+        b.setAttribute("aria-pressed", pressed ? "true" : "false");
+      });
+      if (hint) {
+        var parts = [];
+        if (money) parts.push("platform_take $");
+        if (mae) parts.push("MAE");
+        if (days) parts.push("Order days");
+        hint.textContent = "Showing " + parts.join(" + ") +
+          " · Tier / Customers / Closer always on · click to add or remove (multi-select)";
+      }
+    }
+    buttons.forEach(function (b) {
+      b.addEventListener("click", function () {
+        var layer = b.getAttribute("data-acc-layer");
+        setOn(layer, !isOn(layer));
+        sync();
+      });
+    });
+    sync();
+  });
+})();
+</script>
+</div>
+
+
+<h2 id="pass-grid">④ Ops Pass grid (required — empty until tool runs)</h2>
+<p class="lead">Every cell CRM would use must pass. Whole-base 3% error can still mis-allocate budget.</p>
+<div class="card">
+<table class="cmp">
+  <caption>Primary Tier cut still TBD (P100–P10 vs list T1–T5). Bias gate TBD (example ±10% / ±15%).
+    Until confirmed, no cell may be marked Pass for budget.</caption>
+  <thead>
+    <tr>
+      <th>Tier</th><th>Recency group</th><th>Window</th>
+      <th>Bias</th><th>Calibration ratio</th><th>Pass?</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>P100</td><td>≤90d</td><td>30d</td><td>—</td><td>—</td><td><span class="tag bad">Not run</span></td></tr>
+    <tr><td>P100</td><td>≤90d</td><td>90d</td><td>—</td><td>—</td><td><span class="tag bad">Not run</span></td></tr>
+    <tr><td>P100</td><td>91–180d</td><td>90d</td><td>—</td><td>—</td><td><span class="tag bad">Not run</span></td></tr>
+    <tr><td>P100</td><td>&gt;180d</td><td>90d</td><td>—</td><td>—</td><td><span class="tag bad">Not run</span></td></tr>
+    <tr><td>P90 … P10</td><td>× three Recency groups</td><td>30 / 90 / 180d</td><td>—</td><td>—</td><td><span class="tag bad">Not run</span></td></tr>
+  </tbody>
+</table>
+<p class="src">Bias = (predicted sum − actual sum) / actual sum.
+  Calibration ratio = predicted sum / actual sum. Actual is the only truth.</p>
+</div>
+<div class="box neut">
+  <b>Pass rule (spec):</b> at least LTV vs Actual must pass for that Tier × Recency cell.
+  BG vs Actual strengthens confidence. Model Gap small while both miss Actual → Fail.
+</div>
+
+<h2 id="triad">⑤ Triangulation (how we will judge)</h2>
+<p class="lead">Two independent forecasts, both checked against Actual. Models agreeing with each other is not enough.</p>
+<div class="card">
+<figure class="triad" aria-label="Triangulation diagram">
+<svg viewBox="0 0 720 280" role="img">
+  <rect x="260" y="20" width="200" height="72" rx="12" fill="#e8f5e8" stroke="#006300"/>
+  <text x="360" y="48" text-anchor="middle" class="sv-t">Actual</text>
+  <text x="360" y="70" text-anchor="middle" class="sv-s">only truth · 30/90/180d</text>
+  <rect x="40" y="180" width="220" height="72" rx="12" fill="#eef4fb" stroke="#2a78d6"/>
+  <text x="150" y="208" text-anchor="middle" class="sv-t">LTV Model</text>
+  <text x="150" y="230" text-anchor="middle" class="sv-s">120-month contribution · not BG×GG</text>
+  <rect x="460" y="180" width="220" height="72" rx="12" fill="#f7f0e8" stroke="#b47500"/>
+  <text x="570" y="208" text-anchor="middle" class="sv-t">BG/NBD + Gamma-Gamma</text>
+  <text x="570" y="230" text-anchor="middle" class="sv-s">behaviour forecast · not Actual</text>
+  <line x1="150" y1="180" x2="300" y2="92" stroke="#2a78d6" stroke-width="2"/>
+  <line x1="570" y1="180" x2="420" y2="92" stroke="#b47500" stroke-width="2"/>
+  <line x1="260" y1="216" x2="460" y2="216" stroke="#898781" stroke-width="1.5" stroke-dasharray="5 4"/>
+  <text x="360" y="160" text-anchor="middle" class="sv-s">Bias / WAPE vs Actual</text>
+  <text x="360" y="252" text-anchor="middle" class="sv-s">Model Gap only (not accuracy)</text>
+</svg>
+</figure>
+<ul class="plain">
+  <li><b>LTV vs Actual</b> → Bias / WAPE (accuracy)</li>
+  <li><b>BG/NBD+GG vs Actual</b> → Bias / WAPE (accuracy)</li>
+  <li><b>LTV vs BG/NBD+GG</b> → Model Gap only (consistency, not accuracy)</li>
+</ul>
+<div class="box bad">
+  <b>Why model-vs-model is not enough:</b> LTV = $100, BG = $101, Actual = $60 —
+  the two models agree and both are wrong. Actual stays in the centre.
+</div>
+<p class="src">Independence rule: LTV Model must not be the same number as BG×GG CLV
+  (e.g. not <code>lifetimes.customer_lifetime_value()</code> as the LTV arm). Else drop that arm.</p>
+</div>
+
+<div class="box warn">
+  <b>Still missing for layer 2:</b> per-customer <code>still_active_probability</code> / P(alive)
+  and 90-day return probability are specified but not in BQ yet (method step 3).
+  Until then, do not label <code>recency_over_T</code> as “still active probability”.
+  <code>recency_over_T</code> is a <b>model input</b>, not P(alive).
+  Temporary proxy for targeting: high past <code>calib_platform_take</code> + mid <code>recency ÷ T</code> (about 0.4–0.7).
+</div>
+
+<h2 id="recency">⑥ Recency groups (when to act)</h2>
+<p class="lead">Tier = worth spending. Recency group = spend now or later. Do not mix with BTYD input <code>recency</code>.</p>
+<div class="card">
+<table class="cmp">
+  <thead><tr><th>Recency group</th><th>Meaning for ops</th></tr></thead>
+  <tbody>
+    <tr><td>≤90 days</td><td>Still fresh</td></tr>
+    <tr><td>91–180 days</td><td>Cooling</td></tr>
+    <tr><td>&gt;180 days</td><td>Almost asleep</td></tr>
+  </tbody>
+</table>
+</div>
+<div class="card">
+<table class="cmp matrix">
+  <caption>List target = high value × mid return chance. Top 500 returned 92.8% on their own
+    (queried 2026-08-03, PlatformOD, holdout 2026-04-01 to 2026-06-30) — service, not offers.</caption>
+  <thead>
+    <tr><th></th><th>Return chance low</th><th>Return chance high</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Value high</th>
+      <td class="hi"><b>Best place for an offer</b><br>High value, starting to decay</td>
+      <td><b>No offer</b><br>Service and relationship (top 500)</td>
+    </tr>
+    <tr>
+      <th>Value low</th>
+      <td>Do not spend</td>
+      <td>Zero-cost contact only</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<h2 id="projection">⑦ B zone note · 120-month lifetime ‡</h2>
+<div class="card">
+<p>Master-view lifetime column is <b>arithmetic projection</b>, not model output and not Accuracy Validation:</p>
+<pre class="formula">91-day revenue × 365 ÷ 91 × 5.354
+(= 10 years shrinking 15% a year, no finance discount)</pre>
+<p>Example P100 → about HK$3,405 per customer; whole base average about HK$495
+  (~HK$464M). Quote a range and the decline rate. Parent population differs from the 2024 H1 cohort scenarios.</p>
+<p class="src">Do not compare that panel average to cohort “middle” HK$1,041 without stating different populations.</p>
+</div>
+
+<h2 id="next">⑧ Next steps (to earn ops Pass)</h2>
+<ol class="plain">
+  <li><b>Confirm</b> primary Tier cut (P deciles vs list T) and Bias gate ±X%.</li>
+  <li><b>Lock</b> LTV Model formula independent of BG×GG CLV.</li>
+  <li><b>Build</b> validate tool: Tier × Recency × {30,90,180}d · triangulation · multi as_of.</li>
+  <li><b>Ship</b> method step 3 probabilities; replace the temporary proxy.</li>
+  <li><b>B zone</b> on a separate tab: path + Model Gap + scenarios — title Projection / Consistency only.</li>
+</ol>
+<div class="box good">
+  <b>Until then:</b> ranking / list depth from past earnings is usable for “who”.
+  Dollar LTV and cell-level CRM gates are not.
+</div>
+
+<h2>Data sources</h2>
+<div class="card">
+<table class="cmp">
+  <thead><tr><th>Used for</th><th>Source</th><th>Scope</th></tr></thead>
+  <tbody>
+    <tr>
+      <td>Sanity calibration / ranking lift</td>
+      <td><code>reporting.pres_ltv_forecast_vs_actual_summary</code></td>
+      <td>PlatformOD · train to 2026-03-31 · holdout 2026-04-01–2026-06-30</td>
+    </tr>
+    <tr>
+      <td>Decile / list context</td>
+      <td><code>reporting.pres_ltv_customer_baseline_10_groups</code> · <code>pres_ltv_list_granularity</code></td>
+      <td>Same · queried 2026-08-03</td>
+    </tr>
+    <tr>
+      <td>Panel / inputs</td>
+      <td><code>analytics.mart_ltv_forecast_check_panel</code></td>
+      <td>Same</td>
+    </tr>
+    <tr>
+      <td>Validation rules</td>
+      <td><code>docs/ltv-operationalize-validation.md</code></td>
+      <td>Written 2026-08-04</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<ul class="warn-list">
+  <li>PlatformOD only. EnterpriseOD is out of scope here.</li>
+  <li>Do not mix this line with official monthly LTV table <code>AN-6562</code>.</li>
+  <li>Ignore BTYD backtest HTML pages for this decision — this page is the validation gate.</li>
+</ul>
+
+<p class="foot">
+  GoGoX HK BA · LTV operationalize validation (EN) ·
+  Spec <code>ltv-operationalize-validation.md</code> ·
+  Companion ranking narrative <code>ltv-master-view.md</code> /
+  <code>ltv_customer_value_master_view_en.html</code>.
+</p>
+
+<section class="discussion" id="discussion-ltv_val_en" aria-labelledby="discussion-ltv_val_en-title">
+    <h2 id="discussion-ltv_val_en-title">Team notes</h2>
+    <p class="disc-sub">Leave a note for the team. Ming, Jin, Connie, and Matt can add, reply, edit, or delete their own notes.</p>
+    <div id="comments-banner" class="comment-banner" hidden></div>
+    <div id="comments-compose-home">
+    <div class="comment-compose" id="comment-compose">
+      <p class="replying" id="comment-replying" hidden></p>
+      <label for="comment-author">Your name</label>
+      <select id="comment-author" aria-label="Your name"></select>
+      <label for="comment-topic">Topic</label>
+      <input type="text" id="comment-topic" maxlength="120" placeholder="Short topic, e.g. Cut-off ASCII chart" aria-label="Topic">
+      <label for="comment-body">Note</label>
+      <textarea id="comment-body" placeholder="Ask a question or leave feedback on the bot score rule…" aria-label="Note"></textarea>
+      <div class="row">
+        <button type="button" class="primary" id="comment-submit">Post note</button>
+        <button type="button" id="comment-cancel-reply" hidden>Cancel reply</button>
+        <span class="hint" id="comment-compose-hint">Saved to Google Sheet tab <b>Comments</b>. Stay signed in with <b>@gogox.com</b> in this browser.</span>
+      </div>
+    </div>
+    </div>
+  </section>
+
+</div>
+
+<div id="comments-modal" class="comments-modal" hidden aria-hidden="true">
+  <div class="comments-modal-backdrop" data-close-modal tabindex="-1"></div>
+  <div class="comments-modal-panel" role="dialog" aria-modal="true" aria-labelledby="comments-modal-title">
+    <div class="comments-modal-head">
+      <div style="min-width:0;flex:1">
+        <button type="button" class="comments-modal-back" id="comments-modal-back" hidden>← All topics</button>
+        <h3 id="comments-modal-title">Topics</h3>
+      </div>
+      <button type="button" class="comments-modal-close" data-close-modal aria-label="Close">✕</button>
+    </div>
+    <p class="comments-modal-sub" id="comments-modal-sub"></p>
+    <div id="comments-modal-banner" class="comment-banner comments-modal-banner" hidden></div>
+    <div id="comments-modal-thread" class="comment-list comments-modal-thread"></div>
+    <div class="comments-modal-foot">
+      <div id="comments-modal-compose-slot"></div>
+      <a href="#discussion-s8" class="comments-modal-goto" id="comments-modal-goto">Go to full section ↓</a>
+    </div>
+  </div>
+</div>
+
+<script>
+// Team notes — modal + right-rail preview (fetch → Apps Script → Sheet Comments tab)
+(function(){
+  const COMMENTS_API = 'https://script.google.com/macros/s/AKfycbzse8sGGaK1rinzDnkIomJhF3iRb1r5gzaztQfYSEU-BPgqoH-lU5uHR_aPvdzNBu7V/exec';
+  const WIDGET_URL = COMMENTS_API + '?view=widget&section=ltv_val_en';
+  const SHEET_ID = '1v2i-enV0Wb7wmwe6gVNuiY87x313pn-mI1W9G3Ztod0';
+  const SECTION = 'ltv_val_en';
+  const AUTHORS = ['Ming', 'Jin', 'Connie', 'Matt'];
+  const LS_AUTHOR = 'ltv_val_en_comment_author';
+  const $ = id => document.getElementById(id);
+  const railList = $('comments-rail-list');
+  const railStatus = $('comments-rail-status');
+  const railOpen = $('comments-rail-open');
+  const navNotes = $('nav-notes');
+  const banner = $('comments-banner');
+  const modalBanner = $('comments-modal-banner');
+  const authorSel = $('comment-author');
+  const topicIn = $('comment-topic');
+  const bodyIn = $('comment-body');
+  const replyLbl = $('comment-replying');
+  const cancelReply = $('comment-cancel-reply');
+  const submitBtn = $('comment-submit');
+  const modal = $('comments-modal');
+  const modalTitle = $('comments-modal-title');
+  const modalBack = $('comments-modal-back');
+  const modalSub = $('comments-modal-sub');
+  const modalThread = $('comments-modal-thread');
+  const modalGoto = $('comments-modal-goto');
+  const composeEl = $('comment-compose');
+  const composeHome = $('comments-compose-home');
+  const modalComposeSlot = $('comments-modal-compose-slot');
+  let comments = [];
+  let replyParentId = '';
+  let readOnlyFromSheet = false;
+  let modalOpen = false;
+  let modalHighlightId = '';
+  let modalMode = 'index'; // 'index' = topic list · 'topic' = one thread
+  let modalTopicKey = '';
+  let topicFilterQuery = '';
+
+  AUTHORS.forEach(a=>{
+    const o = document.createElement('option');
+    o.value = a; o.textContent = a;
+    authorSel.appendChild(o);
+  });
+  try{
+    const saved = localStorage.getItem(LS_AUTHOR);
+    if(saved && AUTHORS.includes(saved)) authorSel.value = saved;
+  }catch(e){}
+  if(!authorSel.value) authorSel.value = AUTHORS[0];
+  authorSel.addEventListener('change', ()=>{
+    try{ localStorage.setItem(LS_AUTHOR, authorSel.value); }catch(e){}
+    refreshThreads();
+    renderRail();
+  });
+
+  function esc(s){
+    return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+  function fmtTime(iso){
+    if(!iso) return '';
+    try{ return new Date(iso).toLocaleString('en-HK',{dateStyle:'medium',timeStyle:'short'}); }
+    catch(e){ return iso; }
+  }
+  function showBanner(html){
+    banner.hidden = false;
+    banner.innerHTML = html;
+    if(modalBanner){
+      modalBanner.hidden = false;
+      modalBanner.innerHTML = html;
+    }
+  }
+  async function apiCall(action, payload){
+    const body = { action, ...(payload || {}) };
+    // Prefer POST for writes — long note bodies break GET URL length limits.
+    const usePost = action === 'add' || action === 'edit' || action === 'delete';
+    let data = null;
+    if(usePost){
+      try{
+        const res = await fetch(COMMENTS_API, {
+          method: 'POST',
+          cache: 'no-store',
+          redirect: 'follow',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(body)
+        });
+        if(res.ok){
+          data = await res.json();
+        }
+      }catch(e){ data = null; }
+    }
+    if(!data){
+      const params = new URLSearchParams({ action });
+      Object.keys(body).forEach(k=>{
+        if(k === 'action') return;
+        if(body[k] == null) return;
+        params.set(k, String(body[k]));
+      });
+      const url = COMMENTS_API + '?' + params.toString();
+      if(url.length > 1800 && (action === 'add' || action === 'edit')){
+        throw new Error('Note is too long for this browser save. Redeploy Apps Script, or edit topic only / use new-tab widget.');
+      }
+      const res = await fetch(url, { method: 'GET', cache: 'no-store', redirect: 'follow' });
+      if(!res.ok) throw new Error('Could not reach notes API (HTTP ' + res.status + ')');
+      data = await res.json();
+    }
+    if(!data || !data.ok) throw new Error((data && data.error) || 'Request failed');
+    return data;
+  }
+  async function loadViaGviz(){
+    const url = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID +
+      '/gviz/tq?tqx=out:json&sheet=' + encodeURIComponent('Comments');
+    const res = await fetch(url, { cache: 'no-store' });
+    const text = await res.text();
+    if (text.trimStart().startsWith('<')) throw new Error('Sheet not shared for read');
+    const json = JSON.parse(text.replace(/^[\s\S]*?setResponse\(/, '').replace(/\);\s*$/, ''));
+    const cols = (json.table.cols || []).map(c => String(c.label || '').toLowerCase());
+    const idx = name => cols.indexOf(name);
+    return (json.table.rows || []).map(row => {
+      const cell = i => {
+        const c = row.c[i];
+        return c && c.v != null && c.v !== '' ? String(c.v) : '';
+      };
+      return {
+        id: cell(idx('id')),
+        section: cell(idx('section')),
+        topic: cell(idx('topic')),
+        parent_id: cell(idx('parent_id')),
+        author: cell(idx('author')),
+        body: cell(idx('body')),
+        created_at: cell(idx('created_at')),
+        updated_at: cell(idx('updated_at')),
+        deleted: cell(idx('deleted')).toLowerCase() === 'true'
+      };
+    }).filter(r => !r.deleted && r.section === SECTION)
+      .sort((a, b) => String(a.created_at).localeCompare(String(b.created_at)));
+  }
+  function noteTs(c){
+    if(!c || !c.created_at) return NaN;
+    const ts = Date.parse(c.created_at);
+    return Number.isFinite(ts) ? ts : NaN;
+  }
+  /** NEW = newest by timestamp, or posted within the last 1 hour. */
+  function isNewNote(c){
+    const ts = noteTs(c);
+    if(!Number.isFinite(ts)) return false;
+    const ageMs = Date.now() - ts;
+    if(ageMs < 0) return false; // future/bad clock → not NEW
+    if(ageMs <= 60 * 60 * 1000) return true;
+    let latest = -Infinity;
+    comments.forEach(x=>{
+      const t = noteTs(x);
+      if(Number.isFinite(t) && t > latest) latest = t;
+    });
+    return ts === latest;
+  }
+  function newChipHtml(c){
+    return isNewNote(c) ? '<span class="comment-chip new">NEW</span>' : '';
+  }
+  function nestComments(flat){
+    const byId = {};
+    flat.forEach(c=>{ byId[c.id] = { ...c, replies: [] }; });
+    const roots = [];
+    flat.forEach(c=>{
+      const node = byId[c.id];
+      if(c.parent_id && byId[c.parent_id]) byId[c.parent_id].replies.push(node);
+      else roots.push(node);
+    });
+    return roots;
+  }
+  function topicKey(c){
+    const t = String(c.topic || '').trim();
+    return t || 'Untitled';
+  }
+  function authorColorClass(name){
+    const n = String(name || '').trim().toLowerCase();
+    if(n === 'ming') return 'ming';
+    if(n === 'jin') return 'jin';
+    if(n === 'connie') return 'connie';
+    if(n === 'matt') return 'matt';
+    return 'other';
+  }
+  function authorPillHtml(name){
+    const n = String(name || '').trim() || 'Unknown';
+    return `<span class="topic-author-pill ${authorColorClass(n)}">${esc(n)}</span>`;
+  }
+  /** Topic owner = author of the oldest root note in that topic. */
+  function topicOwner(group){
+    if(group.owner) return group.owner;
+    const roots = (group.roots || []).slice().sort((a,b)=> String(a.created_at).localeCompare(String(b.created_at)));
+    return roots.length ? String(roots[0].author || '').trim() : '';
+  }
+  function walkNotes(node, out){
+    out.push(node);
+    (node.replies || []).forEach(r=> walkNotes(r, out));
+    return out;
+  }
+  function latestNoteInTree(node){
+    let best = node;
+    (node.replies || []).forEach(r=>{
+      const child = latestNoteInTree(r);
+      if(String(child.created_at || '') > String(best.created_at || '')) best = child;
+    });
+    return best;
+  }
+  function latestTsInTree(node){
+    return String(latestNoteInTree(node).created_at || '');
+  }
+  function countNotesInTree(node){
+    let n = 1;
+    (node.replies || []).forEach(r=>{ n += countNotesInTree(r); });
+    return n;
+  }
+  /** Topics by latest activity (newest topic first). Within topic: oldest → newest + nested replies. */
+  function groupByTopic(flat){
+    const roots = nestComments(flat);
+    const groups = {};
+    roots.forEach(root=>{
+      const key = topicKey(root);
+      if(!groups[key]) groups[key] = { topic: key, roots: [], latest: '', latestNote: null, count: 0, owner: '' };
+      groups[key].roots.push(root);
+      const latestNote = latestNoteInTree(root);
+      const latest = String(latestNote.created_at || '');
+      if(latest > groups[key].latest){
+        groups[key].latest = latest;
+        groups[key].latestNote = latestNote;
+      }
+      groups[key].count += countNotesInTree(root);
+    });
+    Object.values(groups).forEach(g=>{
+      const sorted = g.roots.slice().sort((a,b)=> String(a.created_at).localeCompare(String(b.created_at)));
+      g.owner = sorted.length ? String(sorted[0].author || '').trim() : '';
+    });
+    return Object.values(groups).sort((a,b)=> String(b.latest).localeCompare(String(a.latest)));
+  }
+  function previewBody(text, n){
+    const s = String(text || '').replace(/\s+/g, ' ').trim();
+    return s.length > n ? s.slice(0, n) + '…' : s;
+  }
+  /** Rail: one card per topic (latest 3 topics). Body shows the newest reply in that thread. */
+  function renderRail(){
+    if(!comments.length){
+      railList.innerHTML = '<p class="cr-empty">No topics yet. More topics or post below.</p>';
+      return;
+    }
+    const groups = groupByTopic(comments).slice(0, 3);
+    railList.innerHTML = groups.map(g=>{
+      const latest = g.latestNote || g.roots[0];
+      const isReply = !!(latest && latest.parent_id);
+      const openId = latest && latest.id ? latest.id : (g.roots[0] && g.roots[0].id) || '';
+      const owner = topicOwner(g);
+      const color = authorColorClass(owner);
+      const latestAuthor = String(latest && latest.author || '').trim();
+      const latestColor = authorColorClass(latestAuthor);
+      const kind = isReply ? 'reply' : 'note';
+      const kindLab = isReply ? 'Reply' : 'Note';
+      return `
+      <div class="cr-item cr-item-btn ${color}" role="button" tabindex="0" data-id="${esc(openId)}" title="Open this topic thread">
+        <div class="cr-labels">
+          <div class="cr-topic ${color}"><span class="topic-author-label">${authorPillHtml(owner)} <span>${esc(g.topic)}</span></span> ${newChipHtml(latest)} <span class="cr-count">${g.count} note(s)</span></div>
+          <div class="cr-latest ${latestColor}"><span class="cr-kind ${kind}">${kindLab}</span><span class="cr-latest-label">${isReply ? 'Latest reply by' : 'Latest by'}</span> ${authorPillHtml(latestAuthor)} <span class="cr-latest-label">· ${esc(fmtTime(latest.created_at))}</span></div>
+        </div>
+        <div class="cr-body">${esc(previewBody(latest.body, 100))}</div>
+      </div>`;
+    }).join('');
+  }
+  function renderCard(c, isReply, highlightId){
+    const me = String(authorSel && authorSel.value || '').trim();
+    const author = String(c.author || '').trim();
+    const edited = c.updated_at && c.created_at && c.updated_at !== c.created_at;
+    const mine = !!me && author === me;
+    const actions = readOnlyFromSheet ? '' : (
+      `<button type="button" data-act="reply" data-id="${esc(c.id)}" data-author="${esc(author)}">Reply</button>` +
+      (mine
+        ? `<button type="button" data-act="edit" data-id="${esc(c.id)}">Edit</button>` +
+          `<button type="button" class="danger" data-act="delete" data-id="${esc(c.id)}">Delete</button>`
+        : '')
+    );
+    const hl = highlightId && c.id === highlightId ? ' highlight' : '';
+    return `<div class="comment-card${isReply?' reply':''}${hl}" data-id="${esc(c.id)}">
+      ${isReply ? '<div class="comment-reply-line">↳ Reply in this topic</div>' : ''}
+      <div class="comment-meta"><span class="author">${esc(c.author)}</span><span>${esc(fmtTime(c.created_at))}</span>${newChipHtml(c)}${edited?'<span class="edited">(edited)</span>':''}</div>
+      <div class="comment-body" data-body>${esc(c.body)}</div>
+      ${actions ? '<div class="comment-actions">' + actions + '</div>' : ''}
+      </div>`;
+  }
+  function findTopicKeyByNoteId(id){
+    if(!id) return '';
+    const groups = groupByTopic(comments);
+    for(const g of groups){
+      for(const root of g.roots){
+        const notes = walkNotes(root, []);
+        if(notes.some(n => n.id === id)) return g.topic;
+      }
+    }
+    return '';
+  }
+  function buildTopicIndexHtml(){
+    let groups = groupByTopic(comments);
+    const q = String(topicFilterQuery || '').trim().toLowerCase();
+    if(q){
+      groups = groups.filter(g =>
+        g.topic.toLowerCase().includes(q) ||
+        String(g.owner||'').toLowerCase().includes(q) ||
+        previewBody((g.latestNote&&g.latestNote.body)||'', 200).toLowerCase().includes(q)
+      );
+    }
+    let html = `<input type="search" class="topic-index-filter" id="topic-index-filter" placeholder="Filter topics…" value="${esc(topicFilterQuery)}" aria-label="Filter topics">`;
+    if(!groups.length){
+      html += '<p class="disc-sub" style="margin:0">No topics yet. Post a note with a topic below.</p>';
+      return html;
+    }
+    html += groups.map(g=>{
+      const latest = g.latestNote || g.roots[0];
+      const owner = topicOwner(g);
+      const color = authorColorClass(owner);
+      const isReply = !!(latest && latest.parent_id);
+      const latestAuthor = String(latest && latest.author || '').trim();
+      return `<button type="button" class="topic-index-item ${color}" data-open-topic="${esc(g.topic)}">
+        <div class="ti-title ${color}"><span class="topic-author-label">${authorPillHtml(owner)} <span>${esc(g.topic)}</span></span> ${newChipHtml(latest)}</div>
+        <div class="ti-meta">${g.count} note(s) · ${isReply?'Latest reply by':'Latest by'} ${authorPillHtml(latestAuthor)} · ${esc(fmtTime(latest.created_at))}</div>
+        <div class="ti-body">${esc(previewBody(latest&&latest.body, 120))}</div>
+      </button>`;
+    }).join('');
+    return html;
+  }
+  function buildThreadHtml(highlightId, topicOnly){
+    let groups = groupByTopic(comments);
+    if(topicOnly) groups = groups.filter(g => g.topic === topicOnly);
+    if(!groups.length) return '<p class="disc-sub" style="margin:0">No notes yet. Write one below.</p>';
+    let html = '';
+    function walk(nodes, isReply){ nodes.forEach(n=>{ html += renderCard(n, isReply, highlightId); if(n.replies.length) walk(n.replies, true); }); }
+    groups.forEach(g=>{
+      const n = g.roots.reduce((acc, r)=>{
+        function count(node){ acc += 1; (node.replies||[]).forEach(count); }
+        count(r); return acc;
+      }, 0);
+      const latest = g.latestNote;
+      const owner = topicOwner(g);
+      const color = authorColorClass(owner);
+      const latestHint = latest
+        ? (latest.parent_id ? 'Latest reply' : 'Latest note') + ': ' + (latest.author || '') + ' · ' + fmtTime(latest.created_at)
+        : 'last ' + fmtTime(g.latest);
+      html += `<div class="comment-topic-block ${color}" data-topic="${esc(g.topic)}">
+        <div class="comment-topic-head">
+          <span class="comment-topic-title ${color}"><span class="topic-author-label">${authorPillHtml(owner)} <span>${esc(g.topic)}</span></span></span>
+          <span class="comment-topic-meta">${n} note(s) · ${esc(latestHint)}</span>
+        </div>`;
+      // within topic: oldest root first
+      g.roots.sort((a,b)=> String(a.created_at).localeCompare(String(b.created_at)));
+      walk(g.roots, false);
+      html += '</div>';
+    });
+    return html;
+  }
+    function renderThread(){
+    /* bottom section is compose-only; history lives in modal */
+  }
+  function scrollToComment(id){
+    if(!id) return;
+    let card = null;
+    try{ card = modalThread.querySelector('[data-id="'+CSS.escape(id)+'"]'); }
+    catch(e){ card = modalThread.querySelector('.comment-card.highlight'); }
+    if(card) requestAnimationFrame(()=> card.scrollIntoView({ block:'center', behavior:'smooth' }));
+  }
+  function syncTopicComposeLock(){
+    if(modalMode === 'topic' && modalTopicKey && modalTopicKey !== 'Untitled'){
+      topicIn.value = modalTopicKey;
+      topicIn.disabled = true;
+    }else if(!replyParentId){
+      topicIn.disabled = readOnlyFromSheet;
+    }
+  }
+  function renderModalThread(){
+    if(modalMode === 'index'){
+      if(modalTitle) modalTitle.textContent = 'Topics';
+      if(modalBack) modalBack.hidden = true;
+      const groups = groupByTopic(comments);
+      modalSub.textContent = groups.length
+        ? groups.length + ' topic(s) · open one thread — not all at once'
+        : 'No topics yet';
+      modalThread.innerHTML = buildTopicIndexHtml();
+      const filter = $('topic-index-filter');
+      if(filter){
+        filter.addEventListener('input', ()=>{
+          topicFilterQuery = filter.value;
+          const keep = filter.selectionStart;
+          renderModalThread();
+          const f2 = $('topic-index-filter');
+          if(f2){ f2.focus(); try{ f2.setSelectionRange(keep, keep); }catch(e){} }
+        });
+      }
+      syncTopicComposeLock();
+      return;
+    }
+    // single topic thread
+    if(modalTitle) modalTitle.textContent = modalTopicKey || 'Topic';
+    if(modalBack) modalBack.hidden = false;
+    modalThread.innerHTML = buildThreadHtml(modalHighlightId, modalTopicKey);
+    const g = groupByTopic(comments).find(x => x.topic === modalTopicKey);
+    modalSub.textContent = g
+      ? g.count + ' note(s) in this topic · oldest → newest · replies nested'
+      : 'Topic thread';
+    syncTopicComposeLock();
+    if(modalHighlightId) scrollToComment(modalHighlightId);
+  }
+  function refreshThreads(){
+    renderThread();
+    if(modalOpen) renderModalThread();
+  }
+  function syncComposeReadonly(){
+    const disable = readOnlyFromSheet;
+    authorSel.disabled = disable;
+    topicIn.disabled = disable || !!replyParentId;
+    bodyIn.disabled = disable;
+    submitBtn.disabled = disable;
+    if(disable) bodyIn.placeholder = 'Read-only here — use new-tab widget to post';
+    else bodyIn.placeholder = 'Ask a question or leave feedback on the bot score rule…';
+  }
+  function goToFullSection(focusCompose){
+    closeCommentsModal();
+    const sec = $('discussion-ltv_val_en');
+    if(sec) sec.scrollIntoView({ behavior:'smooth', block:'start' });
+    if(focusCompose && !readOnlyFromSheet){
+      requestAnimationFrame(()=> bodyIn.focus());
+    }
+  }
+  function parkComposeInModal(){
+    if(modalComposeSlot && composeEl && composeEl.parentElement !== modalComposeSlot){
+      modalComposeSlot.appendChild(composeEl);
+    }
+  }
+  function parkComposeHome(){
+    if(composeHome && composeEl && composeEl.parentElement !== composeHome){
+      composeHome.appendChild(composeEl);
+    }
+  }
+  function openTopicThread(topicKey, highlightId){
+    modalMode = 'topic';
+    modalTopicKey = topicKey || '';
+    modalHighlightId = highlightId || '';
+    topicFilterQuery = '';
+    if(!modalOpen){
+      modalOpen = true;
+      modal.hidden = false;
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
+    modal.classList.remove('index-mode');
+    parkComposeInModal();
+    setReply('', '');
+    renderModalThread();
+    syncComposeReadonly();
+    syncTopicComposeLock();
+    if(!readOnlyFromSheet) bodyIn.focus();
+    if(typeof syncRightRailToTeamNotes === 'function') requestAnimationFrame(syncRightRailToTeamNotes);
+  }
+  function openTopicIndex(){
+    const leaveLockedTopic = (modalMode === 'topic' && !!modalTopicKey);
+    modalMode = 'index';
+    modalTopicKey = '';
+    modalHighlightId = '';
+    if(!modalOpen){
+      modalOpen = true;
+      modal.hidden = false;
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
+    // Browse topics only — hide compose so list is not confused with posting.
+    modal.classList.add('index-mode');
+    parkComposeHome();
+    setReply('', '');
+    if(!readOnlyFromSheet){
+      topicIn.disabled = false;
+      // Leaving a locked thread: clear so home Topic is not stuck on that title.
+      if(leaveLockedTopic) topicIn.value = '';
+    }
+    renderModalThread();
+    syncComposeReadonly();
+    if(typeof syncRightRailToTeamNotes === 'function') requestAnimationFrame(syncRightRailToTeamNotes);
+  }
+  function openCommentsModal(id){
+    // With note id → that topic thread only. Without → topic index (not all threads).
+    if(id){
+      const key = findTopicKeyByNoteId(id);
+      openTopicThread(key || topicKey(comments.find(c=>c.id===id)||{}), id);
+      return;
+    }
+    openTopicIndex();
+  }
+  function closeCommentsModal(){
+    modalOpen = false;
+    modalHighlightId = '';
+    modalMode = 'index';
+    modalTopicKey = '';
+    topicFilterQuery = '';
+    modal.classList.remove('index-mode');
+    parkComposeHome();
+    // Home + modal share one compose. Opening a topic locks Topic for that thread —
+    // unlock + clear on close so the blank is editable again (was: stuck filled + disabled).
+    setReply('', '');
+    if(!readOnlyFromSheet){
+      topicIn.disabled = false;
+      topicIn.value = '';
+    }
+    syncComposeReadonly();
+    modal.hidden = true;
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    // Compose returned → Team notes taller again; resync rail (avoid stuck short / page shrink look).
+    requestAnimationFrame(function(){
+      if(typeof syncRightRailToTeamNotes === 'function') syncRightRailToTeamNotes();
+      requestAnimationFrame(function(){
+        if(typeof syncRightRailToTeamNotes === 'function') syncRightRailToTeamNotes();
+      });
+    });
+  }
+  function setReply(parentId, parentAuthor){
+    replyParentId = parentId || '';
+    if(replyParentId){
+      const parent = comments.find(c => c.id === replyParentId);
+      topicIn.value = (parent && parent.topic) || topicKey(parent || {});
+      if(topicIn.value === 'Untitled' && !(parent && parent.topic)) topicIn.value = '';
+      topicIn.disabled = true;
+      replyLbl.hidden = false;
+      replyLbl.textContent = 'Replying to ' + parentAuthor + (topicIn.value ? ' · ' + topicIn.value : '');
+      cancelReply.hidden = false;
+      if(!readOnlyFromSheet) bodyIn.focus();
+    }else{
+      topicIn.disabled = readOnlyFromSheet;
+      replyLbl.hidden = true;
+      cancelReply.hidden = true;
+    }
+  }
+  async function loadComments(){
+    banner.hidden = true;
+    railStatus.textContent = 'Refreshing…';
+    readOnlyFromSheet = false;
+    try{
+      const data = await apiCall('list', { section: SECTION });
+      comments = data.comments || [];
+    }catch(err){
+      try{
+        comments = await loadViaGviz();
+        readOnlyFromSheet = true;
+        showBanner('Showing notes from Sheet (read-only here). To <b>post on this page</b>: Apps Script deploy → <b>Who has access: Anyone</b>. Or <a href="'+WIDGET_URL+'" target="_blank" rel="noopener">post in new tab ↗</a> (already works).');
+      }catch(e2){
+        showBanner('Cannot load notes. Fix (pick one): (1) Apps Script deploy → <b>Anyone</b> (2) Sheet → Share → <b>Anyone with the link</b> → Viewer. Or <a href="'+WIDGET_URL+'" target="_blank" rel="noopener">open new tab ↗</a>.');
+        comments = [];
+        railList.innerHTML = '<p class="cr-empty">Load failed.</p>';
+        railStatus.textContent = '';
+        if(modalOpen) renderModalThread();
+        syncComposeReadonly();
+        return;
+      }
+    }
+    const topicSupported = !comments.length || comments.some(c => Object.prototype.hasOwnProperty.call(c, 'topic'));
+    if(!topicSupported){
+      showBanner('Topic is not enabled on the live Apps Script yet. Paste updated <b>Code.gs</b> → Deploy → <b>New version</b>. Until then, Save topic will not stick.');
+    }
+    renderRail();
+    refreshThreads();
+    syncComposeReadonly();
+    if(!comments.length){
+      railStatus.textContent = '';
+    }else{
+      const topicN = groupByTopic(comments).length;
+      const noteN = comments.length;
+      railStatus.textContent = topicN + ' topic(s) · ' + noteN + ' note(s)';
+    }
+  }
+  function showPostDoneToast(msg){
+    let el = $('comments-done-toast');
+    if(!el){
+      el = document.createElement('div');
+      el.id = 'comments-done-toast';
+      el.className = 'comments-done-toast';
+      el.setAttribute('role', 'status');
+      el.hidden = true;
+      document.body.appendChild(el);
+    }
+    el.textContent = msg || 'Done — note saved.';
+    el.hidden = false;
+    requestAnimationFrame(()=> el.classList.add('show'));
+    clearTimeout(showPostDoneToast._t);
+    showPostDoneToast._t = setTimeout(()=>{
+      el.classList.remove('show');
+      setTimeout(()=>{ el.hidden = true; }, 220);
+    }, 2200);
+  }
+  async function postComment(){
+    if(readOnlyFromSheet) return;
+    const author = authorSel.value;
+    const topic = topicIn.value.trim();
+    const body = bodyIn.value.trim();
+    const wasReply = !!replyParentId;
+    if(!replyParentId && !topic){ topicIn.focus(); return; }
+    if(!body){ bodyIn.focus(); return; }
+    submitBtn.disabled = true;
+    try{
+      await apiCall('add', { section: SECTION, author, topic, body, parent_id: replyParentId });
+      bodyIn.value = '';
+      if(!wasReply) topicIn.value = '';
+      setReply('', '');
+      await loadComments();
+      // Stay on compose — do NOT open topic modal (users mistake it for an edit screen).
+      if(modalOpen) renderModalThread();
+      showPostDoneToast(wasReply ? 'Done — reply saved.' : 'Done — note saved.');
+    }catch(err){
+      showBanner(esc(err.message) + ' — try <a href="'+WIDGET_URL+'" target="_blank" rel="noopener">new tab ↗</a>');
+    }finally{ syncComposeReadonly(); }
+  }
+  async function handleThreadClick(ev){
+    const btn = ev.target.closest('button[data-act]');
+    if(!btn) return;
+    const act = btn.dataset.act, id = btn.dataset.id, me = authorSel.value;
+    if(act === 'reply'){
+      setReply(id, btn.dataset.author);
+      if(modalOpen){
+        parkComposeInModal();
+        if(!readOnlyFromSheet) bodyIn.focus();
+      }
+      return;
+    }
+    if(act === 'delete'){
+      if(!confirm('Delete this note?')) return;
+      try{ await apiCall('delete', { id, author: me }); await loadComments(); }
+      catch(err){ showBanner(esc(err.message)); }
+      return;
+    }
+    if(act === 'edit'){
+      const card = btn.closest('.comment-card');
+      const old = card.querySelector('[data-body]').textContent;
+      const cur = comments.find(c => c.id === id) || {};
+      const actions = card.querySelector('.comment-actions');
+      actions.replaceChildren();
+      const topicEdit = document.createElement('input');
+      topicEdit.type = 'text';
+      topicEdit.value = cur.topic || '';
+      topicEdit.placeholder = 'Topic';
+      topicEdit.maxLength = 120;
+      topicEdit.style.cssText = 'width:100%;font:inherit;padding:8px;border-radius:8px;border:1px solid var(--grid);margin-bottom:6px';
+      const ta = document.createElement('textarea');
+      ta.value = old;
+      ta.style.cssText = 'width:100%;min-height:72px;font:inherit;padding:8px;border-radius:8px;border:1px solid var(--grid)';
+      const err = document.createElement('div');
+      err.style.cssText = 'width:100%;font-size:12px;color:var(--critical);margin:6px 0;display:none';
+      const saveBtn = document.createElement('button');
+      saveBtn.type = 'button'; saveBtn.className = 'primary'; saveBtn.textContent = 'Save';
+      const cancelBtn = document.createElement('button');
+      cancelBtn.type = 'button'; cancelBtn.textContent = 'Cancel';
+      actions.append(topicEdit, ta, err, saveBtn, cancelBtn);
+      cancelBtn.onclick = ()=> refreshThreads();
+      saveBtn.onclick = async ()=>{
+        const nb = ta.value.trim();
+        const nt = topicEdit.value.trim();
+        err.style.display = 'none';
+        if(!nt){ err.textContent = 'Topic is required.'; err.style.display = 'block'; topicEdit.focus(); return; }
+        if(!nb){ err.textContent = 'Note body is required.'; err.style.display = 'block'; ta.focus(); return; }
+        const payload = { id, author: me, topic: nt };
+        // Only send body when changed — keeps request small when fixing Untitled topic.
+        if(nb !== String(old || '').trim()) payload.body = nb;
+        saveBtn.disabled = true; saveBtn.textContent = 'Saving…';
+        try{
+          await apiCall('edit', payload);
+          await loadComments();
+        }catch(e){
+          err.textContent = e.message || 'Save failed';
+          err.style.display = 'block';
+          showBanner(esc(e.message) + ' — if topic never sticks: redeploy Apps Script <b>Code.gs</b> (New version). Or <a href="'+WIDGET_URL+'" target="_blank" rel="noopener">new tab ↗</a>');
+          saveBtn.disabled = false; saveBtn.textContent = 'Save';
+        }
+      };
+    }
+  }
+  modalThread.addEventListener('click', handleThreadClick);
+  modalThread.addEventListener('click', ev=>{
+    const btn = ev.target.closest('[data-open-topic]');
+    if(!btn) return;
+    openTopicThread(btn.getAttribute('data-open-topic'), '');
+  });
+  if(modalBack) modalBack.addEventListener('click', ()=> openTopicIndex());
+  if(modalGoto) modalGoto.addEventListener('click', ev=>{
+    ev.preventDefault();
+    goToFullSection(true);
+  });
+  railList.addEventListener('click', ev=>{
+    const item = ev.target.closest('.cr-item[data-id]');
+    if(!item) return;
+    openCommentsModal(item.dataset.id);
+  });
+  railList.addEventListener('keydown', ev=>{
+    if(ev.key !== 'Enter' && ev.key !== ' ') return;
+    const item = ev.target.closest('.cr-item[data-id]');
+    if(!item) return;
+    ev.preventDefault();
+    openCommentsModal(item.dataset.id);
+  });
+  if(railOpen) railOpen.addEventListener('click', ()=> openCommentsModal(''));
+  if(navNotes) navNotes.addEventListener('click', ev=>{
+    ev.preventDefault();
+    goToFullSection(true);
+    try{ history.replaceState(null, '', '#discussion-ltv_val_en'); }catch(_){}
+  });
+  modal.querySelectorAll('[data-close-modal]').forEach(el=>{
+    el.addEventListener('click', closeCommentsModal);
+  });
+  document.addEventListener('keydown', ev=>{
+    if(ev.key === 'Escape' && modalOpen) closeCommentsModal();
+  });
+  submitBtn.addEventListener('click', postComment);
+  cancelReply.addEventListener('click', ()=> setReply('', ''));
+  bodyIn.addEventListener('keydown', e=>{ if((e.metaKey||e.ctrlKey)&&e.key==='Enter'){ e.preventDefault(); postComment(); } });
+
+  // Keep right-rail bottom aligned with Team notes (#discussion-ltv_val_en) bottom (wide screens).
+  const rightRail = document.querySelector('.right-rail');
+  const RAIL_TOP = 64;
+  const RAIL_BOTTOM_PAD = 20;
+  function syncRightRailToTeamNotes(){
+    if(!rightRail) return;
+    if(window.matchMedia('(max-width:1579px)').matches){
+      rightRail.style.height = '';
+      rightRail.style.maxHeight = '';
+      return;
+    }
+    const disc = $('discussion-ltv_val_en');
+    // Modal parked compose away from Team notes → section is artificially short.
+    // Keep rail at viewport height so closing does not look like the page "shrunk".
+    if(modalOpen && composeEl && composeHome && composeEl.parentElement !== composeHome){
+      rightRail.style.maxHeight = 'calc(100vh - 84px)';
+      rightRail.style.height = 'calc(100vh - 84px)';
+      return;
+    }
+    if(!disc){
+      rightRail.style.height = '';
+      rightRail.style.maxHeight = 'calc(100vh - 84px)';
+      return;
+    }
+    const discBottom = disc.getBoundingClientRect().bottom;
+    const viewportCap = window.innerHeight - RAIL_BOTTOM_PAD;
+    const targetBottom = Math.min(discBottom, viewportCap);
+    const h = Math.max(160, Math.round(targetBottom - RAIL_TOP));
+    rightRail.style.maxHeight = h + 'px';
+    rightRail.style.height = h + 'px';
+  }
+  window.syncRightRailToTeamNotes = syncRightRailToTeamNotes;
+  window.addEventListener('scroll', syncRightRailToTeamNotes, {passive:true});
+  window.addEventListener('resize', syncRightRailToTeamNotes);
+  if(typeof ResizeObserver !== 'undefined'){
+    const disc = $('discussion-ltv_val_en');
+    if(disc) new ResizeObserver(syncRightRailToTeamNotes).observe(disc);
+  }
+  syncRightRailToTeamNotes();
+
+  loadComments();
+})();
+
+</script>
+</body>
+</html>

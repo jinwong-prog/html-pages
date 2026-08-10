@@ -1,0 +1,427 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light only">
+<title>Same high-value group, very different chance of coming back — GoGoX HK Platform on-demand</title>
+<style>
+  :root{
+    color-scheme: light only;
+    --blue:#2a78d6; --plane:#f9f9f7; --surface:#fcfcfb;
+    --ink:#0b0b0b; --ink2:#52514e; --muted:#898781;
+    --grid:#e1e0d9; --axis:#c3c2b7; --border:rgba(11,11,11,.10);
+    --bad:#d03b3b; --good:#006300; --warn:#b47500;
+    --serious:#e08a00; --critical:#8c1d1d;
+    --badbg:rgba(208,59,59,.08); --goodbg:rgba(0,99,0,.08);
+    --warnbg:rgba(237,161,0,.12); --criticalbg:rgba(140,29,29,.10);
+    --neutbg:rgba(137,135,129,.09);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--plane);color:var(--ink);
+    font-family:system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.4;
+    -webkit-font-smoothing:antialiased;font-size:15px}
+  .wrap{max-width:1280px;margin:0 auto;padding:20px 20px 48px}
+  h1{font-size:24px;margin:0 0 4px;letter-spacing:-.01em;line-height:1.25}
+  h2{font-size:17px;margin:22px 0 6px;letter-spacing:-.01em}
+  h3{font-size:14.5px;margin:14px 0 6px}
+  .meta{color:var(--muted);font-size:12px;margin:0 0 10px;max-width:110ch;line-height:1.4}
+  .answer{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--blue);
+    border-radius:10px;padding:12px 16px;margin:0 0 12px}
+  .answer.bad{border-left-color:var(--bad)}
+  .answer .big{font-size:20px;font-weight:800;letter-spacing:-.01em;line-height:1.25}
+  .answer .sub{font-size:15px;color:var(--ink2);margin-top:6px;line-height:1.4;max-width:72ch}
+  .kpi{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 12px}
+  .kpi .k{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 12px}
+  .kpi .lbl{font-size:11.5px;color:var(--muted)}
+  .kpi .val{font-size:22px;font-weight:800;margin-top:1px;letter-spacing:-.01em}
+  .kpi .sub{font-size:11px;color:var(--ink2);margin-top:2px}
+  .panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;
+    padding:12px 14px;margin:8px 0;overflow-x:auto}
+  .panel h3{margin:0 0 8px;font-size:16px;line-height:1.3;font-weight:800}
+  .panel .pd{font-size:14px;color:var(--ink2);margin:0 0 8px;line-height:1.4}
+  .panel p{margin:0 0 8px;font-size:14.5px;color:var(--ink);line-height:1.4}
+  .panel p:last-child{margin-bottom:0}
+  .hl-bad{color:var(--bad);font-weight:700}
+  .hl-good{color:var(--good);font-weight:700}
+  a{color:var(--blue)}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.86em;
+    background:var(--neutbg);padding:0 4px;border-radius:3px}
+  .src{color:var(--muted);font-size:11px;margin-top:6px}
+  .foot{color:var(--muted);font-size:11.5px;margin-top:24px;border-top:1px solid var(--grid);padding-top:8px}
+  table.mini{border-collapse:collapse;width:100%;font-size:12.5px;margin:0 0 8px}
+  table.mini th,table.mini td{padding:5px 8px;border-bottom:1px solid var(--grid);
+    text-align:left;font-variant-numeric:tabular-nums}
+  table.mini th{color:var(--muted);font-size:11px;border-bottom:1px solid var(--axis)}
+  table.mini td.num,table.mini th.num{text-align:right}
+  table.mini tr:last-child td{border-bottom:0}
+  .two-lines{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0}
+  .line-box{border-radius:10px;padding:10px 12px;border:1px solid var(--border)}
+  .line-box.a{background:#eef5fc;border-color:#2a78d6}
+  .line-box.b{background:#f7f7f5}
+  .line-box h4{margin:0 0 4px;font-size:14px;font-weight:800}
+  .line-box p{margin:0;font-size:13.5px;color:var(--ink2);line-height:1.4}
+  .ceo-box{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--blue);
+    border-radius:10px;padding:12px 14px;margin:8px 0 12px}
+  .ceo-box .ttl{font-size:14px;font-weight:800;margin:0 0 6px}
+  .ceo-box ol,.ceo-box ul{margin:0;padding-left:1.2em;font-size:13.5px;line-height:1.4;color:var(--ink)}
+  .ceo-box li{margin:4px 0}
+  .story-step{margin:0 0 12px;padding:0 0 10px;border-bottom:1px solid var(--grid)}
+  .story-step:last-child{border-bottom:0;margin:0;padding:0}
+  .story-step .q{font-size:12.5px;font-weight:700;color:var(--blue);margin:0 0 4px}
+  .story-step h4{margin:0 0 6px;font-size:14px}
+  .story-step .one{font-size:13.5px;color:var(--ink);margin:6px 0 0;line-height:1.35}
+  .flow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:6px 0}
+  .flow .node{background:var(--plane);border:1px solid var(--border);border-radius:8px;
+    padding:7px 10px;font-size:12.5px;font-weight:600;text-align:center;min-width:7em}
+  .flow .node.hi{background:#eef5fc;border-color:#2a78d6;color:#1b4f88}
+  .flow .arrow{color:var(--muted);font-weight:700}
+  /* Vertical LTV logic flowchart */
+  .ltv-flow{display:flex;flex-direction:column;align-items:center;gap:0;max-width:640px;margin:8px auto 0}
+  .ltv-flow .step{width:100%;background:var(--plane);border:1px solid var(--border);border-radius:10px;
+    padding:10px 14px;text-align:center;font-size:13.5px;line-height:1.35;color:var(--ink)}
+  .ltv-flow .step b{display:block;font-size:14px;margin-bottom:2px}
+  .ltv-flow .step .note{display:block;font-size:11.5px;color:var(--muted);font-weight:500;margin-top:3px}
+  .ltv-flow .step.hi{background:#eef5fc;border-color:#2a78d6;border-width:2px}
+  .ltv-flow .step.hi b{color:#1b4f88}
+  .ltv-flow .step.soft{background:#f7f7f5;color:var(--ink2);font-size:12.5px}
+  .ltv-flow .step table.mini{margin:8px 0 4px;text-align:left}
+  .ltv-flow .step table.mini th,.ltv-flow .step table.mini td{text-align:left}
+  .ltv-flow .step table.mini th.num,.ltv-flow .step table.mini td.num{text-align:right}
+  .ltv-flow .step .hi-box{display:inline-block;margin-top:6px;padding:6px 12px;background:#f0f0ec;border-radius:8px;
+    font-size:13px;font-weight:700;color:var(--ink)}
+  .ltv-flow .v-arrow{color:var(--muted);font-size:16px;font-weight:700;line-height:1.2;padding:4px 0}
+  .ltv-flow .aside{font-size:11.5px;color:var(--muted);text-align:center;margin:2px 0 0;max-width:36em}
+  .ltv-hflow{display:flex;flex-wrap:wrap;align-items:stretch;justify-content:center;gap:8px;margin:10px 0 8px}
+  .ltv-hflow .hbox{flex:1 1 160px;max-width:240px;background:var(--surface);border:1px solid var(--border);
+    border-radius:10px;padding:12px 10px;text-align:center;display:flex;flex-direction:column;justify-content:center;gap:6px}
+  .ltv-hflow .hbox.hi{background:#eef5fc;border-color:#2a78d6;border-width:2px}
+  .ltv-hflow .hbox .lbl{font-size:12px;font-weight:700;color:var(--ink);line-height:1.25}
+  .ltv-hflow .hbox.hi .lbl{color:#1b4f88}
+  .ltv-hflow .hbox .amt{font-size:20px;font-weight:800;letter-spacing:-.01em;line-height:1.15}
+  .ltv-hflow .hbox.mid .lbl{color:var(--ink2)}
+  .ltv-hflow .hbox .sub{font-size:11px;color:var(--muted);line-height:1.25}
+  .ltv-hflow .hbox .scope{font-size:10.5px;color:var(--ink2);line-height:1.3;margin-top:2px;padding-top:6px;
+    border-top:1px solid var(--grid)}
+  .ltv-hflow .h-arrow{align-self:center;color:var(--muted);font-size:18px;font-weight:700;padding:0 2px}
+  details.fold{margin:10px 0;border:1px solid var(--border);border-radius:10px;background:var(--surface);padding:0 12px 10px;
+    box-shadow:0 1px 0 rgba(11,11,11,.03)}
+  details.fold>summary{cursor:pointer;list-style:none;font-size:14px;font-weight:700;padding:12px 0 8px;
+    display:flex;align-items:center;flex-wrap:wrap;gap:6px;border-bottom:1px solid transparent}
+  details.fold[open]>summary{border-bottom-color:var(--grid);margin-bottom:8px}
+  details.fold>summary::-webkit-details-marker{display:none}
+  details.fold>summary::before{content:"▸ ";color:var(--muted);font-weight:700}
+  details.fold[open]>summary::before{content:"▾ "}
+  details.fold>summary::after{content:"expand / collapse";margin-left:auto;font-size:11px;font-weight:500;color:var(--muted)}
+  /* separate borders so the 8px corners actually render (collapse ignores border-radius);
+     cells draw right+bottom only, the table draws the outer frame → still a 1px grid */
+  table.mini.decline{border:1px solid #eceff3;border-radius:8px;
+    border-collapse:separate;border-spacing:0;width:100%;overflow:hidden}
+  table.mini.decline th,table.mini.decline td{border:0;
+    border-right:1px solid #eceff3;border-bottom:1px solid #eceff3;
+    padding:8px 10px;vertical-align:top;color:#111827}
+  table.mini.decline th:last-child,table.mini.decline td:last-child{border-right:0}
+  table.mini.decline tr:last-child td{border-bottom:0}
+  table.mini.decline thead th{background:#fafafa;font-weight:600;color:#6b7280;border-color:#eceff3}
+  table.mini.decline tr.adopt td{background:#f8fbff;font-weight:600;padding-top:14px;padding-bottom:14px;border-color:#eceff3}
+  table.mini.decline tr.adopt td:first-child{border-left:4px solid #2563eb}
+  table.mini.decline tr.adopt .num{color:#0f4c81;font-weight:700;font-size:13.5px}
+  .site-nav{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--plane) 92%,transparent);
+    backdrop-filter:saturate(1.1) blur(8px);border-bottom:1px solid var(--border);margin:0}
+  .site-nav-in{max-width:1280px;margin:0 auto;padding:8px 16px;display:flex;gap:4px;flex-wrap:wrap;
+    align-items:center;overflow-x:auto}
+  .site-nav .brand{font-size:12.5px;font-weight:800;margin-right:6px;color:var(--ink);white-space:nowrap}
+  .site-nav a{font-size:12px;color:var(--ink2);text-decoration:none;padding:5px 10px;border-radius:8px;white-space:nowrap}
+  .site-nav a:hover{background:var(--neutbg);color:var(--ink)}
+  .site-nav a.on{background:var(--blue);color:#fff;font-weight:600}
+  .wrap,h1,h2,.panel{scroll-margin-top:52px}
+  @media(max-width:900px){
+    .wrap{padding:14px 12px 36px}
+    .kpi,.two-lines{grid-template-columns:1fr}
+    .ltv-hflow{flex-direction:column;align-items:center}
+    .ltv-hflow .hbox{max-width:280px;width:100%}
+    .ltv-hflow .h-arrow{transform:rotate(90deg);padding:2px 0}
+  }
+</style>
+</head>
+<body>
+<nav class="site-nav" aria-label="LTV lessons">
+  <div class="site-nav-in">
+    <span class="brand">Customer LTV · 10y</span>
+    <a href="ltv_customer_value_master_view_en.html">Overview</a> <a href="ltv_lesson1_en.html">LTV</a> <a href="ltv_lesson_bg_nbd_en.html" class="on">BG/NBD</a> <a href="ltv_lesson_gamma_gamma_en.html">Gamma-Gamma</a> <a href="ltv_lesson5_en.html">Training</a>
+  </div>
+</nav>
+<div class="wrap">
+<h1>Same high-value group, very different chance of coming back</h1>
+<p class="meta">Will they return? · Inside P99 (high-value group) · PlatformOD · HK TRANSPORT · Queried <b>2026-08-07</b> · Ranking through <b>2026-03-31</b> · Check period <b>2026-04-01 to 2026-06-30</b> (91 days)</p>
+
+<div class="answer">
+  <div class="big">A high LTV tier does not mean they will order again</div>
+  <div class="sub">
+    Same value group can still mean very different chances of ordering again.
+    This page checks real orders after the ranking date — not 10-year LTV.
+    Next page: money per order.
+  </div>
+</div>
+
+<p class="meta" style="margin-top:0">
+  Map: LTV (how much) → <b>you are here (will they return?)</b> → next page (earned per order) ·
+  Main proof = <b>inside P99</b> · same group as the <a href="ltv_customer_value_master_view_en.html">homepage</a>
+</p>
+
+<div class="panel">
+  <h3>What BG/NBD looks at · then we check it on P99</h3>
+  <p class="pd" style="margin-bottom:8px">
+    <b>BG/NBD</b> uses three history numbers to guess <b>will they order again</b>
+    (not how much money per order — that is Gamma-Gamma):
+  </p>
+  <ul style="margin:0 0 10px;padding-left:1.2em;font-size:13.5px;line-height:1.45;color:var(--ink)">
+    <li><code>frequency</code> — how many times they ordered before (repeat rhythm)</li>
+    <li><code>recency</code> — <b>first order → last order</b> (days). Not “days since last order”.</li>
+    <li><code>T</code> — <b>first order → ranking day</b> (how long we watched them)</li>
+  </ul>
+  <p style="margin:0 0 8px;font-size:14px;line-height:1.4;color:var(--ink)">
+    Stay signal = <code>recency ÷ T</code>. Near <b>1</b> = last order near the ranking day.
+    Near <b>0</b> = last order early, then long silence.
+    Days since last order ≈ <code>T − recency</code> (a different number — do not call that <code>recency</code>).
+  </p>
+  <p style="margin:0;font-size:14px;line-height:1.4;color:var(--ink)">
+    Next section is <b>not</b> the model’s stay score table.
+    We take homepage <b>P99</b> (high-value tier), split by <code>recency ÷ T</code> high vs low,
+    then count who <b>really</b> ordered again in the next 91 days — a real-order check.
+  </p>
+</div>
+
+<div class="panel">
+  <h3>About 8 in 10 vs about 4 in 100 ordered again in 91 days (~22×) · inside P99</h3>
+  <p class="pd" style="margin-bottom:6px">
+    <b>Ordered again</b> = at least one order day in the next 91 days · <b>inside P99 only</b>.
+  </p>
+  <p class="pd" style="margin-bottom:8px">
+    The two groups are split by <code>recency ÷ T</code> — <b>not</b> a fixed “X days ÷ Y days”.
+    Ranking day = <b>2026-03-31</b>. Return check = <b>2026-04-01 to 2026-06-30</b> (91 days).
+    These % are <b>actual holdout results</b>, not Predicted LTV / <code>p_alive</code> scores.
+  </p>
+  <table class="mini" style="margin:0 0 12px">
+    <thead>
+      <tr>
+        <th></th>
+        <th>Numerator · <code>recency</code></th>
+        <th>Denominator · <code>T</code></th>
+        <th>Split rule</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><b>Definition</b></td>
+        <td>first order → last order (days)</td>
+        <td>first order → ranking day as_of (2026-03-31) (days)</td>
+        <td class="num">—</td>
+      </tr>
+      <tr>
+        <td><b>still recent</b></td>
+        <td>same</td>
+        <td>same</td>
+        <td class="num"><b>≥ 0.75</b><br><span style="color:var(--muted);font-size:11px">avg ≈ 0.949</span></td>
+      </tr>
+      <tr>
+        <td><b>silent a long time</b></td>
+        <td>same</td>
+        <td>same</td>
+        <td class="num"><b>&lt; 0.25</b><br><span style="color:var(--muted);font-size:11px">avg ≈ 0.175</span></td>
+      </tr>
+    </tbody>
+  </table>
+  <p class="src" style="margin-top:0;margin-bottom:10px">
+    （2026-08-10 queried，HK TRANSPORT PlatformOD · P99 · ranking 2026-03-31 ·
+    also needs repeat history · days since last order ≈ <code>T − recency</code>）
+  </p>
+  <div class="two-lines" style="margin-top:4px">
+    <div class="line-box a">
+      <h4>P99 · last order still recent</h4>
+      <table class="mini" style="margin:6px 0 8px">
+        <tbody>
+          <tr><td>Customers</td><td class="num"><b>65,239</b></td></tr>
+          <tr><td>Ordered again in next 91 days</td><td class="num"><b>78.7%</b></td></tr>
+          <tr><td>Avg earned (91 days)</td><td class="num"><b>HK$127.9</b></td></tr>
+        </tbody>
+      </table>
+      <div class="scope" style="border-top:1px solid var(--grid);padding-top:6px;font-size:12px;color:var(--ink2);line-height:1.3">
+        Check period <b>2026-04-01 to 2026-06-30</b> (91 days)
+      </div>
+    </div>
+    <div class="line-box b">
+      <h4>P99 · silent a long time</h4>
+      <table class="mini" style="margin:6px 0 8px">
+        <tbody>
+          <tr><td>Customers</td><td class="num"><b>1,716</b></td></tr>
+          <tr><td>Ordered again in next 91 days</td><td class="num">3.5%</td></tr>
+          <tr><td>Avg earned (91 days)</td><td class="num">HK$4.2</td></tr>
+        </tbody>
+      </table>
+      <div class="scope" style="border-top:1px solid var(--grid);padding-top:6px;font-size:12px;color:var(--ink2);line-height:1.3">
+        Check period <b>2026-04-01 to 2026-06-30</b> (91 days)
+      </div>
+    </div>
+  </div>
+  <p style="margin-top:10px;font-size:15px;font-weight:700;color:var(--ink)">
+    Same high-value group: ordered again <b>~22×</b> · money earned <b>~30×</b> · orders per year <b>~30×</b>.
+  </p>
+  <p class="src">
+    （2026-08-07 queried，HK TRANSPORT PlatformOD · ranking through 2026-03-31 ·
+    validation 2026-04-01 to 2026-06-30，91 days · LTV tier = P99）
+  </p>
+
+  <h3 style="margin-top:18px">Simple picture · same idea</h3>
+  <p class="pd">Not a real customer · last order recent vs long silence</p>
+  <div class="two-lines" style="margin-top:4px">
+    <div class="line-box a">
+      <h4>Customer A · still with us</h4>
+      <table class="mini" style="margin:6px 0 8px">
+        <tbody>
+          <tr><td>No. of orders</td><td class="num"><b>20</b></td></tr>
+          <tr><td><code>recency</code> · first → last</td><td class="num"><b>710 days</b></td></tr>
+          <tr><td><code>T</code> · first → ranking</td><td class="num"><b>730 days</b></td></tr>
+          <tr><td><code>recency ÷ T</code></td><td class="num"><b>0.97</b> (≥ 0.75)</td></tr>
+        </tbody>
+      </table>
+      <p>Ordered across almost the whole 2 years · last order near the end.</p>
+      <p style="margin-top:6px;font-family:ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:-.02em;line-height:1.6">
+        ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ ······<br>
+        first →························→ last
+      </p>
+    </div>
+    <div class="line-box b">
+      <h4>Customer B · likely gone</h4>
+      <table class="mini" style="margin:6px 0 8px">
+        <tbody>
+          <tr><td>No. of orders</td><td class="num"><b>20</b></td></tr>
+          <tr><td><code>recency</code> · first → last</td><td class="num"><b>180 days</b></td></tr>
+          <tr><td><code>T</code> · first → ranking</td><td class="num"><b>730 days</b></td></tr>
+          <tr><td><code>recency ÷ T</code></td><td class="num"><b>≈0.25</b> (silent band)</td></tr>
+        </tbody>
+      </table>
+      <p>Busy in the first half-year · then silent for ~1.5 years.</p>
+      <p style="margin-top:6px;font-family:ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:-.02em;line-height:1.6">
+        ▓▓▓▓▓▓░░░░░░░░░░░░░░░░░░░░░░░░<br>
+        first → last ······ silence ······
+      </p>
+    </div>
+  </div>
+  <p style="margin-top:10px;font-size:15px;font-weight:700;color:var(--ink)">
+    In short: high value ≠ same chance of coming back.
+  </p>
+</div>
+
+<div class="panel">
+  <h3>So what</h3>
+  <ul style="margin:0;padding-left:1.2em;font-size:13.5px;line-height:1.45;color:var(--ink)">
+    <li>High-value <b>and</b> ordered recently → keep serving · avoid needless discounts</li>
+    <li>High-value <b>but</b> silent a long time → do not treat as the same return risk</li>
+    <li>P99 on the homepage: <b>Service first · Avoid discounts</b></li>
+  </ul>
+</div>
+
+<details class="fold">
+  <summary>Extra · four groups inside P99 (how recent was the last order?)</summary>
+  <p class="pd">Same proof as the headline · inside P99 only</p>
+  <table class="mini">
+    <thead>
+      <tr>
+        <th>How recent was the last order?</th>
+        <th class="num">Customers</th>
+        <th class="num">Ordered again (91 days)</th>
+        <th class="num">Avg earned</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Still recent</td><td class="num">65,239</td><td class="num">78.7%</td><td class="num">HK$127.9</td></tr>
+      <tr><td>Somewhat recent</td><td class="num">12,027</td><td class="num">13.0%</td><td class="num">HK$9.8</td></tr>
+      <tr><td>Getting quiet</td><td class="num">5,317</td><td class="num">6.2%</td><td class="num">HK$5.0</td></tr>
+      <tr><td>Silent a long time</td><td class="num">1,716</td><td class="num">3.5%</td><td class="num">HK$4.2</td></tr>
+    </tbody>
+  </table>
+  <p class="pd" style="margin-top:10px">Orders in next 91 days → orders per year</p>
+  <table class="mini">
+    <thead>
+      <tr>
+        <th>How recent was the last order?</th>
+        <th class="num">Customers</th>
+        <th class="num">Orders in next 91 days</th>
+        <th class="num">Orders / year</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Still recent</td><td class="num">65,239</td><td class="num">6.03</td><td class="num">24.2</td></tr>
+      <tr><td>Somewhat recent</td><td class="num">12,027</td><td class="num">0.42</td><td class="num">1.7</td></tr>
+      <tr><td>Getting quiet</td><td class="num">5,317</td><td class="num">0.22</td><td class="num">0.9</td></tr>
+      <tr><td>Silent a long time</td><td class="num">1,716</td><td class="num">0.21</td><td class="num">0.8</td></tr>
+    </tbody>
+  </table>
+  <p class="src">（2026-08-07 queried，HK TRANSPORT PlatformOD，validation 2026-04-01 to 2026-06-30，91 days）</p>
+</details>
+
+<details class="fold">
+  <summary>How Predicted LTV is built · short note</summary>
+  <p class="pd">
+    Same story as the homepage when you switch to <b>Predicted LTV (model)</b>.
+    This page is mainly about “will they come back?”
+  </p>
+  <p class="pd">
+    <b>In one line:</b> value group = who is valuable ·
+    still with us? ·
+    how many more order days ·
+    what we earn per order day → <b>Predicted LTV</b>.
+  </p>
+  <p class="src">
+    （2026-08-07 queried，HK TRANSPORT PlatformOD · ranking through 2026-03-31 ·
+    homepage Predicted LTV · amounts = <code>platform_take</code> ·
+    <code>analytics.mart_ltv_predicted_customer_value</code>／
+    <code>reporting.pres_ltv_predicted_by_tier_10_groups</code>）
+  </p>
+  <p class="pd" style="margin-top:8px">Step-by-step picture → keep reading on Training / Gamma-Gamma pages if needed.</p>
+</details>
+
+<details class="fold">
+  <summary>Where do these numbers come from?</summary>
+  <ul style="margin:0;padding-left:1.2em;font-size:13.5px;line-height:1.45;color:var(--ink)">
+    <li><b>Value group label</b> from <code>mart_ltv_customer_tier_baseline</code> (P100 = top 1%, P99 = next 9%) — label only</li>
+    <li><b>Did they order again in 91 days?</b> from <code>mart_ltv_forecast_check_panel</code> (<code>main_90d</code>) — real orders, not 10-year LTV</li>
+    <li>Published cut: <code>pres_bg_nbd_within_ltv_tier_stay_validation</code></li>
+    <li>No hand-written “if 20 orders → 95% will return” rules</li>
+  </ul>
+  <p class="pd" style="margin-top:8px">Full trust story → <a href="ltv_lesson5_en.html">Training</a> page</p>
+</details>
+
+<details class="fold">
+  <summary>Extra history · different cut (not the P99 headline)</summary>
+  <p class="pd">
+    Older check: customers with <b>20+ past orders</b> across PlatformOD (not locked to P99).
+    Do <b>not</b> mix with the ~22× P99 headline above.
+  </p>
+  <table class="mini">
+    <thead>
+      <tr>
+        <th>How recent was the last order?</th>
+        <th class="num">Customers</th>
+        <th class="num">Ordered again (91 days)</th>
+        <th class="num">Avg earned</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Still recent</td><td class="num">63,219</td><td class="num">82.9%</td><td class="num">HK$219.1</td></tr>
+      <tr><td>Somewhat recent</td><td class="num">9,696</td><td class="num">11.2%</td><td class="num">HK$8.4</td></tr>
+      <tr><td>Getting quiet</td><td class="num">3,864</td><td class="num">5.3%</td><td class="num">HK$4.4</td></tr>
+      <tr><td>Silent a long time</td><td class="num">1,057</td><td class="num">2.6%</td><td class="num">HK$4.3</td></tr>
+    </tbody>
+  </table>
+  <p class="src">（2026-07-29 queried，PlatformOD，validation 2026-04-01 to 2026-06-30，91 days · 20+ past orders）</p>
+</details>
+
+<p class="foot">
+  GoGoX HK BA · ranking for who is valuable · validation for actual results ·
+  lifetime is an independent estimate
+</p>
+</div>
+</body>
+</html>

@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light only">
+<title>LTV logic · How much is the customer worth? — GoGoX HK Platform on-demand</title>
+<style>
+  :root{
+    color-scheme: light only;
+    --blue:#2a78d6; --plane:#f9f9f7; --surface:#fcfcfb;
+    --ink:#0b0b0b; --ink2:#52514e; --muted:#898781;
+    --grid:#e1e0d9; --axis:#c3c2b7; --border:rgba(11,11,11,.10);
+    --bad:#d03b3b; --good:#006300; --warn:#b47500;
+    --serious:#e08a00; --critical:#8c1d1d;
+    --badbg:rgba(208,59,59,.08); --goodbg:rgba(0,99,0,.08);
+    --warnbg:rgba(237,161,0,.12); --criticalbg:rgba(140,29,29,.10);
+    --neutbg:rgba(137,135,129,.09);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--plane);color:var(--ink);
+    font-family:system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.4;
+    -webkit-font-smoothing:antialiased;font-size:15px}
+  .wrap{max-width:1280px;margin:0 auto;padding:20px 20px 48px}
+  h1{font-size:24px;margin:0 0 4px;letter-spacing:-.01em;line-height:1.25}
+  h2{font-size:17px;margin:22px 0 6px;letter-spacing:-.01em}
+  h3{font-size:14.5px;margin:14px 0 6px}
+  .meta{color:var(--muted);font-size:12px;margin:0 0 10px;max-width:110ch;line-height:1.4}
+  .answer{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--blue);
+    border-radius:10px;padding:12px 16px;margin:0 0 12px}
+  .answer.bad{border-left-color:var(--bad)}
+  .answer .big{font-size:20px;font-weight:800;letter-spacing:-.01em;line-height:1.25}
+  .answer .sub{font-size:15px;color:var(--ink2);margin-top:6px;line-height:1.4;max-width:72ch}
+  .kpi{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 12px}
+  .kpi .k{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 12px}
+  .kpi .lbl{font-size:11.5px;color:var(--muted)}
+  .kpi .val{font-size:22px;font-weight:800;margin-top:1px;letter-spacing:-.01em}
+  .kpi .sub{font-size:11px;color:var(--ink2);margin-top:2px}
+  .panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;
+    padding:12px 14px;margin:8px 0;overflow-x:auto}
+  .panel h3{margin:0 0 8px;font-size:16px;line-height:1.3;font-weight:800}
+  .panel .pd{font-size:14px;color:var(--ink2);margin:0 0 8px;line-height:1.4}
+  .panel p{margin:0 0 8px;font-size:14.5px;color:var(--ink);line-height:1.4}
+  .panel p:last-child{margin-bottom:0}
+  .hl-bad{color:var(--bad);font-weight:700}
+  .hl-good{color:var(--good);font-weight:700}
+  a{color:var(--blue)}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.86em;
+    background:var(--neutbg);padding:0 4px;border-radius:3px}
+  .src{color:var(--muted);font-size:11px;margin-top:6px}
+  .foot{color:var(--muted);font-size:11.5px;margin-top:24px;border-top:1px solid var(--grid);padding-top:8px}
+  table.mini{border-collapse:collapse;width:100%;font-size:12.5px;margin:0 0 8px}
+  table.mini th,table.mini td{padding:5px 8px;border-bottom:1px solid var(--grid);
+    text-align:left;font-variant-numeric:tabular-nums}
+  table.mini th{color:var(--muted);font-size:11px;border-bottom:1px solid var(--axis)}
+  table.mini td.num,table.mini th.num{text-align:right}
+  table.mini tr:last-child td{border-bottom:0}
+  .two-lines{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0}
+  .line-box{border-radius:10px;padding:10px 12px;border:1px solid var(--border)}
+  .line-box.a{background:#eef5fc;border-color:#2a78d6}
+  .line-box.b{background:#f7f7f5}
+  .line-box h4{margin:0 0 4px;font-size:14px;font-weight:800}
+  .line-box p{margin:0;font-size:13.5px;color:var(--ink2);line-height:1.4}
+  .ceo-box{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--blue);
+    border-radius:10px;padding:12px 14px;margin:8px 0 12px}
+  .ceo-box .ttl{font-size:14px;font-weight:800;margin:0 0 6px}
+  .ceo-box ol,.ceo-box ul{margin:0;padding-left:1.2em;font-size:13.5px;line-height:1.4;color:var(--ink)}
+  .ceo-box li{margin:4px 0}
+  .story-step{margin:0 0 12px;padding:0 0 10px;border-bottom:1px solid var(--grid)}
+  .story-step:last-child{border-bottom:0;margin:0;padding:0}
+  .story-step .q{font-size:12.5px;font-weight:700;color:var(--blue);margin:0 0 4px}
+  .story-step h4{margin:0 0 6px;font-size:14px}
+  .story-step .one{font-size:13.5px;color:var(--ink);margin:6px 0 0;line-height:1.35}
+  .flow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:6px 0}
+  .flow .node{background:var(--plane);border:1px solid var(--border);border-radius:8px;
+    padding:7px 10px;font-size:12.5px;font-weight:600;text-align:center;min-width:7em}
+  .flow .node.hi{background:#eef5fc;border-color:#2a78d6;color:#1b4f88}
+  .flow .arrow{color:var(--muted);font-weight:700}
+  /* Vertical LTV logic flowchart */
+  .ltv-flow{display:flex;flex-direction:column;align-items:center;gap:0;max-width:640px;margin:8px auto 0}
+  .ltv-flow .step{width:100%;background:var(--plane);border:1px solid var(--border);border-radius:10px;
+    padding:10px 14px;text-align:center;font-size:13.5px;line-height:1.35;color:var(--ink)}
+  .ltv-flow .step b{display:block;font-size:14px;margin-bottom:2px}
+  .ltv-flow .step .note{display:block;font-size:11.5px;color:var(--muted);font-weight:500;margin-top:3px}
+  .ltv-flow .step.hi{background:#eef5fc;border-color:#2a78d6;border-width:2px}
+  .ltv-flow .step.hi b{color:#1b4f88}
+  .ltv-flow .step.soft{background:#f7f7f5;color:var(--ink2);font-size:12.5px}
+  .ltv-flow .step table.mini{margin:8px 0 4px;text-align:left}
+  .ltv-flow .step table.mini th,.ltv-flow .step table.mini td{text-align:left}
+  .ltv-flow .step table.mini th.num,.ltv-flow .step table.mini td.num{text-align:right}
+  .ltv-flow .step .hi-box{display:inline-block;margin-top:6px;padding:6px 12px;background:#f0f0ec;border-radius:8px;
+    font-size:13px;font-weight:700;color:var(--ink)}
+  .ltv-flow .v-arrow{color:var(--muted);font-size:16px;font-weight:700;line-height:1.2;padding:4px 0}
+  .ltv-flow .aside{font-size:11.5px;color:var(--muted);text-align:center;margin:2px 0 0;max-width:36em}
+  .ltv-hflow{display:flex;flex-wrap:wrap;align-items:stretch;justify-content:center;gap:8px;margin:10px 0 8px}
+  .ltv-hflow .hbox{flex:1 1 160px;max-width:240px;background:var(--surface);border:1px solid var(--border);
+    border-radius:10px;padding:12px 10px;text-align:center;display:flex;flex-direction:column;justify-content:center;gap:6px}
+  .ltv-hflow .hbox.hi{background:#eef5fc;border-color:#2a78d6;border-width:2px}
+  .ltv-hflow .hbox .lbl{font-size:12px;font-weight:700;color:var(--ink);line-height:1.25}
+  .ltv-hflow .hbox.hi .lbl{color:#1b4f88}
+  .ltv-hflow .hbox .amt{font-size:20px;font-weight:800;letter-spacing:-.01em;line-height:1.15}
+  .ltv-hflow .hbox.mid .lbl{color:var(--ink2)}
+  .ltv-hflow .hbox .sub{font-size:11px;color:var(--muted);line-height:1.25}
+  .ltv-hflow .hbox .scope{font-size:10.5px;color:var(--ink2);line-height:1.3;margin-top:2px;padding-top:6px;
+    border-top:1px solid var(--grid)}
+  .ltv-hflow .h-arrow{align-self:center;color:var(--muted);font-size:18px;font-weight:700;padding:0 2px}
+  details.fold{margin:10px 0;border:1px solid var(--border);border-radius:10px;background:var(--surface);padding:0 12px 10px;
+    box-shadow:0 1px 0 rgba(11,11,11,.03)}
+  details.fold>summary{cursor:pointer;list-style:none;font-size:14px;font-weight:700;padding:12px 0 8px;
+    display:flex;align-items:center;flex-wrap:wrap;gap:6px;border-bottom:1px solid transparent}
+  details.fold[open]>summary{border-bottom-color:var(--grid);margin-bottom:8px}
+  details.fold>summary::-webkit-details-marker{display:none}
+  details.fold>summary::before{content:"▸ ";color:var(--muted);font-weight:700}
+  details.fold[open]>summary::before{content:"▾ "}
+  details.fold>summary::after{content:"expand / collapse";margin-left:auto;font-size:11px;font-weight:500;color:var(--muted)}
+  /* separate borders so the 8px corners actually render (collapse ignores border-radius);
+     cells draw right+bottom only, the table draws the outer frame → still a 1px grid */
+  table.mini.decline{border:1px solid #eceff3;border-radius:8px;
+    border-collapse:separate;border-spacing:0;width:100%;overflow:hidden}
+  table.mini.decline th,table.mini.decline td{border:0;
+    border-right:1px solid #eceff3;border-bottom:1px solid #eceff3;
+    padding:8px 10px;vertical-align:top;color:#111827}
+  table.mini.decline th:last-child,table.mini.decline td:last-child{border-right:0}
+  table.mini.decline tr:last-child td{border-bottom:0}
+  table.mini.decline thead th{background:#fafafa;font-weight:600;color:#6b7280;border-color:#eceff3}
+  table.mini.decline tr.adopt td{background:#f8fbff;font-weight:600;padding-top:14px;padding-bottom:14px;border-color:#eceff3}
+  table.mini.decline tr.adopt td:first-child{border-left:4px solid #2563eb}
+  table.mini.decline tr.adopt .num{color:#0f4c81;font-weight:700;font-size:13.5px}
+  .site-nav{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--plane) 92%,transparent);
+    backdrop-filter:saturate(1.1) blur(8px);border-bottom:1px solid var(--border);margin:0}
+  .site-nav-in{max-width:1280px;margin:0 auto;padding:8px 16px;display:flex;gap:4px;flex-wrap:wrap;
+    align-items:center;overflow-x:auto}
+  .site-nav .brand{font-size:12.5px;font-weight:800;margin-right:6px;color:var(--ink);white-space:nowrap}
+  .site-nav a{font-size:12px;color:var(--ink2);text-decoration:none;padding:5px 10px;border-radius:8px;white-space:nowrap}
+  .site-nav a:hover{background:var(--neutbg);color:var(--ink)}
+  .site-nav a.on{background:var(--blue);color:#fff;font-weight:600}
+  .wrap,h1,h2,.panel{scroll-margin-top:52px}
+  @media(max-width:900px){
+    .wrap{padding:14px 12px 36px}
+    .kpi,.two-lines{grid-template-columns:1fr}
+    .ltv-hflow{flex-direction:column;align-items:center}
+    .ltv-hflow .hbox{max-width:280px;width:100%}
+    .ltv-hflow .h-arrow{transform:rotate(90deg);padding:2px 0}
+  }
+</style>
+</head>
+<body>
+<nav class="site-nav" aria-label="LTV lessons">
+  <div class="site-nav-in">
+    <span class="brand">Customer LTV · 10y</span>
+    <a href="ltv_customer_value_master_view_en.html">Overview</a> <a href="ltv_lesson1_en.html" class="on">LTV</a> <a href="ltv_lesson_bg_nbd_en.html">BG/NBD</a> <a href="ltv_lesson_gamma_gamma_en.html">Gamma-Gamma</a> <a href="ltv_lesson5_en.html">Training</a>
+  </div>
+</nav>
+<div class="wrap">
+<h1>LTV logic · How much is the customer worth?</h1>
+<p class="meta">LTV only · PlatformOD · HK TRANSPORT · Queried <b>2026-08-03</b> · Amounts = <code>platform_take</code> · Ranking <b>2024-01-01 → 2026-03-31</b> (821 days) · Validation <b>2026-04-01 to 2026-06-30</b> (91 days)</p>
+
+<div class="answer">
+  <div class="big">LTV logic only</div>
+  <div class="sub">Ranking period (historical data) earned <code>platform_take</code> → project to lifetime → <b>Estimated LTV</b>.</div>
+</div>
+
+<div class="panel">
+  <h3>LTV flow (read top → bottom)</h3>
+  <p class="pd">Ranking period earned <code>platform_take</code> → project → Estimated LTV</p>
+
+  <div class="ltv-flow" aria-label="LTV logic flowchart">
+    <div class="step">
+      <b>Ranking period (historical data)</b>
+      <b>2024-01-01 → 2026-03-31</b>
+      <span class="note">821 days · 27 months · 2 years 3 months · past only · who is valuable</span>
+    </div>
+    <div class="v-arrow">↓</div>
+
+    <div class="step">
+      <b>936,648 PlatformOD customers</b>
+      Ranked on 2024-01-01 → 2026-03-31
+      <span class="note">（2026-08-03 queried，PlatformOD · HK TRANSPORT）</span>
+    </div>
+    <div class="v-arrow">↓</div>
+
+    <div class="step">
+      <b>Earned <code>platform_take</code></b>
+      Real money already collected in the ranking period
+      <span class="note">2024-01-01 → 2026-03-31</span>
+    </div>
+    <div class="v-arrow">↓</div>
+
+    <div class="step">
+      <b>Project to lifetime · P99 example</b>
+      <span class="note"><b><code>platform_take</code> · P99 Lifetime Value</b> — <b>per customer</b> in the P99 tier (<b>next 9%</b>)</span>
+      <div class="ltv-hflow" aria-label="P99 Year 1 to 10-year LTV">
+        <div class="hbox">
+          <div class="lbl">Year 1 Revenue</div>
+          <div class="amt">HK$404</div>
+        </div>
+        <div class="h-arrow" aria-hidden="true">→</div>
+        <div class="hbox mid">
+          <div class="lbl">18.1% yearly decay rate (this group)</div>
+        </div>
+        <div class="h-arrow" aria-hidden="true">→</div>
+        <div class="hbox hi">
+          <div class="lbl">Estimated 10-year LTV</div>
+          <div class="amt">HK$1,928</div>
+        </div>
+      </div>
+      <table class="mini">
+        <thead>
+          <tr><th>Year</th><th class="num">Projected</th><th>How</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Year 1</td><td class="num">HK$404</td><td>Year 1 Revenue</td></tr>
+          <tr><td>Year 2</td><td class="num">HK$331</td><td>HK$404 × 81.9%</td></tr>
+          <tr><td>Year 3</td><td class="num">HK$271</td><td>HK$331 × 81.9%</td></tr>
+          <tr><td>Year 4</td><td class="num">HK$222</td><td>HK$271 × 81.9%</td></tr>
+          <tr><td>Year 5</td><td class="num">HK$182</td><td>HK$222 × 81.9%</td></tr>
+          <tr><td>Year 6</td><td class="num">HK$149</td><td>HK$182 × 81.9%</td></tr>
+          <tr><td>Year 7</td><td class="num">HK$122</td><td>HK$149 × 81.9%</td></tr>
+          <tr><td>Year 8</td><td class="num">HK$100</td><td>HK$122 × 81.9%</td></tr>
+          <tr><td>Year 9</td><td class="num">HK$82</td><td>HK$100 × 81.9%</td></tr>
+          <tr><td>Year 10</td><td class="num">HK$67</td><td>HK$82 × 81.9%</td></tr>
+          <tr><td><b>Estimated 10-year LTV</b></td><td class="num"><b>HK$1,928</b></td><td>Year 1 × 4.770 · Home Estimated LTV · P99 decay rate 18.1%</td></tr>
+        </tbody>
+      </table>
+      <div class="hi-box">P99 Estimated LTV = HK$1,928</div>
+      <span class="note">Same number as Home master table · P99 (<b>next 9%</b>). P100 = top 1%. We stop at year 10 (120 months).</span>
+      <span class="note">（2026-08-07 queried，PlatformOD · HK TRANSPORT · P99 next 9%）</span>
+    </div>
+    <div class="v-arrow">↓</div>
+
+    <div class="step hi">
+      <b>Estimated Lifetime Value</b>
+      <b>P99 Estimated LTV = HK$1,928</b>
+      <span class="note">120 months · <code>platform_take</code> · <b>this group’s yearly decay rate (18.1%)</b> · Home master table</span>
+    </div>
+    <div class="v-arrow">↓</div>
+
+    <div class="step hi">
+      <b>Use tiers · P100 / P99 / P90 …</b>
+      This tier’s $ ≈ <b>No. of customers × Estimated LTV</b>
+      <span class="note">P99 example: <b>84,299</b> × HK$1,928 ≈ <b>33.9%</b> of total est. LTV. P100+P99 (former top 10%) ≈ 80.7%.</span>
+      <span class="note">CRM · vouchers · retention · where to put budget（2026-08-07 queried，PlatformOD）</span>
+    </div>
+  </div>
+
+  <details class="fold" style="margin-top:12px" open>
+    <summary>How we chose “18% annual decline” · P99 example</summary>
+    <details class="fold">
+      <summary>Simple question · P99 scope · Month 1</summary>
+      <p class="pd" style="margin-top:4px;margin-bottom:0">
+        Simple question: after a customer places their first order, how much does GoGoX earn from them each year — and how fast does that shrink?
+        Numbers below = <b>P99</b> only (next 9% · first order in 2024 Jan–Jun · still in Home P99 on 2026-03-31).
+        <b>Month 1</b> = the month of the first order · then month 2, 3, and so on.
+      </p>
+    </details>
+
+    <p class="pd" style="margin-top:10px;margin-bottom:6px"><b>Table 1 · What we exclude</b></p>
+    <p class="pd" style="margin-top:0;margin-bottom:8px">
+      We keep the customers. We do <b>not</b> use early money, or a full-year window that still includes it, when estimating yearly decay.
+    </p>
+    <table class="mini decline">
+      <thead>
+        <tr>
+          <th>What we don’t use</th>
+          <th>Definition</th>
+          <th class="num">Decay rate</th>
+          <th>Why we exclude it</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b>Early 3-month</b></td>
+          <td><b>Avg</b> of months 1–3 vs <b>avg</b> of months 13–15<br><span class="note">(Month 1 = first-order month)</span></td>
+          <td class="num"><b>~31%</b><br><span class="note">(BQ: 30.6%; HK$45.37 → HK$31.48)</span></td>
+          <td>Still inside the early / settling period. Decline looks too steep vs the stable ~16–20% range. We therefore exclude this estimate.</td>
+        </tr>
+        <tr>
+          <td><b>Early 6-month / pre-settle</b></td>
+          <td><b>Avg</b> of months 1–6 vs <b>avg</b> of months 13–18<br><span class="note">(Month 1 = first-order month)</span></td>
+          <td class="num"><b>~28%</b><br><span class="note">(BQ: 28.4%; HK$45.54 → HK$32.61)</span></td>
+          <td>Spend is still settling in the early months. Month 1 is especially high (~HK$63 / person / month avg <code>platform_take</code>, or ~1.6× the later stable level), and Months 1–6 remain above the long-term level. This makes the calculated annual decline look artificially high compared with the more stable ~16–20% range. We therefore exclude this estimate.</td>
+        </tr>
+        <tr>
+          <td><b>Full year</b></td>
+          <td><b>Avg</b> of months 1–12 vs <b>avg</b> of months 13–24</td>
+          <td class="num"><b>~24%</b><br><span class="note">(BQ: 23.6%; HK$42.34 → HK$32.34)</span></td>
+          <td>Same avg method as the adopted window, but it still includes early months → decline overstated. Not used.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p class="pd" style="margin-top:14px;margin-bottom:6px"><b>Table 2 · How we estimate yearly decline</b></p>
+    <details class="fold">
+      <summary>How Table 2 works · After Month 6</summary>
+      <p class="pd" style="margin-top:4px;margin-bottom:0">
+        After Month 6, we compare customer value over two periods that are 12 months apart.
+        For example, we compare the average value from Months 7–9 with Months 19–21.
+        The difference gives us the estimated annual decline. Missing months are counted as zero.
+        The four 3-month checks show a decline of roughly <b>16–20%</b>.
+        To make the estimate more stable, we then use a longer 6-month period, which gives a result around the middle of that range.
+      </p>
+    </details>
+    <table class="mini decline">
+      <thead>
+        <tr>
+          <th>Method</th>
+          <th>What we compare</th>
+          <th class="num">Decay rate</th>
+          <th>Why / decision</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b>Late 3-month · check 1</b></td>
+          <td><b>Avg</b> of months 7–9 vs <b>avg</b> of months 19–21</td>
+          <td class="num"><b>20.3%</b><br><span class="note">(HK$41.02 → HK$32.70)</span></td>
+          <td rowspan="4"><b>BQ cross-check.</b> Four separate windows; each gives one %. Together ≈ <b>16–20%</b> band (holidays / season differ by window). Not adopted alone.</td>
+        </tr>
+        <tr>
+          <td><b>Late 3-month · check 2</b></td>
+          <td><b>Avg</b> of months 8–10 vs <b>avg</b> of months 20–22</td>
+          <td class="num"><b>18.0%</b><br><span class="note">(HK$39.16 → HK$32.12)</span></td>
+        </tr>
+        <tr>
+          <td><b>Late 3-month · check 3</b></td>
+          <td><b>Avg</b> of months 9–11 vs <b>avg</b> of months 21–23</td>
+          <td class="num"><b>17.1%</b><br><span class="note">(HK$38.62 → HK$32.02)</span></td>
+        </tr>
+        <tr>
+          <td><b>Late 3-month · check 4</b></td>
+          <td><b>Avg</b> of months 10–12 vs <b>avg</b> of months 22–24</td>
+          <td class="num"><b>15.6%</b><br><span class="note">(HK$37.27 → HK$31.44)</span></td>
+        </tr>
+        <tr class="adopt">
+          <td><b>6-month average — adopted</b></td>
+          <td><b>Avg</b> of months 7–12 vs <b>avg</b> of months 19–24</td>
+          <td class="num"><b>~18%</b><br><span class="note">(BQ: 18.1%; HK$39.16 → HK$32.06)</span></td>
+          <td><b>Adopted.</b> One longer window after early 6-month / pre-settle; reduces seasonality; sits near the middle of the 3-month checks.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <details class="fold">
+      <summary>Summary · Decline % · Honeymoon curve</summary>
+      <p class="pd" style="margin-top:4px">
+        <b>Summary:</b><br>
+        Table 1 shows which periods we leave out of the calculation — the early months and the full-year comparison window.<br>
+        Table 2 shows each check of how much customer value decreases after Month 6. Each comparison gives us one annual decline rate.<br>
+        For P99, we compare the average value in Months 7–12 with the average value in Months 19–24. This indicates an annual decline of about <b>18%</b> — <b>18.1%</b> in BQ.<br>
+        In the Home table, each customer group uses its own annual decline rate calculated using the same method (<code>mart_ltv_tier_annual_decay</code>).<br>
+        The company-wide <b>15%</b> rate is only used as a default when a group has too little data or the results are too noisy.<br>
+        Therefore, P99 uses <b>18.1%</b>, not the 15% default rate.
+      </p>
+      <p class="pd" style="margin-top:10px">
+        <b>Decline %:</b><br>
+        Based on the checks completed on 2026-08-10
+        （queried 2026-08-10，HK TRANSPORT PlatformOD · P99，2024H1 first-order ∩ Home P99 rank 2026-03-31，monthly <code>platform_take</code>）：
+      </p>
+      <ul class="pd" style="margin:6px 0 0 18px">
+        <li>3-month checks: <b>20.3%</b> → <b>18.0%</b> → <b>17.1%</b> → <b>15.6%</b> decline</li>
+        <li>6-month comparison: <b>18.1%</b> annual decline</li>
+        <li>Full-year comparison: <b>23.6%</b> decline</li>
+        <li>Sample size: approximately <b>63,800</b> customers</li>
+      </ul>
+      <p class="pd" style="margin-top:10px">
+        <b>Honeymoon curve recheck:</b><br>
+        We also rechecked the pattern where customer value is higher during the first few months
+        （queried 2026-08-10，same scope，n≈63,784）：
+      </p>
+      <ul class="pd" style="margin:6px 0 0 18px">
+        <li>Month 1 average value: ~HK$62.98 / person / month (avg monthly <code>platform_take</code>)</li>
+        <li>Month 1 is about <b>1.61×</b> higher than the average value in Months 7–12</li>
+        <li>Months 1–6 are roughly <b>1.10–1.21×</b> higher than the later-period average</li>
+        <li>Customer value starts to stabilize around Month 7</li>
+      </ul>
+      <p class="src" style="margin-top:12px">
+        <b>Ranking period (historical data)</b>＝2024-01-01 → 2026-03-31（821 days）.
+        LTV uses earned <code>platform_take</code> from this period only, then projects.
+      </p>
+    </details>
+  </details>
+</div>
+
+<p class="foot">
+  GoGoX HK BA · ranking for who is valuable · validation for actual results ·
+  lifetime is an independent estimate
+</p>
+</div>
+</body>
+</html>
