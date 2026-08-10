@@ -170,25 +170,33 @@
 </p>
 
 <div class="panel">
-  <h3>What BG/NBD looks at · then we check it on P99</h3>
+  <h3>What BG/NBD looks at — and how we check it on P99</h3>
   <p class="pd" style="margin-bottom:8px">
-    <b>BG/NBD</b> uses three history numbers to guess <b>will they order again</b>
-    (not how much money per order — that is Gamma-Gamma):
+    <b>BG/NBD</b> uses three pieces of past order history to estimate whether a customer is likely to order again.
+    It does <b>not</b> estimate how much they spend per order — that is handled by Gamma-Gamma.
   </p>
   <ul style="margin:0 0 10px;padding-left:1.2em;font-size:13.5px;line-height:1.45;color:var(--ink)">
-    <li><code>frequency</code> — how many times they ordered before (repeat rhythm)</li>
-    <li><code>recency</code> — <b>first order → last order</b> (days). Not “days since last order”.</li>
-    <li><code>T</code> — <b>first order → ranking day</b> (how long we watched them)</li>
+    <li><b>Frequency</b> (<code>frequency</code>) — how many orders the customer has placed during the observation period</li>
+    <li><b>Recency</b> (<code>recency</code>) — days from the customer’s <b>first order to their most recent order</b></li>
+    <li><b>T</b> (<code>T</code>) — days from the customer’s <b>first order to the ranking date</b></li>
   </ul>
-  <p style="margin:0 0 8px;font-size:14px;line-height:1.4;color:var(--ink)">
-    Stay signal = <code>recency ÷ T</code>. Near <b>1</b> = last order near the ranking day.
-    Near <b>0</b> = last order early, then long silence.
-    Days since last order ≈ <code>T − recency</code> (a different number — do not call that <code>recency</code>).
+  <p style="margin:0 0 6px;font-size:14px;line-height:1.4;color:var(--ink)">
+    We use <b>Recency ÷ T</b> (<code>recency ÷ T</code>) as a simple <b>activity signal</b>:
   </p>
+  <ul style="margin:0 0 8px;padding-left:1.2em;font-size:13.5px;line-height:1.45;color:var(--ink)">
+    <li><b>Closer to 1</b> → the customer’s most recent order was close to the ranking date</li>
+    <li><b>Closer to 0</b> → the customer’s most recent order was early in the observation period, followed by a longer period without ordering</li>
+  </ul>
+  <p style="margin:0 0 10px;padding:8px 10px;border-left:3px solid var(--axis);font-size:13px;line-height:1.4;color:var(--ink2)">
+    <b>Note:</b> “Days since last order” is a different measure.
+    It is approximately <code>T − recency</code>, and we do <b>not</b> call that Recency here.
+  </p>
+  <h4 style="margin:0 0 6px;font-size:14px;color:var(--ink)">How we check the signal</h4>
   <p style="margin:0;font-size:14px;line-height:1.4;color:var(--ink)">
-    Next section is <b>not</b> the model’s stay score table.
-    We take homepage <b>P99</b> (high-value tier), split by <code>recency ÷ T</code> high vs low,
-    then count who <b>really</b> ordered again in the next 91 days — a real-order check.
+    This is <b>not</b> the BG/NBD model’s score table.
+    We take homepage <b>P99</b> customers, split them into higher vs lower <code>recency ÷ T</code> groups,
+    then check how many in each group <b>actually</b> placed another order in the following 91 days.
+    That shows whether the activity signal from past order history matches <b>real later behaviour</b>.
   </p>
 </div>
 
