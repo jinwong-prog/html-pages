@@ -199,42 +199,45 @@
   </p>
   <p class="pd" style="margin-bottom:8px">
     The two groups are split by <code>recency ÷ T</code> — <b>not</b> a fixed “X days ÷ Y days”.
-    Ranking day = <b>2026-03-31</b>. Return check = <b>2026-04-01 to 2026-06-30</b> (91 days).
-    These % are <b>actual holdout results</b>, not Predicted LTV / <code>p_alive</code> scores.
+    <b>Definition:</b> <code>recency</code> = first order → last order (days) ·
+    <code>T</code> = first order → ranking day <b>2026-03-31</b> (days) ·
+    days since last order ≈ <code>T − recency</code> (different number — not called <code>recency</code>).
+    Return check = <b>2026-04-01 to 2026-06-30</b> (91 days).
+    These % below are <b>actual holdout results</b>, not Predicted LTV / <code>p_alive</code> scores.
   </p>
   <table class="mini" style="margin:0 0 12px">
     <thead>
       <tr>
-        <th></th>
-        <th>Numerator · <code>recency</code></th>
-        <th>Denominator · <code>T</code></th>
-        <th>Split rule</th>
+        <th>P99 group</th>
+        <th class="num">Avg <code>recency</code><br><span style="font-weight:500">first → last</span></th>
+        <th class="num">Avg <code>T</code><br><span style="font-weight:500">first → ranking</span></th>
+        <th class="num">Avg <code>recency ÷ T</code></th>
+        <th class="num">Split rule</th>
+        <th class="num">Avg days since last<br><span style="font-weight:500">≈ T − recency</span></th>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td><b>Definition</b></td>
-        <td>first order → last order (days)</td>
-        <td>first order → ranking day as_of (2026-03-31) (days)</td>
-        <td class="num">—</td>
-      </tr>
-      <tr>
         <td><b>still recent</b></td>
-        <td>same</td>
-        <td>same</td>
-        <td class="num"><b>≥ 0.75</b><br><span style="color:var(--muted);font-size:11px">avg ≈ 0.949</span></td>
+        <td class="num"><b>664</b> days</td>
+        <td class="num"><b>699</b> days</td>
+        <td class="num"><b>0.949</b></td>
+        <td class="num">≥ 0.75</td>
+        <td class="num">~35 days</td>
       </tr>
       <tr>
         <td><b>silent a long time</b></td>
-        <td>same</td>
-        <td>same</td>
-        <td class="num"><b>&lt; 0.25</b><br><span style="color:var(--muted);font-size:11px">avg ≈ 0.175</span></td>
+        <td class="num"><b>123</b> days</td>
+        <td class="num"><b>701</b> days</td>
+        <td class="num"><b>0.175</b></td>
+        <td class="num">&lt; 0.25</td>
+        <td class="num">~577 days</td>
       </tr>
     </tbody>
   </table>
   <p class="src" style="margin-top:0;margin-bottom:10px">
     （2026-08-10 queried，HK TRANSPORT PlatformOD · P99 · ranking 2026-03-31 ·
-    also needs repeat history · days since last order ≈ <code>T − recency</code>）
+    repeat history only · n = 65,254 still recent / 1,716 silent）
   </p>
   <div class="two-lines" style="margin-top:4px">
     <div class="line-box a">
