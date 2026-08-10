@@ -188,7 +188,7 @@
 
     <div class="step">
       <b>Project to lifetime · P99 example</b>
-      <span class="note"><b><code>platform_take</code> · P99 Lifetime Value</b> — <b>per customer</b> in the P99 tier (<b>next 9%</b>)</span>
+      <span class="note"><b><code>platform_take</code> · P99 Lifetime Value</b> — <b>per customer</b> Avg. 10-year Estimated LTV in the P99 tier (<b>next 9%</b>), not the sum of all P99 customers</span>
       <div class="ltv-hflow" aria-label="P99 Year 1 to 10-year LTV">
         <div class="hbox">
           <div class="lbl">Year 1 Revenue</div>
@@ -222,28 +222,13 @@
           <tr><td><b>Estimated 10-year LTV</b></td><td class="num"><b>HK$1,928</b></td><td>Year 1 × 4.770 · Home Estimated LTV · P99 decay rate 18.1%</td></tr>
         </tbody>
       </table>
-      <div class="hi-box">P99 Estimated LTV = HK$1,928</div>
-      <span class="note">Same number as Home master table · P99 (<b>next 9%</b>). P100 = top 1%. We stop at year 10 (120 months).</span>
+      <div class="hi-box">P99 Estimated LTV = HK$1,928 <span style="font-weight:500;font-size:12px;color:var(--muted)">· per customer · next 9%</span></div>
+      <span class="note">Same number as Home master table · P99 (<b>next 9%</b>). P100 = top 1%. We stop at year 10 (120 months). This is <b>not</b> the sum across all P99 customers.</span>
       <span class="note">（2026-08-07 queried，PlatformOD · HK TRANSPORT · P99 next 9%）</span>
-    </div>
-    <div class="v-arrow">↓</div>
-
-    <div class="step hi">
-      <b>Estimated Lifetime Value</b>
-      <b>P99 Estimated LTV = HK$1,928</b>
-      <span class="note">120 months · <code>platform_take</code> · <b>this group’s yearly decay rate (18.1%)</b> · Home master table</span>
-    </div>
-    <div class="v-arrow">↓</div>
-
-    <div class="step hi">
-      <b>Use tiers · P100 / P99 / P90 …</b>
-      This tier’s $ ≈ <b>No. of customers × Estimated LTV</b>
-      <span class="note">P99 example: <b>84,299</b> × HK$1,928 ≈ <b>33.9%</b> of total est. LTV. P100+P99 (former top 10%) ≈ 80.7%.</span>
-      <span class="note">CRM · vouchers · retention · where to put budget（2026-08-07 queried，PlatformOD）</span>
     </div>
   </div>
 
-  <details class="fold" style="margin-top:12px" open>
+  <details class="fold" style="margin-top:12px">
     <summary>How we chose “18% annual decline” · P99 example</summary>
     <details class="fold">
       <summary>Simple question · P99 scope · Month 1</summary>
