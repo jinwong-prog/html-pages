@@ -366,6 +366,9 @@
       <div class="period">Ranking period (historical data)<br>
       <b>2024-01-01 → 2026-03-31</b><br>
       <span class="period-len">(821 days · 27 months · 2 years 3 months)</span></div>
+      <div class="period">Validation period<br>
+      <b>2026-04-01 → 2026-06-30</b><br>
+      <span class="period-len">(91 days · 3 months)</span></div>
     </div>
   </div>
   <p class="pd">
@@ -373,7 +376,9 @@
     the <b>arrow</b> says above or below the overall average; the <b>colour</b> says good (green) or bad (red).
     The two can point opposite ways: <b>Last Order (Days Ago)</b> shows a green ▼, because fewer days is better.<br>
     <span class="m-est">Lifetime is an independent estimate (not BG×GG).</span><span class="m-pred">This column <b>is</b> the BG/NBD × Gamma-Gamma model. Estimated LTV (the default) is the separate estimate — the two are built different ways on purpose.<br><b>“Chance not left”</b> (<code>p_alive</code>) = the model's guess that the customer has not stopped using GoGoX for good. It is <b>not</b> the same as ordering recently — see Last Order (Days Ago) for that. It only means something in the top tiers: for a customer who ever ordered on just one day the model has no rhythm to read and returns close to 100% by design. P10 shows 100%, but only 6.4% of them ordered again.</span>
-    Ranking period (historical data) = who is valuable (past only). Holdout checks live on the BG/NBD and Accuracy sections — not on this overview table.
+    Ranking period (historical data) = who is valuable (past only) ·
+    Validation period = what actually happened next (date only on this page —
+    holdout checks live on BG/NBD and Accuracy — not as columns on this overview table).
   </p>
 
   <div class="segbar">
