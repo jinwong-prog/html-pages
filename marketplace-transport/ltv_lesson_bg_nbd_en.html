@@ -214,9 +214,9 @@
     <ol style="margin:0;padding-left:1.2em;font-size:13.5px;line-height:1.45;color:var(--ink)">
       <li>For <b>every</b> customer in P99, compute their own
         <code>recency ÷ T</code>
-        (<span style="color:var(--muted)">
-          (<code>recency</code> = first → last order (days) ·
-          <code>T</code> = first → ranking day (days)
+        <span style="color:var(--muted)">
+          (<code>recency</code> = first order → most recent order ·
+          <code>T</code> = first order → ranking date)
         </span>.
       </li>
       <li><b>0.75</b> and <b>0.25</b> are <b>cut lines (thresholds)</b> — not special scores to hunt.
