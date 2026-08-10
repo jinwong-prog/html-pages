@@ -210,10 +210,8 @@
     return check = <b>2026-04-01 to 2026-06-30</b> (91 days).
   </p>
 
-  <div style="margin:0 0 12px;padding:10px 12px;border:1px solid var(--axis);border-radius:8px;background:#f8fafc">
-    <div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:6px">
-      How each P99 customer is placed in a group (read this first)
-    </div>
+  <details class="fold" open style="margin:0 0 12px">
+    <summary>How each P99 customer is placed in a group (read this first)</summary>
     <ol style="margin:0;padding-left:1.2em;font-size:13.5px;line-height:1.45;color:var(--ink)">
       <li>For <b>every</b> customer in P99, compute their own
         <code>recency ÷ T</code>
@@ -234,7 +232,7 @@
         That % is the <b>result</b> — <b>not</b> Predicted LTV / <code>p_alive</code>, and <b>not</b> the 0.75 number itself.
       </li>
     </ol>
-  </div>
+  </details>
 
   <h4 style="margin:0 0 6px;font-size:14px;color:var(--ink)">
     Group cut · averages after the split (not the model score table)
