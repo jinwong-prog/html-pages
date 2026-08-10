@@ -194,76 +194,106 @@
 
 <div class="panel">
   <h3>About 8 in 10 vs about 4 in 100 ordered again in 91 days (~22×) · inside P99</h3>
-  <p class="pd" style="margin-bottom:6px">
-    <b>Ordered again</b> = at least one order day in the next 91 days · <b>inside P99 only</b>.
-  </p>
   <p class="pd" style="margin-bottom:8px">
-    The two groups are split by <code>recency ÷ T</code> — <b>not</b> a fixed “X days ÷ Y days”.
-    <b>Definition:</b> <code>recency</code> = first order → last order (days) ·
-    <code>T</code> = first order → ranking day <b>2026-03-31</b> (days) ·
-    days since last order ≈ <code>T − recency</code> (different number — not called <code>recency</code>).
-    Return check = <b>2026-04-01 to 2026-06-30</b> (91 days).
-    These % below are <b>actual holdout results</b>, not Predicted LTV / <code>p_alive</code> scores.
+    <b>Ordered again</b> = at least one order day in the next 91 days · <b>inside P99 only</b>.
+    Ranking day = <b>2026-03-31</b> · return check = <b>2026-04-01 to 2026-06-30</b> (91 days).
   </p>
-  <table class="mini" style="margin:0 0 12px">
+
+  <div style="margin:0 0 12px;padding:10px 12px;border:1px solid var(--axis);border-radius:8px;background:#f8fafc">
+    <div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:6px">
+      How each P99 customer is placed in a group (read this first)
+    </div>
+    <ol style="margin:0;padding-left:1.2em;font-size:13.5px;line-height:1.45;color:var(--ink)">
+      <li>For <b>every</b> customer in P99, compute their own
+        <code>recency ÷ T</code>
+        (<span style="color:var(--muted)">
+          (<code>recency</code> = first → last order (days) ·
+          <code>T</code> = first → ranking day (days)
+        </span>.
+      </li>
+      <li><b>0.75</b> and <b>0.25</b> are <b>cut lines (thresholds)</b> — not special scores to hunt.
+        We do <b>not</b> spot people whose ratio is “exactly 0.75” or “exactly 0.25”.
+      </li>
+      <li>Assign the group:
+        <b>≥ 0.75</b> → still recent ·
+        <b>&lt; 0.25</b> (+ repeat history) → silent a long time ·
+        <b>0.25–0.75</b> → mid bands (not in this 2-box contrast).
+      </li>
+      <li>Then count who <b>really</b> ordered again in the next 91 days.
+        That % is the <b>result</b> — <b>not</b> Predicted LTV / <code>p_alive</code>, and <b>not</b> the 0.75 number itself.
+      </li>
+    </ol>
+  </div>
+
+  <h4 style="margin:0 0 6px;font-size:14px;color:var(--ink)">
+    Group cut · averages after the split (not the model score table)
+  </h4>
+  <table class="mini" style="margin:0 0 8px">
     <thead>
       <tr>
         <th>P99 group</th>
+        <th class="num">Who goes here<br><span style="font-weight:500">per-customer cut</span></th>
         <th class="num">Avg <code>recency</code><br><span style="font-weight:500">first → last</span></th>
         <th class="num">Avg <code>T</code><br><span style="font-weight:500">first → ranking</span></th>
-        <th class="num">Avg <code>recency ÷ T</code></th>
-        <th class="num">Split rule</th>
+        <th class="num">Avg <code>recency ÷ T</code><br><span style="font-weight:500">after grouping</span></th>
         <th class="num">Avg days since last<br><span style="font-weight:500">≈ T − recency</span></th>
       </tr>
     </thead>
     <tbody>
       <tr>
         <td><b>still recent</b></td>
+        <td class="num"><b>own ratio ≥ 0.75</b></td>
         <td class="num"><b>664</b> days</td>
         <td class="num"><b>699</b> days</td>
         <td class="num"><b>0.949</b></td>
-        <td class="num">≥ 0.75</td>
         <td class="num">~35 days</td>
       </tr>
       <tr>
         <td><b>silent a long time</b></td>
+        <td class="num"><b>own ratio &lt; 0.25</b></td>
         <td class="num"><b>123</b> days</td>
         <td class="num"><b>701</b> days</td>
         <td class="num"><b>0.175</b></td>
-        <td class="num">&lt; 0.25</td>
         <td class="num">~577 days</td>
       </tr>
     </tbody>
   </table>
-  <p class="src" style="margin-top:0;margin-bottom:10px">
+  <p class="src" style="margin-top:0;margin-bottom:12px">
     （2026-08-10 queried，HK TRANSPORT PlatformOD · P99 · ranking 2026-03-31 ·
-    repeat history only · n = 65,254 still recent / 1,716 silent）
+    repeat history only · n = 65,253 still recent / 1,716 silent ·
+    days since last ≠ <code>recency</code>）
   </p>
+
+  <h4 style="margin:0 0 6px;font-size:14px;color:var(--ink)">
+    After the cut · real return in the next 91 days
+  </h4>
   <div class="two-lines" style="margin-top:4px">
     <div class="line-box a">
       <h4>P99 · last order still recent</h4>
       <table class="mini" style="margin:6px 0 8px">
         <tbody>
-          <tr><td>Customers</td><td class="num"><b>65,239</b></td></tr>
-          <tr><td>Ordered again in next 91 days</td><td class="num"><b>78.7%</b></td></tr>
+          <tr><td>Customers in this cut</td><td class="num"><b>65,253</b></td></tr>
+          <tr><td>Ordered again (next 91 days)</td><td class="num"><b>51,379</b></td></tr>
+          <tr><td>Ordered-again rate</td><td class="num"><b>51,379 / 65,253 = 78.7%</b></td></tr>
           <tr><td>Avg earned (91 days)</td><td class="num"><b>HK$127.9</b></td></tr>
         </tbody>
       </table>
       <div class="scope" style="border-top:1px solid var(--grid);padding-top:6px;font-size:12px;color:var(--ink2);line-height:1.3">
-        Check period <b>2026-04-01 to 2026-06-30</b> (91 days)
+        Check period <b>2026-04-01 to 2026-06-30</b> (91 days) · result after cut, not the 0.75 threshold
       </div>
     </div>
     <div class="line-box b">
       <h4>P99 · silent a long time</h4>
       <table class="mini" style="margin:6px 0 8px">
         <tbody>
-          <tr><td>Customers</td><td class="num"><b>1,716</b></td></tr>
-          <tr><td>Ordered again in next 91 days</td><td class="num">3.5%</td></tr>
+          <tr><td>Customers in this cut</td><td class="num"><b>1,716</b></td></tr>
+          <tr><td>Ordered again (next 91 days)</td><td class="num"><b>60</b></td></tr>
+          <tr><td>Ordered-again rate</td><td class="num"><b>60 / 1,716 = 3.5%</b></td></tr>
           <tr><td>Avg earned (91 days)</td><td class="num">HK$4.2</td></tr>
         </tbody>
       </table>
       <div class="scope" style="border-top:1px solid var(--grid);padding-top:6px;font-size:12px;color:var(--ink2);line-height:1.3">
-        Check period <b>2026-04-01 to 2026-06-30</b> (91 days)
+        Check period <b>2026-04-01 to 2026-06-30</b> (91 days) · result after cut, not the 0.25 threshold
       </div>
     </div>
   </div>
@@ -271,12 +301,12 @@
     Same high-value group: ordered again <b>~22×</b> · money earned <b>~30×</b> · orders per year <b>~30×</b>.
   </p>
   <p class="src">
-    （2026-08-07 queried，HK TRANSPORT PlatformOD · ranking through 2026-03-31 ·
+    （2026-08-10 queried，HK TRANSPORT PlatformOD · ranking through 2026-03-31 ·
     validation 2026-04-01 to 2026-06-30，91 days · LTV tier = P99）
   </p>
 
   <h3 style="margin-top:18px">Simple picture · same idea</h3>
-  <p class="pd">Not a real customer · last order recent vs long silence</p>
+  <p class="pd">Not a real customer · each person gets one <code>recency ÷ T</code>, then compare to the cut line</p>
   <div class="two-lines" style="margin-top:4px">
     <div class="line-box a">
       <h4>Customer A · still with us</h4>
@@ -285,7 +315,7 @@
           <tr><td>No. of orders</td><td class="num"><b>20</b></td></tr>
           <tr><td><code>recency</code> · first → last</td><td class="num"><b>710 days</b></td></tr>
           <tr><td><code>T</code> · first → ranking</td><td class="num"><b>730 days</b></td></tr>
-          <tr><td><code>recency ÷ T</code></td><td class="num"><b>0.97</b> (≥ 0.75)</td></tr>
+          <tr><td>Own <code>recency ÷ T</code></td><td class="num"><b>0.97</b> → ≥ 0.75 cut → still recent</td></tr>
         </tbody>
       </table>
       <p>Ordered across almost the whole 2 years · last order near the end.</p>
@@ -301,7 +331,7 @@
           <tr><td>No. of orders</td><td class="num"><b>20</b></td></tr>
           <tr><td><code>recency</code> · first → last</td><td class="num"><b>180 days</b></td></tr>
           <tr><td><code>T</code> · first → ranking</td><td class="num"><b>730 days</b></td></tr>
-          <tr><td><code>recency ÷ T</code></td><td class="num"><b>≈0.25</b> (silent band)</td></tr>
+          <tr><td>Own <code>recency ÷ T</code></td><td class="num"><b>≈0.25</b> → &lt; 0.25 cut → silent</td></tr>
         </tbody>
       </table>
       <p>Busy in the first half-year · then silent for ~1.5 years.</p>
