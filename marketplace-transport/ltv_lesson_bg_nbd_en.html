@@ -178,7 +178,8 @@
   <ul style="margin:0 0 10px;padding-left:1.2em;font-size:13.5px;line-height:1.45;color:var(--ink)">
     <li><b>Frequency</b> (<code>frequency</code>) — how many orders the customer has placed during the observation period</li>
     <li><b>Recency</b> (<code>recency</code>) — days from the customer’s <b>first order to their most recent order</b></li>
-    <li><b>T</b> (<code>T</code>) — days from the customer’s <b>first order to the ranking date</b></li>
+    <li><b>T</b> (<code>T</code>) — days from the customer’s <b>first order to the ranking date</b>
+      (ranking date = <b>2026-03-31</b>, end of ranking period <b>2024-01-01 → 2026-03-31</b>, <b>821 days</b>)</li>
   </ul>
   <p style="margin:0 0 6px;font-size:14px;line-height:1.4;color:var(--ink)">
     We use <b>Recency ÷ T</b> (<code>recency ÷ T</code>) as a simple <b>activity signal</b>:
@@ -204,7 +205,9 @@
   <h3>About 8 in 10 vs about 4 in 100 ordered again in 91 days (~22×) · inside P99</h3>
   <p class="pd" style="margin-bottom:8px">
     <b>Ordered again</b> = at least one order day in the next 91 days · <b>inside P99 only</b>.
-    Ranking day = <b>2026-03-31</b> · return check = <b>2026-04-01 to 2026-06-30</b> (91 days).
+    Ranking period = <b>2024-01-01 → 2026-03-31</b> (<b>821 days</b>) ·
+    ranking day = <b>2026-03-31</b> ·
+    return check = <b>2026-04-01 to 2026-06-30</b> (91 days).
   </p>
 
   <div style="margin:0 0 12px;padding:10px 12px;border:1px solid var(--axis);border-radius:8px;background:#f8fafc">
@@ -273,7 +276,8 @@
     </tbody>
   </table>
   <p class="src" style="margin-top:0;margin-bottom:12px">
-    （2026-08-10 queried，HK TRANSPORT PlatformOD · P99 · ranking 2026-03-31 ·
+    （2026-08-10 queried，HK TRANSPORT PlatformOD · P99 ·
+    ranking period 2024-01-01 → 2026-03-31（821 days）· ranking day 2026-03-31 ·
     repeat history only · cut first by ≥0.75 vs &lt;0.25 · then count who ordered again
     2026-04-01 to 2026-06-30 inside each cut ·
     n cut = 65,253 / 1,716 · ordered again = 51,379 / 60 ·
@@ -317,7 +321,8 @@
     Same high-value group: ordered again <b>~22×</b> · money earned <b>~30×</b> · orders per year <b>~30×</b>.
   </p>
   <p class="src">
-    （2026-08-10 queried，HK TRANSPORT PlatformOD · ranking through 2026-03-31 ·
+    （2026-08-10 queried，HK TRANSPORT PlatformOD ·
+    ranking period 2024-01-01 → 2026-03-31（821 days）· ranking day 2026-03-31 ·
     validation 2026-04-01 to 2026-06-30，91 days · LTV tier = P99）
   </p>
 
