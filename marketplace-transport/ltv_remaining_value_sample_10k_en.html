@@ -889,8 +889,8 @@ This list is for checking numbers only.</p>
     <li>Multiply the two to get <code>predicted_day_platform_take_180d</code>.</li>
   </ul>
   <p>Platform Take is the one money definition in this project:</p>
-  <pre class="formula">order_platform_take = gross_transaction_value × 10% + COALESCE(premium_platform_support, 0)
-day_platform_take   = SUM(order_platform_take) GROUP BY user_unique_id, order_date</pre>
+  <pre class="formula">platform_take → day_platform_take (foundation.hk_transport_platformod_van_user_daily_transactions_since_2018)
+historical_platform_take = SUM(day_platform_take) to as_of</pre>
   <ul class="plain">
     <li><code>driver_commission</code> is not platform revenue and is not used here.</li>
     <li>Official Tiers are ranked on history only (<code>historical_platform_take</code>), 11 groups
