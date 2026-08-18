@@ -192,16 +192,16 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.86em;
   max-width:min(1680px, 98vw);margin:0 auto;padding:16px 18px 18px;
   box-shadow:0 18px 50px rgba(11,11,11,.25)}
 .deep-top{display:flex;gap:12px;align-items:flex-start;justify-content:space-between}
-.deep h3{font-size:20px;margin:0}
-.deep .window{font-size:14.5px;font-weight:700;color:var(--ink2);margin:4px 0 0;
+.deep h3{font-size:18px;margin:0}
+.deep .window{font-size:13.5px;font-weight:700;color:var(--ink2);margin:4px 0 0;
   font-variant-numeric:tabular-nums}
 .deep .window .deep-metric{display:block;margin-bottom:2px}
 .deep .window .dchip .v{font-size:15px}
 .deep .say{font-size:15px;font-weight:700;margin:10px 0 0}
 .deep-close{font:700 13px system-ui,sans-serif;padding:6px 14px;border-radius:8px;cursor:pointer;
   border:1px solid var(--border);background:var(--surface);color:var(--ink2)}
-.deep-split{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:22px;margin-top:12px}
-.deep-split .chart{overflow-x:auto}
+.deep-split{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:14px;margin-top:12px}
+.deep-split .chart{overflow:hidden}
 .deep-split .tbl{overflow-x:auto}
 .deep hr{border:0;border-top:1px solid var(--grid);margin:14px 0 0}
 table.cmp tr.total td{border-top:1px solid var(--axis);font-weight:800}
@@ -223,11 +223,11 @@ table.cmp tr.total td{border-top:1px solid var(--axis);font-weight:800}
 .dchart .pt.b2{fill:var(--warn)}
 .dchart .pt.b3{fill:color-mix(in srgb,var(--warn) 45%, var(--bad))}
 .dchart .pt.b4{fill:var(--bad)}
-.dchart .lab{font:10.5px system-ui,sans-serif;fill:var(--ink2)}
-.dchart .ttl{font:700 11.5px system-ui,sans-serif;fill:var(--good)}
-.dchart .val{font:700 10.5px system-ui,sans-serif;fill:var(--ink)}
-.dchart-ttl{font:700 12.5px system-ui,sans-serif;margin:0 0 8px;color:var(--ink)}
-.dchart-legend{display:flex;flex-wrap:wrap;gap:6px 12px;margin:8px 0 0;font-size:12px;color:var(--ink2)}
+.dchart .lab{font:9px system-ui,sans-serif;fill:var(--ink2)}
+.dchart .ttl{font:700 10px system-ui,sans-serif;fill:var(--good)}
+.dchart .val{font:700 9.5px system-ui,sans-serif;fill:var(--ink)}
+.dchart-ttl{font:700 11.5px system-ui,sans-serif;margin:0 0 6px;color:var(--ink);line-height:1.35}
+.dchart-legend{display:flex;flex-wrap:wrap;gap:4px 10px;margin:6px 0 0;font-size:11px;color:var(--ink2);line-height:1.35}
 .dchart-legend i{display:inline-block;width:12px;height:12px;border-radius:2px;vertical-align:-1px;margin-right:4px}
 .dchart-legend i.b0,.bars.absbias .seg.b0{background:var(--good)}
 .dchart-legend i.b1,.bars.absbias .seg.b1{background:color-mix(in srgb,var(--good) 55%, var(--warn))}
@@ -238,10 +238,11 @@ table.cmp tr.total td{border-top:1px solid var(--axis);font-weight:800}
 .bars.absbias .track.stack{display:flex;height:20px;background:var(--neutbg);border-radius:4px;overflow:hidden}
 .bars.absbias .track.stack .seg{height:100%;flex:0 0 auto}
 .bars.absbias td.n .best{color:var(--good);font-weight:800}
-table.cmp.absbias thead th{white-space:normal;line-height:1.25;font-size:11.5px;
-  vertical-align:bottom;max-width:7.6em}
-table.cmp.absbias thead th.n{white-space:normal;max-width:7.2em}
-table.cmp.absbias thead th:first-child{max-width:8.4em}
+table.cmp.absbias thead th{white-space:normal;line-height:1.2;font-size:10px;
+  vertical-align:bottom;max-width:6.4em}
+table.cmp.absbias thead th.n{white-space:normal;max-width:6.2em}
+table.cmp.absbias thead th:first-child{max-width:7.2em}
+table.cmp.absbias{font-size:12px}
 table.cmp.absbias td.n{white-space:nowrap}
 table.cmp.absbias td.best{color:var(--good);font-weight:800}
 .kpi .val.nn{font-size:18px;letter-spacing:-.03em}
@@ -1094,7 +1095,7 @@ body.show-v2 a[data-s="s4"]{display:none !important}
     <div class="kpi" id="deep-kpi"></div>
     <p class="say" id="deep-say"></p>
     <hr>
-    <h3 style="margin-top:12px">Last completed order was X days ago</h3>
+    <h3 style="margin-top:10px;font-size:15px">Last completed order was X days ago</h3>
     <div class="seg" id="deep-seg" role="group" aria-label="Validation metric">
       <button type="button" class="on" data-metric="take">Platform Take</button>
       <button type="button" data-metric="days">Completed-order days</button>
@@ -1380,6 +1381,12 @@ const DATA = {"meta":{"query_date":"2026-08-17","data_scope":"HK TRANSPORT Platf
     "90_to_119":"90–119 days ago","120_to_179":"120–179 days ago",
     "180_to_269":"180–269 days ago","270_to_364":"270–364 days ago",
     "365_or_more":"365+ days ago"
+  };
+  const REC_AGO_SHORT = {
+    "0_to_29":"0–29","30_to_59":"30–59","60_to_89":"60–89",
+    "90_to_119":"90–119","120_to_179":"120–179",
+    "180_to_269":"180–269","270_to_364":"270–364",
+    "365_or_more":"365+"
   };
   const REC_LAB = {
     "0_to_29":"Last completed order was 0–29 days ago",
@@ -2492,10 +2499,10 @@ const DATA = {"meta":{"query_date":"2026-08-17","data_scope":"HK TRANSPORT Platf
   function deepChart(rows, m){
     const live = rows.filter(r => r.n);
     if (!live.length) return `<p class="empty">No last-completed-order band is ticked, so there is nothing to plot.</p>`;
-    const W = 520, HT = 318, L = 48, R = 14, T = 22, B = 100;
+    const W = 520, HT = 268, L = 40, R = 10, T = 16, B = 58;
     const xAt = (i, n) => L + (W - L - R) * (n === 1 ? 0.5 : i / (n - 1));
     const xlabOf = (pts, x) => pts.map(p =>
-      `<text class="lab" x="${x(p.i).toFixed(1)}" y="${HT - B + 18}" text-anchor="end" transform="rotate(-40 ${x(p.i).toFixed(1)} ${HT - B + 18})">${REC_AGO[p.band]}</text>`
+      `<text class="lab" x="${x(p.i).toFixed(1)}" y="${HT - B + 14}" text-anchor="end" transform="rotate(-36 ${x(p.i).toFixed(1)} ${HT - B + 14})">${REC_AGO_SHORT[p.band]}</text>`
     ).join("");
     if (m.people){
       if (live.every(r => !(r.bandSigned && r.bandSigned.some(v => v != null)))) return `<p class="empty">No Actual ${m.title} in these bands, so there is no Bias % to plot.</p>`;
@@ -2614,26 +2621,44 @@ const DATA = {"meta":{"query_date":"2026-08-17","data_scope":"HK TRANSPORT Platf
           <td class="n">${m.fmt(tot.pred)}</td><td class="n">${m.fmt(tot.act)}</td>
           <td class="n">${fmtBias(tot.bias)}</td></tr></tbody></table>`;
     }
+    const calcTh = m.fmt === fmtMoney
+      ? "Actual &gt; $0<br>Bias % calculable"
+      : "Actual &gt; 0<br>Bias % calculable";
+    const naTh = m.fmt === fmtMoney
+      ? "Actual = $0<br>Bias % N/A"
+      : "Actual = 0<br>Bias % N/A";
+    const calcTip = `Denominator for the five |Bias %| columns. These people have Actual above zero, so (Predicted − Actual) ÷ Actual can be worked out. Predicted can still be 0.`;
+    const naTip = `Not Bias = 0%. Actual was 0, so Bias % cannot be worked out. Customers = Bias % calculable + this column. Predicted can still be above 0.`;
     const dash5 = ABS_BIAS.map(() => `<td class="n">—</td>`).join("");
+    const dashCalc = `<td class="n">—</td>`;
     const head = `<thead><tr>
       <th>Last completed<br>order was<br>X days ago</th>
       <th class="n">Customers</th>
+      <th class="n" data-tip="${calcTip}" tabindex="0">${calcTh}</th>
       ${ABS_BIAS.map(b => `<th class="n">${b.th}</th>`).join("")}
+      <th class="n" data-tip="${naTip}" tabindex="0">${naTh}</th>
     </tr></thead>`;
     const body = rows.map(x => {
       const band = REC_AGO[x.band];
-      if (!x.n) return `<tr class="off"><td>${band}</td><td class="n">0</td>${dash5}</tr>`;
-      if (!x.buckets) return `<tr><td>${band}</td><td class="n">${fmtN(x.n)}</td>${dash5}</tr>`;
-      return `<tr><td>${band}</td><td class="n">${fmtN(x.n)}</td>
-        ${x.buckets.map((c, i) => `<td class="n${i === 0 ? " best" : ""}">${fmtN(c)}</td>`).join("")}</tr>`;
+      const calc = x.withAct == null ? "—" : fmtN(x.withAct);
+      const na = x.noOrder == null ? "—" : fmtN(x.noOrder);
+      if (!x.n) return `<tr class="off"><td>${band}</td><td class="n">0</td><td class="n">0</td>${dash5}<td class="n">0</td></tr>`;
+      if (!x.buckets) return `<tr><td>${band}</td><td class="n">${fmtN(x.n)}</td>${dashCalc}${dash5}${dashCalc}</tr>`;
+      return `<tr><td>${band}</td><td class="n">${fmtN(x.n)}</td><td class="n">${calc}</td>
+        ${x.buckets.map((c, i) => `<td class="n${i === 0 ? " best" : ""}">${fmtN(c)}</td>`).join("")}
+        <td class="n">${na}</td></tr>`;
     }).join("");
     const tot = deepTotals(rows);
+    const totCalc = tot.withAct == null ? "—" : fmtN(tot.withAct);
+    const totNa = tot.noOrder == null ? "—" : fmtN(tot.noOrder);
     const totB = tot.buckets
       ? tot.buckets.map((c, i) => `<td class="n${i === 0 ? " best" : ""}">${fmtN(c)}</td>`).join("")
       : dash5;
     return `<table class="cmp absbias">${head}<tbody>${body}
       <tr class="total"><td>Total</td><td class="n">${fmtN(tot.n)}</td>
-      ${totB}</tr></tbody></table>`;
+      <td class="n">${totCalc}</td>
+      ${totB}
+      <td class="n">${totNa}</td></tr></tbody></table>`;
   }
   function renderDeep(){
     const back = document.getElementById("deep-back");
@@ -2668,22 +2693,33 @@ const DATA = {"meta":{"query_date":"2026-08-17","data_scope":"HK TRANSPORT Platf
     document.getElementById("deep-filter").innerHTML = note;
     let k4lbl, k4val, k4cls, k4sub, say, capExtra;
     if (m.people){
+      const calcLab = m.fmt === fmtMoney
+        ? "Actual > $0 · Bias % calculable"
+        : "Actual > 0 · Bias % calculable";
+      const naLab = m.fmt === fmtMoney
+        ? "Actual = $0 · Bias % N/A"
+        : "Actual = 0 · Bias % N/A";
       k4lbl = "|Bias %| ≤ 10%";
       k4val = (!tot.buckets || !tot.withAct) ? "—" : fmtNN(tot.buckets[0], tot.withAct);
       k4cls = tot.buckets && tot.buckets[0] ? " nn good" : " nn";
       k4sub = (!tot.buckets)
         ? "this freeze cannot split people by that filter"
         : (!tot.withAct)
-          ? `no ${m.actLab}, so no Bias %`
-          : "of people with a Bias %";
+          ? `no ${m.actLab}, so Bias % is N/A`
+          : `of ${calcLab}`;
       if (!tot.buckets) say = `This freeze cannot count how close each person was. Predicted and Actual still follow the filter.`;
-      else if (!tot.withAct) say = `No ${m.actLab} in this cell, so |Bias %| cannot be worked out for a person.`;
-      else say = `Among people with ${m.actLab}: ${fmtNN(tot.buckets[0], tot.withAct)} had |Bias %| ≤ 10%.`;
-      capExtra = `Five lines match the five |Bias %| columns. Each line is the average person Bias %
-        inside that band. Y-axis is signed: negative and positive, with <b>0% in the middle = on target</b>.
-        Closer to that green dashed line is more accurate. The table still counts people in each band.
-        A person with ${m.actLab} above zero is counted once. People with Actual = 0 have
-        no Bias % and are not on the lines.
+      else if (!tot.withAct) say = `No ${m.actLab} in this cell, so Bias % is N/A for a person.`;
+      else say = `Among ${calcLab}: ${fmtNN(tot.buckets[0], tot.withAct)} had |Bias %| ≤ 10%.`;
+      capExtra = `Read left to right: <b>Customers</b> → <b>${calcLab.replace(/>/g, "&gt;")}</b>
+        (the denominator) → the five |Bias %| columns (add up to that denominator) →
+        <b>${naLab.replace(/>/g, "&gt;")}</b>.
+        Customers = Bias % calculable + Bias % N/A.
+        Bias % N/A is not Bias = 0%. Predicted can still be above 0.
+        Five lines match the five |Bias %| columns. Each line is the average
+        person Bias % inside that band. Y-axis is signed: negative and positive, with
+        <b>0% in the middle = on target</b>.
+        Closer to that green dashed line is more accurate.
+        A person with ${m.actLab} above zero is counted once.
         Bands are exact cuts on person Bias % =
         (Predicted − Actual) ÷ Actual
         (<code>${m.code}</code>).
