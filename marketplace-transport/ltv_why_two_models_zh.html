@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light only">
+<title>為何用兩個 model 預測 Future LTV — 教學筆記</title>
+<style>
+:root{
+  color-scheme: light only;
+  --plane:#f9f9f7; --surface:#fcfcfb;
+  --ink:#0b0b0b; --ink2:#3f3e3a; --muted:#898781;
+  --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+  --neutbg:rgba(137,135,129,.09);
+}
+*{box-sizing:border-box}
+html,body{background:var(--plane);color:var(--ink)}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI","PingFang TC",
+  "Noto Sans TC",sans-serif;font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.topbar{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--plane) 90%,transparent);
+  backdrop-filter:saturate(1.4) blur(8px);border-bottom:1px solid var(--border)}
+.topbar-in{max-width:1100px;margin:0 auto;padding:10px 24px;display:flex;gap:12px;
+  align-items:center;flex-wrap:wrap}
+.topbar .brand{font-size:13px;font-weight:800}
+.topbar a{font-size:12.5px;color:var(--ink2);text-decoration:none;padding:4px 10px;
+  border-radius:8px;margin-left:auto}
+.topbar a:hover{background:var(--neutbg)}
+.wrap{max-width:1100px;margin:0 auto;padding:28px 24px 96px}
+.doc-note{font-size:13.5px;color:var(--muted);border:1px solid var(--grid);background:var(--surface);
+  border-radius:12px;padding:12px 16px;margin:0 0 22px;line-height:1.7}
+.doc-note code{font-size:12.5px}
+.slides{display:flex;flex-direction:column;gap:28px}
+.slide{margin:0;padding:0;border:1px solid var(--grid);border-radius:16px;
+  overflow:hidden;background:var(--surface)}
+.slide img{display:block;width:100%;height:auto;vertical-align:bottom}
+.foot{margin-top:40px;padding-top:14px;border-top:1px solid var(--grid);
+  color:var(--muted);font-size:12.5px;line-height:1.7}
+@media (max-width:640px){
+  .wrap{padding:20px 12px 72px}
+  .slides{gap:18px}
+}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar-in">
+    <span class="brand">GoGoX customer LTV · 教學筆記</span>
+    <a href="ltv_predicted_future_mgmt_view_en.html">← Predicted Future LTV dashboard</a>
+  </div>
+</div>
+<div class="wrap">
+<p class="doc-note">教學用頁面。投影片由上而下對應
+  <code>projects/marketplace-transport/docs/ltv-why-two-models-manager-rationale.md</code>
+  原文。換圖請改
+  <code>docs/ltv-why-two-models-slides/</code>
+  再跑
+  <code>gen_ltv_why_two_models_page.py</code>；請勿直接改這個 HTML。</p>
+<div class="slides">
+<figure class="slide"><img src="ltv-why-two-models/01-why-two-models.png" alt="Why GoGoX Uses Two Models to Predict Future LTV"></figure>
+<figure class="slide"><img src="ltv-why-two-models/02-split-into-two-questions.png" alt="1. 為什麼要拆成兩個問題？"></figure>
+<figure class="slide"><img src="ltv-why-two-models/03-why-bgnbd-not-churn.png" alt="2. 為什麼不用 Churn，而用 BG/NBD？"></figure>
+<figure class="slide"><img src="ltv-why-two-models/04-gamma-gamma-platform-take.png" alt="3. Gamma-Gamma：每個 completed-order day 帶來多少 Platform Take？"></figure>
+<figure class="slide"><img src="ltv-why-two-models/05-gogox-example.png" alt="4. 一個 GoGoX 例子"></figure>
+<figure class="slide"><img src="ltv-why-two-models/06-why-not-historical-only.png" alt="5. 為什麼不能直接用歷史下單表現推算 Future LTV？"></figure>
+<figure class="slide"><img src="ltv-why-two-models/07-learn-from-population.png" alt="6. 為什麼要從大量 GoGoX customers 學習？"></figure>
+</div>
+<p class="foot">Source: <code>ltv-why-two-models-manager-rationale.md</code> ·
+  Slides: <code>docs/ltv-why-two-models-slides/</code> ·
+  Built by <code>projects/marketplace-transport/python/gen_ltv_why_two_models_page.py</code></p>
+</div>
+</body>
+</html>
