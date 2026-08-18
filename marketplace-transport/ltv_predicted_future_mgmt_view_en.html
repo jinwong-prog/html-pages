@@ -915,12 +915,6 @@ body.show-v2 a[data-s="s4"]{display:none !important}
     <span class="badge good">✓ 1-year backtest available</span>
     <span class="badge warn">⚠ Internal QA · CRM gate not passed</span>
   </div>
-  <div class="viewbar">
-    <div class="seg" role="group" aria-label="Compact or full">
-      <button type="button" class="on" data-view-btn="compact">Compact</button>
-      <button type="button" data-view-btn="full">Full</button>
-    </div>
-  </div>
 </div>
 <p class="meta">Model cut-off: 30 Jun 2024 · Backtest: 1 Jul 2024 – 30 Jun 2026</p>
 
@@ -3550,12 +3544,6 @@ const DATA = {"meta":{"query_date":"2026-08-17","data_scope":"HK TRANSPORT Platf
     });
     document.getElementById("pg-prev").addEventListener("click", () => { if (st.page>0){ st.page--; render(); } });
     document.getElementById("pg-next").addEventListener("click", () => { st.page++; render(); });
-    document.querySelectorAll("[data-view-btn]").forEach(b => {
-      b.addEventListener("click", () => {
-        document.body.dataset.view = b.dataset.viewBtn;
-        document.querySelectorAll("[data-view-btn]").forEach(x => x.classList.toggle("on", x===b));
-      });
-    });
     (function(){
       const links=[...document.querySelectorAll('.nav a[href^="#"]')];
       const secs=links.map(a=>document.querySelector(a.getAttribute("href"))).filter(Boolean);
