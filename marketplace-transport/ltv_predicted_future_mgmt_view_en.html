@@ -345,13 +345,17 @@ table.pct tr.mark td{background:color-mix(in srgb,var(--blue) 7%,transparent);fo
 .sf-impact{margin-left:auto;font-variant-numeric:tabular-nums;font-weight:700;
   font-size:12.5px;color:var(--ink);white-space:nowrap;font-family:inherit}
 .sf-impact .was{color:var(--muted);font-weight:600}
-/* Cell tooltip. The native title tooltip waits about a second, appears wherever the
-   pointer happens to be, and can cover the very cell being read. This one shows at once,
-   sits beside its own cell, and is pulled back inside the window. */
-.celltip{position:fixed;z-index:200;pointer-events:none;max-width:calc(100vw - 16px);
+/* Cell tooltip. Instant, beside its own cell. Prose wraps into a compact card; heatmap
+   cells keep one-line alignment (.nowrap). JS sizes and slides it inside the nearest
+   card / deep-dive panel — it can grow up, down, left, or right when a wall is close. */
+.celltip{position:fixed;z-index:200;pointer-events:none;box-sizing:border-box;
+  width:max-content;max-width:min(22rem, calc(100vw - 16px));
   background:#0b0b0b;color:#fff;border-radius:8px;padding:9px 12px;
-  font:11.5px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre;
-  font-variant-numeric:tabular-nums;box-shadow:0 6px 18px rgba(11,11,11,.28)}
+  font:11.5px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  white-space:pre-wrap;overflow-wrap:break-word;word-break:normal;
+  font-variant-numeric:tabular-nums;box-shadow:0 6px 18px rgba(11,11,11,.28);
+  overflow:auto}
+.celltip.nowrap{white-space:pre;max-width:calc(100vw - 16px)}
 .celltip[hidden]{display:none}
 .fdd{position:relative}
 .fdd > select{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;
@@ -2627,8 +2631,13 @@ const DATA = {"meta":{"query_date":"2026-08-17","data_scope":"HK TRANSPORT Platf
     const naTh = m.fmt === fmtMoney
       ? "Actual = $0<br>Bias % N/A"
       : "Actual = 0<br>Bias % N/A";
-    const calcTip = `Denominator for the five |Bias %| columns. These people have Actual above zero, so (Predicted − Actual) ÷ Actual can be worked out. Predicted can still be 0.`;
-    const naTip = `Not Bias = 0%. Actual was 0, so Bias % cannot be worked out. Customers = Bias % calculable + this column. Predicted can still be above 0.`;
+    const calcTip = `Denominator for the five |Bias %| columns.
+These people have Actual above zero, so (Predicted − Actual) ÷ Actual can be worked out.
+Predicted can still be 0.`;
+    const naTip = `Not Bias = 0%.
+Actual was 0, so Bias % cannot be worked out.
+Customers = Bias % calculable + this column.
+Predicted can still be above 0.`;
     const dash5 = ABS_BIAS.map(() => `<td class="n">—</td>`).join("");
     const dashCalc = `<td class="n">—</td>`;
     const head = `<thead><tr>
@@ -3438,28 +3447,97 @@ const DATA = {"meta":{"query_date":"2026-08-17","data_scope":"HK TRANSPORT Platf
     tipEl.setAttribute("role", "tooltip");
     document.body.appendChild(tipEl);
     let tipFor = null;
-    const TIP_GAP = 6, TIP_EDGE = 8;
+    const TIP_GAP = 6, TIP_EDGE = 8, TIP_PAD = 10, TIP_PREF = 280, TIP_MIN = 148;
     function hideTip(){
       tipFor = null;
       tipEl.hidden = true;
+      tipEl.style.maxWidth = "";
+      tipEl.style.maxHeight = "";
+    }
+    function tipBox(el){
+      const host = el.closest("#deep-panel") || el.closest(".deep") || el.closest(".card");
+      if (host){
+        const b = host.getBoundingClientRect();
+        return {
+          left: b.left + TIP_PAD, top: b.top + TIP_PAD,
+          right: b.right - TIP_PAD, bottom: b.bottom - TIP_PAD
+        };
+      }
+      return {
+        left: TIP_EDGE, top: TIP_EDGE,
+        right: window.innerWidth - TIP_EDGE, bottom: window.innerHeight - TIP_EDGE
+      };
     }
     function showTip(el){
       const text = el.getAttribute("data-tip");
       if (!text) return hideTip();
       tipFor = el;
       tipEl.textContent = text;
+      /* Heatmap cells keep padded one-line rows. Headers / prose wrap into a card. */
+      const keepPre = el.matches("button.cell");
+      tipEl.classList.toggle("nowrap", keepPre);
       tipEl.hidden = false;
+      const box = tipBox(el);
       const r = el.getBoundingClientRect();
-      const tw = tipEl.offsetWidth, th = tipEl.offsetHeight;
-      const vw = window.innerWidth, vh = window.innerHeight;
-      /* Never sit on top of the cell being read: below it, or above it when below is short. */
-      let top = r.bottom + TIP_GAP;
-      if (top + th > vh - TIP_EDGE) top = Math.max(TIP_EDGE, r.top - TIP_GAP - th);
-      let left = r.left + r.width / 2 - tw / 2;
-      left = Math.min(left, vw - TIP_EDGE - tw);
-      left = Math.max(TIP_EDGE, left);
-      tipEl.style.left = left + "px";
-      tipEl.style.top = top + "px";
+      const boxW = Math.max(TIP_MIN, box.right - box.left);
+      const boxH = Math.max(48, box.bottom - box.top);
+      const room = {
+        below: box.bottom - r.bottom - TIP_GAP,
+        above: r.top - box.top - TIP_GAP,
+        right: box.right - r.right - TIP_GAP,
+        left: r.left - box.left - TIP_GAP
+      };
+      function size(maxW, maxH){
+        tipEl.style.maxWidth = Math.max(TIP_MIN, Math.floor(maxW)) + "px";
+        tipEl.style.maxHeight = Math.max(48, Math.floor(maxH)) + "px";
+        return {w: tipEl.offsetWidth, h: tipEl.offsetHeight};
+      }
+      function fit(side){
+        let maxW, maxH;
+        if (side === "below" || side === "above"){
+          maxW = keepPre ? boxW : Math.min(TIP_PREF, boxW);
+          maxH = Math.min(boxH, Math.max(side === "below" ? room.below : room.above, boxH * 0.72));
+        } else if (side === "right"){
+          maxW = keepPre ? Math.max(room.right, boxW) : Math.min(TIP_PREF, Math.max(room.right, boxW));
+          maxH = boxH;
+        } else {
+          maxW = keepPre ? Math.max(room.left, boxW) : Math.min(TIP_PREF, Math.max(room.left, boxW));
+          maxH = boxH;
+        }
+        const {w, h} = size(Math.min(maxW, boxW), maxH);
+        let left, top;
+        if (side === "below"){
+          top = r.bottom + TIP_GAP;
+          left = r.left + r.width / 2 - w / 2;
+        } else if (side === "above"){
+          top = r.top - TIP_GAP - h;
+          left = r.left + r.width / 2 - w / 2;
+        } else if (side === "right"){
+          left = r.right + TIP_GAP;
+          top = r.top + r.height / 2 - h / 2;
+        } else {
+          left = r.left - TIP_GAP - w;
+          top = r.top + r.height / 2 - h / 2;
+        }
+        /* Slide toward empty space so the card stays inside the boundary. */
+        left = Math.min(Math.max(left, box.left), box.right - w);
+        top = Math.min(Math.max(top, box.top), box.bottom - h);
+        const ox = Math.max(0, left + w - box.right) + Math.max(0, box.left - left);
+        const oy = Math.max(0, top + h - box.bottom) + Math.max(0, box.top - top);
+        return {left: left, top: top, overflow: ox + oy};
+      }
+      const nearRight = room.right < room.left;
+      const nearBottom = room.below < room.above;
+      const order = nearBottom ? ["above", "below"] : ["below", "above"];
+      if (nearRight) order.push("left", "right"); else order.push("right", "left");
+      let best = null;
+      for (const side of order){
+        const p = fit(side);
+        if (!best || p.overflow < best.overflow) best = p;
+        if (p.overflow === 0) break;
+      }
+      tipEl.style.left = best.left + "px";
+      tipEl.style.top = best.top + "px";
     }
     document.addEventListener("mouseover", e => {
       const el = e.target.closest("[data-tip]");
