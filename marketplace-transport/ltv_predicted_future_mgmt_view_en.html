@@ -434,6 +434,11 @@ table.cmp thead th{color:var(--muted);font-size:11.5px;border-bottom:1px solid v
 #tbl.cmp thead th.sort-th::after{display:inline;margin-left:2px}
 table.cmp td.n,table.cmp th.n{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
 table.cmp caption{caption-side:top;text-align:left;font-size:12.5px;color:var(--muted);padding:0 0 8px}
+.col-defs{margin:0;display:grid;grid-template-columns:minmax(10em,24%) 1fr;gap:8px 16px;
+  font-size:13.5px;line-height:1.4}
+.col-defs dt{font-weight:700;color:var(--ink);margin:0}
+.col-defs dd{margin:0;color:var(--ink2)}
+.col-defs code{font-size:11.5px}
 th.sort-th{cursor:pointer;user-select:none}
 th.sort-th:hover{color:var(--ink)}
 th.sort-th::after{content:" ⇅";font-size:10px;opacity:.45;font-weight:400}
@@ -1174,9 +1179,35 @@ body.show-v2 a[data-s="s4"]{display:none !important}
   filters. The live product would page from BigQuery. This freeze keeps 25 customers per T × P.
   This working table leaves Official Tier T100 out. Heatmaps still show T100.
   Numbers only — no TARGET / RETAIN / WATCH label.
-  Customer Bias % is this person's (Predicted − Actual) ÷ Actual
-  (<code>prediction_bias_day_platform_take_h</code>). It is not the T × P cell Bias.
   Click one customer. The right column shows that person's numbers in short sections.</p>
+<div class="box neut" id="col-defs">
+  <p class="lead">What these four columns mean</p>
+  <dl class="col-defs">
+    <dt>$ still needed for next P</dt>
+    <dd>How much more <b>actual Platform Take</b> this customer needs to earn to reach the next P
+      level within their current Official Tier.
+      Predicted money <b>does not count</b> toward moving P. P100 is already the highest, so it
+      shows —.</dd>
+    <dt>Predicted as % of that $</dt>
+    <dd>How much of that remaining gap could be covered by the customer’s
+      <b>Predicted Future LTV</b>.
+      Example: they need $500 more and we predict $400 → <b>80%</b>.
+      This is <b>not the probability of leveling up</b>.</dd>
+    <dt>Predicted enough for next P?</dt>
+    <dd>A simple check of whether the predicted future money is enough to cover the remaining gap.
+      <b>YES = enough. NO = not enough.</b>
+      This is for internal QA only and <b>does not mean they will actually level up</b>.</dd>
+    <dt>Customer Bias %</dt>
+    <dd>Shows whether we <b>over- or under-predicted this customer</b> compared with what they
+      actually generated.
+      <b>0% = accurate. +20% = predicted 20% too high. −20% = predicted 20% too low.</b>
+      If Actual Platform Take is $0, it cannot be calculated, so it shows —.</dd>
+  </dl>
+  <p>In one sentence: the first three columns show <b>how far the customer is from the next P and
+    whether their predicted future value would cover that gap</b>; the last column shows
+    <b>how accurate our prediction was for that customer</b>.</p>
+  <p class="cap">(queried 2026-08-17, HK TRANSPORT PlatformOD van, history 2018-01-01 to as_of 2024-06-30; holdout 2024-07-01 to 2026-06-30)</p>
+</div>
 <div class="card wide">
   <div class="actions" style="margin:0 0 8px">
     <button type="button" class="apply" id="btn-export">Download this preview table</button>
@@ -3143,22 +3174,28 @@ const DATA = {"meta":{"query_date":"2026-08-17","data_scope":"HK TRANSPORT Platf
         <td class="n">${fmtBias(bias)}</td>
       </tr>`;
     }).join("");
-    const th = (k,l,cls) => `<th class="sort-th${cls?" "+cls:""}" data-sort="${k}">${l}</th>`;
+    const th = (k,l,cls,tip) =>
+      `<th class="sort-th${cls?" "+cls:""}" data-sort="${k}"${tip ? ` data-tip="${tip}" tabindex="0"` : ""}>${l}</th>`;
+    const gapTip = isT
+      ? `How much more actual Platform Take this customer needs to earn to reach the next Official Tier.\nPredicted money does not count toward moving T.\nT100 is already the highest, so it shows —.`
+      : `How much more actual Platform Take this customer needs to earn to reach the next P level within their current Official Tier.\nPredicted money does not count toward moving P.\nP100 is already the highest, so it shows —.`;
+    const pctTip = `How much of that remaining gap could be covered by the customer's Predicted Future LTV.\nExample: they need $500 more and we predict $400 → 80%.\nThis is not the probability of leveling up.`;
+    const enoughTip = `A simple check of whether the predicted future money is enough to cover the remaining gap.\nYES = enough. NO = not enough.\nThis is for internal QA only and does not mean they will actually level up.`;
+    const biasTip = `Shows whether we over- or under-predicted this customer compared with what they actually generated.\n0% = accurate. +20% = predicted 20% too high. −20% = predicted 20% too low.\nIf Actual Platform Take is $0, it cannot be calculated, so it shows —.`;
     document.getElementById("tbl").innerHTML = `
       <caption>Working table preview · ${total.toLocaleString("en-US")} rows in this filter ·
         T100 is left out of this table · 25 customers per remaining T × P in the freeze ·
-        not a CRM list · IDs are shortened · Customer Bias % is this person's
-        (Predicted − Actual) ÷ Actual. No Actual Platform Take → —. Not the T × P cell Bias.
+        not a CRM list · IDs are shortened. Hover a column title for the meaning.
         ${CITE}.</caption>
       <thead><tr>
         ${th("id","Customer<br>ID")}${th("t","Official<br>Tier T")}${th("p","Within-tier<br>P")}
         ${th("hist","Historical<br>Platform Take<br>($)","n")}${th("predicted","Predicted<br>Future LTV","n")}
         ${th("orders","Predicted<br>completed<br>orders","n")}${th("palive","Chance to<br>order again","n")}
         ${th("days","Last completed<br>order was<br>X days ago")}
-        ${th("gap", isT ? "$ still needed<br>for next T" : "$ still needed<br>for next P","n")}
-        ${th("pct", "Predicted as<br>% of that $","n")}
-        <th>${isT ? "Predicted enough<br>for next T?" : "Predicted enough<br>for next P?"}</th>
-        ${th("bias","Customer<br>Bias %","n")}
+        ${th("gap", isT ? "$ still needed<br>for next T" : "$ still needed<br>for next P","n", gapTip)}
+        ${th("pct", "Predicted as<br>% of that $","n", pctTip)}
+        <th data-tip="${enoughTip}" tabindex="0">${isT ? "Predicted enough<br>for next T?" : "Predicted enough<br>for next P?"}</th>
+        ${th("bias","Customer<br>Bias %","n", biasTip)}
       </tr></thead>
       <tbody>${body || `<tr><td colspan="12" class="empty">No customers in this filter.</td></tr>`}</tbody>`;
     document.getElementById("tbl-page").textContent =
@@ -3219,15 +3256,22 @@ const DATA = {"meta":{"query_date":"2026-08-17","data_scope":"HK TRANSPORT Platf
           ${row(isT ? "Predicted enough for next T?" : "Predicted enough for next P?",
             covers == null ? "—" : (covers ? "YES" : "NO"))}
         </dl>
+        <p class="hint">How much more actual Platform Take this customer needs to earn to reach
+          the next ${isT ? "Official Tier" : "P"} within their current Official Tier.
+          Predicted money does not count toward moving ${isT ? "T" : "P"}.
+          Predicted as % of that $ = how much of that remaining gap Predicted Future LTV could cover.
+          Predicted enough? YES = enough. NO = not enough. Internal QA only.
+          This does not mean they will actually level up. ${CITE}</p>
       </div>
       <div class="sec">
         <h4>This person's prediction</h4>
         <dl class="dl">
           ${row("Customer Bias %", fmtBias(bias))}
         </dl>
-        <p class="hint">Customer Bias % = (Predicted − Actual) ÷ Actual for this person
-          (<code>prediction_bias_day_platform_take_h</code>).
-          No Actual Platform Take → —. Not the T × P cell Bias. ${CITE}</p>
+        <p class="hint">Shows whether we over- or under-predicted this customer compared with
+          what they actually generated. 0% = accurate. +20% = predicted 20% too high.
+          −20% = predicted 20% too low. If Actual Platform Take is $0, it cannot be calculated,
+          so it shows —. ${CITE}</p>
       </div>`;
   }
   function exportCsv(){
