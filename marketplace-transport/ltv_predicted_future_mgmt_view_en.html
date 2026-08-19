@@ -905,7 +905,7 @@ body.show-v2 a[data-s="s4"]{display:none !important}
           <label><input type="checkbox" data-ex="fallback"> Estimated from similar customers</label>
         </div>
       </div>
-      <div class="fdd"><label>Metric<button type="button" class="fdd-btn" id="f-metric-btn" aria-label="Cell metric" aria-haspopup="listbox" aria-expanded="false" aria-controls="f-metric-panel">Bias % · Platform Take</button></label><div class="fdd-panel" id="f-metric-panel" role="listbox" hidden><div class="fdd-sep" role="presentation">Predicted vs actual — uses the prediction period</div><button type="button" role="option" data-value="bias" aria-selected="true">Bias % · Platform Take</button><button type="button" role="option" data-value="mae" aria-selected="false">Average |Difference| · Platform Take</button><button type="button" role="option" data-value="bias_orders" aria-selected="false">Bias % · Completed orders</button><button type="button" role="option" data-value="mae_orders" aria-selected="false">Average |Difference| · Completed orders</button><div class="fdd-sep" role="presentation">History only — prediction period does not apply</div><button type="button" role="option" data-value="take" aria-selected="false">Historical Platform Take ($) · min–max</button><button type="button" role="option" data-value="orders" aria-selected="false">Historical completed orders · min–max</button><button type="button" role="option" data-value="orderdays" aria-selected="false">Historical completed-order days · min–max</button></div><select id="f-metric" hidden aria-hidden="true" tabindex="-1"><option value="bias" selected>Bias % · Platform Take</option><option value="mae">Average |Difference| · Platform Take</option><option value="bias_orders">Bias % · Completed orders</option><option value="mae_orders">Average |Difference| · Completed orders</option><option value="take">Historical Platform Take ($) · min–max</option><option value="orders">Historical completed orders · min–max</option><option value="orderdays">Historical completed-order days · min–max</option></select></div>
+      <div class="fdd"><label>Metric<button type="button" class="fdd-btn" id="f-metric-btn" aria-label="Cell metric" aria-haspopup="listbox" aria-expanded="false" aria-controls="f-metric-panel">Bias % · Platform Take</button></label><div class="fdd-panel" id="f-metric-panel" role="listbox" hidden><p class="fdd-hint">Predicted vs actual needs the prediction period; History only ignores it. The model predicts three things — Platform Take, completed orders, and completed-order days — and all three are here.</p><div class="fdd-sep" role="presentation">Predicted vs actual — uses the prediction period</div><button type="button" role="option" data-value="bias" aria-selected="true">Bias % · Platform Take</button><button type="button" role="option" data-value="mae" aria-selected="false">Average |Difference| · Platform Take</button><button type="button" role="option" data-value="bias_orders" aria-selected="false">Bias % · Completed orders</button><button type="button" role="option" data-value="mae_orders" aria-selected="false">Average |Difference| · Completed orders</button><button type="button" role="option" data-value="bias_orderdays" aria-selected="false">Bias % · Completed-order days</button><div class="fdd-sep" role="presentation">History only — prediction period does not apply</div><button type="button" role="option" data-value="take" aria-selected="false">Historical Platform Take ($) · min–max</button><button type="button" role="option" data-value="orders" aria-selected="false">Historical completed orders · min–max</button><button type="button" role="option" data-value="orderdays" aria-selected="false">Historical completed-order days · min–max</button></div><select id="f-metric" hidden aria-hidden="true" tabindex="-1"><option value="bias" selected>Bias % · Platform Take</option><option value="mae">Average |Difference| · Platform Take</option><option value="bias_orders">Bias % · Completed orders</option><option value="mae_orders">Average |Difference| · Completed orders</option><option value="bias_orderdays">Bias % · Completed-order days</option><option value="take">Historical Platform Take ($) · min–max</option><option value="orders">Historical completed orders · min–max</option><option value="orderdays">Historical completed-order days · min–max</option></select></div>
       <span class="sf-impact" id="f-impact" title="Customers and Bias % before and after these filters"></span>
       <button type="button" class="reset" id="btn-reset">Reset</button>
     </div>
@@ -1043,7 +1043,7 @@ body.show-v2 a[data-s="s4"]{display:none !important}
     </div>
     <p class="rule" id="heat-period-def">—</p>
     <p class="rule" id="heat-rule">0% = on target · closer to 0% = more accurate</p>
-    <p class="heat-warn" id="heat-range-warn" hidden></p>
+    <p class="heat-warn" id="heat-note" hidden></p>
   </div>
   <div class="heat-frame">
     <div class="heat-rank">
@@ -2001,10 +2001,11 @@ const DATA = {"meta":{"query_date":"2026-08-18","data_scope":"HK TRANSPORT Platf
   /* Predicted vs Actual units. Same table, same colours, same hover — only the measure
      changes. Platform Take is the standard; Completed orders follows it exactly. */
   const PVA_UNITS = {
-    bias:       {unit:"take",   show:"bias"},
-    mae:        {unit:"take",   show:"mae"},
-    bias_orders:{unit:"orders", show:"bias"},
-    mae_orders: {unit:"orders", show:"mae"}
+    bias:          {unit:"take",      show:"bias"},
+    mae:           {unit:"take",      show:"mae"},
+    bias_orders:   {unit:"orders",    show:"bias"},
+    mae_orders:    {unit:"orders",    show:"mae"},
+    bias_orderdays:{unit:"orderdays", show:"bias"}
   };
   const PVA_MEASURE = {
     take: {
@@ -2018,6 +2019,7 @@ const DATA = {"meta":{"query_date":"2026-08-18","data_scope":"HK TRANSPORT Platf
       predLab: "Predicted Platform Take",
       actLab: "Actual Platform Take",
       maeLab: "Avg. absolute error / customer",
+      absCode: "sum_absolute_prediction_error",
       code: "predicted_day_platform_take_h vs actual_day_platform_take_h"
     },
     orders: {
@@ -2031,7 +2033,42 @@ const DATA = {"meta":{"query_date":"2026-08-18","data_scope":"HK TRANSPORT Platf
       predLab: "Predicted number of orders",
       actLab: "Actual number of orders",
       maeLab: "Avg. absolute error / customer",
+      absCode: "sum_absolute_prediction_error_completed_orders",
+      perPredLab: "Predicted orders / customer",
+      perActLab: "Actual orders / customer",
       code: "predicted_completed_orders_h vs actual_completed_orders_h"
+    },
+    /* Order days are not on the T × P row in this freeze — they sit one grain deeper, at
+       Official Tier × Level × last-order band. `cellGet` reads that grain through the very
+       function the "how often they order" table uses, so both tables print the same number by
+       construction. `baseTotals` is the unfiltered population for the filter-bar readout. */
+    orderdays: {
+      title: "Completed-order days",
+      cellGet: (t, p) => {
+        const d = cellOrderDays(t, p);
+        return (d && d.n) ? {customer_count: d.n, _od: d} : null;
+      },
+      baseTotals: () => {
+        let n=0, pred=0, act=0;
+        DATA.dd.forEach(x => {
+          if (x[K_H] !== st.hi) return;
+          n += x[K_N]; pred += x[K_PREDD] || 0; act += x[K_ACTD] || 0;
+        });
+        return {n: n, pred: pred, act: act};
+      },
+      pred: r => r._od.pred,
+      act:  r => r._od.act,
+      abs:  () => null,
+      bias: r => r._od.bias,
+      fmt: v => (v == null ? "—" : fmtN(v)),
+      per: v => (v == null ? "—" : v.toFixed(2)),
+      predLab: "Predicted completed-order days",
+      actLab: "Actual completed-order days",
+      maeLab: "Avg. absolute error / customer",
+      absCode: null,
+      perPredLab: "Predicted days / customer",
+      perActLab: "Actual days / customer",
+      code: "predicted_completed_order_days_h vs actual_completed_order_days_h"
     }
   };
   function pvaSpec(){ return PVA_UNITS[st.metric] || null; }
@@ -2062,6 +2099,15 @@ const DATA = {"meta":{"query_date":"2026-08-18","data_scope":"HK TRANSPORT Platf
     (queried 2026-08-13, HK TRANSPORT PlatformOD van, history 2018-01-01 to as_of 2024-06-30).
     Max can be one extreme customer.
     Hover for the full cell numbers. Click a cell. ${CITE}.`;
+  /* Notes that sit under the yellow rule. Two writers: renderPvaHead sets the ones it can
+     work out from the Metric alone, renderHeatBias adds what it learns from the cells. */
+  let heatNote = [];
+  function drawHeatNote(){
+    const n = document.getElementById("heat-note");
+    if (!n) return;
+    n.innerHTML = heatNote.filter(Boolean).join(" ");
+    n.hidden = n.innerHTML === "";
+  }
   function fmtRangeVal(v, kind){
     if (v == null) return "—";
     return kind === "money" ? fmtMoney(v) : fmtN(v);
@@ -2155,7 +2201,7 @@ const DATA = {"meta":{"query_date":"2026-08-18","data_scope":"HK TRANSPORT Platf
         : ((pvaSpec() && pvaSpec().show === "mae") ? "is-mae" : "is-bias"));
     }
     const ruleEl = document.getElementById("heat-rule");
-    const warnEl = document.getElementById("heat-range-warn");
+    heatNote = [];
     if (spec){
       document.getElementById("heat-pva-title").textContent =
         spec.main + " — min–max (history only)";
@@ -2174,18 +2220,13 @@ const DATA = {"meta":{"query_date":"2026-08-18","data_scope":"HK TRANSPORT Platf
       /* The freeze only carries this range by T × P and by one last-order band. Saying that in
          the caption is not enough — the customer count under each cell visibly stops matching
          the Bias tables, so warn on the page. */
-      if (warnEl){
-        const bits = [];
-        if (extraFiltersOn()) bits.push(
-          `<b>${extraFilterWhy()}</b> does not change this table. The min–max, and the customer `
-          + `count under it, cover the whole Official Tier × Within-tier Level — so that count `
-          + `will not match the customer count on the Predicted vs actual tables.`);
-        if (!recencyAll() && st.recKeep.size !== 1) bits.push(
-          `Pick one <b>Last completed order was X days ago</b> band to see a range — min–max `
-          + `cannot be added up across bands.`);
-        warnEl.innerHTML = bits.join(" ");
-        warnEl.hidden = bits.length === 0;
-      }
+      if (extraFiltersOn()) heatNote.push(
+        `<b>${extraFilterWhy()}</b> does not change this table. The min–max, and the customer `
+        + `count under it, cover the whole Official Tier × Within-tier Level — so that count `
+        + `will not match the customer count on the Predicted vs actual tables.`);
+      if (!recencyAll() && st.recKeep.size !== 1) heatNote.push(
+        `Pick one <b>Last completed order was X days ago</b> band to see a range — min–max `
+        + `cannot be added up across bands.`);
       const recNote = recencyAll()
         ? ""
         : (st.recKeep.size === 1
@@ -2209,7 +2250,6 @@ const DATA = {"meta":{"query_date":"2026-08-18","data_scope":"HK TRANSPORT Platf
          customer counts on the other tables.
          ${recNote} ${CITE}.`;
     } else {
-      if (warnEl){ warnEl.hidden = true; warnEl.innerHTML = ""; }
       const M = pvaMeasure();
       const showMae = pvaSpec() && pvaSpec().show === "mae";
       document.getElementById("heat-pva-title").textContent =
@@ -2218,11 +2258,32 @@ const DATA = {"meta":{"query_date":"2026-08-18","data_scope":"HK TRANSPORT Platf
       document.getElementById("heat-metric").textContent = (showMae
         ? "Average |Difference|"
         : "Bias %") + " · " + M.title;
-      ruleEl.textContent =
-        "0% = on target · closer to 0% = more accurate";
+      /* Average |Difference| is not a %, and 0% = on target is not what it measures. It also
+         does not drive the colour — Bias % still does — so the rule and the legend have to say
+         both things or the reader reads the colour as the number. */
+      ruleEl.textContent = showMae
+        ? "Bigger number = bigger miss per customer · colour still shows Bias %"
+        : "0% = on target · closer to 0% = more accurate";
       ruleEl.classList.remove("is-range");
-      document.getElementById("heat-legend").innerHTML = BIAS_LEGEND_HTML;
-      document.getElementById("heat-cap").innerHTML = (M.title === "Platform Take")
+      document.getElementById("heat-legend").innerHTML = showMae
+        ? `<span>Colour = Bias %, not the number in the cell</span>` + BIAS_LEGEND_HTML
+        : BIAS_LEGEND_HTML;
+      document.getElementById("heat-cap").innerHTML = showMae
+        ? maeCap(M)
+        : (M.title === "Completed-order days")
+        ? `Cell = Bias % on <b>completed-order days</b> (<code>${M.code}</code>) — how many
+           separate days the model said these customers would order on in the next
+           ${hDays(st.h)}, against how many they really did. A day with three orders counts once.
+           0% = on target, red = far off. This is the unit the frequency half of the model
+           actually predicts, so it is the cleanest read on how often people order.
+           This freeze keeps order days one grain deeper than the other measures — at Official
+           Tier × Within-tier Level × last-completed-order band — so this is the same number the
+           <b>Predicted vs Actual · how often they order</b> table below shows on
+           <b>Completed-order days</b>. There is no Average |Difference| for it: this freeze has
+           no per-customer absolute error on days.
+           The small number under each Bias % is how many customers are in that cell;
+           under ${LOW_N} customers the colour is dropped. Click a cell. ${CITE}.`
+        : ((M.title === "Platform Take")
         ? BIAS_CAP
         : `Cell = Bias % on <b>completed orders</b> (<code>${M.code}</code>) — same colours,
            same reading as Platform Take: 0% = on target, red = far off. This is the future
@@ -2231,8 +2292,25 @@ const DATA = {"meta":{"query_date":"2026-08-18","data_scope":"HK TRANSPORT Platf
            min–max Metric. The small number under each Bias % is how many customers are in
            that cell.
            Cells with under ${LOW_N} customers get grey stripes and no colour.
-           Hover for predicted / actual orders in total and per customer. Click a cell. ${CITE}.`;
+           Hover for predicted / actual orders in total and per customer. Click a cell. ${CITE}.`);
     }
+    drawHeatNote();
+  }
+  /* Average |Difference| caption. The whole point of this Metric is that it disagrees with the
+     colour, so say that plainly instead of reusing the Bias caption. */
+  function maeCap(M){
+    const unit = M.title === "Platform Take" ? "dollars" : "orders";
+    return `Cell = the average miss per customer, ignoring direction: every customer's
+      |Predicted − Actual| added up, then divided by how many customers are in that cell
+      (<code>${M.absCode}</code>
+      ÷ <code>customer_count</code>). It is in <b>${unit}</b>, not a %. Smaller = the model is
+      closer for a typical customer. 0 is perfect and there is no upper limit.
+      <b>The colour is still Bias %</b>, not this number. A cell can be green — Bias % near 0% —
+      and still have a large average miss, because the customers the model read too high cancel
+      out the ones it read too low. Reading the two together is the point: Bias % says whether
+      the total is one-sided, this says how wrong a single customer usually is.
+      The small number under each cell is how many customers are in that cell;
+      under ${LOW_N} customers the colour is dropped. Click a cell. ${CITE}.`;
   }
 
   function fmtNCompact(n){
@@ -2249,31 +2327,51 @@ const DATA = {"meta":{"query_date":"2026-08-18","data_scope":"HK TRANSPORT Platf
     const p = pvaSpec();
     return p ? PVA_MEASURE[p.unit] : null;
   }
+  /* Both totals report Bias and the average miss, each with its own coverage count, because
+     the freeze can carry one and not the other. A measure that does not cover every customer
+     in scope comes back null rather than as a short denominator. */
+  function addTo(acc, M, r, t, p){
+    acc.n += r.customer_count;
+    if (!M) return;
+    const src = M.cellGet ? M.cellGet(t, p) : r;
+    if (!src) return;
+    if (M.pred(src) != null && M.act(src) != null){
+      acc.pred += M.pred(src); acc.act += M.act(src); acc.measured += src.customer_count;
+    }
+    if (M.abs(src) != null){ acc.abs += M.abs(src); acc.absN += src.customer_count; }
+  }
+  function wrapTotals(acc, M){
+    return {
+      n: acc.n,
+      measured: acc.measured,
+      bias: (M && acc.act && acc.measured === acc.n) ? (acc.pred-acc.act)/acc.act : null,
+      mae: (M && acc.n && acc.absN === acc.n) ? acc.abs/acc.n : null
+    };
+  }
   function baselineTotals(){
     const M = impactMeasure();
-    const rows = tpAll(st.h);
-    const n = rows.reduce((x,r)=>x+r.customer_count,0);
-    if (!M) return {n: n, bias: null, measured: 0};
-    let pred=0, act=0, measured=0;
-    rows.forEach(r => {
-      if (M.pred(r) == null || M.act(r) == null) return;
-      pred += M.pred(r); act += M.act(r); measured += r.customer_count;
-    });
-    return {n: n, bias: (act && measured === n) ? (pred-act)/act : null, measured: measured};
+    const n = tpAll(st.h).reduce((x,r)=>x+r.customer_count, 0);
+    /* A measure read per cell honours the filters, so the unfiltered baseline has to come from
+       its own whole-population reader instead. */
+    if (M && M.baseTotals){
+      const b = M.baseTotals();
+      return {n: n, measured: b.n,
+        bias: (b.act && b.n === n) ? (b.pred-b.act)/b.act : null, mae: null};
+    }
+    const acc = {n:0, pred:0, act:0, measured:0, abs:0, absN:0};
+    tpAll(st.h).forEach(r => addTo(acc, M, r, r.tier_label, r.within_tier_band));
+    return wrapTotals(acc, M);
   }
   function filteredTotals(){
     const M = impactMeasure();
-    let n=0, pred=0, act=0, measured=0;
+    const acc = {n:0, pred:0, act:0, measured:0, abs:0, absN:0};
     const tiers = st.tier ? [st.tier] : TIERS;
     const ps = st.p ? [st.p] : PS;
     tiers.forEach(t => ps.forEach(p => {
       const r = viewCell(t, p);
-      if (!r) return;
-      n += r.customer_count;
-      if (!M || M.pred(r) == null || M.act(r) == null) return;
-      pred += M.pred(r); act += M.act(r); measured += r.customer_count;
+      if (r) addTo(acc, M, r, t, p);
     }));
-    return {n: n, bias: (M && act && measured === n) ? (pred-act)/act : null, measured: measured};
+    return wrapTotals(acc, M);
   }
   function filtersActive(){
     return !!(st.tier || st.p || st.lastOrder !== "All" || st.exclude.size ||
@@ -2318,29 +2416,31 @@ const DATA = {"meta":{"query_date":"2026-08-18","data_scope":"HK TRANSPORT Platf
     syncFilterLocks();
     const a = baselineTotals(), b = filteredTotals();
     const M = impactMeasure();
+    const showMae = pvaSpec() && pvaSpec().show === "mae";
     const el = document.getElementById("f-impact");
-    const biasLab = M ? M.title + " Bias" : "";
-    el.title = M
-      ? "Customers, and Bias % on " + M.title + ", before and after these filters"
-      : "";
-    /* Three cases, and each has to be said out loud: a history-only Metric has no Bias; a
-       Metric this freeze cannot measure on every cell in scope has no honest total; otherwise
-       show the Bias and name the measure it is on. */
+    /* The readout names the Metric it is on and shows the same measure the cells show. A
+       history range has no accuracy number at all; a measure this freeze cannot cover for every
+       customer in scope says n/a rather than reporting a short denominator. */
+    const lab = M ? M.title + (showMae ? " avg. miss" : " Bias") : "";
+    const fmt = showMae ? (v => M.per(v)) : fmtBias;
+    const pick = t => showMae ? t.mae : t.bias;
     let tail;
     if (!M){
       tail = ` · <span class="was">no Bias — history-only Metric</span>`;
       el.title = "Customers before and after these filters. The Metric now on is a history "
-        + "range, so there is no Bias % to show.";
-    } else if (b.measured < b.n || a.measured < a.n){
-      tail = ` · <span class="was">${biasLab} n/a — not in this freeze for every cell</span>`;
-      el.title = "This freeze has no " + M.title.toLowerCase() + " split for some cells in "
-        + "scope. A total over the rest would be a short denominator, so it is not shown.";
-    } else if (!filtersActive() || a.bias === b.bias){
-      tail = ` · ${biasLab} ${fmtBias(b.bias)}`;
+        + "range, so there is no accuracy number to show.";
+    } else if (pick(b) == null || pick(a) == null){
+      tail = ` · <span class="was">${lab} n/a — not in this freeze for every cell</span>`;
+      el.title = "This freeze cannot work out " + lab.toLowerCase() + " for every cell in scope. "
+        + "A total over the rest would be a short denominator, so it is not shown.";
+    } else if (!filtersActive() || pick(a) === pick(b)){
+      tail = ` · ${lab} ${fmt(pick(b))}`;
+      el.title = "Customers, and " + lab + ", for these filters";
     } else {
-      tail = ` · ${biasLab} <span class="was">${fmtBias(a.bias)}</span> → ${fmtBias(b.bias)}`;
+      tail = ` · ${lab} <span class="was">${fmt(pick(a))}</span> → ${fmt(pick(b))}`;
+      el.title = "Customers, and " + lab + ", before and after these filters";
     }
-    if (!filtersActive() || (a.n === b.n && a.bias === b.bias)){
+    if (!filtersActive() || a.n === b.n){
       el.innerHTML = `Customers ${fmtNCompact(b.n)}` + tail;
     } else {
       const share = a.n ? ` <span class="was">(${(b.n/a.n*100).toFixed(1)}% of all)</span>` : "";
@@ -2424,19 +2524,20 @@ const DATA = {"meta":{"query_date":"2026-08-18","data_scope":"HK TRANSPORT Platf
       "",
       tipRow(M.predLab, M.fmt(M.pred(r))),
       tipRow(M.actLab, M.fmt(M.act(r))),
-      tipRow("Bias", fmtBias(bias)),
-      "",
-      tipRow(M.maeLab, M.per(mae))
+      tipRow("Bias", fmtBias(bias))
     ];
+    /* No per-customer absolute error for this measure in the freeze — leave the row out
+       rather than printing an empty one. */
+    if (M.absCode) lines.push("", tipRow(M.maeLab, M.per(mae)));
     if (!isTake){
       /* Per-customer counts are what an ops reader acts on, and they are not in the
          totals above. */
-      lines.push(tipRow("Predicted orders / customer",
+      lines.push(tipRow(M.perPredLab || "Predicted orders / customer",
         M.pred(r) == null ? "—" : (M.pred(r)/n).toFixed(2)));
-      lines.push(tipRow("Actual orders / customer",
+      lines.push(tipRow(M.perActLab || "Actual orders / customer",
         M.act(r) == null ? "—" : (M.act(r)/n).toFixed(2)));
     }
-    const sp = cellSpread(t, p, r);
+    const sp = M.cellGet ? null : cellSpread(t, p, r);
     if (sp && sp.n && sp.noOrder != null){
       lines.push(tipRow("Customers with no completed order",
         `${fmtN(sp.noOrder)} (${(sp.noOrder / sp.n * 100).toFixed(1)}%)`));
@@ -2448,7 +2549,7 @@ const DATA = {"meta":{"query_date":"2026-08-18","data_scope":"HK TRANSPORT Platf
         lines.push("", tipRow("P90 absolute error / customer", fmtMoney(sp.p90Abs)));
       }
     }
-    const od = cellOrderDays(t, p);
+    const od = M.cellGet ? null : cellOrderDays(t, p);
     if (od && od.n){
       lines.push("", "Completed-order days / customer",
         `Predicted ${(od.pred/od.n).toFixed(2)} · Actual ${(od.act/od.n).toFixed(2)}`
@@ -2477,10 +2578,14 @@ const DATA = {"meta":{"query_date":"2026-08-18","data_scope":"HK TRANSPORT Platf
       const tds = PS.map(p => {
         const r = cells[t + "|" + p];
         const M = pvaMeasure();
-        const b = r ? M.bias(r) : null;
+        /* Some measures live at a deeper grain than the T × P row. Read the cell they name,
+           but keep the customer count from viewCell so the row and column totals still add up. */
+        const srcCell = (r && M.cellGet) ? M.cellGet(t, p) : r;
+        const b = srcCell ? M.bias(srcCell) : null;
         const on = (st.tier === t && st.p === p) ? " on" : "";
-        const absTot = r ? M.abs(r) : null;
-        const mae = r && r.customer_count && absTot != null ? absTot / r.customer_count : null;
+        const absTot = srcCell ? M.abs(srcCell) : null;
+        const mae = srcCell && srcCell.customer_count && absTot != null
+          ? absTot / srcCell.customer_count : null;
         const extra = recencyAll() ? "" : "\n(after last-completed-order filter)";
         if (spec){
           const rng = cellRange(t, p);
@@ -2499,7 +2604,12 @@ const DATA = {"meta":{"query_date":"2026-08-18","data_scope":"HK TRANSPORT Platf
           const rlow = rn != null && rn < LOW_N;
           return `<td class="${on}${rlow ? " lown" : ""}" style="background:var(--neutbg)"><button type="button" class="cell rng" data-t="${t}" data-p="${p}" data-tip="${tip}">${shown}<small class="${rlow ? "lown" : ""}">${rn == null ? "—" : fmtN(rn)}</small></button></td>`;
         }
-        const tip = r ? cellTip(t, p, r, b, mae, extra) : "No row";
+        const tip = srcCell
+          ? cellTip(t, p, srcCell, b, mae, extra)
+          : (r
+            ? `${t} / ${p}\n${fmtN(r.customer_count)} customers\nThis freeze has no `
+              + `${M.title.toLowerCase()} for this cell with the filters now on.`
+            : "No row");
         const shown = (pvaSpec() && pvaSpec().show === "mae") ? M.per(mae) : fmtBias(b);
         const n = r ? r.customer_count : 0;
         const low = n < LOW_N;
@@ -2512,6 +2622,27 @@ const DATA = {"meta":{"query_date":"2026-08-18","data_scope":"HK TRANSPORT Platf
     const gridN = PS.reduce((x,p)=>x+colN[p], 0);
     document.getElementById("heat-bias").innerHTML =
       `<table class="heat"><thead><tr><th class="stub">Customers<span class="share withn"><span class="n">${fmtNCompact(gridN)}</span></span></th>${colHead}</tr></thead><tbody>${rows}</tbody></table>`;
+    /* Average |Difference| needs a per-customer absolute error. Some cuts of this freeze do not
+       carry one, and then every cell goes blank. Say why, instead of showing an empty table. */
+    if (!spec && pvaSpec() && pvaSpec().show === "mae"){
+      const M = pvaMeasure();
+      let have = 0, want = 0;
+      TIERS.forEach(t => PS.forEach(p => {
+        const r = cells[t + "|" + p];
+        if (!r || !r.customer_count) return;
+        want += r.customer_count;
+        if (M.abs(r) != null) have += r.customer_count;
+      }));
+      if (want && !have) heatNote.push(
+        `<b>Average |Difference| on ${M.title.toLowerCase()} is not in this freeze</b> once `
+        + `${extraFilterWhy() || "this filter"} is on, so every cell is blank. Switch the Metric `
+        + `to <b>Bias % · ${M.title}</b>, or turn that filter off.`);
+      else if (want && have < want) heatNote.push(
+        `Some cells are blank: this freeze has no per-customer absolute error for them with `
+        + `${extraFilterWhy() || "this filter"} on. They cover `
+        + `${fmtNCompact(want - have)} of ${fmtNCompact(want)} customers.`);
+      drawHeatNote();
+    }
     renderHeatOrderDays();
     renderDeep();
   }
