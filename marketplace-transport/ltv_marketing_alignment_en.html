@@ -2044,6 +2044,8 @@
     white-space: nowrap; min-width: 5.5em;
   }
   table.mkt thead tr.h th[data-col="mkt_action"],
+  table.mkt thead tr.h th[data-col="mkt_tier"],
+  table.mkt thead tr.h th[data-col="mkt_pband"],
   table.mkt thead tr.h th[data-col="mkt_palive"],
   table.mkt thead tr.h th[data-col="mkt_rp30"],
   table.mkt thead tr.h th[data-col="mkt_rp180"],
@@ -2273,7 +2275,7 @@
 
     <div class="stat-row">
       <div class="stat"><div class="n">2,330,782</div><div class="l">HK TRANSPORT · PlatformOD · van customers<span class="zh">客戶母體</span></div></div>
-      <div class="stat"><div class="n">30–547 days</div><div class="l">Optional prediction windows ({h})<span class="zh">可選預測窗</span></div></div>
+      <div class="stat"><div class="n">1 Jul 2024 → 30 Jun 2026</div><div class="l">from 30 to 547 days · 0.08–1.5 yrs · optional windows ({h})<span class="zh">可選預測窗：由 30 日至 547 日（0.08–1.5 年）</span></div></div>
     </div>
   </section>
 </div>
@@ -2570,7 +2572,7 @@
       <table class="mkt" data-mode="cve" id="mktExtractTable">
         <thead>
           <tr class="grp">
-            <th class="g-id" colspan="4">Customer / context<span class="zh">客戶／背景</span></th>
+            <th class="g-id" colspan="5">Customer / context<span class="zh">客戶／背景</span></th>
             <th class="g-status" colspan="1">Current status<span class="zh">現況</span></th>
             <th class="g-30" colspan="4">30D prediction<span class="zh">30 日預測 · Campaign</span></th>
             <th class="g-180" colspan="4"><span class="main-flag">180D prediction (MAIN)<span class="zh">180 日預測（主）</span></span></th>
@@ -2580,15 +2582,16 @@
             <th class="lookup-h" data-col="mkt_id" tabindex="0"><span class="lookup-h-title">User Unique ID</span><span class="zh">用戶唯一編號</span></th>
             <th class="lookup-h" data-col="mkt_cutoff" tabindex="0"><span class="lookup-h-title">Cutoff</span><span class="zh">截止日</span></th>
             <th class="lookup-h" data-col="mkt_tier" tabindex="0"><span class="lookup-h-title">Official Tier T</span><span class="zh">官方層級</span></th>
+            <th class="lookup-h" data-col="mkt_pband" tabindex="0"><span class="lookup-h-title">Official Tier P</span><span class="zh">同一層內位置</span></th>
             <th class="lookup-h" data-col="mkt_earned" tabindex="0"><span class="lookup-h-title">Already earned</span><span class="zh">已經賺到的錢</span></th>
             <th class="lookup-h" data-col="mkt_palive" tabindex="0"><span class="lookup-h-title">p_alive</span><span class="zh">截止日仍像活躍客</span></th>
             <th class="lookup-h" data-col="mkt_rp30" tabindex="0"><span class="lookup-h-title">Return Prob</span><span class="zh">回流機率</span></th>
-            <th class="lookup-h" data-col="mkt_days30" tabindex="0"><span class="lookup-h-title">d</span><span class="zh">完成訂單日</span></th>
-            <th class="lookup-h" data-col="mkt_orders30" tabindex="0"><span class="lookup-h-title">ord</span><span class="zh">完成單張數</span></th>
+            <th class="lookup-h" data-col="mkt_days30" tabindex="0"><span class="lookup-h-title">Predicted<br>Order Days</span><span class="zh">預計完成訂單日</span></th>
+            <th class="lookup-h" data-col="mkt_orders30" tabindex="0"><span class="lookup-h-title">Predicted<br>Orders</span><span class="zh">預計完成單張數</span></th>
             <th class="lookup-h" data-col="mkt_ltv30" tabindex="0"><span class="lookup-h-title">Predicted Future LTV</span><span class="zh">預計平台從這個客人總共賺多少</span></th>
             <th class="lookup-h" data-col="mkt_rp180" tabindex="0"><span class="lookup-h-title">Return Prob</span><span class="zh">回流機率</span></th>
-            <th class="lookup-h" data-col="mkt_days180" tabindex="0"><span class="lookup-h-title">d</span><span class="zh">完成訂單日</span></th>
-            <th class="lookup-h" data-col="mkt_orders180" tabindex="0"><span class="lookup-h-title">ord</span><span class="zh">完成單張數</span></th>
+            <th class="lookup-h" data-col="mkt_days180" tabindex="0"><span class="lookup-h-title">Predicted<br>Order Days</span><span class="zh">預計完成訂單日</span></th>
+            <th class="lookup-h" data-col="mkt_orders180" tabindex="0"><span class="lookup-h-title">Predicted<br>Orders</span><span class="zh">預計完成單張數</span></th>
             <th class="lookup-h mkt-ltv-main" data-col="mkt_ltv180" tabindex="0"><span class="lookup-h-title">Predicted Future LTV</span><span class="zh">預計平台從這個客人總共賺多少</span></th>
             <th class="lookup-h mkt-cve" data-col="mkt_monetary" tabindex="0"><span class="lookup-h-title">Predicted Platform Take / order day</span><span class="zh">有完成單那天，預計平台賺多少</span></th>
             <th class="lookup-h mkt-pfm" data-col="mkt_freq" tabindex="0"><span class="lookup-h-title">Purchase Frequency</span><span class="zh">重複完成訂單日</span></th>
@@ -2602,6 +2605,7 @@
             <td>HK-PlatformOD-USER-803845</td>
             <td>2024-06-30</td>
             <td>T100</td>
+            <td>P100</td>
             <td>$22,224</td>
             <td>99.8%</td>
             <td>99.8%</td>
@@ -2622,6 +2626,7 @@
             <td>HK-PlatformOD-USER-2325402</td>
             <td>2024-06-30</td>
             <td>T70</td>
+            <td>P20</td>
             <td>$55.5</td>
             <td>83.3%</td>
             <td>70.6%</td>
@@ -2642,6 +2647,7 @@
             <td>HK-PlatformOD-USER-683422</td>
             <td>2024-06-30</td>
             <td>T100</td>
+            <td>P100</td>
             <td>$22,396</td>
             <td>6.5%</td>
             <td>6.5%</td>
@@ -2662,6 +2668,7 @@
             <td>HK-PlatformOD-USER-2272617</td>
             <td>2024-06-30</td>
             <td>T30</td>
+            <td>P90</td>
             <td>$19.5</td>
             <td>100.0%</td>
             <td>5.55%</td>
@@ -3955,6 +3962,14 @@
       windowKey: 'Window',
       windowVal: '2018 to cutoff'
     },
+    mkt_pband: {
+      title: 'Official Tier P',
+      def: 'Value rank inside one Official Tier (P100…P10). P90 is not T90. On the panel / reporting view — not on the prediction snapshot.',
+      ssot: 'within_tier_band',
+      type: 'Historical',
+      windowKey: 'Window',
+      windowVal: '2018 to cutoff'
+    },
     mkt_palive: {
       title: 'p_alive',
       def: 'Is this customer still active at the cut-off? No 30D / 180D window. This is not the chance they will order again.<span class="zh">截止日當天，這個客人是否仍像活躍客？沒有 30D / 180D 時間窗，也不是未來會否再下單的機率。</span>',
@@ -3972,16 +3987,16 @@
       windowVal: '30 days'
     },
     mkt_days30: {
-      title: 'd',
-      def: 'In the next n days, how many days do we expect this customer to have at least one completed order? This column: 30 days.<span class="zh">預測未來 n 日，預計有幾天至少有 1 張完成單？本欄＝30 日。</span>',
+      title: 'Predicted Order Days',
+      def: 'In the next n days, how many days do we expect this customer to have at least one completed order? This column: 30 days. In the cell, d = those days, not calendar days.<span class="zh">預測未來 n 日，預計有幾天至少有 1 張完成單？本欄＝30 日。格子裡的 d 是完成單日，不是日曆日。</span>',
       ssot: 'predicted_completed_order_days_30d',
       type: 'Predicted',
       windowKey: 'Horizon',
       windowVal: '30 days'
     },
     mkt_orders30: {
-      title: 'ord',
-      def: 'In the next n days, how many completed orders do we expect? This column: 30 days.<span class="zh">預測未來 n 日，預計完成幾張單？本欄＝30 日。</span>',
+      title: 'Predicted Orders',
+      def: 'In the next n days, how many completed orders do we expect? This column: 30 days. In the cell, ord = completed orders.<span class="zh">預測未來 n 日，預計完成幾張單？本欄＝30 日。</span>',
       ssot: 'predicted_completed_orders_30d',
       type: 'Predicted',
       windowKey: 'Horizon',
@@ -4004,16 +4019,16 @@
       windowVal: '180 days'
     },
     mkt_days180: {
-      title: 'd',
-      def: 'In the next n days, how many days do we expect this customer to have at least one completed order? This column: 180 days.<span class="zh">預測未來 n 日，預計有幾天至少有 1 張完成單？本欄＝180 日。</span>',
+      title: 'Predicted Order Days',
+      def: 'In the next n days, how many days do we expect this customer to have at least one completed order? This column: 180 days. In the cell, d = those days, not calendar days.<span class="zh">預測未來 n 日，預計有幾天至少有 1 張完成單？本欄＝180 日。格子裡的 d 是完成單日，不是日曆日。</span>',
       ssot: 'predicted_completed_order_days_180d',
       type: 'Predicted',
       windowKey: 'Horizon',
       windowVal: '180 days'
     },
     mkt_orders180: {
-      title: 'ord',
-      def: 'In the next n days, how many completed orders do we expect? This column: 180 days.<span class="zh">預測未來 n 日，預計完成幾張單？本欄＝180 日。</span>',
+      title: 'Predicted Orders',
+      def: 'In the next n days, how many completed orders do we expect? This column: 180 days. In the cell, ord = completed orders.<span class="zh">預測未來 n 日，預計完成幾張單？本欄＝180 日。</span>',
       ssot: 'predicted_completed_orders_180d',
       type: 'Predicted',
       windowKey: 'Horizon',
