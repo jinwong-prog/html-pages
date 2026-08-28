@@ -2474,7 +2474,7 @@
       <ul>
         <li>p_alive<span class="zh">截止日當天仍像活躍客的機率（沒有未來 N 日）</span></li>
         <li>As-of Churn Probability<span class="zh">截止日流失機率（沒有未來 N 日；對只買過一次的客人失真，僅供診斷）</span></li>
-        <li>Return Probability<span class="zh">預測未來 N 日，至少有 1 張完成單的機率</span></li>
+        <li>Predicted Return Probability<span class="zh">預測未來 N 日，至少有 1 張完成單的機率</span></li>
         <li>Predicted Churn Probability<span class="zh">預測流失機率（CRM／campaign 決策應使用此欄）</span></li>
         <li>Completed-order days<span class="zh">完成訂單日數</span></li>
         <li>Completed orders<span class="zh">完成訂單張數</span></li>
@@ -2561,7 +2561,7 @@
           </tr>
           <tr>
             <td><code class="hdr">predicted_probability_at_least_one_completed_order_day_{h}</code></td>
-            <td>Return Probability<span class="zh">至少完成 1 張單的機率</span></td>
+            <td>Predicted Return Probability<span class="zh">至少完成 1 張單的機率</span></td>
             <td>In the next n days, what is the chance this customer completes at least one order?<span class="zh">預測未來 n 日，這個客人至少完成 1 張單的機率是多少？</span></td>
           </tr>
           <tr>
@@ -2649,9 +2649,9 @@
           <p class="tm-q">What will they do next?<span class="zh">客戶之後會怎樣？</span></p>
           <div class="tm-panel cve">
             <h3>CVE — What will they do next?<span class="zh">客戶之後會怎樣？</span></h3>
-            <p>Y = Return Probability. Predicted Future LTV = Predicted Order Days × Predicted Platform Take / order day — not × historical mean.<span class="zh">Y＝回流機率。Predicted Future LTV＝預測完成單日 × 預測每天，不是 × 歷史平均。</span></p>
+            <p>Y = Predicted Return Probability. Predicted Future LTV = Predicted Order Days × Predicted Platform Take / order day — not × historical mean.<span class="zh">Y＝回流機率。Predicted Future LTV＝預測完成單日 × 預測每天，不是 × 歷史平均。</span></p>
             <ul>
-              <li>Return Probability</li>
+              <li>Predicted Return Probability</li>
               <li>Predicted Platform Take / order day</li>
             </ul>
             <p class="tm-eq">1 − P(Y(h)=0 | x, t<sub>x</sub>, T)<span class="zh">本圖 h＝180。同一套 BG/NBD，不是 1 − p_alive。</span></p>
@@ -2692,7 +2692,7 @@
       <p class="tech-detail-kicker">Technical detail<span class="zh">技術細節</span></p>
       <div class="eq-pair" aria-label="Selected model Y-axis formula">
         <div class="eq-card is-on" id="eqCve" aria-hidden="false">
-          <p class="eq-kicker">Return Probability · next 180D</p>
+          <p class="eq-kicker">Predicted Return Probability · next 180D</p>
           <code class="hdr">predicted_probability_at_least_one_completed_order_day_{h}</code>
           <p class="eq-math">1 − P(Y(h)=0 | x, t<sub>x</sub>, T)</p>
           <p class="eq-note">Same BG/NBD, different formula. Not 1 − p_alive.<span class="zh">同一套 BG/NBD，另一條公式。不是 1 − p_alive。</span></p>
@@ -2710,7 +2710,7 @@
     <div class="mstrip" id="mstrip" aria-label="Four-metric reading strip">
       <div class="mc s1">
         <div class="n"><span class="spot" aria-hidden="true"></span>1</div>
-        <div class="t" id="mc1t">Return Probability<span class="zh">預測未來 n 日，至少有 1 張完成單的機率（%）</span></div>
+        <div class="t" id="mc1t">Predicted Return Probability<span class="zh">預測未來 n 日，至少有 1 張完成單的機率（%）</span></div>
         <div class="h" id="mc1h">predicted_probability_at_least_one_completed_order_day_{h}</div>
         <div class="r" id="mc1r">This map: 180D (main) · Y-axis<span class="zh">本圖主視角 180 日 · Y 軸</span></div>
       </div>
@@ -2770,10 +2770,10 @@
     <div class="q-mini" id="splitRules">
       <b>Split rules</b>
       <ul>
-        <li>Return Probability High / Low = vs same-Tier P50 (this map: 180D). High = ≥ P50.</li>
+        <li>Predicted Return Probability High / Low = vs same-Tier P50 (this map: 180D). High = ≥ P50.</li>
         <li>Already earned High / Low = vs same-Tier P50. High = ≥ P50.</li>
-        <li>T100 Return Probability P50 = 98.9%; T100 Already earned P50 = $3,636 (queried 2026-08-27, HK TRANSPORT PlatformOD van, as_of_date=2024-06-30)</li>
-        <li>Customer C (T30): Already earned $19.50 ≥ T30 P50 $17, and 180D Return Probability 20.3% ≥ T30 P50 3.15% → Retain / Grow. Same on p_alive (T30 P50 = 100%). The dashed $37 line is all-customer, not C’s split.</li>
+        <li>T100 Predicted Return Probability P50 = 98.9%; T100 Already earned P50 = $3,636 (queried 2026-08-27, HK TRANSPORT PlatformOD van, as_of_date=2024-06-30)</li>
+        <li>Customer C (T30): Already earned $19.50 ≥ T30 P50 $17, and 180D Predicted Return Probability 20.3% ≥ T30 P50 3.15% → Retain / Grow. Same on p_alive (T30 P50 = 100%). The dashed $37 line is all-customer, not C’s split.</li>
         <li>The $37 / 3.73% lines on the chart are all-customer P50, for reading position. Action is the dot colour (same-Tier P50). The 2×2 under the chart is the Action map — the scatter does not paint those four words.</li>
       </ul>
     </div>
@@ -2786,12 +2786,12 @@
       <span><span class="sw nurture"></span>Blue = Nurture</span>
       <span><span class="sw deprioritise"></span>Grey = Deprioritise</span>
     </p>
-    <p class="dmap-explain" id="dmapExplain">Compare each customer’s Return Probability and Already earned with customers in the same Tier to determine the Marketing action.<span class="zh">將每位客戶的回流機會及 Already earned 與同 Tier 客戶比較，以決定相應的 Marketing 行動。</span></p>
+    <p class="dmap-explain" id="dmapExplain">Compare each customer’s Predicted Return Probability and Already earned with customers in the same Tier to determine the Marketing action.<span class="zh">將每位客戶的回流機會及 Already earned 與同 Tier 客戶比較，以決定相應的 Marketing 行動。</span></p>
     <div class="table-scroll" id="action-matrix">
     <table class="dmatrix">
       <thead>
         <tr>
-          <th class="corner" rowspan="2" id="matrixCorner">Return Probability<span class="sub">vs same-Tier P50</span><span class="zh">回流機會（與同 Tier 客戶比較）</span></th>
+          <th class="corner" rowspan="2" id="matrixCorner">Predicted Return Probability<span class="sub">vs same-Tier P50</span><span class="zh">回流機會（與同 Tier 客戶比較）</span></th>
           <th class="x-axis" colspan="2">Already earned<span class="sub">vs same-Tier P50</span><span class="zh">已經賺到（與同 Tier 客戶比較）</span></th>
         </tr>
         <tr>
@@ -2852,11 +2852,11 @@
             <th class="lookup-h" data-col="mkt_pband" tabindex="0"><span class="lookup-h-title">Official Tier P</span><span class="zh">同一層內位置</span></th>
             <th class="lookup-h" data-col="mkt_earned" tabindex="0"><span class="lookup-h-title">Already earned</span><span class="zh">已經賺到的錢</span></th>
             <th class="lookup-h" data-col="mkt_palive" tabindex="0"><span class="lookup-h-title">p_alive</span><span class="zh">截止日仍像活躍客</span></th>
-            <th class="lookup-h" data-col="mkt_rp30" tabindex="0"><span class="lookup-h-title">Return Prob</span><span class="zh">回流機率</span></th>
+            <th class="lookup-h" data-col="mkt_rp30" tabindex="0"><span class="lookup-h-title">Predicted Return Probability</span><span class="zh">回流機率</span></th>
             <th class="lookup-h" data-col="mkt_days30" tabindex="0"><span class="lookup-h-title">Predicted<br>Order Days</span><span class="zh">預計完成訂單日</span></th>
             <th class="lookup-h" data-col="mkt_orders30" tabindex="0"><span class="lookup-h-title">Predicted<br>Orders</span><span class="zh">預計完成單張數</span></th>
             <th class="lookup-h" data-col="mkt_ltv30" tabindex="0"><span class="lookup-h-title">Predicted Future LTV</span><span class="zh">預計平台從這個客人總共賺多少</span></th>
-            <th class="lookup-h" data-col="mkt_rp180" tabindex="0"><span class="lookup-h-title">Return Prob</span><span class="zh">回流機率</span></th>
+            <th class="lookup-h" data-col="mkt_rp180" tabindex="0"><span class="lookup-h-title">Predicted Return Probability</span><span class="zh">回流機率</span></th>
             <th class="lookup-h" data-col="mkt_days180" tabindex="0"><span class="lookup-h-title">Predicted<br>Order Days</span><span class="zh">預計完成訂單日</span></th>
             <th class="lookup-h" data-col="mkt_orders180" tabindex="0"><span class="lookup-h-title">Predicted<br>Orders</span><span class="zh">預計完成單張數</span></th>
             <th class="lookup-h mkt-ltv-main" data-col="mkt_ltv180" tabindex="0"><span class="lookup-h-title">Predicted Future LTV</span><span class="zh">預計平台從這個客人總共賺多少</span></th>
@@ -3034,11 +3034,11 @@
             <div class="mkt-acc">
               <details>
                 <summary>Source &amp; snapshot<span class="zh">出處與 snapshot</span></summary>
-                <div class="body">T / P / <code class="hdr">p_alive</code> / Return Probability / historical RFM from <code class="hdr">mart_ltv_customer_remaining_value</code> snapshot + <code class="hdr">mart_ltv_customer_remaining_value_panel_materialized</code> (<code class="hdr">within_tier_band</code> and <code class="hdr">monetary_value_platform</code> are on the panel, not the snapshot). Predicted Future LTV, predicted days / orders, and predicted Platform Take / order day from sidecar VIEW <code class="hdr">mart_ltv_customer_remaining_value_pi_k_20240630</code> (Price Index + frequency-quartile Recency k; does not overwrite the live snapshot). (queried 2026-08-28, HK TRANSPORT PlatformOD van, as_of_date=2024-06-30)<span class="zh">T／P／p_alive／回流機率／歷史 RFM 來自 snapshot＋panel。預測金額／完成單日／張數來自 sidecar VIEW，不覆蓋 live snapshot。</span></div>
+                <div class="body">T / P / <code class="hdr">p_alive</code> / Predicted Return Probability / historical RFM from <code class="hdr">mart_ltv_customer_remaining_value</code> snapshot + <code class="hdr">mart_ltv_customer_remaining_value_panel_materialized</code> (<code class="hdr">within_tier_band</code> and <code class="hdr">monetary_value_platform</code> are on the panel, not the snapshot). Predicted Future LTV, predicted days / orders, and predicted Platform Take / order day from sidecar VIEW <code class="hdr">mart_ltv_customer_remaining_value_pi_k_20240630</code> (Price Index + frequency-quartile Recency k; does not overwrite the live snapshot). (queried 2026-08-28, HK TRANSPORT PlatformOD van, as_of_date=2024-06-30)<span class="zh">T／P／p_alive／回流機率／歷史 RFM 來自 snapshot＋panel。預測金額／完成單日／張數來自 sidecar VIEW，不覆蓋 live snapshot。</span></div>
               </details>
               <details>
                 <summary>Decision logic<span class="zh">決策邏輯</span></summary>
-                <div class="body">Toggle CVE / PFM on the right. Action stays on both views. CVE adds Gamma-Gamma <code class="hdr">predicted_day_platform_take_per_completed_order_day</code> (Predicted Platform Take / order day). PFM adds historical <code class="hdr">frequency</code>, <code class="hdr">monetary_value_platform</code>, and <code class="hdr">days_since_last_completed_order</code>. Recency on this extract follows the chart: ≤ 180. CVE predicted is not the historical mean. USER-2272617: historical mean is $19.50; predicted is $14.90. Action = Return Probability × Already earned, each vs same-Tier P50 (High = ≥ P50). PFM uses p_alive × Already earned, same rule. Colour = what to do, not who to do first. On this extract both lenses give the same Action. USER-2272617 (T30) is Retain / Grow: $19.50 ≥ T30 Already earned P50 $17, and both p_alive 100% and 180D Return Probability 20.3% are High vs T30.<span class="zh">右側可切 CVE／PFM。Action 兩邊都保留。Recency 跟圖：距上次完成單 ≤ 180 日。CVE 加預測「有完成單那天賺多少」。PFM 加歷史頻率、歷史平均、距上次完成單。行動＝回流機會（PFM 則為 p_alive）× Already earned，兩者都與同 Tier P50 比較，High＝大於或等於 P50。顏色＝要做什麼，不是誰先做。這四位兩邊行動相同。客戶 C（T30）是 Retain／Grow。</span></div>
+                <div class="body">Toggle CVE / PFM on the right. Action stays on both views. CVE adds Gamma-Gamma <code class="hdr">predicted_day_platform_take_per_completed_order_day</code> (Predicted Platform Take / order day). PFM adds historical <code class="hdr">frequency</code>, <code class="hdr">monetary_value_platform</code>, and <code class="hdr">days_since_last_completed_order</code>. Recency on this extract follows the chart: ≤ 180. CVE predicted is not the historical mean. USER-2272617: historical mean is $19.50; predicted is $14.90. Action = Predicted Return Probability × Already earned, each vs same-Tier P50 (High = ≥ P50). PFM uses p_alive × Already earned, same rule. Colour = what to do, not who to do first. On this extract both lenses give the same Action. USER-2272617 (T30) is Retain / Grow: $19.50 ≥ T30 Already earned P50 $17, and both p_alive 100% and 180D Predicted Return Probability 20.3% are High vs T30.<span class="zh">右側可切 CVE／PFM。Action 兩邊都保留。Recency 跟圖：距上次完成單 ≤ 180 日。CVE 加預測「有完成單那天賺多少」。PFM 加歷史頻率、歷史平均、距上次完成單。行動＝回流機會（PFM 則為 p_alive）× Already earned，兩者都與同 Tier P50 比較，High＝大於或等於 P50。顏色＝要做什麼，不是誰先做。這四位兩邊行動相同。客戶 C（T30）是 Retain／Grow。</span></div>
               </details>
               <details>
                 <summary>Fields not shown<span class="zh">表上沒有的欄</span></summary>
@@ -3078,7 +3078,7 @@
                 <ul>
                   <li>Historical <code class="hdr">historical_completed_order_days</code> / <code class="hdr">historical_completed_orders</code> = facts up to the cutoff<span class="zh">歷史完成訂單日／張是截止日前事實</span></li>
                   <li>Predicted days / orders = 180D forecast. Cell unit <b>d</b> = completed-order days, not calendar days<span class="zh">預測日／張是未來 180 日預測。d＝完成訂單日，不是日曆日</span></li>
-                  <li>180D No Completed Order Observed = Yes if <code class="hdr">actual_day_platform_take_180d</code> = 0 after cutoff. No = a completed order was seen; then read Bias. Holdout fact. Not Return Probability<span class="zh">Yes＝截止日後 180 日實際平台收入為 0。No＝有完成單，才看 Bias。是回測事實，不是回流機率</span></li>
+                  <li>180D No Completed Order Observed = Yes if <code class="hdr">actual_day_platform_take_180d</code> = 0 after cutoff. No = a completed order was seen; then read Bias. Holdout fact. Not Predicted Return Probability<span class="zh">Yes＝截止日後 180 日實際平台收入為 0。No＝有完成單，才看 Bias。是回測事實，不是回流機率</span></li>
                   <li>To Next T / To Next P = historical dollar gaps, not an upgrade probability<span class="zh">升到下一 T／P 還差多少錢是已賺金額缺口，不是升級機率</span></li>
                   <li>Prediction Bias = (Predicted − Actual) ÷ Actual on 180D Platform Take; 0 = on target. Predicted = Actual (including both $0) → <b>0%</b>. Predicted not $0 and Actual = $0 → blank. Headline accuracy uses company total<span class="zh">預測金額偏差百分比；（Predicted − Actual）÷ Actual。兩邊都是 0 顯示 0%。Predicted 不是 0 且 Actual 是 0 才空白。公司準確度用全體加總</span></li>
                 </ul>
@@ -3118,7 +3118,7 @@
               <th class="lookup-h" data-col="hist" tabindex="0"><span class="lookup-h-title">Historical<br>Orders</span><span class="u-unit">Order days · Orders</span><span class="zh">訂單日 · 張數</span></th>
               <th class="lookup-h" data-col="palive" tabindex="0"><span class="lookup-h-title">p_alive</span><span class="zh">截止日仍像活躍客</span></th>
               <th class="lookup-h" data-col="asofchurn" tabindex="0"><span class="lookup-h-title">As-of Churn<br>Probability</span><span class="zh">截止日流失機率</span></th>
-              <th class="lookup-h" data-col="prob180" tabindex="0"><span class="lookup-h-title">180D Return<br>Probability</span><span class="zh">回流機率</span></th>
+              <th class="lookup-h" data-col="prob180" tabindex="0"><span class="lookup-h-title">180D Predicted Return<br>Probability</span><span class="zh">回流機率</span></th>
               <th class="lookup-h" data-col="predchurn180" tabindex="0"><span class="lookup-h-title">180D Churn<br>Probability</span><span class="zh">180 日流失機率</span></th>
               <th class="lookup-h" data-col="take180" tabindex="0"><span class="lookup-h-title">Predicted<br>Future LTV</span><span class="zh">預測未來價值</span></th>
               <th class="lookup-h" data-col="days180" tabindex="0"><span class="lookup-h-title">Predicted<br>Order Days</span><span class="zh">預計完成訂單日</span></th>
@@ -3257,11 +3257,11 @@
       cve: {
         popP50: 0.03730699352059397,
         t100P50: 0.989041,
-        y1: 'Return Probability',
+        y1: 'Predicted Return Probability',
         y2: 'in the next 180 DAYS',
         y2Parts: [{ t: 'in the next ' }, { t: '180 DAYS', c: 'sc-axis-emph' }],
-        yShort: 'Return Probability',
-        yTip: 'Return Probability — chance of at least one completed-order day in the next n days (180D on this map). Not p_alive. ',
+        yShort: 'Predicted Return Probability',
+        yTip: 'Predicted Return Probability — chance of at least one completed-order day in the next n days (180D on this map). Not p_alive. ',
         popLbl: '3.73%',
         t100Lbl: '98.9%',
         aria: 'Scatter of four customers. Dot colour is Marketing action vs same-Tier P50. Dashed lines are all-customer P50 for position only. Y is chance of at least one completed-order day in the next 180 days. X is already earned on a log scale.'
@@ -3381,7 +3381,7 @@
           tipRow('Recency window', band.label);
       } else {
         var rpSide = p.prob180 >= p.rpP50 ? 'High' : 'Low';
-        body = tipRow('180D Return Probability', (p.r * 100).toFixed(1) + '% · ' + rpSide + ' vs ' + p.tier + ' P50 ' + (p.rpP50 * 100).toFixed(1) + '%') +
+        body = tipRow('180D Predicted Return Probability', (p.r * 100).toFixed(1) + '% · ' + rpSide + ' vs ' + p.tier + ' P50 ' + (p.rpP50 * 100).toFixed(1) + '%') +
           tipRow('Already earned', '$' + money(p.earned) + ' · ' + earnedSide + ' vs ' + p.tier + ' P50 $' + money(p.earnedP50)) +
           tipRow('Predicted Platform Take / order day', '$' + p.vPred.toFixed(2)) +
           tipRow('Future LTV · 180D', '$' + ltvStr(p.ltv)) +
@@ -3564,7 +3564,7 @@
     var cards = {
       cve: [
         {
-          t: 'Return Probability<span class="zh">預測未來 n 日，至少有 1 張完成單的機率（%）</span>',
+          t: 'Predicted Return Probability<span class="zh">預測未來 n 日，至少有 1 張完成單的機率（%）</span>',
           h: 'predicted_probability_at_least_one_completed_order_day_{h}',
           r: 'This map: 180D (main) · Y-axis<span class="zh">本圖主視角 180 日 · Y 軸</span>'
         },
@@ -3616,9 +3616,9 @@
         rules: '<span><b>Dot colour = Action</b> vs same-Tier P50</span><span><b>Dashed lines</b> = all-customer P50 (position only)</span><span><b>T100 line</b> = 98.9% same-Tier P50 (A and D)</span>',
         ad: '<b>Same ~$22k T100 historical value;</b> return likelihood 99.8% vs 6.5%; Future LTV $2,460 vs $140. <b>Customer C (T30) is orange Retain / Grow</b> vs same-Tier P50. The dashed $37 line is all-customer, not C’s split (T30 Already earned P50 is $17).<span class="zh">同一個約 $22k 的 T100 歷史價值；回流機率 99.8% vs 6.5%；Future LTV $2,460 vs $140。客戶 C（T30）對同 Tier 是橙色 Retain／Grow。虛線 $37 是全體參考，不是 C 的切法（T30 Already earned P50 是 $17）。</span>',
         foot: '<b>30.9% of customers account for 95.5% of predicted 180D value.</b><span class="zh">30.9% 的客戶佔預測未來 180 日價值的 95.5%。</span>',
-        split: '<b>Split rules</b><ul><li>Return Probability High / Low = vs same-Tier P50 (this map: 180D). High = ≥ P50.</li><li>Already earned High / Low = vs same-Tier P50. High = ≥ P50.</li><li>T100 Return Probability P50 = 98.9%; T100 Already earned P50 = $3,636 (queried 2026-08-27, HK TRANSPORT PlatformOD van, as_of_date=2024-06-30)</li><li>Customer C (T30): Already earned $19.50 ≥ T30 P50 $17, and 180D Return Probability 20.3% ≥ T30 P50 3.15% → Retain / Grow. Same on p_alive (T30 P50 = 100%). The dashed $37 line is all-customer, not C’s split.</li><li>The $37 / 3.73% lines on the chart are all-customer P50, for reading position. Action is the dot colour (same-Tier P50). The 2×2 under the chart is the Action map — the scatter does not paint those four words.</li></ul>',
-        corner: 'Return Probability<span class="sub">vs same-Tier P50</span><span class="zh">回流機會（與同 Tier 客戶比較）</span>',
-        explain: 'Compare each customer’s Return Probability and Already earned with customers in the same Tier to determine the Marketing action.<span class="zh">將每位客戶的回流機會及 Already earned 與同 Tier 客戶比較，以決定相應的 Marketing 行動。</span>',
+        split: '<b>Split rules</b><ul><li>Predicted Return Probability High / Low = vs same-Tier P50 (this map: 180D). High = ≥ P50.</li><li>Already earned High / Low = vs same-Tier P50. High = ≥ P50.</li><li>T100 Predicted Return Probability P50 = 98.9%; T100 Already earned P50 = $3,636 (queried 2026-08-27, HK TRANSPORT PlatformOD van, as_of_date=2024-06-30)</li><li>Customer C (T30): Already earned $19.50 ≥ T30 P50 $17, and 180D Predicted Return Probability 20.3% ≥ T30 P50 3.15% → Retain / Grow. Same on p_alive (T30 P50 = 100%). The dashed $37 line is all-customer, not C’s split.</li><li>The $37 / 3.73% lines on the chart are all-customer P50, for reading position. Action is the dot colour (same-Tier P50). The 2×2 under the chart is the Action map — the scatter does not paint those four words.</li></ul>',
+        corner: 'Predicted Return Probability<span class="sub">vs same-Tier P50</span><span class="zh">回流機會（與同 Tier 客戶比較）</span>',
+        explain: 'Compare each customer’s Predicted Return Probability and Already earned with customers in the same Tier to determine the Marketing action.<span class="zh">將每位客戶的回流機會及 Already earned 與同 Tier 客戶比較，以決定相應的 Marketing 行動。</span>',
         t100Leg: 'T100 return reference',
         daysTitle: 'Y-axis = chance they come back in the next <b>180 days</b><span class="zh">Y 軸＝未來 <b>180 日</b>回流機率</span>'
       },
@@ -3627,7 +3627,7 @@
         sub: 'Same decision map. Different signals: p_alive, frequency, monetary value, recency<span class="zh">同一張決策圖。換成截止日的訊號：是否活躍、購買頻率、消費價值、距上次完成單</span>',
         lead: 'Four metrics, then the map, then the action.<span class="zh">四個指標 → 圖 → 行動。</span>',
         rules: '<span><b>Dot colour = Action</b> vs same-Tier P50</span><span><b>Dashed lines</b> = all-customer P50 (position only)</span><span><b>T100 line</b> = 98.9% same-Tier P50 (A and D)</span>',
-        ad: '<b>Customer C:</b> p_alive = 100% and 180D Return Probability = 20.3% — two lenses, two scores. Action is still Retain / Grow on both, because T30 Already earned P50 is $17 ($19.50 is High) and T30 p_alive P50 is 100%.<span class="zh">客戶 C：p_alive = 100%，未來 180 日回流機率 20.3%，分數不同。兩邊行動都是 Retain／Grow：T30 的 Already earned P50 是 $17，T30 的 p_alive P50 是 100%。</span>',
+        ad: '<b>Customer C:</b> p_alive = 100% and 180D Predicted Return Probability = 20.3% — two lenses, two scores. Action is still Retain / Grow on both, because T30 Already earned P50 is $17 ($19.50 is High) and T30 p_alive P50 is 100%.<span class="zh">客戶 C：p_alive = 100%，未來 180 日回流機率 20.3%，分數不同。兩邊行動都是 Retain／Grow：T30 的 Already earned P50 是 $17，T30 的 p_alive P50 是 100%。</span>',
         foot: '<b>The 84.2% line on the chart is all-customer P50 of p_alive</b> — not the action split. Action uses same-Tier P50. T40 and below: same-Tier p_alive P50 = 100%. High = ≥ P50.<span class="zh">圖上 84.2% 是全體 p_alive P50，不是行動切法。行動用同 Tier P50。T40 及以下同 Tier p_alive P50＝100%。High＝大於或等於 P50。</span>',
         split: '<b>Split rules</b><ul><li>p_alive High / Low = vs same-Tier P50. High = ≥ P50.</li><li>Already earned High / Low = vs same-Tier P50. High = ≥ P50.</li><li>T100 p_alive P50 = 98.9%; T100 Already earned P50 = $3,636 (queried 2026-08-27, HK TRANSPORT PlatformOD van, as_of_date=2024-06-30)</li><li>T40 and below: same-Tier p_alive P50 = 100% (frequency = 0 is common). Customer C (T30) is High on p_alive and High on Already earned → Retain / Grow.</li><li>The $37 / 84.2% lines on the chart are all-customer P50, for reading position. Action is the dot colour (same-Tier P50). The 2×2 under the chart is the Action map — the scatter does not paint those four words.</li><li>Recency view = days_since_last_completed_order ≤ 180</li></ul>',
         corner: 'p_alive<span class="sub">vs same-Tier P50</span><span class="zh">截止日仍活躍（與同 Tier 客戶比較）</span>',
@@ -3880,7 +3880,7 @@
 (function () {
   // Real Internal QA sample — 3 per tier, ORDER BY FARM_FINGERPRINT(user_unique_id).
   // Predicted days / orders / Predicted Future LTV / Bias: sidecar VIEW mart_ltv_customer_remaining_value_pi_k_20240630 (queried 2026-08-28).
-  // p_alive / Return Probability / T / P / historical RFM: live snapshot + panel. Gap / P-band: reporting VIEW (queried 2026-08-26). as_of_date=2024-06-30.
+  // p_alive / Predicted Return Probability / T / P / historical RFM: live snapshot + panel. Gap / P-band: reporting VIEW (queried 2026-08-26). as_of_date=2024-06-30.
   var users = [
     {id:'HK-PlatformOD-USER-733469', tier:'T100', earned:2746.5, alive:2.4518867803969588e-92, prob180:2.9737169313932113e-91, ltv180:9.567353875148507e-90, days180:2.9737169313932113e-91, orders180:4.7177012971726885e-91, first:'2019-04-10', last:'2020-04-03', sinceLast:1549, inactive90:true, inactive365:true, fallback:false, pBand:'P30', histDays:133, histOrders:211, nextT:null, gapT:null, lowerT:'T99', bufT:383, nextP:'P40', gapP:226.3, lowerP:'P20', bufP:10, actDays180:0, actOrders180:0, biasTake:null, biasOrders:null, coverT:null, coverP:false, actTake180:0},
     {id:'HK-PlatformOD-USER-699142', tier:'T100', earned:3436.5, alive:0.9975277955184364, prob180:0.9975276951379618, ltv180:178.11186578965876, days180:9.44352, orders180:10.294287567567567, first:'2018-01-05', last:'2024-06-28', sinceLast:2, inactive90:false, inactive365:false, fallback:false, pBand:'P50', histDays:222, histOrders:242, nextT:null, gapT:null, lowerT:'T99', bufT:1073, nextP:'P60', gapP:199.5, lowerP:'P40', bufP:167.7, actDays180:13, actOrders180:15, biasTake:-0.31495436234746627, biasOrders:-0.3137141621621622, coverT:null, coverP:true, actTake180:260},
@@ -4169,7 +4169,7 @@
       windowVal: 'None'
     },
     prob180: {
-      title: '180D Return Probability',
+      title: '180D Predicted Return Probability',
       def: 'In the next n days, what is the chance this customer completes at least one order? This column: 180 days.<span class="zh">預測未來 n 日，這個客人至少完成 1 張單的機率是多少？本欄＝180 日。</span>',
       ssot: 'predicted_probability_at_least_one_completed_order_day_180d',
       type: 'Predicted',
@@ -4226,7 +4226,7 @@
     },
     noPurch180: {
       title: '180D No Completed Order Observed',
-      def: 'Holdout fact, not a forecast. Yes = no completed order in the 180 days after cutoff (actual Platform Take = 0). No = we did see a completed order; then read Prediction Bias. Not 180D Return Probability.',
+      def: 'Holdout fact, not a forecast. Yes = no completed order in the 180 days after cutoff (actual Platform Take = 0). No = we did see a completed order; then read Prediction Bias. Not 180D Predicted Return Probability.',
       ssot: 'actual_day_platform_take_180d',
       type: 'Actual',
       windowKey: 'Horizon',
@@ -4281,7 +4281,7 @@
       windowVal: 'None'
     },
     mkt_rp30: {
-      title: 'Return Prob',
+      title: 'Predicted Return Probability',
       def: 'In the next n days, what is the chance this customer completes at least one order? This column: 30 days.<span class="zh">預測未來 n 日，這個客人至少完成 1 張單的機率是多少？本欄＝30 日。</span>',
       ssot: 'predicted_probability_at_least_one_completed_order_day_30d',
       type: 'Predicted',
@@ -4313,7 +4313,7 @@
       windowVal: '30 days'
     },
     mkt_rp180: {
-      title: 'Return Prob',
+      title: 'Predicted Return Probability',
       def: 'In the next n days, what is the chance this customer completes at least one order? This column: 180 days.<span class="zh">預測未來 n 日，這個客人至少完成 1 張單的機率是多少？本欄＝180 日。</span>',
       ssot: 'predicted_probability_at_least_one_completed_order_day_180d',
       type: 'Predicted',
@@ -4362,7 +4362,7 @@
     },
     mkt_action: {
       title: 'Action',
-      def: 'Marketing action group from Return Probability × Already earned, each vs same-Tier P50 (High = ≥ P50): Retain / Grow, Win-back, Nurture, or Deprioritise. PFM uses p_alive × Already earned, same rule. Colour = what to do, not who to do first.',
+      def: 'Marketing action group from Predicted Return Probability × Already earned, each vs same-Tier P50 (High = ≥ P50): Retain / Grow, Win-back, Nurture, or Deprioritise. PFM uses p_alive × Already earned, same rule. Colour = what to do, not who to do first.',
       ssot: 'derived',
       type: 'Derived',
       windowKey: 'Window',
