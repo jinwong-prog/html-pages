@@ -459,18 +459,19 @@ table.cmp thead th{color:var(--muted);font-size:11.5px;border-bottom:1px solid v
 #tbl.cmp thead th,#tbl.cmp thead th.n{white-space:normal;line-height:1.25;vertical-align:bottom;
   font-size:11px;padding:5px 6px;hyphens:manual}
 #tbl.cmp thead tr.grp th{text-align:center;font-weight:700;color:var(--ink);
-  border-bottom:1px solid var(--axis);white-space:nowrap;font-size:11px;
+  border-bottom:1px solid var(--axis);white-space:normal;line-height:1.25;font-size:11px;
   vertical-align:middle;padding:7px 8px;letter-spacing:.02em}
 #tbl.cmp thead tr.grp th + th{border-left:1px solid var(--axis)}
 #tbl.cmp thead tr.grp .g-who{background:var(--neutbg)}
 #tbl.cmp thead tr.grp .g-earn{background:color-mix(in srgb,var(--blue) 8%,var(--surface))}
 #tbl.cmp thead tr.grp .g-next{background:color-mix(in srgb,var(--good) 10%,var(--surface))}
 #tbl.cmp thead tr.grp .g-bias{background:var(--neutbg)}
-#tbl.cmp thead tr.h th{color:var(--ink);font-size:12px;font-weight:700;white-space:nowrap;
-  vertical-align:bottom;padding:8px 8px 6px}
+#tbl.cmp thead tr.h th{color:var(--ink);font-size:12px;font-weight:700;white-space:normal;
+  vertical-align:bottom;padding:8px 8px 6px;line-height:1.25}
+#tbl.cmp thead tr.h th.n{white-space:normal}
 #tbl.cmp thead tr.h th.lookup-h{cursor:help}
 #tbl.cmp thead tr.h th .lookup-h-title{display:block;font-size:12px;font-weight:700;
-  color:var(--ink);line-height:1.25;white-space:nowrap}
+  color:var(--ink);line-height:1.25;white-space:normal}
 #tbl.cmp thead th.sort-th::after{display:inline;margin-left:2px}
 .lookup-hdr-tip{position:fixed;z-index:10000;display:none;box-sizing:border-box;
   min-width:360px;max-width:420px;padding:14px 16px;background:var(--surface);color:var(--ink);
@@ -3778,19 +3779,19 @@ Customer count still follows the filters. Read Bias % on the Platform Take table
       <thead>
         <tr class="grp">
           <th class="g-who" colspan="4">Who</th>
-          <th class="g-earn" colspan="4">Already earned and predicted</th>
-          <th class="g-next" colspan="3">${nextGrp}</th>
-          <th class="g-bias" colspan="1">This person's prediction</th>
+          <th class="g-earn" colspan="4">Already earned<br>and predicted</th>
+          <th class="g-next" colspan="3">${isT ? "Next Official<br>Tier T" : "Next Official<br>Tier P"}</th>
+          <th class="g-bias" colspan="1">This person's<br>prediction</th>
         </tr>
         <tr class="h">
-        ${th("id","id","User Unique ID")}${th("t","t","Official Tier T")}${th("p","p","Official Tier P")}
+        ${th("id","id","User Unique<br>ID")}${th("t","t","Official<br>Tier T")}${th("p","p","Official<br>Tier P")}
         ${th("days","days","Recency")}
-        ${th("hist","hist","Already earned","n")}${th("predicted","predicted","Predicted Future LTV","n")}
-        ${th("orders","orders","Predicted Orders","n")}${th("palive","palive","p_alive","n")}
+        ${th("hist","hist","Already<br>earned","n")}${th("predicted","predicted","Predicted<br>Future LTV","n")}
+        ${th("orders","orders","Predicted<br>Orders","n")}${th("palive","palive","p_alive","n")}
         ${th("gap",gapCol, isT ? "To Next T" : "To Next P","n")}
-        ${th("pct",pctCol,"Predicted as % of that $","n")}
-        <th class="lookup-h" data-col="${enoughCol}" tabindex="0"><span class="lookup-h-title">${isT ? "Predicted enough for next T?" : "Predicted enough for next P?"}</span></th>
-        ${th("bias","bias","Prediction Bias","n")}
+        ${th("pct",pctCol,"Predicted as<br>% of that $","n")}
+        <th class="lookup-h" data-col="${enoughCol}" tabindex="0"><span class="lookup-h-title">${isT ? "Predicted enough<br>for next T?" : "Predicted enough<br>for next P?"}</span></th>
+        ${th("bias","bias","Prediction<br>Bias","n")}
       </tr></thead>
       <tbody>${body || `<tr><td colspan="12" class="empty">No customers in this filter.</td></tr>`}</tbody>`;
     document.getElementById("tbl-page").textContent =
