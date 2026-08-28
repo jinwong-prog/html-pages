@@ -2182,6 +2182,80 @@
     .lf-arrow-col::before { content: '↓'; }
     .lf-out { min-height: 0; }
   }
+
+  .swipe-hint {
+    display: none;
+    font-family: var(--font-mono); font-size: 11.5px; color: var(--ink-500);
+    margin: 0 0 8px; line-height: 1.4;
+  }
+  .swipe-hint .zh { display: inline; font-size: 11px; margin-left: 6px; }
+
+  /* phone: one column, no page-wide sideways scroll; wide tables scroll inside their box */
+  @media (max-width: 720px) {
+    html, body { overflow-x: clip; max-width: 100%; }
+    .wrap, .wide, .lookup-full, .mkt-extract, .route-divider {
+      padding-left: 14px; padding-right: 14px;
+    }
+    .topbar-inner {
+      padding: 10px 14px; flex-wrap: wrap; gap: 8px;
+    }
+    .wordmark { width: 100%; font-size: 14px; }
+    .wordmark small { white-space: normal; }
+    .topnav {
+      width: 100%; justify-content: flex-start; flex-wrap: nowrap;
+      overflow-x: auto; -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .topnav::-webkit-scrollbar { height: 0; display: none; }
+    .hero { padding: 28px 0 24px; }
+    h1 { font-size: 26px; }
+    .lede { font-size: 15.5px; margin-bottom: 18px; }
+    h2 { font-size: 20px; }
+    .route-divider { margin: 32px auto; }
+    .route-divider .lbl { white-space: normal; }
+    .stat .n { font-size: 16.5px; line-height: 1.3; overflow-wrap: anywhere; }
+    .formula { padding: 12px 14px; }
+    .teach-card { padding: 16px 14px 14px; }
+    .teach-headline { font-size: 18px; }
+    .model-switch-btns { display: flex; width: 100%; }
+    .model-switch-btns button { flex: 1; min-height: 44px; }
+    .mkt-mode-switch { width: 100%; }
+    .mkt-mode-switch button { flex: 1; min-height: 36px; }
+    .g-act-inner { flex-direction: column; }
+    .lookup-hdr-tip {
+      min-width: 0;
+      width: calc(100vw - 16px);
+      max-width: calc(100vw - 16px);
+    }
+    .lookup-howto-body {
+      max-height: min(70vh, 420px);
+      overflow: auto;
+    }
+    .swipe-hint { display: block; }
+    .table-scroll, .mkt-scroll, .lookup-table-scroll {
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior-x: contain;
+    }
+    table.mkt thead tr.h th:first-child,
+    table.mkt tbody td:first-child {
+      position: sticky; left: 0; z-index: 2;
+      box-shadow: 4px 0 8px rgba(22,27,38,0.08);
+    }
+    table.mkt thead tr.h th:first-child { background: var(--surface); z-index: 3; }
+    table.mkt tbody tr.act-retain td:first-child { background: var(--act-retain-soft); }
+    table.mkt tbody tr.act-winback td:first-child { background: var(--act-winback-soft); }
+    table.mkt tbody tr.act-nurture td:first-child { background: var(--act-nurture-soft); }
+    table.mkt tbody tr.act-deprioritise td:first-child { background: var(--act-deprioritise-soft); }
+    table.mkt tbody tr:hover td:first-child { background: var(--surface-2); }
+    #userTable th:first-child,
+    #userTable td:first-child {
+      position: sticky; left: 0; z-index: 2;
+      background: var(--surface);
+      box-shadow: 4px 0 8px rgba(22,27,38,0.08);
+    }
+    #userTable th:first-child { background: var(--surface-2); z-index: 3; }
+    .eq-math { overflow-wrap: anywhere; }
+  }
 </style>
 </head>
 <body>
@@ -2567,6 +2641,7 @@
       <span><span class="sw nurture"></span>Blue = Nurture</span>
       <span><span class="sw deprioritise"></span>Grey = Deprioritise</span>
     </p>
+    <p class="swipe-hint">Swipe the table sideways to see more columns<span class="zh">表格可左右滑動</span></p>
 
     <div class="mkt-scroll">
       <table class="mkt" data-mode="cve" id="mktExtractTable">
@@ -2837,6 +2912,7 @@
       </select>
       <span class="lookup-count" id="lookupCount"></span>
     </div>
+    <p class="swipe-hint">Swipe the table sideways to see more columns<span class="zh">表格可左右滑動</span></p>
   </div>
     <div class="lookup-table-shell">
       <div class="table-scroll lookup-table-scroll" id="lookupTableScroll">
