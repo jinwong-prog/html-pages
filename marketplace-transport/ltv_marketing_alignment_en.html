@@ -1448,6 +1448,7 @@
   .q-card {
     background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
     padding: 16px 18px; box-shadow: var(--shadow);
+    display: flex; flex-direction: column;
   }
   .q-card .qn {
     font-family: var(--font-mono); font-size: 12px; font-weight: 700; color: var(--accent-ink);
@@ -1458,6 +1459,98 @@
   .q-card ul { margin: 0; padding-left: 18px; color: var(--ink-700); font-size: 14px; }
   .q-card li { margin-bottom: 3px; }
   .q-card .star { color: var(--accent-ink); font-weight: 600; }
+  .why180-toggle {
+    margin-top: auto;
+    align-self: flex-start;
+    font-family: var(--font-body); font-size: 13px; font-weight: 600;
+    color: var(--accent-ink); background: var(--accent-soft);
+    border: 1px solid var(--accent); border-radius: 8px;
+    padding: 10px 12px; cursor: pointer; line-height: 1.3;
+  }
+  .why180-toggle[aria-expanded="true"] { background: var(--accent); color: #fff; }
+  .why180-dialog {
+    width: min(1080px, calc(100vw - 24px));
+    max-height: min(90vh, 860px);
+    padding: 0;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius);
+    background: var(--surface);
+    box-shadow: var(--shadow);
+    color: var(--ink-900);
+  }
+  .why180-dialog::backdrop { background: rgba(22, 27, 38, 0.42); }
+  .why180-head {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    gap: 12px; padding: 16px 18px 12px; border-bottom: 1px solid var(--line);
+  }
+  .why180-head h2 { font-size: 20px; margin: 0 0 6px; }
+  .why180-head p { margin: 0; font-size: 14px; color: var(--ink-700); line-height: 1.45; max-width: 68ch; }
+  .why180-close {
+    flex: none; width: 36px; height: 36px; border: 1px solid var(--line-strong);
+    border-radius: 8px; background: var(--surface); color: var(--ink-700);
+    font-size: 20px; line-height: 1; cursor: pointer;
+  }
+  .why180-body { padding: 12px 18px 18px; overflow: auto; }
+  .why180-body .table-scroll { margin: 0 0 14px; }
+  table.why180 {
+    min-width: 760px; font-size: 13px; width: 100%;
+  }
+  table.why180 thead th {
+    white-space: normal; text-transform: none; letter-spacing: 0;
+    font-family: var(--font-body); font-weight: 700; font-size: 12.5px;
+    color: var(--ink-900); padding: 10px 10px;
+  }
+  table.why180 td { padding: 9px 10px; font-size: 13px; color: var(--ink-700); }
+  table.why180 th:first-child, table.why180 td:first-child {
+    position: sticky; left: 0; z-index: 1;
+    background: var(--surface-2); font-weight: 600; color: var(--ink-900);
+    min-width: 9.5em;
+  }
+  table.why180 thead th:first-child { z-index: 2; }
+  table.why180 .col-180 {
+    background: var(--data-1); color: var(--data-stroke); font-weight: 600;
+  }
+  table.why180 thead th.col-180 {
+    background: var(--accent-soft); color: var(--accent-ink);
+  }
+  table.why180 tbody tr:hover td { background: transparent; }
+  table.why180 tbody tr:hover td:first-child { background: var(--surface-2); }
+  table.why180 tbody tr:hover td.col-180 { background: var(--data-1); }
+  table.why180 .yes { color: var(--good); font-weight: 700; }
+  .why180-rail {
+    display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px; position: relative; padding: 18px 4px 4px;
+  }
+  .why180-rail::before {
+    content: ''; position: absolute; left: 8%; right: 8%; top: 26px;
+    border-top: 2px dashed var(--line-strong); z-index: 0;
+  }
+  .why180-rail .end {
+    position: absolute; top: 0; font-family: var(--font-mono); font-size: 10.5px;
+    font-weight: 700; color: var(--ink-400); letter-spacing: 0.04em;
+  }
+  .why180-rail .end.l { left: 0; }
+  .why180-rail .end.r { right: 0; text-align: right; }
+  .why180-pt {
+    position: relative; z-index: 1; text-align: center;
+    font-size: 12.5px; color: var(--ink-700); line-height: 1.3;
+  }
+  .why180-pt .dot {
+    width: 12px; height: 12px; border-radius: 50%; margin: 0 auto 8px;
+    background: var(--ink-400);
+  }
+  .why180-pt.is-main .dot {
+    width: 16px; height: 16px; background: var(--accent);
+    box-shadow: 0 0 0 4px var(--accent-soft);
+  }
+  .why180-pt.is-main { color: var(--accent-ink); font-weight: 700; }
+  .why180-pt b { display: block; font-size: 13px; color: var(--ink-900); }
+  .why180-pt.is-main b { color: var(--accent-ink); }
+  @media (max-width: 720px) {
+    .why180-rail { grid-template-columns: 1fr 1fr; padding-top: 28px; }
+    .why180-rail::before { display: none; }
+    .why180-toggle { min-height: 44px; }
+  }
 
   .lede.meeting { max-width: 78ch; }
   .ltv-brief { max-width: 72ch; margin: 10px 0 18px; }
@@ -2295,7 +2388,9 @@
       <p class="zh">我們預測什麼？</p>
       <ul>
         <li>p_alive<span class="zh">截止日當天仍像活躍客的機率（沒有未來 N 日）</span></li>
+        <li>As-of Churn Probability = 1 − p_alive<span class="zh">截止日流失機率 = 1 − p_alive（一樣沒有未來 N 日；對只買過一次的客人失真，僅供診斷）</span></li>
         <li>Return Probability<span class="zh">預測未來 N 日，至少有 1 張完成單的機率</span></li>
+        <li>Predicted Churn Probability = 1 − Return Probability<span class="zh">預測流失機率 = 1 − 回流機率（CRM／campaign 決策用呢個）</span></li>
         <li>Completed-order days<span class="zh">完成訂單日數</span></li>
         <li>Completed orders<span class="zh">完成訂單張數</span></li>
         <li><span class="star">Platform Take = Predicted Future LTV ★<span class="zh">平台賺多少</span></span></li>
@@ -2312,6 +2407,7 @@
         <li><span class="star">180D = Main LTV View ★</span></li>
         <li>90D / 365D = comparison / longer-term<span class="zh">比較／較長期參考</span></li>
       </ul>
+      <button type="button" class="why180-toggle" id="why180Open" aria-expanded="false" aria-haspopup="dialog" aria-controls="why180Dialog">Why 180 days?</button>
     </div>
     <div class="q-card">
       <p class="qn">③</p>
@@ -2396,6 +2492,16 @@
             <td><code class="hdr">predicted_day_platform_take_{h}</code></td>
             <td>Predicted Future LTV<span class="zh">預計平台從這個客人總共賺多少</span></td>
             <td>In the next n days, how much do we expect the platform to earn from this customer in total?<span class="zh">預測未來 n 日，預計平台從這個客人總共賺多少？</span></td>
+          </tr>
+          <tr>
+            <td><code class="hdr">as_of_churn_probability</code></td>
+            <td>As-of Churn Probability<span class="zh">截止日流失機率</span></td>
+            <td>1 − p_alive. Same no-window state as p_alive, just read the other way. Degenerate for one-time buyers — treat as diagnostic only, not a CRM signal.<span class="zh">= 1 − p_alive，同 p_alive 一樣沒有時間窗，只是反過來讀。對只買過一次的客人會失真，僅供診斷，不可用於 CRM 決策。</span></td>
+          </tr>
+          <tr>
+            <td><code class="hdr">predicted_churn_probability_{h}</code></td>
+            <td>Predicted Churn Probability<span class="zh">預測流失機率</span></td>
+            <td>1 − Return Probability. In the next n days, the chance this customer does NOT complete any order. This is the one to use for CRM / campaign decisions.<span class="zh">= 1 − 回流機率。預測未來 n 日，這個客人完全冇完成單的機率。CRM／campaign 決策應該用呢個。</span></td>
           </tr>
         </tbody>
       </table>
@@ -2888,7 +2994,7 @@
                   <li>Predicted days / orders = 180D forecast. Cell unit <b>d</b> = completed-order days, not calendar days<span class="zh">預測日／張是未來 180 日預測。d＝完成訂單日，不是日曆日</span></li>
                   <li>180D No Completed Order Observed = Yes if <code class="hdr">actual_day_platform_take_180d</code> = 0 after cutoff. No = a completed order was seen; then read Bias. Holdout fact. Not Return Probability<span class="zh">Yes＝截止日後 180 日實際平台收入為 0。No＝有完成單，才看 Bias。是回測事實，不是回流機率</span></li>
                   <li>To Next T / To Next P = historical dollar gaps, not an upgrade probability<span class="zh">升到下一 T／P 還差多少錢是已賺金額缺口，不是升級機率</span></li>
-                  <li>Prediction Bias = (Predicted − Actual) ÷ Actual on 180D Platform Take; 0 = on target; blank when 180D No Completed Order Observed is Yes<span class="zh">預測金額偏差百分比；（Predicted − Actual）÷ Actual；未見完成單時空白。在 reporting view</span></li>
+                  <li>Prediction Bias = (Predicted − Actual) ÷ Actual on 180D Platform Take; 0 = on target. Predicted = Actual (including both $0) → <b>0%</b>. Predicted not $0 and Actual = $0 → blank. Headline accuracy uses company total<span class="zh">預測金額偏差百分比；（Predicted − Actual）÷ Actual。兩邊都是 0 顯示 0%。Predicted 不是 0 且 Actual 是 0 才空白。公司準確度用全體加總</span></li>
                 </ul>
               </div>
               <div>
@@ -2925,7 +3031,9 @@
               <th class="lookup-h" data-col="earned" tabindex="0"><span class="lookup-h-title">Already Earned</span><span class="zh">已經賺到</span></th>
               <th class="lookup-h" data-col="hist" tabindex="0"><span class="lookup-h-title">Historical<br>Orders</span><span class="u-unit">Order days · Orders</span><span class="zh">訂單日 · 張數</span></th>
               <th class="lookup-h" data-col="palive" tabindex="0"><span class="lookup-h-title">p_alive</span><span class="zh">截止日仍像活躍客</span></th>
+              <th class="lookup-h" data-col="asofchurn" tabindex="0"><span class="lookup-h-title">As-of Churn<br>Probability</span><span class="zh">截止日流失機率</span></th>
               <th class="lookup-h" data-col="prob180" tabindex="0"><span class="lookup-h-title">180D Return<br>Probability</span><span class="zh">回流機率</span></th>
+              <th class="lookup-h" data-col="predchurn180" tabindex="0"><span class="lookup-h-title">180D Churn<br>Probability</span><span class="zh">180 日流失機率</span></th>
               <th class="lookup-h" data-col="take180" tabindex="0"><span class="lookup-h-title">Predicted<br>Future LTV</span><span class="zh">預測未來價值</span></th>
               <th class="lookup-h" data-col="days180" tabindex="0"><span class="lookup-h-title">Predicted<br>Order Days</span><span class="zh">預計完成訂單日</span></th>
               <th class="lookup-h" data-col="orders180" tabindex="0"><span class="lookup-h-title">Predicted<br>Orders</span><span class="zh">預計完成單張數</span></th>
@@ -3730,6 +3838,14 @@
     if (v >= 100) return '$' + Math.round(v).toLocaleString('en-US');
     return '$' + v.toFixed(v >= 1 ? 1 : 2);
   }
+  function predShowsZeroMoney(v) {
+    if (v == null) return false;
+    return Number(v.toFixed(v >= 1 ? 1 : 2)) === 0;
+  }
+  function predShowsZeroQty(v) {
+    if (v == null) return false;
+    return v < 0.0005;
+  }
   function pct(v) {
     if (v < 0.0005) return '≈0%';
     return (v * 100).toFixed(v < 0.1 ? 2 : 1) + '%';
@@ -3747,9 +3863,15 @@
     if (v == null) return '—';
     return ynChip(v);
   }
-  function biasPct(v) {
-    if (v == null) return '—';
-    var p = v * 100;
+  function biasPct(bias, pred, act, kind) {
+    /* Predicted = Actual → 0%, including both 0. Actual = 0 and Predicted not 0 → —. */
+    if (act === 0) {
+      var predZero = kind === 'qty' ? predShowsZeroQty(pred) : predShowsZeroMoney(pred);
+      if (predZero) return '0%';
+      return '—';
+    }
+    if (bias == null) return '—';
+    var p = bias * 100;
     return (p > 0 ? '+' : '') + p.toFixed(Math.abs(p) < 10 ? 1 : 0) + '%';
   }
   function noPurchaseObservedHtml(u) {
@@ -3847,21 +3969,23 @@
         '<td class="u-num">' + money(u.earned) + '</td>' +
         '<td class="u-num">' + u.histDays.toLocaleString('en-US') + 'd · ' + u.histOrders.toLocaleString('en-US') + ' ord</td>' +
         '<td><div class="u-alive-bar"><div class="u-alive-track"><div class="u-alive-fill" style="width:' + Math.round(u.alive * 100) + '%"></div></div><span class="u-num">' + pct(u.alive) + '</span></div></td>' +
+        '<td class="u-num">' + pct(1 - u.alive) + '</td>' +
         '<td><div class="u-alive-bar"><div class="u-alive-track"><div class="u-alive-fill" style="width:' + Math.round(Math.min(1, u.prob180) * 100) + '%"></div></div><span class="u-num">' + pct(u.prob180) + '</span></div></td>' +
+        '<td class="u-num">' + pct(1 - Math.min(1, u.prob180)) + '</td>' +
         '<td class="u-num">' + money(u.ltv180) + '</td>' +
         '<td><span class="u-cell-primary">' + qty(u.days180) + 'd</span></td>' +
         '<td><span class="u-cell-primary">' + qty(u.orders180) + ' ord</span></td>' +
         '<td>' + levelUpTHtml(u) + '</td>' +
         '<td>' + levelUpPHtml(u) + '</td>' +
         '<td>' + noPurchaseObservedHtml(u) + '</td>' +
-        '<td class="u-num">' + biasPct(u.biasTake) + '</td>' +
+        '<td class="u-num">' + biasPct(u.biasTake, u.ltv180, u.actTake180, 'money') + '</td>' +
         '<td><button class="expand-btn" data-idx="' + idx + '">+</button></td>';
       tbody.appendChild(tr);
 
       var dr = document.createElement('tr');
       dr.className = 'detail-row';
       dr.hidden = true;
-      dr.innerHTML = '<td colspan="15"><div class="detail-panel"><div class="detail-grid">' +
+      dr.innerHTML = '<td colspan="17"><div class="detail-panel"><div class="detail-grid">' +
         '<div class="detail-item"><div class="k">First completed order<span class="zh">第一張完成單</span></div><div class="v">' + u.first + '</div></div>' +
         '<div class="detail-item"><div class="k">Last completed order<span class="zh">最近完成單</span></div><div class="v">' + u.last + '</div></div>' +
         '<div class="detail-item"><div class="k">Days since then<span class="zh">距今幾日</span></div><div class="v">' + u.sinceLast + ' days</div></div>' +
@@ -3869,7 +3993,7 @@
         '<div class="detail-item"><div class="k">Predicted / actual days (180d)<span class="zh">預測／實際完成訂單日</span></div><div class="v">' + qty(u.days180) + ' days / ' + qty(u.actDays180) + ' days</div></div>' +
         '<div class="detail-item"><div class="k">Predicted / actual orders (180d)<span class="zh">預測／實際完成訂單張數</span></div><div class="v">' + qty(u.orders180) + ' orders / ' + qty(u.actOrders180) + ' orders</div></div>' +
         '<div class="detail-item"><div class="k"><code class="hdr">actual_day_platform_take_180d</code><span class="zh">實際 180 日平台賺多少</span></div><div class="v">' + money(u.actTake180) + '</div></div>' +
-        '<div class="detail-item"><div class="k"><code class="hdr">prediction_bias_completed_orders_180d</code><span class="zh">預測完成單張數偏差百分比</span></div><div class="v">' + biasPct(u.biasOrders) + '</div></div>' +
+        '<div class="detail-item"><div class="k"><code class="hdr">prediction_bias_completed_orders_180d</code><span class="zh">預測完成單張數偏差百分比</span></div><div class="v">' + biasPct(u.biasOrders, u.orders180, u.actOrders180, 'qty') + '</div></div>' +
         '<div class="detail-item"><div class="k"><code class="hdr">predicted_covers_historical_gap_to_next_tier_180d</code><span class="zh">預測金額夠不夠蓋住升 T 缺口</span></div><div class="v">' + coverChip(u.coverT) + '</div></div>' +
         '<div class="insight">' + insightFor(u) + '</div>' +
         '</div></div></td>';
@@ -3950,10 +4074,26 @@
       windowKey: 'Prediction horizon',
       windowVal: 'None'
     },
+    asofchurn: {
+      title: 'As-of Churn Probability',
+      def: '1 − p_alive. Same no-window state as p_alive, just read the other way. Degenerate for one-time buyers (p_alive ≡ 1 → this ≡ 0%) — diagnostic only, not a CRM signal.<span class="zh">= 1 − p_alive，同 p_alive 一樣沒有時間窗，只是反過來讀。對只買過一次的客人會失真（p_alive ≡ 1 → 呢欄 ≡ 0%），僅供診斷，不可用於 CRM 決策。</span>',
+      ssot: 'as_of_churn_probability',
+      type: 'Current state',
+      windowKey: 'Prediction horizon',
+      windowVal: 'None'
+    },
     prob180: {
       title: '180D Return Probability',
       def: 'In the next n days, what is the chance this customer completes at least one order? This column: 180 days.<span class="zh">預測未來 n 日，這個客人至少完成 1 張單的機率是多少？本欄＝180 日。</span>',
       ssot: 'predicted_probability_at_least_one_completed_order_day_180d',
+      type: 'Predicted',
+      windowKey: 'Horizon',
+      windowVal: '180 days'
+    },
+    predchurn180: {
+      title: '180D Churn Probability',
+      def: '1 − 180D Return Probability. In the next 180 days, the chance this customer does NOT complete any order. This is the one to use for CRM / campaign decisions, not As-of Churn Probability.<span class="zh">= 1 − 180 日回流機率。預測未來 180 日，這個客人完全冇完成單的機率。CRM／campaign 決策應該用呢欄，唔係「截止日流失機率」。</span>',
+      ssot: 'predicted_churn_probability_180d',
       type: 'Predicted',
       windowKey: 'Horizon',
       windowVal: '180 days'
@@ -4008,7 +4148,7 @@
     },
     bias: {
       title: 'Prediction Bias',
-      def: '(Predicted − Actual) ÷ Actual on 180D Platform Take. 0 = on target. 0.20 = +20%. Blank when 180D No Completed Order Observed is Yes (Actual = 0). Not HKD Difference. Reporting view — not on the snapshot. Headline accuracy uses company total.',
+      def: '(Predicted − Actual) ÷ Actual on 180D Platform Take. 0 = on target. 0.20 = +20%. Predicted = Actual, including both $0, shows 0%. Predicted not $0 and Actual = $0 shows —. Not HKD Difference. Reporting view — not on the snapshot. Headline accuracy uses company total.',
       ssot: 'prediction_bias_day_platform_take_180d',
       type: 'Predicted',
       windowKey: 'Horizon',
@@ -4278,6 +4418,132 @@
   window.addEventListener('scroll', hideHdrTip, true);
   window.addEventListener('resize', function () {
     if (tipTh && tipEl.classList.contains('is-open')) placeTip(tipTh);
+  });
+})();
+</script>
+
+<dialog class="why180-dialog" id="why180Dialog" aria-labelledby="why180Title">
+  <div class="why180-head">
+    <div>
+      <h2 id="why180Title">Why is 180 days the main view?</h2>
+      <p>We already use 180 days as the main view, and 30 days for short campaigns. This table says why 180 sits in the middle — not 90, and not 365. All four time views are in the model. Marketing reads 180 days first.</p>
+    </div>
+    <button type="button" class="why180-close" id="why180Close" aria-label="Close">×</button>
+  </div>
+  <div class="why180-body">
+    <p class="swipe-hint">Swipe the table sideways to see more columns</p>
+    <div class="table-scroll">
+      <table class="why180">
+        <thead>
+          <tr>
+            <th scope="col">What we compare</th>
+            <th scope="col">30 days</th>
+            <th scope="col">90 days</th>
+            <th scope="col" class="col-180">180 days ★ Main</th>
+            <th scope="col">365 days</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>What it is for</td>
+            <td>Recent activity</td>
+            <td>Recent trend</td>
+            <td class="col-180">Balanced business view</td>
+            <td>Long-term pattern</td>
+          </tr>
+          <tr>
+            <td>How fast it reacts</td>
+            <td>Very fast</td>
+            <td>Fast</td>
+            <td class="col-180">Medium</td>
+            <td>Slow</td>
+          </tr>
+          <tr>
+            <td>How steady it is</td>
+            <td>Low</td>
+            <td>Medium</td>
+            <td class="col-180">High</td>
+            <td>Very high</td>
+          </tr>
+          <tr>
+            <td>Customers who order rarely</td>
+            <td>Weak</td>
+            <td>Fair</td>
+            <td class="col-180">Good</td>
+            <td>Very good</td>
+          </tr>
+          <tr>
+            <td>Busy vs quiet seasons</td>
+            <td>Weak</td>
+            <td>Partial</td>
+            <td class="col-180">Good</td>
+            <td>Full year</td>
+          </tr>
+          <tr>
+            <td>What can go wrong</td>
+            <td>A recent campaign can swing the number</td>
+            <td>Too short to be the main view</td>
+            <td class="col-180">A sudden change can look smaller</td>
+            <td>Old history can pull the number</td>
+          </tr>
+          <tr>
+            <td>Place in Marketing</td>
+            <td>Supporting signal</td>
+            <td>Compare with the main view</td>
+            <td class="col-180">Main view</td>
+            <td>Compare with the main view</td>
+          </tr>
+          <tr>
+            <td>In the model?</td>
+            <td class="yes">Yes</td>
+            <td class="yes">Yes</td>
+            <td class="col-180 yes">Yes</td>
+            <td class="yes">Yes</td>
+          </tr>
+          <tr>
+            <td>How we use it</td>
+            <td>Recent momentum</td>
+            <td>Check against 180 days</td>
+            <td class="col-180">The view we use first</td>
+            <td>Long-term context</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="why180-rail" aria-hidden="true">
+      <span class="end l">Reacts faster</span>
+      <span class="end r">More steady</span>
+      <div class="why180-pt"><div class="dot"></div><b>30 days</b>Recent activity</div>
+      <div class="why180-pt"><div class="dot"></div><b>90 days</b>Recent trend</div>
+      <div class="why180-pt is-main"><div class="dot"></div><b>180 days ★</b>Main view</div>
+      <div class="why180-pt"><div class="dot"></div><b>365 days</b>Long-term pattern</div>
+    </div>
+  </div>
+</dialog>
+<script>
+(function () {
+  var dlg = document.getElementById('why180Dialog');
+  var openBtn = document.getElementById('why180Open');
+  var closeBtn = document.getElementById('why180Close');
+  if (!dlg || !openBtn) return;
+  function setOpen(on) {
+    openBtn.setAttribute('aria-expanded', on ? 'true' : 'false');
+    if (on) {
+      if (typeof dlg.showModal === 'function') dlg.showModal();
+      else dlg.setAttribute('open', '');
+    } else {
+      if (typeof dlg.close === 'function' && dlg.open) dlg.close();
+      else dlg.removeAttribute('open');
+    }
+  }
+  openBtn.addEventListener('click', function () { setOpen(true); });
+  if (closeBtn) closeBtn.addEventListener('click', function () { setOpen(false); });
+  dlg.addEventListener('close', function () { openBtn.setAttribute('aria-expanded', 'false'); });
+  dlg.addEventListener('click', function (e) {
+    var r = dlg.getBoundingClientRect();
+    if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) {
+      setOpen(false);
+    }
   });
 })();
 </script>
