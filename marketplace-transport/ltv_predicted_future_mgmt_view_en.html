@@ -458,7 +458,15 @@ table.cmp thead th{color:var(--muted);font-size:11.5px;border-bottom:1px solid v
 #tbl.cmp th,#tbl.cmp td{padding:5px 6px}
 #tbl.cmp thead th,#tbl.cmp thead th.n{white-space:normal;line-height:1.25;vertical-align:bottom;
   font-size:11px;padding:5px 6px;hyphens:manual}
-#tbl.cmp thead th:nth-child(n+4){max-width:7.4em}
+#tbl.cmp thead tr.grp th{text-align:center;font-weight:700;color:var(--ink);
+  border-bottom:1px solid var(--axis);white-space:nowrap;font-size:11px;
+  vertical-align:middle;padding:7px 8px;letter-spacing:.02em}
+#tbl.cmp thead tr.grp th + th{border-left:1px solid var(--axis)}
+#tbl.cmp thead tr.grp .g-who{background:var(--neutbg)}
+#tbl.cmp thead tr.grp .g-earn{background:color-mix(in srgb,var(--blue) 8%,var(--surface))}
+#tbl.cmp thead tr.grp .g-next{background:color-mix(in srgb,var(--good) 10%,var(--surface))}
+#tbl.cmp thead tr.grp .g-bias{background:var(--neutbg)}
+#tbl.cmp thead tr.h th:nth-child(n+5){max-width:7.4em}
 #tbl.cmp thead th.sort-th::after{display:inline;margin-left:2px}
 table.cmp td.n,table.cmp th.n{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
 table.cmp caption{caption-side:top;text-align:left;font-size:12.5px;color:var(--muted);padding:0 0 8px}
@@ -3620,11 +3628,11 @@ Customer count still follows the filters. Read Bias % on the Platform Take table
       const on = String(st.pickId) === String(c[C_ID]) ? " on" : "";
       return `<tr class="${on.trim()}" data-id="${c[C_ID]}">
         <td>${c[C_ID]}…</td><td>${c[C_T]}</td><td>${c[C_P]}</td>
+        <td>${REC_AGO[bandOf(c[C_DAYS])]}</td>
         <td class="n">${fmtMoney(c[C_HIST])}</td>
         <td class="n">${fmtMoney(c[C_PRED][i])}</td>
         <td class="n">${c[C_ORD][i] == null ? "—" : c[C_ORD][i].toFixed(2)}</td>
         <td class="n">${c[C_PA] == null ? "—" : Math.round(c[C_PA]*100)+"%"}</td>
-        <td>${REC_AGO[bandOf(c[C_DAYS])]}</td>
         <td class="n">${gap$ == null ? "—" : fmtMoney(gap$)}</td>
         <td class="n">${pct == null ? "—" : Math.round(pct)+"%"}</td>
         <td>${covers == null ? "—" : (covers ? "YES" : "NO")}</td>
@@ -3633,22 +3641,38 @@ Customer count still follows the filters. Read Bias % on the Platform Take table
     }).join("");
     const th = (k,l,cls,tip) =>
       `<th class="sort-th${cls?" "+cls:""}" data-sort="${k}"${tip ? ` data-tip="${tip}" tabindex="0"` : ""}>${l}</th>`;
+    const idTip = `Customer key. This table shows a shortened display id.\nCode: user_unique_id.`;
+    const tTip = `Official Tier T100…T10. Ranked only on Already earned.\nCode: tier_label.`;
+    const pTip = `Value rank inside one Official Tier (P100…P10). P90 is not T90.\nCode: within_tier_band.`;
+    const daysTip = `How long since the last completed order, shown as a band.\nCode: days_since_last_completed_order.`;
+    const histTip = `Platform Take already earned by the cut-off. This ranks Official Tier T. Not a prediction.\nCode: historical_platform_take.`;
+    const predTip = `Predicted Platform Take after the cut-off, over the selected prediction period.\nCode: predicted_day_platform_take.`;
+    const ordTip = `Predicted completed orders over the selected prediction period.\nCode: predicted_completed_orders.`;
+    const paTip = `Chance they had not dropped out at the cut-off. Not the chance they order in the next 30 / 180 / 365 days.\nCode: p_alive.`;
     const gapTip = isT
       ? `How much more actual Platform Take this customer needs to earn to reach the next Official Tier.\nPredicted money does not count toward moving T.\nT100 is already the highest, so it shows —.`
-      : `How much more actual Platform Take this customer needs to earn to reach the next P level within their current Official Tier.\nPredicted money does not count toward moving P.\nP100 is already the highest, so it shows —.`;
+      : `How much more actual Platform Take this customer needs to earn to reach the next Official Tier P within their current Official Tier T.\nPredicted money does not count toward moving P.\nP100 is already the highest, so it shows —.`;
     const pctTip = `How much of that remaining gap could be covered by the customer's Predicted Future LTV.\nExample: they need $500 more and we predict $400 → 80%.\nThis is not the probability of leveling up.`;
     const enoughTip = `A simple check of whether the predicted future money is enough to cover the remaining gap.\nYES = enough. NO = not enough.\nThis is for internal QA only and does not mean they will actually level up.`;
     const biasTip = `Shows whether we over- or under-predicted this customer compared with what they actually generated.\n0% = accurate. +20% = predicted 20% too high. −20% = predicted 20% too low.\nIf Actual Platform Take is $0, it cannot be calculated, so it shows —.`;
+    const nextGrp = isT ? "Next Official Tier T" : "Next Official Tier P";
     document.getElementById("tbl").innerHTML = `
       <caption>Working table preview · ${total.toLocaleString("en-US")} rows in this filter ·
         T100 is left out of this table · 25 customers per remaining T × P in the freeze ·
         not a CRM list · IDs are shortened. Hover a column title for the meaning.
         ${CITE}.</caption>
-      <thead><tr>
-        ${th("id","Customer<br>ID")}${th("t","Official<br>Tier T")}${th("p","Within-tier<br>P")}
-        ${th("hist","Historical<br>Platform Take<br>($)","n")}${th("predicted","Predicted<br>Future LTV","n")}
-        ${th("orders","Predicted<br>completed<br>orders","n")}${th("palive","Likely still an<br>active customer (p_alive)","n")}
-        ${th("days","Last completed<br>order was<br>X days ago")}
+      <thead>
+        <tr class="grp">
+          <th class="g-who" colspan="4">Who</th>
+          <th class="g-earn" colspan="4">Already earned and predicted</th>
+          <th class="g-next" colspan="3">${nextGrp}</th>
+          <th class="g-bias" colspan="1">This person's prediction</th>
+        </tr>
+        <tr class="h">
+        ${th("id","User Unique ID","",idTip)}${th("t","Official<br>Tier T","",tTip)}${th("p","Official<br>Tier P","",pTip)}
+        ${th("days","Last completed<br>order was<br>X days ago","",daysTip)}
+        ${th("hist","Already earned","n",histTip)}${th("predicted","Predicted<br>Future LTV","n",predTip)}
+        ${th("orders","Predicted<br>Orders","n",ordTip)}${th("palive","p_alive","n",paTip)}
         ${th("gap", isT ? "$ still needed<br>for next T" : "$ still needed<br>for next P","n", gapTip)}
         ${th("pct", "Predicted as<br>% of that $","n", pctTip)}
         <th data-tip="${enoughTip}" tabindex="0">${isT ? "Predicted enough<br>for next T?" : "Predicted enough<br>for next P?"}</th>
@@ -3680,7 +3704,7 @@ Customer count still follows the filters. Read Bias % on the Platform Take table
     const pct = isT ? c[C_PCTT][i] : c[C_PCTP][i];
     const covers = isT ? c[C_COVT][i] : c[C_COVP][i];
     const bias = c[C_BIAS] ? c[C_BIAS][i] : null;
-    const nextLab = isT ? "next Official Tier T" : "next Within-tier P";
+    const nextLab = isT ? "Next Official Tier T" : "Next Official Tier P";
     const row = (k,v) => `<dt>${k}</dt><dd>${v}</dd>`;
     host.innerHTML = `
       <p class="who">${c[C_ID]}…</p>
@@ -3688,19 +3712,19 @@ Customer count still follows the filters. Read Bias % on the Platform Take table
       <div class="sec">
         <h4>Who</h4>
         <dl class="dl">
-          ${row("Customer ID", c[C_ID]+"…")}
+          ${row("User Unique ID", c[C_ID]+"…")}
           ${row("Official Tier T", c[C_T])}
-          ${row("Within-tier P", c[C_P])}
+          ${row("Official Tier P", c[C_P])}
           ${row("Last completed order was X days ago", REC_AGO[bandOf(c[C_DAYS])])}
         </dl>
       </div>
       <div class="sec">
         <h4>Already earned and predicted</h4>
         <dl class="dl">
-          ${row("Historical Platform Take ($)", fmtMoney(c[C_HIST]))}
+          ${row("Already earned", fmtMoney(c[C_HIST]))}
           ${row("Predicted Future LTV", fmtMoney(c[C_PRED][i]))}
-          ${row("Predicted completed orders", c[C_ORD][i] == null ? "—" : c[C_ORD][i].toFixed(2))}
-          ${row("Likely still an active customer (p_alive)", c[C_PA] == null ? "—" : Math.round(c[C_PA]*100)+"%")}
+          ${row("Predicted Orders", c[C_ORD][i] == null ? "—" : c[C_ORD][i].toFixed(2))}
+          ${row("p_alive", c[C_PA] == null ? "—" : Math.round(c[C_PA]*100)+"%")}
         </dl>
       </div>
       <div class="sec">
@@ -3714,7 +3738,7 @@ Customer count still follows the filters. Read Bias % on the Platform Take table
             covers == null ? "—" : (covers ? "YES" : "NO"))}
         </dl>
         <p class="hint">How much more actual Platform Take this customer needs to earn to reach
-          the next ${isT ? "Official Tier" : "P"} within their current Official Tier.
+          the next ${isT ? "Official Tier T" : "Official Tier P"} within their current Official Tier.
           Predicted money does not count toward moving ${isT ? "T" : "P"}.
           Predicted as % of that $ = how much of that remaining gap Predicted Future LTV could cover.
           Predicted enough? YES = enough. NO = not enough. Internal QA only.
