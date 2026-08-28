@@ -466,8 +466,25 @@ table.cmp thead th{color:var(--muted);font-size:11.5px;border-bottom:1px solid v
 #tbl.cmp thead tr.grp .g-earn{background:color-mix(in srgb,var(--blue) 8%,var(--surface))}
 #tbl.cmp thead tr.grp .g-next{background:color-mix(in srgb,var(--good) 10%,var(--surface))}
 #tbl.cmp thead tr.grp .g-bias{background:var(--neutbg)}
-#tbl.cmp thead tr.h th:nth-child(n+5){max-width:7.4em}
+#tbl.cmp thead tr.h th{color:var(--ink);font-size:12px;font-weight:700;white-space:nowrap;
+  vertical-align:bottom;padding:8px 8px 6px}
+#tbl.cmp thead tr.h th.lookup-h{cursor:help}
+#tbl.cmp thead tr.h th .lookup-h-title{display:block;font-size:12px;font-weight:700;
+  color:var(--ink);line-height:1.25;white-space:nowrap}
 #tbl.cmp thead th.sort-th::after{display:inline;margin-left:2px}
+.lookup-hdr-tip{position:fixed;z-index:10000;display:none;box-sizing:border-box;
+  min-width:360px;max-width:420px;padding:14px 16px;background:var(--surface);color:var(--ink);
+  border:1px solid var(--axis);border-radius:8px;box-shadow:0 8px 24px rgba(11,11,11,.16);
+  pointer-events:none}
+.lookup-hdr-tip.is-open{display:block}
+.lookup-hdr-tip.is-pinned{pointer-events:auto}
+.lookup-hdr-tip .tip-title{font-size:14px;font-weight:700;margin:0 0 8px;line-height:1.3}
+.lookup-hdr-tip .tip-def{font-size:13px;line-height:1.45;color:var(--ink2);margin:0 0 12px}
+.lookup-hdr-tip .tip-meta{display:grid;grid-template-columns:7.2em minmax(0,1fr);gap:4px 10px;
+  margin:0;font-size:12px}
+.lookup-hdr-tip .tip-meta dt{color:var(--muted);margin:0;font-weight:600}
+.lookup-hdr-tip .tip-meta dd{margin:0;color:var(--ink);overflow-wrap:anywhere}
+.lookup-hdr-tip code{font-size:11px}
 table.cmp td.n,table.cmp th.n{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
 table.cmp caption{caption-side:top;text-align:left;font-size:12.5px;color:var(--muted);padding:0 0 8px}
 .col-defs{margin:0;display:grid;grid-template-columns:minmax(10em,24%) 1fr;gap:8px 16px;
@@ -1227,7 +1244,7 @@ body.show-v2 a[data-s="s4"]{display:none !important}
 <div class="box neut" id="col-defs">
   <p class="lead">What these four columns mean</p>
   <dl class="col-defs">
-    <dt>$ still needed for next P</dt>
+    <dt>To Next P</dt>
     <dd>How much more <b>actual Platform Take</b> this customer needs to earn to reach the next P
       level within their current Official Tier.
       Predicted money <b>does not count</b> toward moving P. P100 is already the highest, so it
@@ -1241,7 +1258,7 @@ body.show-v2 a[data-s="s4"]{display:none !important}
     <dd>A simple check of whether the predicted future money is enough to cover the remaining gap.
       <b>YES = enough. NO = not enough.</b>
       This is for internal QA only and <b>does not mean they will actually level up</b>.</dd>
-    <dt>Customer Bias %</dt>
+    <dt>Prediction Bias</dt>
     <dd>Shows whether we <b>over- or under-predicted this customer</b> compared with what they
       actually generated.
       <b>0% = accurate. +20% = predicted 20% too high. −20% = predicted 20% too low.</b>
@@ -3609,7 +3626,115 @@ Customer count still follows the filters. Read Bias % on the Platform Take table
       return (map[key] || 0) * dir;
     });
   }
+  const TBL_HDR_TIPS = {
+    id: {title:"User Unique ID",
+      def:"Customer key. This table shows a shortened display id. USER- and PHONE- prefixes are both unique ids — not a phone or name.",
+      ssot:"user_unique_id", type:"Current", windowKey:"Window", windowVal:"None"},
+    t: {title:"Official Tier T",
+      def:"Official Tier T100…T10. Ranked only on Already earned. Predictions must not rewrite Tier.",
+      ssot:"tier_label", type:"Historical", windowKey:"Window", windowVal:"2018 to cutoff"},
+    p: {title:"Official Tier P",
+      def:"Value rank inside one Official Tier (P100…P10). P90 is not T90.",
+      ssot:"within_tier_band", type:"Historical", windowKey:"Window", windowVal:"2018 to cutoff"},
+    days: {title:"Recency",
+      def:"Days from the most recent completed order to the cutoff, shown here as a band. Already happened. Not a future churn prediction. Not the BG/NBD recency input.",
+      ssot:"days_since_last_completed_order", type:"Current", windowKey:"Window", windowVal:"As of cutoff"},
+    hist: {title:"Already earned",
+      def:"Platform Take already earned by the cut-off. This ranks Official Tier T. Not a prediction.",
+      ssot:"historical_platform_take", type:"Historical", windowKey:"Window", windowVal:"2018 to cutoff"},
+    predicted: {title:"Predicted Future LTV",
+      def:"Predicted Platform Take after the cut-off, over the selected prediction period. Not Already earned. Not one day's money.",
+      ssot:"predicted_day_platform_take_{h}", type:"Predicted", windowKey:"Horizon", windowVal:"Selected prediction period"},
+    orders: {title:"Predicted Orders",
+      def:"Predicted completed orders over the selected prediction period.",
+      ssot:"predicted_completed_orders_{h}", type:"Predicted", windowKey:"Horizon", windowVal:"Selected prediction period"},
+    palive: {title:"p_alive",
+      def:"Chance they had not dropped out at the cut-off. Not the chance they order in the next 30 / 180 / 365 days.",
+      ssot:"p_alive", type:"Current", windowKey:"Window", windowVal:"As of cutoff — no 30 / 180 / 365 window"},
+    gap_t: {title:"To Next T",
+      def:"How much more actual Platform Take this customer needs to earn to reach the next Official Tier. Predicted money does not count toward moving T. T100 is already the highest, so it shows —.",
+      ssot:"historical_platform_take_gap_to_next_tier", type:"Historical", windowKey:"Window", windowVal:"None"},
+    gap_p: {title:"To Next P",
+      def:"How much more actual Platform Take this customer needs to earn to reach the next Official Tier P within their current Official Tier T. Predicted money does not count toward moving P. P100 is already the highest, so it shows —.",
+      ssot:"historical_platform_take_gap_to_next_within_tier_band", type:"Historical", windowKey:"Window", windowVal:"None"},
+    pct_t: {title:"Predicted as % of that $",
+      def:"How much of To Next T could be covered by Predicted Future LTV. Example: they need $500 more and we predict $400 → 80%. This is not the probability of leveling up.",
+      ssot:"predicted_percent_of_dollars_still_needed_for_next_tier_{h}", type:"Predicted", windowKey:"Horizon", windowVal:"Selected prediction period"},
+    pct_p: {title:"Predicted as % of that $",
+      def:"How much of To Next P could be covered by Predicted Future LTV. Example: they need $500 more and we predict $400 → 80%. This is not the probability of leveling up.",
+      ssot:"predicted_percent_of_dollars_still_needed_for_next_within_tier_band_{h}", type:"Predicted", windowKey:"Horizon", windowVal:"Selected prediction period"},
+    enough_t: {title:"Predicted enough for next T?",
+      def:"YES = Predicted Future LTV is enough to cover To Next T. NO = not enough. Internal QA only. This does not mean they will actually level up.",
+      ssot:"predicted_covers_historical_gap_to_next_tier_{h}", type:"Predicted", windowKey:"Horizon", windowVal:"Selected prediction period"},
+    enough_p: {title:"Predicted enough for next P?",
+      def:"YES = Predicted Future LTV is enough to cover To Next P. NO = not enough. Internal QA only. This does not mean they will actually level up.",
+      ssot:"predicted_covers_historical_gap_to_next_within_tier_band_{h}", type:"Predicted", windowKey:"Horizon", windowVal:"Selected prediction period"},
+    bias: {title:"Prediction Bias",
+      def:"(Predicted − Actual) ÷ Actual. 0% = on target. +20% = predicted 20% too high. −20% = predicted 20% too low. Blank when Actual Platform Take is $0.",
+      ssot:"prediction_bias_day_platform_take_{h}", type:"Predicted", windowKey:"Horizon", windowVal:"Selected prediction period"}
+  };
+  let tblHdrTipEl = null, tblHdrTipTh = null, tblHdrPinned = false;
+  function hideTblHdrTip(){
+    tblHdrPinned = false;
+    tblHdrTipTh = null;
+    if (tblHdrTipEl) tblHdrTipEl.classList.remove("is-open","is-pinned");
+  }
+  function ssotHtml(ssot){
+    return String(ssot).split(" / ").map(n => `<code>${n}</code>`).join(" / ");
+  }
+  function showTblHdrTip(th, pin){
+    const meta = TBL_HDR_TIPS[th.getAttribute("data-col")];
+    if (!meta || !tblHdrTipEl) return;
+    tblHdrTipTh = th;
+    tblHdrPinned = !!pin;
+    tblHdrTipEl.innerHTML =
+      `<p class="tip-title">${meta.title}</p>` +
+      `<p class="tip-def">${meta.def}</p>` +
+      `<dl class="tip-meta">` +
+      `<dt>SSOT field</dt><dd>${ssotHtml(meta.ssot)}</dd>` +
+      `<dt>Type</dt><dd>${meta.type}</dd>` +
+      `<dt>${meta.windowKey}</dt><dd>${meta.windowVal}</dd>` +
+      `</dl>`;
+    tblHdrTipEl.classList.add("is-open");
+    tblHdrTipEl.classList.toggle("is-pinned", tblHdrPinned);
+    const r = th.getBoundingClientRect();
+    const tw = tblHdrTipEl.offsetWidth, thh = tblHdrTipEl.offsetHeight;
+    let left = r.left + r.width/2 - tw/2, top = r.bottom + 8;
+    if (top + thh > window.innerHeight - 8) top = r.top - thh - 8;
+    if (left < 8) left = 8;
+    if (left + tw > window.innerWidth - 8) left = Math.max(8, window.innerWidth - tw - 8);
+    if (top < 8) top = 8;
+    tblHdrTipEl.style.left = left + "px";
+    tblHdrTipEl.style.top = top + "px";
+  }
+  function bindTblHdrTips(){
+    tblHdrTipEl = document.getElementById("lookupHdrTip");
+    if (!tblHdrTipEl){
+      tblHdrTipEl = document.createElement("div");
+      tblHdrTipEl.id = "lookupHdrTip";
+      document.body.appendChild(tblHdrTipEl);
+    }
+    tblHdrTipEl.className = "lookup-hdr-tip";
+    tblHdrTipEl.setAttribute("role","tooltip");
+    const hoverOk = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+    const host = document.querySelector(".work-table");
+    if (!host) return;
+    host.addEventListener("mouseover", e => {
+      if (!hoverOk || tblHdrPinned) return;
+      const th = e.target.closest("#tbl thead th.lookup-h");
+      if (th) showTblHdrTip(th, false);
+    });
+    host.addEventListener("mouseout", e => {
+      if (!hoverOk || tblHdrPinned) return;
+      const th = e.target.closest("#tbl thead th.lookup-h");
+      if (!th) return;
+      if (th.contains(e.relatedTarget)) return;
+      hideTblHdrTip();
+    });
+    document.addEventListener("keydown", e => { if (e.key === "Escape") hideTblHdrTip(); });
+  }
   function renderTable(){
+    hideTblHdrTip();
     const rows = sortCustomers(filteredCustomers());
     const total = rows.length, pages = Math.max(1, Math.ceil(total/PAGE));
     if (st.page >= pages) st.page = pages - 1;
@@ -3639,28 +3764,17 @@ Customer count still follows the filters. Read Bias % on the Platform Take table
         <td class="n">${fmtBias(bias)}</td>
       </tr>`;
     }).join("");
-    const th = (k,l,cls,tip) =>
-      `<th class="sort-th${cls?" "+cls:""}" data-sort="${k}"${tip ? ` data-tip="${tip}" tabindex="0"` : ""}>${l}</th>`;
-    const idTip = `Customer key. This table shows a shortened display id.\nCode: user_unique_id.`;
-    const tTip = `Official Tier T100…T10. Ranked only on Already earned.\nCode: tier_label.`;
-    const pTip = `Value rank inside one Official Tier (P100…P10). P90 is not T90.\nCode: within_tier_band.`;
-    const daysTip = `How long since the last completed order, shown as a band.\nCode: days_since_last_completed_order.`;
-    const histTip = `Platform Take already earned by the cut-off. This ranks Official Tier T. Not a prediction.\nCode: historical_platform_take.`;
-    const predTip = `Predicted Platform Take after the cut-off, over the selected prediction period.\nCode: predicted_day_platform_take.`;
-    const ordTip = `Predicted completed orders over the selected prediction period.\nCode: predicted_completed_orders.`;
-    const paTip = `Chance they had not dropped out at the cut-off. Not the chance they order in the next 30 / 180 / 365 days.\nCode: p_alive.`;
-    const gapTip = isT
-      ? `How much more actual Platform Take this customer needs to earn to reach the next Official Tier.\nPredicted money does not count toward moving T.\nT100 is already the highest, so it shows —.`
-      : `How much more actual Platform Take this customer needs to earn to reach the next Official Tier P within their current Official Tier T.\nPredicted money does not count toward moving P.\nP100 is already the highest, so it shows —.`;
-    const pctTip = `How much of that remaining gap could be covered by the customer's Predicted Future LTV.\nExample: they need $500 more and we predict $400 → 80%.\nThis is not the probability of leveling up.`;
-    const enoughTip = `A simple check of whether the predicted future money is enough to cover the remaining gap.\nYES = enough. NO = not enough.\nThis is for internal QA only and does not mean they will actually level up.`;
-    const biasTip = `Shows whether we over- or under-predicted this customer compared with what they actually generated.\n0% = accurate. +20% = predicted 20% too high. −20% = predicted 20% too low.\nIf Actual Platform Take is $0, it cannot be calculated, so it shows —.`;
+    const th = (k,col,l,cls) =>
+      `<th class="sort-th lookup-h${cls?" "+cls:""}" data-sort="${k}" data-col="${col}" tabindex="0"><span class="lookup-h-title">${l}</span></th>`;
     const nextGrp = isT ? "Next Official Tier T" : "Next Official Tier P";
+    const gapCol = isT ? "gap_t" : "gap_p";
+    const pctCol = isT ? "pct_t" : "pct_p";
+    const enoughCol = isT ? "enough_t" : "enough_p";
     document.getElementById("tbl").innerHTML = `
       <caption>Working table preview · ${total.toLocaleString("en-US")} rows in this filter ·
         T100 is left out of this table · 25 customers per remaining T × P in the freeze ·
-        not a CRM list · IDs are shortened. Hover a column title for the meaning.
-        ${CITE}.</caption>
+        not a CRM list · IDs are shortened. Hover a column title for the meaning and the SSOT field.
+        Click a title to sort. ${CITE}.</caption>
       <thead>
         <tr class="grp">
           <th class="g-who" colspan="4">Who</th>
@@ -3669,14 +3783,14 @@ Customer count still follows the filters. Read Bias % on the Platform Take table
           <th class="g-bias" colspan="1">This person's prediction</th>
         </tr>
         <tr class="h">
-        ${th("id","User Unique ID","",idTip)}${th("t","Official<br>Tier T","",tTip)}${th("p","Official<br>Tier P","",pTip)}
-        ${th("days","Last completed<br>order was<br>X days ago","",daysTip)}
-        ${th("hist","Already earned","n",histTip)}${th("predicted","Predicted<br>Future LTV","n",predTip)}
-        ${th("orders","Predicted<br>Orders","n",ordTip)}${th("palive","p_alive","n",paTip)}
-        ${th("gap", isT ? "$ still needed<br>for next T" : "$ still needed<br>for next P","n", gapTip)}
-        ${th("pct", "Predicted as<br>% of that $","n", pctTip)}
-        <th data-tip="${enoughTip}" tabindex="0">${isT ? "Predicted enough<br>for next T?" : "Predicted enough<br>for next P?"}</th>
-        ${th("bias","Customer<br>Bias %","n", biasTip)}
+        ${th("id","id","User Unique ID")}${th("t","t","Official Tier T")}${th("p","p","Official Tier P")}
+        ${th("days","days","Recency")}
+        ${th("hist","hist","Already earned","n")}${th("predicted","predicted","Predicted Future LTV","n")}
+        ${th("orders","orders","Predicted Orders","n")}${th("palive","palive","p_alive","n")}
+        ${th("gap",gapCol, isT ? "To Next T" : "To Next P","n")}
+        ${th("pct",pctCol,"Predicted as % of that $","n")}
+        <th class="lookup-h" data-col="${enoughCol}" tabindex="0"><span class="lookup-h-title">${isT ? "Predicted enough for next T?" : "Predicted enough for next P?"}</span></th>
+        ${th("bias","bias","Prediction Bias","n")}
       </tr></thead>
       <tbody>${body || `<tr><td colspan="12" class="empty">No customers in this filter.</td></tr>`}</tbody>`;
     document.getElementById("tbl-page").textContent =
@@ -3715,7 +3829,7 @@ Customer count still follows the filters. Read Bias % on the Platform Take table
           ${row("User Unique ID", c[C_ID]+"…")}
           ${row("Official Tier T", c[C_T])}
           ${row("Official Tier P", c[C_P])}
-          ${row("Last completed order was X days ago", REC_AGO[bandOf(c[C_DAYS])])}
+          ${row("Recency", REC_AGO[bandOf(c[C_DAYS])])}
         </dl>
       </div>
       <div class="sec">
@@ -3730,7 +3844,7 @@ Customer count still follows the filters. Read Bias % on the Platform Take table
       <div class="sec">
         <h4>${nextLab}</h4>
         <dl class="dl">
-          ${row(isT ? "$ still needed for next T" : "$ still needed for next P",
+          ${row(isT ? "To Next T" : "To Next P",
             gap$ == null ? "—" : fmtMoney(gap$))}
           ${row("Predicted as % of that $",
             pct == null ? "—" : Math.round(pct)+"%")}
@@ -3747,7 +3861,7 @@ Customer count still follows the filters. Read Bias % on the Platform Take table
       <div class="sec">
         <h4>This person's prediction</h4>
         <dl class="dl">
-          ${row("Customer Bias %", fmtBias(bias))}
+          ${row("Prediction Bias", fmtBias(bias))}
         </dl>
         <p class="hint">Shows whether we over- or under-predicted this customer compared with
           what they actually generated. 0% = accurate. +20% = predicted 20% too high.
@@ -4138,6 +4252,7 @@ Customer count still follows the filters. Read Bias % on the Platform Take table
       st.page = 0; render();
     });
     document.getElementById("btn-export").addEventListener("click", exportCsv);
+    bindTblHdrTips();
     document.querySelector(".work-table").addEventListener("click", e => {
       const th = e.target.closest("#tbl thead th.sort-th");
       if (th){
