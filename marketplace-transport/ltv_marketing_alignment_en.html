@@ -1479,8 +1479,69 @@
     color: var(--accent-ink); background: var(--accent-soft);
     border: 1px solid var(--accent); border-radius: 8px;
     padding: 10px 12px; cursor: pointer; line-height: 1.3;
+    text-align: left;
+    box-shadow: 0 0 0 0 var(--accent-soft);
+    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease,
+      box-shadow 0.15s ease, transform 0.15s ease;
+  }
+  .why180-toggle .zh {
+    display: block;
+    font-size: 11.5px;
+    font-weight: 500;
+    margin: 3px 0 0;
+    color: inherit;
+    opacity: 0.88;
+  }
+  .q-card .why180-toggle .zh { margin: 3px 0 0; }
+  .why180-click-hint {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    margin: 0 0 7px;
+    color: var(--accent-ink);
+  }
+  .why180-click-hint .finger {
+    display: inline-block;
+    font-size: 14px;
+    line-height: 1;
+    animation: why180-point 1.15s ease-in-out infinite;
+  }
+  .why180-click-hint .zh {
+    display: inline;
+    margin: 0 0 0 4px;
+    font-size: 11px;
+    font-weight: 600;
+    opacity: 0.8;
+  }
+  @keyframes why180-point {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(3px); }
+  }
+  @media (hover: hover) {
+    .why180-toggle:hover {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent-ink);
+      box-shadow: 0 0 0 3px var(--accent-soft), 0 8px 18px rgba(154, 62, 0, 0.22);
+      transform: translateY(-1px);
+    }
+    .why180-toggle:hover .why180-click-hint { color: inherit; }
+  }
+  .why180-toggle:focus-visible {
+    outline: 2px solid var(--accent-ink);
+    outline-offset: 3px;
+    background: var(--accent);
+    color: #fff;
   }
   .why180-toggle[aria-expanded="true"] { background: var(--accent); color: #fff; }
+  .why180-toggle[aria-expanded="true"] .why180-click-hint { color: inherit; }
+  @media (prefers-reduced-motion: reduce) {
+    .why180-click-hint .finger { animation: none; }
+    .why180-toggle { transition: none; }
+  }
   .why180-dialog {
     width: min(1080px, calc(100vw - 24px));
     max-height: min(90vh, 860px);
@@ -2416,7 +2477,7 @@
         <li><span class="star">Platform Take = Predicted Future LTV ★<span class="zh">平台賺多少</span></span></li>
       </ul>
       <p class="q-note">Historical / actual context — not predicted<span class="zh">歷史／實際參考，不是本表的未來 N 日預測</span><br>GTV (<code class="hdr">gross_transaction_value</code>) = customer transaction value. Order-level. There is no predicted GTV_{h} header.<span class="zh">GTV = 客人交易額（訂單層）。沒有預測未來 N 日 GTV 欄。</span></p>
-      <button type="button" class="why180-toggle" id="churnOpen" aria-expanded="false" aria-haspopup="dialog" aria-controls="churnDialog">Individual number vs group rate?</button>
+      <button type="button" class="why180-toggle" id="churnOpen" aria-expanded="false" aria-haspopup="dialog" aria-controls="churnDialog"><span class="why180-click-hint" aria-hidden="true"><span class="finger">👆</span> 點這裡<span class="zh">Click</span></span>單一客戶 vs 整體客群流失？<span class="zh">One customer vs the whole group?</span></button>
     </div>
     <div class="q-card">
       <p class="qn">②</p>
@@ -2428,7 +2489,7 @@
         <li><span class="star">180D = Main LTV View ★</span></li>
         <li>90D / 365D = comparison / longer-term<span class="zh">比較／較長期參考</span></li>
       </ul>
-      <button type="button" class="why180-toggle" id="why180Open" aria-expanded="false" aria-haspopup="dialog" aria-controls="why180Dialog">Why 180 days?</button>
+      <button type="button" class="why180-toggle" id="why180Open" aria-expanded="false" aria-haspopup="dialog" aria-controls="why180Dialog"><span class="why180-click-hint" aria-hidden="true"><span class="finger">👆</span> 點這裡<span class="zh">Click</span></span>Why 180 days?</button>
     </div>
     <div class="q-card">
       <p class="qn">③</p>
@@ -2689,7 +2750,7 @@
         <svg class="scatter-svg" id="decisionScatter" viewBox="0 0 840 460" role="img" aria-label="Scatter of four customers. Dot colour is Marketing action vs same-Tier P50. Dashed lines are all-customer P50 for position only. Y is chance of at least one completed-order day in the next 180 days. X is already earned on a log scale."></svg>
         <div class="tooltip scatter-tip" id="scatterTooltip"></div>
       </div>
-      <p class="ad-one" id="adOne"><b>Same ~$22k T100 historical value;</b> return likelihood 99.8% vs 6.5%; Future LTV $1,882 vs $118. <b>Customer C (T30) is orange Retain / Grow</b> vs same-Tier P50. The dashed $37 line is all-customer, not C’s split (T30 Already earned P50 is $17).<span class="zh">同一個約 $22k 的 T100 歷史價值；回流機率 99.8% vs 6.5%；Future LTV $1,882 vs $118。客戶 C（T30）對同 Tier 是橙色 Retain／Grow。虛線 $37 是全體參考，不是 C 的切法（T30 Already earned P50 是 $17）。</span></p>
+      <p class="ad-one" id="adOne"><b>Same ~$22k T100 historical value;</b> return likelihood 99.8% vs 6.5%; Future LTV $2,460 vs $140. <b>Customer C (T30) is orange Retain / Grow</b> vs same-Tier P50. The dashed $37 line is all-customer, not C’s split (T30 Already earned P50 is $17).<span class="zh">同一個約 $22k 的 T100 歷史價值；回流機率 99.8% vs 6.5%；Future LTV $2,460 vs $140。客戶 C（T30）對同 Tier 是橙色 Retain／Grow。虛線 $37 是全體參考，不是 C 的切法（T30 Already earned P50 是 $17）。</span></p>
       <div class="color-leg compact" aria-label="Chart legend">
         <div class="cl"><span class="sw retain"></span><span>Retain / Grow</span></div>
         <div class="cl"><span class="sw winback"></span><span>Win-back</span></div>
@@ -2759,7 +2820,7 @@
   <section>
     <div class="mkt-head">
       <h2>Marketing one-row-per-customer extract<span class="zh">Marketing 一行一客匯出表</span></h2>
-      <div class="live-badge" title="queried 2026-08-26, HK TRANSPORT PlatformOD van, as_of_date=2024-06-30"><span class="dot"></span>Live BQ · 4 customers<span class="zh">實際查詢結果</span></div>
+      <div class="live-badge" title="queried 2026-08-28, HK TRANSPORT PlatformOD van, as_of_date=2024-06-30"><span class="dot"></span>Live BQ · 4 customers<span class="zh">實際查詢結果</span></div>
     </div>
     <p class="mkt-guide">Read left to right: customer → current status → 30D campaign view → <b>180D Predicted Future LTV (main)</b> → right-hand columns. Default is CVE (Predicted Platform Take / order day, then Action). Switch to PFM for Purchase Frequency, Customer Value, Recency. <b>Action stays on both views.</b> Left columns do not change. Raw RFM inputs are also in the expandable block below — not a new RFM score.<span class="zh">由左至右：客戶 → 現況 → 30 日 Campaign → 180 日 Predicted Future LTV（主）→ 右側欄。預設 CVE。切去 PFM 看購買頻率、消費價值、距上次完成單。<b>Action 兩邊都保留。</b>左邊欄不變。</span></p>
     <p class="act-leg" aria-label="Action colours">
@@ -2811,14 +2872,14 @@
             <td>$22,224</td>
             <td>99.8%</td>
             <td>99.8%</td>
-            <td>11.6 days</td>
-            <td>21.5 orders</td>
-            <td>$319</td>
+            <td>12.6 days</td>
+            <td>23.5 orders</td>
+            <td>$410</td>
             <td>99.8%</td>
-            <td>68.3 days</td>
-            <td>127.2 orders</td>
-            <td class="mkt-ltv-main">$1,882</td>
-            <td class="mkt-cve">$27.57</td>
+            <td>75.5 days</td>
+            <td>140.8 orders</td>
+            <td class="mkt-ltv-main">$2,460</td>
+            <td class="mkt-cve">$32.56</td>
             <td class="mkt-pfm">805</td>
             <td class="mkt-pfm">$27.57</td>
             <td class="mkt-pfm">3 days</td>
@@ -2834,12 +2895,12 @@
             <td>70.6%</td>
             <td>2.09 days</td>
             <td>2.09 orders</td>
-            <td>$38.6</td>
+            <td>$40.2</td>
             <td>82.7%</td>
             <td>8.78 days</td>
             <td>8.78 orders</td>
-            <td class="mkt-ltv-main">$162</td>
-            <td class="mkt-cve">$18.50</td>
+            <td class="mkt-ltv-main">$169</td>
+            <td class="mkt-cve">$19.19</td>
             <td class="mkt-pfm">2</td>
             <td class="mkt-pfm">$18.50</td>
             <td class="mkt-pfm">3 days</td>
@@ -2855,12 +2916,12 @@
             <td>6.5%</td>
             <td>0.91 days</td>
             <td>1.53 orders</td>
-            <td>$20.0</td>
+            <td>$23.7</td>
             <td>6.5%</td>
             <td>5.39 days</td>
             <td>9.03 orders</td>
-            <td class="mkt-ltv-main">$118</td>
-            <td class="mkt-cve">$21.87</td>
+            <td class="mkt-ltv-main">$140</td>
+            <td class="mkt-cve">$25.97</td>
             <td class="mkt-pfm">1,023</td>
             <td class="mkt-pfm">$21.87</td>
             <td class="mkt-pfm">22 days</td>
@@ -2876,12 +2937,12 @@
             <td>5.55%</td>
             <td>0.06 days</td>
             <td>0.06 orders</td>
-            <td>$0.60</td>
+            <td>$0.94</td>
             <td>20.3%</td>
             <td>0.34 days</td>
             <td>0.34 orders</td>
-            <td class="mkt-ltv-main">$3.2</td>
-            <td class="mkt-cve">$9.50</td>
+            <td class="mkt-ltv-main">$5.1</td>
+            <td class="mkt-cve">$14.90</td>
             <td class="mkt-pfm">0</td>
             <td class="mkt-pfm">$19.50</td>
             <td class="mkt-pfm">90 days</td>
@@ -2969,11 +3030,11 @@
             <div class="mkt-acc">
               <details>
                 <summary>Source &amp; snapshot<span class="zh">出處與 snapshot</span></summary>
-                <div class="body"><code class="hdr">mart_ltv_customer_remaining_value</code> snapshot. <code class="hdr">within_tier_band</code> and <code class="hdr">monetary_value_platform</code> from <code class="hdr">mart_ltv_customer_remaining_value_panel_materialized</code> (those two headers are not on the snapshot). (queried 2026-08-26, HK TRANSPORT PlatformOD van, as_of_date=2024-06-30)<span class="zh">snapshot 沒有 P 欄與 monetary_value_platform；這兩欄來自 panel。</span></div>
+                <div class="body">T / P / <code class="hdr">p_alive</code> / Return Probability / historical RFM from <code class="hdr">mart_ltv_customer_remaining_value</code> snapshot + <code class="hdr">mart_ltv_customer_remaining_value_panel_materialized</code> (<code class="hdr">within_tier_band</code> and <code class="hdr">monetary_value_platform</code> are on the panel, not the snapshot). Predicted Future LTV, predicted days / orders, and predicted Platform Take / order day from sidecar VIEW <code class="hdr">mart_ltv_customer_remaining_value_pi_k_20240630</code> (Price Index + frequency-quartile Recency k; does not overwrite the live snapshot). (queried 2026-08-28, HK TRANSPORT PlatformOD van, as_of_date=2024-06-30)<span class="zh">T／P／p_alive／回流機率／歷史 RFM 來自 snapshot＋panel。預測金額／完成單日／張數來自 sidecar VIEW，不覆蓋 live snapshot。</span></div>
               </details>
               <details>
                 <summary>Decision logic<span class="zh">決策邏輯</span></summary>
-                <div class="body">Toggle CVE / PFM on the right. Action stays on both views. CVE adds Gamma-Gamma <code class="hdr">predicted_day_platform_take_per_completed_order_day</code> (Predicted Platform Take / order day). PFM adds historical <code class="hdr">frequency</code>, <code class="hdr">monetary_value_platform</code>, and <code class="hdr">days_since_last_completed_order</code>. Recency on this extract follows the chart: ≤ 180. CVE predicted is not the historical mean. USER-2272617: historical mean is $19.50; predicted is $9.50. Action = Return Probability × Already earned, each vs same-Tier P50 (High = ≥ P50). PFM uses p_alive × Already earned, same rule. Colour = what to do, not who to do first. On this extract both lenses give the same Action. USER-2272617 (T30) is Retain / Grow: $19.50 ≥ T30 Already earned P50 $17, and both p_alive 100% and 180D Return Probability 20.3% are High vs T30.<span class="zh">右側可切 CVE／PFM。Action 兩邊都保留。Recency 跟圖：距上次完成單 ≤ 180 日。CVE 加預測「有完成單那天賺多少」。PFM 加歷史頻率、歷史平均、距上次完成單。行動＝回流機會（PFM 則為 p_alive）× Already earned，兩者都與同 Tier P50 比較，High＝大於或等於 P50。顏色＝要做什麼，不是誰先做。這四位兩邊行動相同。客戶 C（T30）是 Retain／Grow。</span></div>
+                <div class="body">Toggle CVE / PFM on the right. Action stays on both views. CVE adds Gamma-Gamma <code class="hdr">predicted_day_platform_take_per_completed_order_day</code> (Predicted Platform Take / order day). PFM adds historical <code class="hdr">frequency</code>, <code class="hdr">monetary_value_platform</code>, and <code class="hdr">days_since_last_completed_order</code>. Recency on this extract follows the chart: ≤ 180. CVE predicted is not the historical mean. USER-2272617: historical mean is $19.50; predicted is $14.90. Action = Return Probability × Already earned, each vs same-Tier P50 (High = ≥ P50). PFM uses p_alive × Already earned, same rule. Colour = what to do, not who to do first. On this extract both lenses give the same Action. USER-2272617 (T30) is Retain / Grow: $19.50 ≥ T30 Already earned P50 $17, and both p_alive 100% and 180D Return Probability 20.3% are High vs T30.<span class="zh">右側可切 CVE／PFM。Action 兩邊都保留。Recency 跟圖：距上次完成單 ≤ 180 日。CVE 加預測「有完成單那天賺多少」。PFM 加歷史頻率、歷史平均、距上次完成單。行動＝回流機會（PFM 則為 p_alive）× Already earned，兩者都與同 Tier P50 比較，High＝大於或等於 P50。顏色＝要做什麼，不是誰先做。這四位兩邊行動相同。客戶 C（T30）是 Retain／Grow。</span></div>
               </details>
               <details>
                 <summary>Fields not shown<span class="zh">表上沒有的欄</span></summary>
@@ -3215,10 +3276,10 @@
       }
     };
     var ptsBase = [
-      { key: 'A', cls: 'sc-dot-retain', earned: 22224.3, prob180: 0.998188777080639, alive: 0.9981887770806379, v: 27.57, vPred: 27.57, ltv: 1882, freq: 805, since: 3, tier: 'T100', act: 'Retain / Grow', earnedP50: 3635.95, rpP50: 0.989041, paliveP50: 0.989198 },
-      { key: 'B', cls: 'sc-dot-nurture', earned: 55.5, prob180: 0.8265744712616274, alive: 0.8328906334055942, v: 18.50, vPred: 18.50, ltv: 162, freq: 2, since: 3, tier: 'T70', act: 'Nurture', earnedP50: 65, rpP50: 0.089751, paliveP50: 0.340971 },
-      { key: 'C', cls: 'sc-dot-retain', earned: 19.5, prob180: 0.20279685342447917, alive: 1.0, v: 19.50, vPred: 9.50, ltv: 3.22, freq: 0, since: 90, tier: 'T30', act: 'Retain / Grow', earnedP50: 17, rpP50: 0.031485, paliveP50: 1 },
-      { key: 'D', cls: 'sc-dot-winback', earned: 22396.3, prob180: 0.06500119101657331, alive: 0.06500119101657331, v: 21.87, vPred: 21.87, ltv: 118, freq: 1023, since: 22, tier: 'T100', act: 'Win-back', earnedP50: 3635.95, rpP50: 0.989041, paliveP50: 0.989198 }
+      { key: 'A', cls: 'sc-dot-retain', earned: 22224.3, prob180: 0.998188777080639, alive: 0.9981887770806379, v: 27.57, vPred: 32.56, ltv: 2460, freq: 805, since: 3, tier: 'T100', act: 'Retain / Grow', earnedP50: 3635.95, rpP50: 0.989041, paliveP50: 0.989198 },
+      { key: 'B', cls: 'sc-dot-nurture', earned: 55.5, prob180: 0.8265744712616274, alive: 0.8328906334055942, v: 18.50, vPred: 19.19, ltv: 169, freq: 2, since: 3, tier: 'T70', act: 'Nurture', earnedP50: 65, rpP50: 0.089751, paliveP50: 0.340971 },
+      { key: 'C', cls: 'sc-dot-retain', earned: 19.5, prob180: 0.20279685342447917, alive: 1.0, v: 19.50, vPred: 14.90, ltv: 5.06, freq: 0, since: 90, tier: 'T30', act: 'Retain / Grow', earnedP50: 17, rpP50: 0.031485, paliveP50: 1 },
+      { key: 'D', cls: 'sc-dot-winback', earned: 22396.3, prob180: 0.06500119101657331, alive: 0.06500119101657331, v: 21.87, vPred: 25.97, ltv: 140, freq: 1023, since: 22, tier: 'T100', act: 'Win-back', earnedP50: 3635.95, rpP50: 0.989041, paliveP50: 0.989198 }
     ];
     var labelsCve = {
       A: { ax: 'end', dx: -14, dy: 14 },
@@ -3549,7 +3610,7 @@
         sub: 'From Customer Signals to Marketing Action<span class="zh">由客戶訊號到 Marketing 行動</span>',
         lead: 'Four metrics, then the map, then the action.<span class="zh">四個指標 → 圖 → 行動。</span>',
         rules: '<span><b>Dot colour = Action</b> vs same-Tier P50</span><span><b>Dashed lines</b> = all-customer P50 (position only)</span><span><b>T100 line</b> = 98.9% same-Tier P50 (A and D)</span>',
-        ad: '<b>Same ~$22k T100 historical value;</b> return likelihood 99.8% vs 6.5%; Future LTV $1,882 vs $118. <b>Customer C (T30) is orange Retain / Grow</b> vs same-Tier P50. The dashed $37 line is all-customer, not C’s split (T30 Already earned P50 is $17).<span class="zh">同一個約 $22k 的 T100 歷史價值；回流機率 99.8% vs 6.5%；Future LTV $1,882 vs $118。客戶 C（T30）對同 Tier 是橙色 Retain／Grow。虛線 $37 是全體參考，不是 C 的切法（T30 Already earned P50 是 $17）。</span>',
+        ad: '<b>Same ~$22k T100 historical value;</b> return likelihood 99.8% vs 6.5%; Future LTV $2,460 vs $140. <b>Customer C (T30) is orange Retain / Grow</b> vs same-Tier P50. The dashed $37 line is all-customer, not C’s split (T30 Already earned P50 is $17).<span class="zh">同一個約 $22k 的 T100 歷史價值；回流機率 99.8% vs 6.5%；Future LTV $2,460 vs $140。客戶 C（T30）對同 Tier 是橙色 Retain／Grow。虛線 $37 是全體參考，不是 C 的切法（T30 Already earned P50 是 $17）。</span>',
         foot: '<b>30.9% of customers account for 95.5% of predicted 180D value.</b><span class="zh">30.9% 的客戶佔預測未來 180 日價值的 95.5%。</span>',
         split: '<b>Split rules</b><ul><li>Return Probability High / Low = vs same-Tier P50 (this map: 180D). High = ≥ P50.</li><li>Already earned High / Low = vs same-Tier P50. High = ≥ P50.</li><li>T100 Return Probability P50 = 98.9%; T100 Already earned P50 = $3,636 (queried 2026-08-27, HK TRANSPORT PlatformOD van, as_of_date=2024-06-30)</li><li>Customer C (T30): Already earned $19.50 ≥ T30 P50 $17, and 180D Return Probability 20.3% ≥ T30 P50 3.15% → Retain / Grow. Same on p_alive (T30 P50 = 100%). The dashed $37 line is all-customer, not C’s split.</li><li>The $37 / 3.73% lines on the chart are all-customer P50, for reading position. Action is the dot colour (same-Tier P50). The 2×2 under the chart is the Action map — the scatter does not paint those four words.</li></ul>',
         corner: 'Return Probability<span class="sub">vs same-Tier P50</span><span class="zh">回流機會（與同 Tier 客戶比較）</span>',
@@ -3814,42 +3875,42 @@
 <script>
 (function () {
   // Real Internal QA sample — 3 per tier, ORDER BY FARM_FINGERPRINT(user_unique_id).
-  // Score snapshot: gogox-ba-sandbox.analytics.mart_ltv_customer_remaining_value, as_of_date=2024-06-30, query_date=2026-08-17.
-  // Gap / Bias / P-band: reporting.pres_ltv_customer_remaining_value_next_tier_gap_vs_predicted (queried 2026-08-26).
+  // Predicted days / orders / Predicted Future LTV / Bias: sidecar VIEW mart_ltv_customer_remaining_value_pi_k_20240630 (queried 2026-08-28).
+  // p_alive / Return Probability / T / P / historical RFM: live snapshot + panel. Gap / P-band: reporting VIEW (queried 2026-08-26). as_of_date=2024-06-30.
   var users = [
-    {id:'HK-PlatformOD-USER-733469', tier:'T100', earned:2746.5, alive:2.4518867803969588e-92, prob180:2.9737169313932113e-91, ltv180:6.138112791529865e-90, days180:0.0, orders180:0.0, first:'2019-04-10', last:'2020-04-03', sinceLast:1549, inactive90:true, inactive365:true, fallback:false, pBand:'P30', histDays:133, histOrders:211, nextT:null, gapT:null, lowerT:'T99', bufT:383, nextP:'P40', gapP:226.3, lowerP:'P20', bufP:10, actDays180:0, actOrders180:0, biasTake:null, biasOrders:null, coverT:null, coverP:false, actTake180:0},
-    {id:'HK-PlatformOD-USER-699142', tier:'T100', earned:3436.5, alive:0.9975277955184364, prob180:0.9975276951379618, ltv180:253.8924525942539, days180:16.395544, orders180:17.87262, first:'2018-01-05', last:'2024-06-28', sinceLast:2, inactive90:false, inactive365:false, fallback:false, pBand:'P50', histDays:222, histOrders:242, nextT:null, gapT:null, lowerT:'T99', bufT:1073, nextP:'P60', gapP:199.5, lowerP:'P40', bufP:167.7, actDays180:13, actOrders180:15, biasTake:-0.02349056694517726, biasOrders:0.19150797338267633, coverT:null, coverP:true, actTake180:260},
-    {id:'HK-PlatformOD-USER-803845', tier:'T100', earned:22224.3, alive:0.9981887770806379, prob180:0.998188777080639, ltv180:1882.4092034204737, days180:68.282546, orders180:127.246135, first:'2018-11-05', last:'2024-06-27', sinceLast:3, inactive90:false, inactive365:false, fallback:false, pBand:'P100', histDays:806, histOrders:1502, nextT:null, gapT:null, lowerT:'T99', bufT:19860.8, nextP:null, gapP:null, lowerP:'P99', bufP:2981.8, actDays180:89, actOrders180:187, biasTake:-0.45035937765111145, biasOrders:-0.31953938510911084, coverT:null, coverP:null, actTake180:3424.8},
-    {id:'HK-PlatformOD-USER-917738', tier:'T99', earned:1285.5, alive:0.9945910163629025, prob180:0.9938065723175978, ltv180:94.32468538940311, days180:7.250233, orders180:7.762875, first:'2018-01-02', last:'2024-06-26', sinceLast:4, inactive90:false, inactive365:false, fallback:false, pBand:'P90', histDays:99, histOrders:106, nextT:'T100', gapT:1078, lowerT:'T90', bufT:965.5, nextP:'P99', gapP:213.1, lowerP:'P80', bufP:185.5, actDays180:4, actOrders180:4, biasTake:0.49721722840322413, biasOrders:0.9407188025838202, coverT:false, coverP:false, actTake180:63},
-    {id:'HK-PlatformOD-PHONE-54051918', tier:'T99', earned:378.5, alive:7.764923467733066e-18, prob180:2.1747988660087133e-16, ltv180:2.1747988660087133e-16, days180:0.0, orders180:0.0, first:'2018-01-23', last:'2019-11-22', sinceLast:1682, inactive90:true, inactive365:true, fallback:false, pBand:'P20', histDays:36, histOrders:39, nextT:'T100', gapT:1985, lowerT:'T90', bufT:58.5, nextP:'P30', gapP:19, lowerP:'P10', bufP:23.7, actDays180:0, actOrders180:0, biasTake:null, biasOrders:null, coverT:false, coverP:false, actTake180:0},
-    {id:'HK-PlatformOD-USER-94853', tier:'T99', earned:1929.5, alive:3.7239263418152856e-71, prob180:3.3889248822578896e-70, ltv180:5.319436997235944e-69, days180:0.0, orders180:0.0, first:'2018-01-10', last:'2019-08-21', sinceLast:1775, inactive90:true, inactive365:true, fallback:false, pBand:'P99', histDays:123, histOrders:160, nextT:'T100', gapT:434, lowerT:'T90', bufT:1609.5, nextP:'P100', gapP:305, lowerP:'P90', bufP:430.9, actDays180:0, actOrders180:0, biasTake:null, biasOrders:null, coverT:false, coverP:false, actTake180:0},
-    {id:'HK-PlatformOD-PHONE-90844313', tier:'T90', earned:304.0, alive:5.372013001524589e-5, prob180:8.978296585811022e-5, ltv180:0.0011960978611754948, days180:9e-05, orders180:9e-05, first:'2018-02-01', last:'2021-07-09', sinceLast:1087, inactive90:true, inactive365:true, fallback:false, pBand:'P99', histDays:23, histOrders:23, nextT:'T99', gapT:16, lowerT:'T80', bufT:163.5, nextP:'P100', gapP:12.5, lowerP:'P90', bufP:16.5, actDays180:0, actOrders180:0, biasTake:null, biasOrders:null, coverT:false, coverP:false, actTake180:0},
-    {id:'HK-PlatformOD-USER-1309478', tier:'T90', earned:209.5, alive:0.35465593026530406, prob180:0.08094242504943745, ltv180:4.842380619311761, days180:0.080942, orders180:0.161885, first:'2019-10-22', last:'2021-04-16', sinceLast:1171, inactive90:true, inactive365:true, fallback:false, pBand:'P60', histDays:3, histOrders:6, nextT:'T99', gapT:110.5, lowerT:'T80', bufT:69, nextP:'P70', gapP:8, lowerP:'P50', bufP:9, actDays180:0, actOrders180:0, biasTake:null, biasOrders:null, coverT:false, coverP:false, actTake180:0},
-    {id:'HK-PlatformOD-PHONE-59962268', tier:'T90', earned:150.5, alive:8.297282293367535e-5, prob180:5.379656861155358e-5, ltv180:0.0009038591844951259, days180:5.4e-05, orders180:6e-05, first:'2018-05-19', last:'2019-09-15', sinceLast:1750, inactive90:true, inactive365:true, fallback:false, pBand:'P20', histDays:9, histOrders:10, nextT:'T99', gapT:169.5, lowerT:'T80', bufT:10, nextP:'P30', gapP:10, lowerP:'P10', bufP:0.5, actDays180:0, actOrders180:0, biasTake:null, biasOrders:null, coverT:false, coverP:false, actTake180:0},
-    {id:'HK-PlatformOD-USER-1509241', tier:'T80', earned:89.0, alive:0.4329852989381172, prob180:0.13569584861388892, ltv180:2.9419658105951254, days180:0.135696, orders180:0.135696, first:'2019-07-19', last:'2021-10-29', sinceLast:975, inactive90:true, inactive365:true, fallback:false, pBand:'P20', histDays:4, histOrders:4, nextT:'T90', gapT:51.5, lowerT:'T70', bufT:7.5, nextP:'P30', gapP:0.9, lowerP:'P10', bufP:3.5, actDays180:0, actOrders180:0, biasTake:null, biasOrders:null, coverT:false, coverP:true, actTake180:0},
-    {id:'HK-PlatformOD-PHONE-92789454', tier:'T80', earned:103.5, alive:0.003331478833566542, prob180:0.0013366128109210554, ltv180:0.023158608572696516, days180:0.001337, orders180:0.001337, first:'2018-03-17', last:'2019-06-18', sinceLast:1839, inactive90:true, inactive365:true, fallback:false, pBand:'P50', histDays:6, histOrders:6, nextT:'T90', gapT:37, lowerT:'T70', bufT:22, nextP:'P60', gapP:1, lowerP:'P40', bufP:4, actDays180:0, actOrders180:0, biasTake:null, biasOrders:null, coverT:false, coverP:false, actTake180:0},
-    {id:'HK-PlatformOD-USER-1949926', tier:'T80', earned:89.5, alive:0.7002002337960195, prob180:0.39364566054144284, ltv180:5.188622478033242, days180:0.393646, orders180:0.393646, first:'2019-03-04', last:'2023-02-01', sinceLast:515, inactive90:true, inactive365:true, fallback:false, pBand:'P20', histDays:7, histOrders:7, nextT:'T90', gapT:51, lowerT:'T70', bufT:8, nextP:'P30', gapP:0.4, lowerP:'P10', bufP:4, actDays180:0, actOrders180:0, biasTake:null, biasOrders:null, coverT:false, coverP:true, actTake180:0},
-    {id:'HK-PlatformOD-PHONE-66988494', tier:'T70', earned:53.0, alive:0.8616670602630295, prob180:0.14826371828341228, ltv180:2.63237980041436, days180:0.148264, orders180:0.148264, first:'2018-03-28', last:'2024-03-27', sinceLast:95, inactive90:true, inactive365:false, fallback:false, pBand:'P10', histDays:3, histOrders:3, nextT:'T80', gapT:28.5, lowerT:'T60', bufT:0, nextP:'P20', gapP:2, lowerP:null, bufP:0, actDays180:0, actOrders180:0, biasTake:null, biasOrders:null, coverT:false, coverP:true, actTake180:0},
-    {id:'HK-PlatformOD-USER-2325402', tier:'T70', earned:55.5, alive:0.8328906334055942, prob180:0.8265744712616274, ltv180:161.8288276027932, days180:8.782271, orders180:8.782271, first:'2024-06-22', last:'2024-06-27', sinceLast:3, inactive90:false, inactive365:false, fallback:false, pBand:'P20', histDays:3, histOrders:3, nextT:'T80', gapT:26, lowerT:'T60', bufT:2.5, nextP:'P30', gapP:2, lowerP:'P10', bufP:0.5, actDays180:21, actOrders180:21, biasTake:-0.6105202705107263, biasOrders:-0.5817966054406427, coverT:true, coverP:true, actTake180:415.5},
-    {id:'HK-PlatformOD-USER-1771848', tier:'T70', earned:79.5, alive:0.7316896525512558, prob180:0.18726001113575017, ltv180:3.6765058889628635, days180:0.18726, orders180:0.234075, first:'2018-05-29', last:'2022-08-06', sinceLast:694, inactive90:true, inactive365:true, fallback:false, pBand:'P99', histDays:4, histOrders:5, nextT:'T80', gapT:2, lowerT:'T60', bufT:26.5, nextP:'P100', gapP:1.5, lowerP:'P90', bufP:2, actDays180:0, actOrders180:0, biasTake:null, biasOrders:null, coverT:true, coverP:true, actTake180:0},
-    {id:'HK-PlatformOD-PHONE-56187392', tier:'T60', earned:44.0, alive:0.5849175793946247, prob180:0.20884501230682434, ltv180:2.0464093570200754, days180:0.208845, orders180:0.208845, first:'2018-10-16', last:'2022-04-08', sinceLast:814, inactive90:true, inactive365:true, fallback:false, pBand:'P60', histDays:5, histOrders:5, nextT:'T70', gapT:9, lowerT:'T50', bufT:7, nextP:'P70', gapP:1.5, lowerP:'P50', bufP:0, actDays180:0, actOrders180:0, biasTake:null, biasOrders:null, coverT:false, coverP:true, actTake180:0},
-    {id:'HK-PlatformOD-PHONE-69909900', tier:'T60', earned:41.5, alive:0.6575116678833416, prob180:0.06899782071339386, ltv180:1.3728890488908778, days180:0.068998, orders180:0.068998, first:'2018-11-05', last:'2021-07-27', sinceLast:1069, inactive90:true, inactive365:true, fallback:false, pBand:'P40', histDays:2, histOrders:2, nextT:'T70', gapT:11.5, lowerT:'T50', bufT:4.5, nextP:'P50', gapP:1, lowerP:'P30', bufP:0.5, actDays180:0, actOrders180:0, biasTake:null, biasOrders:null, coverT:false, coverP:true, actTake180:0},
-    {id:'HK-PlatformOD-PHONE-98355099', tier:'T60', earned:50.5, alive:0.6963490113464175, prob180:0.2599825379739898, ltv180:2.8492575783789595, days180:0.259983, orders180:0.259983, first:'2019-01-17', last:'2022-10-11', sinceLast:628, inactive90:true, inactive365:true, fallback:false, pBand:'P90', histDays:5, histOrders:5, nextT:'T70', gapT:2.5, lowerT:'T50', bufT:13.5, nextP:'P99', gapP:0.5, lowerP:'P80', bufP:1.5, actDays180:0, actOrders180:0, biasTake:null, biasOrders:null, coverT:true, coverP:true, actTake180:0},
-    {id:'HK-PlatformOD-USER-191632', tier:'T50', earned:31.5, alive:0.10323955232194607, prob180:0.013472940052734892, ltv180:0.22256137856774297, days180:0.013473, orders180:0.013473, first:'2019-12-22', last:'2020-02-27', sinceLast:1585, inactive90:true, inactive365:true, fallback:false, pBand:'P60', histDays:2, histOrders:2, nextT:'T60', gapT:5.5, lowerT:'T40', bufT:5, nextP:'P70', gapP:0.5, lowerP:'P50', bufP:0.5, actDays180:0, actOrders180:0, biasTake:null, biasOrders:null, coverT:false, coverP:false, actTake180:0},
-    {id:'HK-PlatformOD-PHONE-96984844', tier:'T50', earned:29.5, alive:0.046496428302551476, prob180:0.006361269991551197, ltv180:0.10078448451301655, days180:0.006361, orders180:0.006361, first:'2020-03-09', last:'2020-04-02', sinceLast:1550, inactive90:true, inactive365:true, fallback:false, pBand:'P40', histDays:2, histOrders:2, nextT:'T60', gapT:7.5, lowerT:'T40', bufT:3, nextP:'P50', gapP:0.5, lowerP:'P30', bufP:0.5, actDays180:0, actOrders180:0, biasTake:null, biasOrders:null, coverT:false, coverP:false, actTake180:0},
-    {id:'HK-PlatformOD-USER-561665', tier:'T50', earned:32.0, alive:0.39814838357615073, prob180:0.045953903974345095, ltv180:0.7668815642233859, days180:0.045954, orders180:0.045954, first:'2019-05-15', last:'2020-05-19', sinceLast:1503, inactive90:true, inactive365:true, fallback:false, pBand:'P60', histDays:2, histOrders:2, nextT:'T60', gapT:5, lowerT:'T40', bufT:5.5, nextP:'P70', gapP:0, lowerP:'P50', bufP:1, actDays180:0, actOrders180:0, biasTake:null, biasOrders:null, coverT:false, coverP:true, actTake180:0},
-    {id:'HK-PlatformOD-USER-1275828', tier:'T40', earned:22.0, alive:1.0, prob180:0.08219891273660049, ltv180:0.8836383119184552, days180:0.082199, orders180:0.082199, first:'2023-03-25', last:'2023-03-25', sinceLast:463, inactive90:true, inactive365:true, fallback:true, pBand:'P40', histDays:1, histOrders:1, nextT:'T50', gapT:4.5, lowerT:'T30', bufT:2, nextP:'P50', gapP:0, lowerP:'P30', bufP:0.5, actDays180:1, actOrders180:1, biasTake:-0.9579219851467402, biasOrders:-0.9178010872633995, coverT:false, coverP:true, actTake180:21},
-    {id:'HK-PlatformOD-PHONE-91091720', tier:'T40', earned:20.5, alive:1.0, prob180:0.09877612852406921, ltv180:1.0124553173717095, days180:0.098776, orders180:0.098776, first:'2023-06-16', last:'2023-06-16', sinceLast:380, inactive90:true, inactive365:true, fallback:true, pBand:'P20', histDays:1, histOrders:1, nextT:'T50', gapT:6, lowerT:'T30', bufT:0.5, nextP:'P30', gapP:0.5, lowerP:'P10', bufP:0, actDays180:0, actOrders180:0, biasTake:null, biasOrders:null, coverT:false, coverP:true, actTake180:0},
-    {id:'HK-PlatformOD-USER-2017290', tier:'T40', earned:21.5, alive:1.0, prob180:0.1106114369497869, ltv180:1.1614200879727623, days180:0.110611, orders180:0.110611, first:'2023-07-30', last:'2023-07-30', sinceLast:336, inactive90:true, inactive365:false, fallback:true, pBand:'P30', histDays:1, histOrders:1, nextT:'T50', gapT:5, lowerT:'T30', bufT:1.5, nextP:'P40', gapP:0, lowerP:'P20', bufP:0.5, actDays180:0, actOrders180:0, biasTake:null, biasOrders:null, coverT:false, coverP:true, actTake180:0},
-    {id:'HK-PlatformOD-USER-2114237', tier:'T30', earned:20.0, alive:1.0, prob180:0.12841830213960326, ltv180:1.751477930147321, days180:0.175148, orders180:0.175148, first:'2023-12-12', last:'2023-12-12', sinceLast:201, inactive90:true, inactive365:false, fallback:true, pBand:'P100', histDays:1, histOrders:1, nextT:'T40', gapT:0, lowerT:'T20', bufT:5, nextP:null, gapP:null, lowerP:'P99', bufP:0, actDays180:0, actOrders180:0, biasTake:null, biasOrders:null, coverT:true, coverP:null, actTake180:0},
-    {id:'HK-PlatformOD-USER-1373758', tier:'T30', earned:17.5, alive:1.0, prob180:0.04266204409171269, ltv180:0.37329288580248604, days180:0.042662, orders180:0.042662, first:'2021-12-21', last:'2021-12-21', sinceLast:922, inactive90:true, inactive365:true, fallback:true, pBand:'P60', histDays:1, histOrders:1, nextT:'T40', gapT:2.5, lowerT:'T20', bufT:2.5, nextP:'P70', gapP:0, lowerP:'P50', bufP:0.5, actDays180:0, actOrders180:0, biasTake:null, biasOrders:null, coverT:false, coverP:true, actTake180:0},
-    {id:'HK-PlatformOD-PHONE-59167643', tier:'T30', earned:16.5, alive:1.0, prob180:0.03618268305119981, ltv180:0.30755280593519835, days180:0.036183, orders180:0.036183, first:'2021-07-03', last:'2021-07-03', sinceLast:1093, inactive90:true, inactive365:true, fallback:true, pBand:'P50', histDays:1, histOrders:1, nextT:'T40', gapT:3.5, lowerT:'T20', bufT:1.5, nextP:'P60', gapP:0.5, lowerP:'P40', bufP:0, actDays180:0, actOrders180:0, biasTake:null, biasOrders:null, coverT:false, coverP:false, actTake180:0},
-    {id:'HK-PlatformOD-PHONE-92284616', tier:'T20', earned:13.5, alive:1.0, prob180:0.020091565552822252, ltv180:0.1356180674815502, days180:0.020092, orders180:0.020092, first:'2019-01-13', last:'2019-01-13', sinceLast:1995, inactive90:true, inactive365:true, fallback:true, pBand:'P60', histDays:1, histOrders:1, nextT:'T30', gapT:1.5, lowerT:'T10', bufT:2, nextP:'P70', gapP:0, lowerP:'P50', bufP:0, actDays180:0, actOrders180:0, biasTake:null, biasOrders:null, coverT:false, coverP:true, actTake180:0},
-    {id:'HK-PlatformOD-PHONE-52227863', tier:'T20', earned:11.5, alive:1.0, prob180:0.03592742885598401, ltv180:0.21556457313590405, days180:0.035927, orders180:0.035927, first:'2021-06-25', last:'2021-06-25', sinceLast:1101, inactive90:true, inactive365:true, fallback:true, pBand:'P10', histDays:1, histOrders:1, nextT:'T30', gapT:3.5, lowerT:'T10', bufT:0, nextP:'P20', gapP:0.5, lowerP:null, bufP:0, actDays180:0, actOrders180:0, biasTake:null, biasOrders:null, coverT:false, coverP:false, actTake180:0},
-    {id:'HK-PlatformOD-USER-1393860', tier:'T20', earned:14.0, alive:1.0, prob180:0.03814769661524421, ltv180:0.2670338763067095, days180:0.038148, orders180:0.038148, first:'2021-08-30', last:'2021-08-30', sinceLast:1035, inactive90:true, inactive365:true, fallback:true, pBand:'P70', histDays:1, histOrders:1, nextT:'T30', gapT:1, lowerT:'T10', bufT:2.5, nextP:'P80', gapP:0, lowerP:'P60', bufP:0.5, actDays180:0, actOrders180:0, biasTake:null, biasOrders:null, coverT:false, coverP:true, actTake180:0},
-    {id:'HK-PlatformOD-USER-494164', tier:'T10', earned:7.0, alive:1.0, prob180:0.019827652508674, ltv180:0.109052088797707, days180:0.019828, orders180:0.019828, first:'2018-12-17', last:'2018-12-17', sinceLast:2022, inactive90:true, inactive365:true, fallback:true, pBand:'P30', histDays:1, histOrders:1, nextT:'T20', gapT:4.5, lowerT:null, bufT:7, nextP:'P40', gapP:0.5, lowerP:'P20', bufP:0.5, actDays180:0, actOrders180:0, biasTake:null, biasOrders:null, coverT:false, coverP:false, actTake180:0},
-    {id:'HK-PlatformOD-PHONE-96275957', tier:'T10', earned:5.0, alive:1.0, prob180:0.01883788085108167, ltv180:0.10360834468094919, days180:0.018838, orders180:0.018838, first:'2018-08-31', last:'2018-08-31', sinceLast:2130, inactive90:true, inactive365:true, fallback:true, pBand:'P10', histDays:1, histOrders:1, nextT:'T20', gapT:6.5, lowerT:null, bufT:5, nextP:'P20', gapP:1, lowerP:null, bufP:5, actDays180:0, actOrders180:0, biasTake:null, biasOrders:null, coverT:false, coverP:false, actTake180:0},
-    {id:'HK-PlatformOD-PHONE-98454210', tier:'T10', earned:8.5, alive:1.0, prob180:0.01853798767968184, ltv180:0.10195893223825013, days180:0.018538, orders180:0.018538, first:'2018-07-27', last:'2018-07-27', sinceLast:2165, inactive90:true, inactive365:true, fallback:true, pBand:'P60', histDays:1, histOrders:1, nextT:'T20', gapT:3, lowerT:null, bufT:8.5, nextP:'P70', gapP:0.5, lowerP:'P50', bufP:0, actDays180:0, actOrders180:0, biasTake:null, biasOrders:null, coverT:false, coverP:false, actTake180:0}
+    {id:'HK-PlatformOD-USER-733469', tier:'T100', earned:2746.5, alive:2.4518867803969588e-92, prob180:2.9737169313932113e-91, ltv180:9.567353875148507e-90, days180:2.9737169313932113e-91, orders180:4.7177012971726885e-91, first:'2019-04-10', last:'2020-04-03', sinceLast:1549, inactive90:true, inactive365:true, fallback:false, pBand:'P30', histDays:133, histOrders:211, nextT:null, gapT:null, lowerT:'T99', bufT:383, nextP:'P40', gapP:226.3, lowerP:'P20', bufP:10, actDays180:0, actOrders180:0, biasTake:null, biasOrders:null, coverT:null, coverP:false, actTake180:0},
+    {id:'HK-PlatformOD-USER-699142', tier:'T100', earned:3436.5, alive:0.9975277955184364, prob180:0.9975276951379618, ltv180:178.11186578965876, days180:9.44352, orders180:10.294287567567567, first:'2018-01-05', last:'2024-06-28', sinceLast:2, inactive90:false, inactive365:false, fallback:false, pBand:'P50', histDays:222, histOrders:242, nextT:null, gapT:null, lowerT:'T99', bufT:1073, nextP:'P60', gapP:199.5, lowerP:'P40', bufP:167.7, actDays180:13, actOrders180:15, biasTake:-0.31495436234746627, biasOrders:-0.3137141621621622, coverT:null, coverP:true, actTake180:260},
+    {id:'HK-PlatformOD-USER-803845', tier:'T100', earned:22224.3, alive:0.9981887770806379, prob180:0.998188777080639, ltv180:2459.787028929331, days180:75.54816, orders180:140.7857770719603, first:'2018-11-05', last:'2024-06-27', sinceLast:3, inactive90:false, inactive365:false, fallback:false, pBand:'P100', histDays:806, histOrders:1502, nextT:null, gapT:null, lowerT:'T99', bufT:19860.8, nextP:null, gapP:null, lowerP:'P99', bufP:2981.8, actDays180:89, actOrders180:187, biasTake:-0.28177206583469666, biasOrders:-0.24713488196812675, coverT:null, coverP:null, actTake180:3424.8},
+    {id:'HK-PlatformOD-USER-917738', tier:'T99', earned:1285.5, alive:0.9945910163629025, prob180:0.9938065723175978, ltv180:58.59851431003579, days180:3.86646, orders180:4.139846060606061, first:'2018-01-02', last:'2024-06-26', sinceLast:4, inactive90:false, inactive365:false, fallback:false, pBand:'P90', histDays:99, histOrders:106, nextT:'T100', gapT:1078, lowerT:'T90', bufT:965.5, nextP:'P99', gapP:213.1, lowerP:'P80', bufP:185.5, actDays180:4, actOrders180:4, biasTake:-0.06986485222165414, biasOrders:0.03496151515151524, coverT:false, coverP:false, actTake180:63},
+    {id:'HK-PlatformOD-PHONE-54051918', tier:'T99', earned:378.5, alive:7.764923467733066e-18, prob180:2.1747988660087133e-16, ltv180:3.4216817432671913e-16, days180:2.0484491567807743e-17, orders180:2.219153253179172e-17, first:'2018-01-23', last:'2019-11-22', sinceLast:1682, inactive90:true, inactive365:true, fallback:false, pBand:'P20', histDays:36, histOrders:39, nextT:'T100', gapT:1985, lowerT:'T90', bufT:58.5, nextP:'P30', gapP:19, lowerP:'P10', bufP:23.7, actDays180:0, actOrders180:0, biasTake:null, biasOrders:null, coverT:false, coverP:false, actTake180:0},
+    {id:'HK-PlatformOD-USER-94853', tier:'T99', earned:1929.5, alive:3.7239263418152856e-71, prob180:3.3889248822578896e-70, ltv180:8.55801590210065e-69, days180:3.3889248822578896e-70, orders180:4.408357570416767e-70, first:'2018-01-10', last:'2019-08-21', sinceLast:1775, inactive90:true, inactive365:true, fallback:false, pBand:'P99', histDays:123, histOrders:160, nextT:'T100', gapT:434, lowerT:'T90', bufT:1609.5, nextP:'P100', gapP:305, lowerP:'P90', bufP:430.9, actDays180:0, actOrders180:0, biasTake:null, biasOrders:null, coverT:false, coverP:false, actTake180:0},
+    {id:'HK-PlatformOD-PHONE-90844313', tier:'T90', earned:304.0, alive:5.372013001524589e-5, prob180:8.978296585811022e-5, ltv180:0.0018187108050945048, days180:8.978296585811022e-05, orders180:8.978296585811022e-05, first:'2018-02-01', last:'2021-07-09', sinceLast:1087, inactive90:true, inactive365:true, fallback:false, pBand:'P99', histDays:23, histOrders:23, nextT:'T99', gapT:16, lowerT:'T80', bufT:163.5, nextP:'P100', gapP:12.5, lowerP:'P90', bufP:16.5, actDays180:0, actOrders180:0, biasTake:null, biasOrders:null, coverT:false, coverP:false, actTake180:0},
+    {id:'HK-PlatformOD-USER-1309478', tier:'T90', earned:209.5, alive:0.35465593026530406, prob180:0.08094242504943745, ltv180:6.423435136361712, days180:0.08094242504943745, orders180:0.1618848500988749, first:'2019-10-22', last:'2021-04-16', sinceLast:1171, inactive90:true, inactive365:true, fallback:false, pBand:'P60', histDays:3, histOrders:6, nextT:'T99', gapT:110.5, lowerT:'T80', bufT:69, nextP:'P70', gapP:8, lowerP:'P50', bufP:9, actDays180:0, actOrders180:0, biasTake:null, biasOrders:null, coverT:false, coverP:false, actTake180:0},
+    {id:'HK-PlatformOD-PHONE-59962268', tier:'T90', earned:150.5, alive:8.297282293367535e-5, prob180:5.379656861155358e-5, ltv180:0.0014195177005701014, days180:5.379656861155358e-05, orders180:5.977396512394842e-05, first:'2018-05-19', last:'2019-09-15', sinceLast:1750, inactive90:true, inactive365:true, fallback:false, pBand:'P20', histDays:9, histOrders:10, nextT:'T99', gapT:169.5, lowerT:'T80', bufT:10, nextP:'P30', gapP:10, lowerP:'P10', bufP:0.5, actDays180:0, actOrders180:0, biasTake:null, biasOrders:null, coverT:false, coverP:false, actTake180:0},
+    {id:'HK-PlatformOD-USER-1509241', tier:'T80', earned:89.0, alive:0.4329852989381172, prob180:0.13569584861388892, ltv180:3.794771850850937, days180:0.13569584861388892, orders180:0.13569584861388892, first:'2019-07-19', last:'2021-10-29', sinceLast:975, inactive90:true, inactive365:true, fallback:false, pBand:'P20', histDays:4, histOrders:4, nextT:'T90', gapT:51.5, lowerT:'T70', bufT:7.5, nextP:'P30', gapP:0.9, lowerP:'P10', bufP:3.5, actDays180:0, actOrders180:0, biasTake:null, biasOrders:null, coverT:false, coverP:true, actTake180:0},
+    {id:'HK-PlatformOD-PHONE-92789454', tier:'T80', earned:103.5, alive:0.003331478833566542, prob180:0.0013366128109210554, ltv180:0.036417063062196914, days180:0.0013366128109210554, orders180:0.0013366128109210554, first:'2018-03-17', last:'2019-06-18', sinceLast:1839, inactive90:true, inactive365:true, fallback:false, pBand:'P50', histDays:6, histOrders:6, nextT:'T90', gapT:37, lowerT:'T70', bufT:22, nextP:'P60', gapP:1, lowerP:'P40', bufP:4, actDays180:0, actOrders180:0, biasTake:null, biasOrders:null, coverT:false, coverP:false, actTake180:0},
+    {id:'HK-PlatformOD-USER-1949926', tier:'T80', earned:89.5, alive:0.7002002337960195, prob180:0.39364566054144284, ltv180:7.177474224508064, days180:0.39364566054144284, orders180:0.39364566054144284, first:'2019-03-04', last:'2023-02-01', sinceLast:515, inactive90:true, inactive365:true, fallback:false, pBand:'P20', histDays:7, histOrders:7, nextT:'T90', gapT:51, lowerT:'T70', bufT:8, nextP:'P30', gapP:0.4, lowerP:'P10', bufP:4, actDays180:0, actOrders180:0, biasTake:null, biasOrders:null, coverT:false, coverP:true, actTake180:0},
+    {id:'HK-PlatformOD-PHONE-66988494', tier:'T70', earned:53.0, alive:0.8616670602630295, prob180:0.14826371828341228, ltv180:3.137534780640729, days180:0.14826371828341228, orders180:0.14826371828341228, first:'2018-03-28', last:'2024-03-27', sinceLast:95, inactive90:true, inactive365:false, fallback:false, pBand:'P10', histDays:3, histOrders:3, nextT:'T80', gapT:28.5, lowerT:'T60', bufT:0, nextP:'P20', gapP:2, lowerP:null, bufP:0, actDays180:0, actOrders180:0, biasTake:null, biasOrders:null, coverT:false, coverP:true, actTake180:0},
+    {id:'HK-PlatformOD-USER-2325402', tier:'T70', earned:55.5, alive:0.8328906334055942, prob180:0.8265744712616274, ltv180:168.5499502196017, days180:8.782271285746502, orders180:8.782271285746502, first:'2024-06-22', last:'2024-06-27', sinceLast:3, inactive90:false, inactive365:false, fallback:false, pBand:'P20', histDays:3, histOrders:3, nextT:'T80', gapT:26, lowerT:'T60', bufT:2.5, nextP:'P30', gapP:2, lowerP:'P10', bufP:0.5, actDays180:21, actOrders180:21, biasTake:-0.5943442834666626, biasOrders:-0.5817966054406428, coverT:true, coverP:true, actTake180:415.5},
+    {id:'HK-PlatformOD-USER-1771848', tier:'T70', earned:79.5, alive:0.7316896525512558, prob180:0.18726001113575017, ltv180:4.225556118681152, days180:0.18726001113575017, orders180:0.2340750139196877, first:'2018-05-29', last:'2022-08-06', sinceLast:694, inactive90:true, inactive365:true, fallback:false, pBand:'P99', histDays:4, histOrders:5, nextT:'T80', gapT:2, lowerT:'T60', bufT:26.5, nextP:'P100', gapP:1.5, lowerP:'P90', bufP:2, actDays180:0, actOrders180:0, biasTake:null, biasOrders:null, coverT:true, coverP:true, actTake180:0},
+    {id:'HK-PlatformOD-PHONE-56187392', tier:'T60', earned:44.0, alive:0.5849175793946247, prob180:0.20884501230682434, ltv180:2.6891132606250805, days180:0.20884501230682434, orders180:0.20884501230682434, first:'2018-10-16', last:'2022-04-08', sinceLast:814, inactive90:true, inactive365:true, fallback:false, pBand:'P60', histDays:5, histOrders:5, nextT:'T70', gapT:9, lowerT:'T50', bufT:7, nextP:'P70', gapP:1.5, lowerP:'P50', bufP:0, actDays180:0, actOrders180:0, biasTake:null, biasOrders:null, coverT:false, coverP:true, actTake180:0},
+    {id:'HK-PlatformOD-PHONE-69909900', tier:'T60', earned:41.5, alive:0.6575116678833416, prob180:0.06899782071339386, ltv180:1.8777157607930652, days180:0.06899782071339386, orders180:0.06899782071339386, first:'2018-11-05', last:'2021-07-27', sinceLast:1069, inactive90:true, inactive365:true, fallback:false, pBand:'P40', histDays:2, histOrders:2, nextT:'T70', gapT:11.5, lowerT:'T50', bufT:4.5, nextP:'P50', gapP:1, lowerP:'P30', bufP:0.5, actDays180:0, actOrders180:0, biasTake:null, biasOrders:null, coverT:false, coverP:true, actTake180:0},
+    {id:'HK-PlatformOD-PHONE-98355099', tier:'T60', earned:50.5, alive:0.6963490113464175, prob180:0.2599825379739898, ltv180:4.031708532203801, days180:0.2599825379739898, orders180:0.2599825379739898, first:'2019-01-17', last:'2022-10-11', sinceLast:628, inactive90:true, inactive365:true, fallback:false, pBand:'P90', histDays:5, histOrders:5, nextT:'T70', gapT:2.5, lowerT:'T50', bufT:13.5, nextP:'P99', gapP:0.5, lowerP:'P80', bufP:1.5, actDays180:0, actOrders180:0, biasTake:null, biasOrders:null, coverT:true, coverP:true, actTake180:0},
+    {id:'HK-PlatformOD-USER-191632', tier:'T50', earned:31.5, alive:0.10323955232194607, prob180:0.013472940052734892, ltv180:0.32395929661146916, days180:0.013472940052734892, orders180:0.013472940052734892, first:'2019-12-22', last:'2020-02-27', sinceLast:1585, inactive90:true, inactive365:true, fallback:false, pBand:'P60', histDays:2, histOrders:2, nextT:'T60', gapT:5.5, lowerT:'T40', bufT:5, nextP:'P70', gapP:0.5, lowerP:'P50', bufP:0.5, actDays180:0, actOrders180:0, biasTake:null, biasOrders:null, coverT:false, coverP:false, actTake180:0},
+    {id:'HK-PlatformOD-PHONE-96984844', tier:'T50', earned:29.5, alive:0.046496428302551476, prob180:0.006361269991551197, ltv180:0.14879457651627057, days180:0.006361269991551197, orders180:0.006361269991551197, first:'2020-03-09', last:'2020-04-02', sinceLast:1550, inactive90:true, inactive365:true, fallback:false, pBand:'P40', histDays:2, histOrders:2, nextT:'T60', gapT:7.5, lowerT:'T40', bufT:3, nextP:'P50', gapP:0.5, lowerP:'P30', bufP:0.5, actDays180:0, actOrders180:0, biasTake:null, biasOrders:null, coverT:false, coverP:false, actTake180:0},
+    {id:'HK-PlatformOD-USER-561665', tier:'T50', earned:32.0, alive:0.39814838357615073, prob180:0.045953903974345095, ltv180:1.1319353891860273, days180:0.045953903974345095, orders180:0.045953903974345095, first:'2019-05-15', last:'2020-05-19', sinceLast:1503, inactive90:true, inactive365:true, fallback:false, pBand:'P60', histDays:2, histOrders:2, nextT:'T60', gapT:5, lowerT:'T40', bufT:5.5, nextP:'P70', gapP:0, lowerP:'P50', bufP:1, actDays180:0, actOrders180:0, biasTake:null, biasOrders:null, coverT:false, coverP:true, actTake180:0},
+    {id:'HK-PlatformOD-USER-1275828', tier:'T40', earned:22.0, alive:1.0, prob180:0.08219891273660049, ltv180:1.3475211356366157, days180:0.08219891273660049, orders180:0.08219891273660049, first:'2023-03-25', last:'2023-03-25', sinceLast:463, inactive90:true, inactive365:true, fallback:true, pBand:'P40', histDays:1, histOrders:1, nextT:'T50', gapT:4.5, lowerT:'T30', bufT:2, nextP:'P50', gapP:0, lowerP:'P30', bufP:0.5, actDays180:1, actOrders180:1, biasTake:-0.9358323268744468, biasOrders:-0.9178010872633995, coverT:false, coverP:true, actTake180:21},
+    {id:'HK-PlatformOD-PHONE-91091720', tier:'T40', earned:20.5, alive:1.0, prob180:0.09877612852406921, ltv180:1.5816206557498877, days180:0.09877612852406921, orders180:0.09877612852406921, first:'2023-06-16', last:'2023-06-16', sinceLast:380, inactive90:true, inactive365:true, fallback:true, pBand:'P20', histDays:1, histOrders:1, nextT:'T50', gapT:6, lowerT:'T30', bufT:0.5, nextP:'P30', gapP:0.5, lowerP:'P10', bufP:0, actDays180:0, actOrders180:0, biasTake:null, biasOrders:null, coverT:false, coverP:true, actTake180:0},
+    {id:'HK-PlatformOD-USER-2017290', tier:'T40', earned:21.5, alive:1.0, prob180:0.1106114369497869, ltv180:1.807109263041044, days180:0.1106114369497869, orders180:0.1106114369497869, first:'2023-07-30', last:'2023-07-30', sinceLast:336, inactive90:true, inactive365:false, fallback:true, pBand:'P30', histDays:1, histOrders:1, nextT:'T50', gapT:5, lowerT:'T30', bufT:1.5, nextP:'P40', gapP:0, lowerP:'P20', bufP:0.5, actDays180:0, actOrders180:0, biasTake:null, biasOrders:null, coverT:false, coverP:true, actTake180:0},
+    {id:'HK-PlatformOD-USER-2114237', tier:'T30', earned:20.0, alive:1.0, prob180:0.12841830213960326, ltv180:2.1792301755684482, days180:0.1751477930147321, orders180:0.1751477930147321, first:'2023-12-12', last:'2023-12-12', sinceLast:201, inactive90:true, inactive365:false, fallback:true, pBand:'P100', histDays:1, histOrders:1, nextT:'T40', gapT:0, lowerT:'T20', bufT:5, nextP:null, gapP:null, lowerP:'P99', bufP:0, actDays180:0, actOrders180:0, biasTake:null, biasOrders:null, coverT:true, coverP:null, actTake180:0},
+    {id:'HK-PlatformOD-USER-1373758', tier:'T30', earned:17.5, alive:1.0, prob180:0.04266204409171269, ltv180:0.5825946019292142, days180:0.04266204409171269, orders180:0.04266204409171269, first:'2021-12-21', last:'2021-12-21', sinceLast:922, inactive90:true, inactive365:true, fallback:true, pBand:'P60', histDays:1, histOrders:1, nextT:'T40', gapT:2.5, lowerT:'T20', bufT:2.5, nextP:'P70', gapP:0, lowerP:'P50', bufP:0.5, actDays180:0, actOrders180:0, biasTake:null, biasOrders:null, coverT:false, coverP:true, actTake180:0},
+    {id:'HK-PlatformOD-PHONE-59167643', tier:'T30', earned:16.5, alive:1.0, prob180:0.03618268305119981, ltv180:0.4801246835319154, days180:0.03618268305119981, orders180:0.03618268305119981, first:'2021-07-03', last:'2021-07-03', sinceLast:1093, inactive90:true, inactive365:true, fallback:true, pBand:'P50', histDays:1, histOrders:1, nextT:'T40', gapT:3.5, lowerT:'T20', bufT:1.5, nextP:'P60', gapP:0.5, lowerP:'P40', bufP:0, actDays180:0, actOrders180:0, biasTake:null, biasOrders:null, coverT:false, coverP:false, actTake180:0},
+    {id:'HK-PlatformOD-PHONE-92284616', tier:'T20', earned:13.5, alive:1.0, prob180:0.020091565552822252, ltv180:0.2138744440736579, days180:0.020091565552822252, orders180:0.020091565552822252, first:'2019-01-13', last:'2019-01-13', sinceLast:1995, inactive90:true, inactive365:true, fallback:true, pBand:'P60', histDays:1, histOrders:1, nextT:'T30', gapT:1.5, lowerT:'T10', bufT:2, nextP:'P70', gapP:0, lowerP:'P50', bufP:0, actDays180:0, actOrders180:0, biasTake:null, biasOrders:null, coverT:false, coverP:true, actTake180:0},
+    {id:'HK-PlatformOD-PHONE-52227863', tier:'T20', earned:11.5, alive:1.0, prob180:0.03592742885598401, ltv180:0.3365563693261935, days180:0.03592742885598401, orders180:0.03592742885598401, first:'2021-06-25', last:'2021-06-25', sinceLast:1101, inactive90:true, inactive365:true, fallback:true, pBand:'P10', histDays:1, histOrders:1, nextT:'T30', gapT:3.5, lowerT:'T10', bufT:0, nextP:'P20', gapP:0.5, lowerP:null, bufP:0, actDays180:0, actOrders180:0, biasTake:null, biasOrders:null, coverT:false, coverP:false, actTake180:0},
+    {id:'HK-PlatformOD-USER-1393860', tier:'T20', earned:14.0, alive:1.0, prob180:0.03814769661524421, ltv180:0.41884427533802826, days180:0.03814769661524421, orders180:0.03814769661524421, first:'2021-08-30', last:'2021-08-30', sinceLast:1035, inactive90:true, inactive365:true, fallback:true, pBand:'P70', histDays:1, histOrders:1, nextT:'T30', gapT:1, lowerT:'T10', bufT:2.5, nextP:'P80', gapP:0, lowerP:'P60', bufP:0.5, actDays180:0, actOrders180:0, biasTake:null, biasOrders:null, coverT:false, coverP:true, actTake180:0},
+    {id:'HK-PlatformOD-USER-494164', tier:'T10', earned:7.0, alive:1.0, prob180:0.019827652508674, ltv180:0.17235759962322375, days180:0.019827652508674, orders180:0.019827652508674, first:'2018-12-17', last:'2018-12-17', sinceLast:2022, inactive90:true, inactive365:true, fallback:true, pBand:'P30', histDays:1, histOrders:1, nextT:'T20', gapT:4.5, lowerT:null, bufT:7, nextP:'P40', gapP:0.5, lowerP:'P20', bufP:0.5, actDays180:0, actOrders180:0, biasTake:null, biasOrders:null, coverT:false, coverP:false, actTake180:0},
+    {id:'HK-PlatformOD-PHONE-96275957', tier:'T10', earned:5.0, alive:1.0, prob180:0.01883788085108167, ltv180:0.16375372344559339, days180:0.01883788085108167, orders180:0.01883788085108167, first:'2018-08-31', last:'2018-08-31', sinceLast:2130, inactive90:true, inactive365:true, fallback:true, pBand:'P10', histDays:1, histOrders:1, nextT:'T20', gapT:6.5, lowerT:null, bufT:5, nextP:'P20', gapP:1, lowerP:null, bufP:5, actDays180:0, actOrders180:0, biasTake:null, biasOrders:null, coverT:false, coverP:false, actTake180:0},
+    {id:'HK-PlatformOD-PHONE-98454210', tier:'T10', earned:8.5, alive:1.0, prob180:0.01853798767968184, ltv180:0.16114681538407383, days180:0.01853798767968184, orders180:0.01853798767968184, first:'2018-07-27', last:'2018-07-27', sinceLast:2165, inactive90:true, inactive365:true, fallback:true, pBand:'P60', histDays:1, histOrders:1, nextT:'T20', gapT:3, lowerT:null, bufT:8.5, nextP:'P70', gapP:0.5, lowerP:'P50', bufP:0, actDays180:0, actOrders180:0, biasTake:null, biasOrders:null, coverT:false, coverP:false, actTake180:0}
   ];
 
   var TIER_ORDER = ['T100','T99','T90','T80','T70','T60','T50','T40','T30','T20','T10'];
@@ -4572,8 +4633,8 @@
 <dialog class="why180-dialog" id="churnDialog" aria-labelledby="churnTitle">
   <div class="why180-head">
     <div>
-      <h2 id="churnTitle">As-of Churn vs Predicted Churn vs Churn Rate</h2>
-      <p>Two of the numbers on this page are for one customer. Churn Rate is a different thing — a number for a group. This table keeps the three apart, in plain language.<span class="zh">這頁面上有兩個數字是「這一位客人」自己的。流失率是另一回事——是「一班客人」的數字。這個表把三者分開，用白話講清楚。</span></p>
+      <h2 id="churnTitle">Three Different Churn Measures<span class="zh">三種不同的流失指標</span></h2>
+      <p>Two numbers are for one customer. Churn Rate is for a group. The time direction is the real difference — already stopped as of the cut-off, may leave in the next N days, or already left in a past reporting period.<span class="zh">兩個數字是「這一位客戶」。流失率是「一群客戶」。真正的分別是時間方向：截至截止日可能已經走了、未來 N 日會否走、還是回頭看一段期間實際走了多少。</span></p>
     </div>
     <button type="button" class="why180-close" id="churnClose" aria-label="Close">×</button>
   </div>
@@ -4592,50 +4653,49 @@
         <tbody>
           <tr>
             <td>In plain words<span class="zh">白話說法</span></td>
-            <td>Has this one customer probably already stopped, right now?<span class="zh">這一位客人，現在是否已經流失？</span></td>
-            <td class="col-hl">Will this one customer place zero orders in the next N days?<span class="zh">這一位客人，未來 N 日會否完全沒有下單？</span></td>
-            <td>Out of a group of customers, what share churned?<span class="zh">一群客人裡面，有多少比例已經流失？</span></td>
+            <td>Has this customer probably already stopped <b>as of the cut-off date</b>?<span class="zh">截至指定日期，這位客戶有多大機會已經流失？</span></td>
+            <td class="col-hl">What is the chance this customer will churn <b>during the next N days</b>?<span class="zh">這位客戶在未來 N 日內有多大機會流失？</span></td>
+            <td>Of a group of customers, what % <b>churned during a specified period</b>?<span class="zh">在指定期間內，一群客戶有多少 % 流失？</span></td>
           </tr>
           <tr>
-            <td>Level<span class="zh">層級</span></td>
-            <td>Individual — this one customer<span class="zh">個人層級——這一位客人</span></td>
-            <td class="col-hl">Individual — this one customer<span class="zh">個人層級——這一位客人</span></td>
-            <td>Group — a segment, a campaign list, or the whole customer base<span class="zh">群組層級——一個分群、一份 campaign 名單，或全公司</span></td>
+            <td>Who?<span class="zh">對象</span></td>
+            <td>One customer<span class="zh">一位客戶</span></td>
+            <td class="col-hl">One customer<span class="zh">一位客戶</span></td>
+            <td>A group<span class="zh">一群客戶</span></td>
           </tr>
           <tr>
-            <td>Business level or consumer level<span class="zh">Business level 還是 Consumer level</span></td>
-            <td>Consumer level — looked up per customer<span class="zh">Consumer level——逐位客人查閱</span></td>
-            <td class="col-hl">Consumer level — looked up per customer<span class="zh">Consumer level——逐位客人查閱</span></td>
-            <td>Business level — reported on a dashboard or campaign summary<span class="zh">Business level——出現在 dashboard 或 campaign 總結報告</span></td>
+            <td>Time<span class="zh">時間方向</span></td>
+            <td><b>As-of date / snapshot</b><span class="zh">截止日／快照</span></td>
+            <td class="col-hl"><b>Future window</b><span class="zh">未來時間窗</span></td>
+            <td><b>Historical period — e.g. last month / last quarter</b><span class="zh">歷史統計期間，例如上月／上季</span></td>
           </tr>
           <tr>
-            <td>Time window<span class="zh">時間窗</span></td>
-            <td>None — a snapshot as of the cutoff date<span class="zh">沒有——截止日當天的快照</span></td>
-            <td class="col-hl">Yes — a future window, e.g. next 180 days<span class="zh">有——未來一段日子，例如未來 180 日</span></td>
-            <td>Whatever window the group report is measuring<span class="zh">跟該群組報表所用的時間窗一致</span></td>
+            <td>Example<span class="zh">例子</span></td>
+            <td>As of 31 Dec: Customer A has 70% probability already churned<span class="zh">截至 12 月 31 日：客戶 A 有 70% 機率已經流失</span></td>
+            <td class="col-hl">Next 180D: Customer A has 40% probability of churn<span class="zh">未來 180 日：客戶 A 有 40% 機率會流失</span></td>
+            <td>Jan–Mar: 12% of the customer group churned<span class="zh">1 月至 3 月：這群客戶有 12% 已經流失</span></td>
           </tr>
           <tr>
-            <td>How it is worked out<span class="zh">如何計算</span></td>
-            <td>1 − p_alive</td>
-            <td class="col-hl">1 − Return Probability</td>
-            <td>Average of everyone's individual probability, or the actual share that churned<span class="zh">將個別客人的機率取平均，或直接統計實際流失的比例</span></td>
+            <td>Type<span class="zh">類型</span></td>
+            <td>Model-estimated probability<span class="zh">模型估計的機率（單一客戶）</span></td>
+            <td class="col-hl">Model-predicted probability<span class="zh">模型預測的機率（單一客戶）</span></td>
+            <td>Group KPI / observed rate — already happened; not a future prediction<span class="zh">客群 KPI／已發生的觀察比率。回頭看歷史，不是未來預測</span></td>
           </tr>
           <tr>
             <td>Use it for<span class="zh">用途</span></td>
             <td>Diagnostic only — not a CRM signal<span class="zh">僅供診斷，不是 CRM 訊號</span></td>
-            <td class="col-hl">CRM / campaign decisions on this customer<span class="zh">CRM／campaign 對這位客人的決策</span></td>
-            <td>Reporting how a whole group is doing<span class="zh">匯報整個群組的表現</span></td>
+            <td class="col-hl">CRM / campaign decisions on this customer<span class="zh">CRM／campaign 對這位客戶的決策</span></td>
+            <td>Report how a group already did in a past period<span class="zh">匯報一群客戶在過去期間實際走了多少</span></td>
           </tr>
           <tr>
             <td>Watch out for<span class="zh">要留意</span></td>
-            <td>Unreliable for a customer who ordered only once<span class="zh">對只下過一次單的客人失真</span></td>
-            <td class="col-hl">This is the one to use — but still one customer's own number<span class="zh">應該使用這一個——但仍然是這一位客人自己的數字</span></td>
-            <td>Never store a rate in a single customer's row — it belongs to the group, not the person<span class="zh">不要將流失率寫入單一客人的欄位——這個數字屬於群組，不屬於個人</span></td>
+            <td>Unreliable for a customer who ordered only once<span class="zh">對只下過一次單的客戶失真</span></td>
+            <td class="col-hl">This is the one to use — still one customer's own probability, not a group rate<span class="zh">應該使用這一個——仍然是這一位客戶自己的機率，不是客群流失率</span></td>
+            <td>Never put a group rate on one customer's row. Do not treat this as a future prediction<span class="zh">不要把流失率寫進單一客戶列。這不是未來預測</span></td>
           </tr>
         </tbody>
       </table>
     </div>
-    <p style="margin:14px 2px 0;font-size:12.5px;color:var(--ink-500);line-height:1.5;">Example in plain terms: if 100 customers all look similar to this one, and their average Predicted Churn Probability is 60%, then the expected churn rate for that group of 100 is about 60%. But this one customer's own number stays their own number — it does not become "the rate" just because it is a probability.<span class="zh">舉個例子：如果有 100 位客人條件跟這位客人相似，他們的 Predicted Churn Probability 平均是 60%，那麼這 100 人這個群組的預期流失率就大約是 60%。但這一位客人自己的數字，仍然只是他自己的數字——不會因為它是一個機率，就自動變成「流失率」。</span></p>
   </div>
 </dialog>
 <script>
