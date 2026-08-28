@@ -221,6 +221,19 @@
   }
   .topnav a:hover, .topnav a:focus-visible { color: var(--ink-900); background: var(--surface-2); }
   .topnav a.active { color: var(--accent-ink); background: var(--accent-soft); font-weight: 600; }
+  .topnav-end {
+    display: flex; flex: none; align-items: center; gap: 4px;
+  }
+  .topnav-end a {
+    font-family: var(--font-mono); font-size: 11px; font-weight: 600;
+    color: var(--accent-ink); text-decoration: none;
+    padding: 4px 8px; border-radius: 4px; white-space: nowrap;
+    border: 1px solid var(--accent);
+    background: var(--accent-soft);
+  }
+  .topnav-end a:hover, .topnav-end a:focus-visible {
+    background: var(--accent); color: #fff;
+  }
   @media (max-width: 1100px) {
     .topnav { justify-content: flex-start; overflow-x: auto; flex-wrap: nowrap; }
   }
@@ -1427,7 +1440,7 @@
   }
   .align-banner p { margin: 0; font-size: 16.5px; color: var(--ink-900); font-weight: 600; line-height: 1.5; }
 
-  .q-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 22px; }
+  .q-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 12px; }
   @media (max-width: 860px) { .q-grid { grid-template-columns: 1fr; } }
   .q-note { margin: 12px 0 0; padding-top: 10px; border-top: 1px dashed var(--line); font-size: 12px; color: var(--ink-700); line-height: 1.45; }
   .q-card .q-note .zh { display: block; font-size: 10.5px; margin: 2px 0 6px; }
@@ -2366,6 +2379,10 @@
       <a href="#sec-06" title="Look up one customer">06 Lookup</a>
       <a href="#sec-07" title="Appendix: real data distributions">07 Appendix</a>
     </nav>
+    <span class="topnav-end">
+      <a href="ltv_why_two_models_zh.html">BG/NBD + GG</a>
+      <a href="https://app.notion.com/p/gogox/Predicted-Future-LTV-Complete-Equation-Sheet-3bcf54d11498804aa7c8d4c852a8d294?source=copy_link" target="_blank" rel="noopener">Business Logic</a>
+    </span>
   </div>
 </div>
 
@@ -2388,9 +2405,9 @@
       <p class="zh">我們預測什麼？</p>
       <ul>
         <li>p_alive<span class="zh">截止日當天仍像活躍客的機率（沒有未來 N 日）</span></li>
-        <li>As-of Churn Probability = 1 − p_alive<span class="zh">截止日流失機率 = 1 − p_alive（一樣沒有未來 N 日；對只買過一次的客人失真，僅供診斷）</span></li>
+        <li>As-of Churn Probability<span class="zh">截止日流失機率（沒有未來 N 日；對只買過一次的客人失真，僅供診斷）</span></li>
         <li>Return Probability<span class="zh">預測未來 N 日，至少有 1 張完成單的機率</span></li>
-        <li>Predicted Churn Probability = 1 − Return Probability<span class="zh">預測流失機率 = 1 − 回流機率（CRM／campaign 決策用呢個）</span></li>
+        <li>Predicted Churn Probability<span class="zh">預測流失機率（CRM／campaign 決策應使用此欄）</span></li>
         <li>Completed-order days<span class="zh">完成訂單日數</span></li>
         <li>Completed orders<span class="zh">完成訂單張數</span></li>
         <li><span class="star">Platform Take = Predicted Future LTV ★<span class="zh">平台賺多少</span></span></li>
@@ -2496,12 +2513,12 @@
           <tr>
             <td><code class="hdr">as_of_churn_probability</code></td>
             <td>As-of Churn Probability<span class="zh">截止日流失機率</span></td>
-            <td>1 − p_alive. Same no-window state as p_alive, just read the other way. Degenerate for one-time buyers — treat as diagnostic only, not a CRM signal.<span class="zh">= 1 − p_alive，同 p_alive 一樣沒有時間窗，只是反過來讀。對只買過一次的客人會失真，僅供診斷，不可用於 CRM 決策。</span></td>
+            <td>Has this one customer probably already stopped ordering, as of the cutoff? This is this one customer's own number — not a churn rate for a group of customers. It does not work for a customer who has only ordered once.<span class="zh">這一位客人，截止日當天，是否已經流失？這是這一位客人自己的數字，不是一班客人的流失率。對只下過一次單的客人，這個數字會失真。</span></td>
           </tr>
           <tr>
             <td><code class="hdr">predicted_churn_probability_{h}</code></td>
             <td>Predicted Churn Probability<span class="zh">預測流失機率</span></td>
-            <td>1 − Return Probability. In the next n days, the chance this customer does NOT complete any order. This is the one to use for CRM / campaign decisions.<span class="zh">= 1 − 回流機率。預測未來 n 日，這個客人完全冇完成單的機率。CRM／campaign 決策應該用呢個。</span></td>
+            <td>In the next n days, what is the chance this one customer places no order at all? This is this one customer's own number — not a churn rate for a group of customers. Use this one for CRM and campaign decisions.<span class="zh">未來 n 日，這一位客人完全沒有下單的機率是多少？這是這一位客人自己的數字，不是一班客人的流失率。CRM／campaign 決策應使用此欄。</span></td>
           </tr>
         </tbody>
       </table>
@@ -4076,7 +4093,7 @@
     },
     asofchurn: {
       title: 'As-of Churn Probability',
-      def: '1 − p_alive. Same no-window state as p_alive, just read the other way. Degenerate for one-time buyers (p_alive ≡ 1 → this ≡ 0%) — diagnostic only, not a CRM signal.<span class="zh">= 1 − p_alive，同 p_alive 一樣沒有時間窗，只是反過來讀。對只買過一次的客人會失真（p_alive ≡ 1 → 呢欄 ≡ 0%），僅供診斷，不可用於 CRM 決策。</span>',
+      def: 'Has this one customer probably already stopped ordering, as of the cutoff? This is this one customer\'s own number — not a churn rate for a group of customers. It does not work for a customer who has only ordered once (shows 0% even though they may be gone).<span class="zh">這一位客人，截止日當天，是否已經流失？這是這一位客人自己的數字，不是一班客人的流失率。對只下過一次單的客人，這個數字會失真（即使客人已經流失，也會顯示 0%）。</span>',
       ssot: 'as_of_churn_probability',
       type: 'Current state',
       windowKey: 'Prediction horizon',
@@ -4092,7 +4109,7 @@
     },
     predchurn180: {
       title: '180D Churn Probability',
-      def: '1 − 180D Return Probability. In the next 180 days, the chance this customer does NOT complete any order. This is the one to use for CRM / campaign decisions, not As-of Churn Probability.<span class="zh">= 1 − 180 日回流機率。預測未來 180 日，這個客人完全冇完成單的機率。CRM／campaign 決策應該用呢欄，唔係「截止日流失機率」。</span>',
+      def: 'In the next 180 days, what is the chance this one customer places no order at all? This is this one customer\'s own number — not a churn rate for a group of customers. Use this one for CRM and campaign decisions, not As-of Churn Probability.<span class="zh">未來 180 日，這一位客人完全沒有下單的機率是多少？這是這一位客人自己的數字，不是一班客人的流失率。CRM／campaign 決策應使用此欄，不是「截止日流失機率」。</span>',
       ssot: 'predicted_churn_probability_180d',
       type: 'Predicted',
       windowKey: 'Horizon',
