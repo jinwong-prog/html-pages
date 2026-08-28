@@ -1564,6 +1564,9 @@
     .why180-rail::before { display: none; }
     .why180-toggle { min-height: 44px; }
   }
+  table.churn-table .col-hl { background: var(--data-1); color: var(--data-stroke); font-weight: 600; }
+  table.churn-table thead th.col-hl { background: var(--accent-soft); color: var(--accent-ink); }
+  table.churn-table tbody tr:hover td.col-hl { background: var(--data-1); }
 
   .lede.meeting { max-width: 78ch; }
   .ltv-brief { max-width: 72ch; margin: 10px 0 18px; }
@@ -2380,7 +2383,7 @@
       <a href="#sec-07" title="Appendix: real data distributions">07 Appendix</a>
     </nav>
     <span class="topnav-end">
-      <a href="ltv_why_two_models_zh.html">BG/NBD + GG</a>
+      <a href="projects/html-pages/site/marketplace-transport/ltv_why_two_models_zh.html">BG/NBD + GG</a>
       <a href="https://app.notion.com/p/gogox/Predicted-Future-LTV-Complete-Equation-Sheet-3bcf54d11498804aa7c8d4c852a8d294?source=copy_link" target="_blank" rel="noopener">Business Logic</a>
     </span>
   </div>
@@ -2413,6 +2416,7 @@
         <li><span class="star">Platform Take = Predicted Future LTV ★<span class="zh">平台賺多少</span></span></li>
       </ul>
       <p class="q-note">Historical / actual context — not predicted<span class="zh">歷史／實際參考，不是本表的未來 N 日預測</span><br>GTV (<code class="hdr">gross_transaction_value</code>) = customer transaction value. Order-level. There is no predicted GTV_{h} header.<span class="zh">GTV = 客人交易額（訂單層）。沒有預測未來 N 日 GTV 欄。</span></p>
+      <button type="button" class="why180-toggle" id="churnOpen" aria-expanded="false" aria-haspopup="dialog" aria-controls="churnDialog">Individual number vs group rate?</button>
     </div>
     <div class="q-card">
       <p class="qn">②</p>
@@ -4542,6 +4546,103 @@
   var dlg = document.getElementById('why180Dialog');
   var openBtn = document.getElementById('why180Open');
   var closeBtn = document.getElementById('why180Close');
+  if (!dlg || !openBtn) return;
+  function setOpen(on) {
+    openBtn.setAttribute('aria-expanded', on ? 'true' : 'false');
+    if (on) {
+      if (typeof dlg.showModal === 'function') dlg.showModal();
+      else dlg.setAttribute('open', '');
+    } else {
+      if (typeof dlg.close === 'function' && dlg.open) dlg.close();
+      else dlg.removeAttribute('open');
+    }
+  }
+  openBtn.addEventListener('click', function () { setOpen(true); });
+  if (closeBtn) closeBtn.addEventListener('click', function () { setOpen(false); });
+  dlg.addEventListener('close', function () { openBtn.setAttribute('aria-expanded', 'false'); });
+  dlg.addEventListener('click', function (e) {
+    var r = dlg.getBoundingClientRect();
+    if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) {
+      setOpen(false);
+    }
+  });
+})();
+</script>
+
+<dialog class="why180-dialog" id="churnDialog" aria-labelledby="churnTitle">
+  <div class="why180-head">
+    <div>
+      <h2 id="churnTitle">As-of Churn vs Predicted Churn vs Churn Rate</h2>
+      <p>Two of the numbers on this page are for one customer. Churn Rate is a different thing — a number for a group. This table keeps the three apart, in plain language.<span class="zh">這頁面上有兩個數字是「這一位客人」自己的。流失率是另一回事——是「一班客人」的數字。這個表把三者分開，用白話講清楚。</span></p>
+    </div>
+    <button type="button" class="why180-close" id="churnClose" aria-label="Close">×</button>
+  </div>
+  <div class="why180-body">
+    <p class="swipe-hint">Swipe the table sideways to see more columns<span class="zh">左右滑動可看更多欄</span></p>
+    <div class="table-scroll">
+      <table class="why180 churn-table">
+        <thead>
+          <tr>
+            <th scope="col">What we compare<span class="zh">比較項目</span></th>
+            <th scope="col">As-of Churn Probability<span class="zh">截止日流失機率</span></th>
+            <th scope="col" class="col-hl">Predicted Churn Probability<span class="zh">預測流失機率</span></th>
+            <th scope="col">Churn Rate<span class="zh">流失率（群組）</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>In plain words<span class="zh">白話說法</span></td>
+            <td>Has this one customer probably already stopped, right now?<span class="zh">這一位客人，現在是否已經流失？</span></td>
+            <td class="col-hl">Will this one customer place zero orders in the next N days?<span class="zh">這一位客人，未來 N 日會否完全沒有下單？</span></td>
+            <td>Out of a group of customers, what share churned?<span class="zh">一群客人裡面，有多少比例已經流失？</span></td>
+          </tr>
+          <tr>
+            <td>Level<span class="zh">層級</span></td>
+            <td>Individual — this one customer<span class="zh">個人層級——這一位客人</span></td>
+            <td class="col-hl">Individual — this one customer<span class="zh">個人層級——這一位客人</span></td>
+            <td>Group — a segment, a campaign list, or the whole customer base<span class="zh">群組層級——一個分群、一份 campaign 名單，或全公司</span></td>
+          </tr>
+          <tr>
+            <td>Business level or consumer level<span class="zh">Business level 還是 Consumer level</span></td>
+            <td>Consumer level — looked up per customer<span class="zh">Consumer level——逐位客人查閱</span></td>
+            <td class="col-hl">Consumer level — looked up per customer<span class="zh">Consumer level——逐位客人查閱</span></td>
+            <td>Business level — reported on a dashboard or campaign summary<span class="zh">Business level——出現在 dashboard 或 campaign 總結報告</span></td>
+          </tr>
+          <tr>
+            <td>Time window<span class="zh">時間窗</span></td>
+            <td>None — a snapshot as of the cutoff date<span class="zh">沒有——截止日當天的快照</span></td>
+            <td class="col-hl">Yes — a future window, e.g. next 180 days<span class="zh">有——未來一段日子，例如未來 180 日</span></td>
+            <td>Whatever window the group report is measuring<span class="zh">跟該群組報表所用的時間窗一致</span></td>
+          </tr>
+          <tr>
+            <td>How it is worked out<span class="zh">如何計算</span></td>
+            <td>1 − p_alive</td>
+            <td class="col-hl">1 − Return Probability</td>
+            <td>Average of everyone's individual probability, or the actual share that churned<span class="zh">將個別客人的機率取平均，或直接統計實際流失的比例</span></td>
+          </tr>
+          <tr>
+            <td>Use it for<span class="zh">用途</span></td>
+            <td>Diagnostic only — not a CRM signal<span class="zh">僅供診斷，不是 CRM 訊號</span></td>
+            <td class="col-hl">CRM / campaign decisions on this customer<span class="zh">CRM／campaign 對這位客人的決策</span></td>
+            <td>Reporting how a whole group is doing<span class="zh">匯報整個群組的表現</span></td>
+          </tr>
+          <tr>
+            <td>Watch out for<span class="zh">要留意</span></td>
+            <td>Unreliable for a customer who ordered only once<span class="zh">對只下過一次單的客人失真</span></td>
+            <td class="col-hl">This is the one to use — but still one customer's own number<span class="zh">應該使用這一個——但仍然是這一位客人自己的數字</span></td>
+            <td>Never store a rate in a single customer's row — it belongs to the group, not the person<span class="zh">不要將流失率寫入單一客人的欄位——這個數字屬於群組，不屬於個人</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin:14px 2px 0;font-size:12.5px;color:var(--ink-500);line-height:1.5;">Example in plain terms: if 100 customers all look similar to this one, and their average Predicted Churn Probability is 60%, then the expected churn rate for that group of 100 is about 60%. But this one customer's own number stays their own number — it does not become "the rate" just because it is a probability.<span class="zh">舉個例子：如果有 100 位客人條件跟這位客人相似，他們的 Predicted Churn Probability 平均是 60%，那麼這 100 人這個群組的預期流失率就大約是 60%。但這一位客人自己的數字，仍然只是他自己的數字——不會因為它是一個機率，就自動變成「流失率」。</span></p>
+  </div>
+</dialog>
+<script>
+(function () {
+  var dlg = document.getElementById('churnDialog');
+  var openBtn = document.getElementById('churnOpen');
+  var closeBtn = document.getElementById('churnClose');
   if (!dlg || !openBtn) return;
   function setOpen(on) {
     openBtn.setAttribute('aria-expanded', on ? 'true' : 'false');
