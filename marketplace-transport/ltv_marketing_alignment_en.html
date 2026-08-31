@@ -535,9 +535,9 @@
 
   #userTable { min-width: 1400px; width: max(100%, 1400px); table-layout: auto; border-collapse: separate; border-spacing: 0; }
   #userTable th {
-    white-space: normal;
-    word-break: break-word;
-    overflow-wrap: anywhere;
+    white-space: nowrap;
+    word-break: normal;
+    overflow-wrap: normal;
     font-size: 10.5px;
     line-height: 1.25;
     vertical-align: bottom;
@@ -753,12 +753,13 @@
     background: var(--surface); box-shadow: var(--shadow);
   }
   table.mkt {
-    border-collapse: collapse; font-size: 12px; width: 100%; min-width: 1320px;
+    border-collapse: collapse; font-size: 12px;
+    width: max-content; min-width: 100%;
     table-layout: auto;
   }
   table.mkt th, table.mkt td {
-    padding: 7px 6px; border-bottom: 1px solid var(--line);
-    white-space: normal; overflow-wrap: anywhere; word-break: break-word;
+    padding: 7px 8px; border-bottom: 1px solid var(--line);
+    white-space: nowrap; overflow-wrap: normal; word-break: normal;
     vertical-align: top;
   }
   table.mkt thead tr.grp th {
@@ -810,6 +811,11 @@
     text-transform: none;
     letter-spacing: 0;
     line-height: 1.3;
+    white-space: nowrap;
+  }
+  table.mkt thead tr.h th .zh {
+    display: block;
+    white-space: nowrap;
   }
   table.mkt .mkt-code {
     display: block; font-family: var(--font-mono); font-weight: 500;
@@ -821,14 +827,16 @@
     font-variant-numeric: tabular-nums; font-size: 11.5px;
     white-space: nowrap; overflow: hidden; text-overflow: clip;
   }
+  table.mkt thead tr.h th[data-col="mkt_id"],
   table.mkt tbody td:first-child {
-    white-space: normal; word-break: break-all; font-size: 10px; line-height: 1.25;
+    white-space: nowrap; word-break: normal; overflow-wrap: normal;
+    font-size: 11px; line-height: 1.25; min-width: 18em;
   }
   table.mkt tbody tr:last-child td { border-bottom: none; }
   table.mkt tbody tr:hover td { background: var(--surface-2); }
   @media (max-width: 960px) {
     .mkt-scroll { overflow-x: auto; }
-    table.mkt { table-layout: auto; min-width: 1320px; }
+    table.mkt { table-layout: auto; width: max-content; min-width: 100%; }
   }
 
   .mkt-help { margin-top: 8px; width: 100%; max-width: none; box-sizing: border-box; }
@@ -2118,20 +2126,10 @@
     font-family: var(--font-mono); font-weight: 700; text-align: center;
     white-space: nowrap; min-width: 5.5em;
   }
-  table.mkt thead tr.h th[data-col="mkt_action"],
-  table.mkt thead tr.h th[data-col="mkt_tier"],
-  table.mkt thead tr.h th[data-col="mkt_pband"],
-  table.mkt thead tr.h th[data-col="mkt_palive"],
-  table.mkt thead tr.h th[data-col="mkt_oneday"],
-  table.mkt thead tr.h th[data-col="mkt_rp30"],
-  table.mkt thead tr.h th[data-col="mkt_rp180"],
-  table.mkt thead tr.h th[data-col="mkt_days30"],
-  table.mkt thead tr.h th[data-col="mkt_orders30"],
-  table.mkt thead tr.h th[data-col="mkt_days180"],
-  table.mkt thead tr.h th[data-col="mkt_orders180"] {
-    white-space: nowrap; overflow-wrap: normal; word-break: keep-all;
-  }
   table.mkt thead tr.h th[data-col="mkt_action"] { min-width: 8.5em; }
+  table.mkt thead tr.h th[data-col="mkt_ltv30"],
+  table.mkt thead tr.h th[data-col="mkt_ltv180"] { min-width: 12em; }
+  table.mkt thead tr.h th[data-col="mkt_recency"] { min-width: 11em; }
   .vderived { font-family: var(--font-mono); font-size: 10px; color: var(--ink-400); }
 
   /* ---- RFM → Predicted LTV flow ---- */
