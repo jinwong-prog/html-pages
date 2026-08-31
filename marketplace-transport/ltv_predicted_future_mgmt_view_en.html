@@ -3791,8 +3791,8 @@ Customer count still follows the filters. Read Bias % on the Platform Take table
     p: {title:"Official Tier P",
       def:"Value rank inside one Official Tier (P100…P10). P90 is not T90.",
       ssot:"within_tier_band", type:"Historical", windowKey:"Window", windowVal:"2018 to cutoff"},
-    days: {title:"Recency",
-      def:"Days from the most recent completed order to the cutoff, shown here as a band. Already happened. Not a future churn prediction. Not the BG/NBD recency input.",
+    days: {title:"Days since last completed order",
+      def:"Days from the most recent completed order to the cutoff, shown here as a band. Already happened. Not a future churn prediction. Not BG/NBD recency (first completed-order date to last completed-order date).",
       ssot:"days_since_last_completed_order", type:"Current", windowKey:"Window", windowVal:"As of cutoff"},
     hist: {title:"Already earned",
       def:"Platform Take already earned by the cut-off. This ranks Official Tier T. Not a prediction.",
@@ -3938,7 +3938,7 @@ Customer count still follows the filters. Read Bias % on the Platform Take table
         </tr>
         <tr class="h">
         ${th("id","id","User Unique<br>ID")}${th("t","t","Official<br>Tier T")}${th("p","p","Official<br>Tier P")}
-        ${th("days","days","Recency")}
+        ${th("days","days","Days since last<br>completed order")}
         ${th("hist","hist","Already<br>earned","n")}${th("predicted","predicted","Predicted<br>Future LTV","n")}
         ${th("orders","orders","Predicted<br>Orders","n")}${th("palive","palive","p_alive","n")}
         ${th("gap",gapCol, isT ? "To Next T" : "To Next P","n")}
@@ -3983,7 +3983,7 @@ Customer count still follows the filters. Read Bias % on the Platform Take table
           ${row("User Unique ID", c[C_ID]+"…")}
           ${row("Official Tier T", c[C_T])}
           ${row("Official Tier P", c[C_P])}
-          ${row("Recency", REC_AGO[bandOf(c[C_DAYS])])}
+          ${row("Days since last completed order", REC_AGO[bandOf(c[C_DAYS])])}
         </dl>
       </div>
       <div class="sec">

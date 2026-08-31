@@ -2734,7 +2734,7 @@
       <h2>Marketing one-row-per-customer extract<span class="zh">Marketing 一行一客匯出表</span></h2>
       <div class="live-badge" title="queried 2026-08-28, HK TRANSPORT PlatformOD van, as_of_date=2024-06-30"><span class="dot"></span>Live BQ · 4 customers<span class="zh">實際查詢結果</span></div>
     </div>
-    <p class="mkt-guide">Read left to right: customer → current status → 30D campaign view → <b>180D Predicted Future LTV (main)</b> → right-hand columns. Default is CVE (Predicted Platform Take / order day, then Action). Switch to PFM for Purchase Frequency, Customer Value, Recency. <b>Action stays on both views.</b> Left columns do not change. Raw RFM inputs are also in the expandable block below — not a new RFM score.<span class="zh">由左至右：客戶 → 現況 → 30 日 Campaign → 180 日 Predicted Future LTV（主）→ 右側欄。預設 CVE。切去 PFM 看購買頻率、消費價值、距上次完成單。<b>Action 兩邊都保留。</b>左邊欄不變。</span></p>
+    <p class="mkt-guide">Read left to right: customer → current status → 30D campaign view → <b>180D Predicted Future LTV (main)</b> → right-hand columns. Default is CVE (Predicted Platform Take / order day, then Action). Switch to PFM for Purchase Frequency, Customer Value, Days since last completed order. <b>Action stays on both views.</b> Left columns do not change. Raw RFM inputs are also in the expandable block below — not a new RFM score.<span class="zh">由左至右：客戶 → 現況 → 30 日 Campaign → 180 日 Predicted Future LTV（主）→ 右側欄。預設 CVE。切去 PFM 看購買頻率、消費價值、距上次完成單。<b>Action 兩邊都保留。</b>左邊欄不變。</span></p>
     <p class="act-leg" aria-label="Action colours">
       <span><span class="sw retain"></span>Orange = Retain / Grow</span>
       <span><span class="sw winback"></span>Red = Win-back</span>
@@ -2772,7 +2772,7 @@
             <th class="lookup-h mkt-cve" data-col="mkt_monetary" tabindex="0"><span class="lookup-h-title">Predicted Platform Take / order day</span><span class="zh">有完成單那天，預計平台賺多少</span></th>
             <th class="lookup-h mkt-pfm" data-col="mkt_freq" tabindex="0"><span class="lookup-h-title">Purchase Frequency</span><span class="zh">重複完成訂單日</span></th>
             <th class="lookup-h mkt-pfm" data-col="mkt_custval" tabindex="0"><span class="lookup-h-title">Customer Value</span><span class="zh">過往每完成訂單日平均賺多少</span></th>
-            <th class="lookup-h mkt-pfm" data-col="mkt_recency" tabindex="0"><span class="lookup-h-title">Recency</span><span class="zh">距上次完成單</span></th>
+            <th class="lookup-h mkt-pfm" data-col="mkt_recency" tabindex="0"><span class="lookup-h-title">Days since last<br>completed order</span><span class="zh">距上次完成單</span></th>
             <th class="lookup-h" data-col="mkt_action" tabindex="0"><span class="lookup-h-title">Action</span><span class="zh">行動</span></th>
           </tr>
         </thead>
@@ -2989,6 +2989,7 @@
               <div>
                 <h3>Data interpretation<span class="zh">如何讀欄</span></h3>
                 <ul>
+                  <li>Days since last completed order = <code class="hdr">days_since_last_completed_order</code> (cutoff minus last completed-order date). Not BG/NBD <code class="hdr">recency</code> (first to last completed-order date)<span class="zh">距上次完成單＝截止日減最近一次完成單日。不是模型 recency（第一次到最近一次）</span></li>
                   <li>Historical <code class="hdr">historical_completed_order_days</code> / <code class="hdr">historical_completed_orders</code> = facts up to the cutoff<span class="zh">歷史完成訂單日／張是截止日前事實</span></li>
                   <li>One completed-order day as of cutoff = Yes when <code class="hdr">frequency = 0</code> (<code class="hdr">historical_completed_order_days = 1</code>). Then <code class="hdr">p_alive</code> stays at 100%. Not the same as one completed order<span class="zh">截止日只有一個完成單日＝Yes 當 frequency = 0。此時 p_alive 維持 100%。不是只完成一張單</span></li>
                   <li>Predicted days / orders = 180D forecast. Cell unit <b>d</b> = completed-order days, not calendar days<span class="zh">預測日／張是未來 180 日預測。d＝完成訂單日，不是日曆日</span></li>
@@ -3034,6 +3035,7 @@
               <th class="lookup-h" data-col="tier" tabindex="0"><span class="lookup-h-title">Tier</span><span class="zh">官方層級</span></th>
               <th class="lookup-h" data-col="pband" tabindex="0"><span class="lookup-h-title">Within-Tier</span><span class="zh">同一層內位置</span></th>
               <th class="lookup-h" data-col="earned" tabindex="0"><span class="lookup-h-title">Already Earned</span><span class="zh">已經賺到</span></th>
+              <th class="lookup-h" data-col="sinceLast" tabindex="0"><span class="lookup-h-title">Days since last<br>completed order</span><span class="zh">距上次完成單</span></th>
               <th class="lookup-h" data-col="hist" tabindex="0"><span class="lookup-h-title">Historical<br>Orders</span><span class="u-unit">Order days · Orders</span><span class="zh">訂單日 · 張數</span></th>
               <th class="lookup-h" data-col="palive" tabindex="0"><span class="lookup-h-title">p_alive</span><span class="zh">截止日仍像活躍客</span></th>
               <th class="lookup-h" data-col="oneday" tabindex="0"><span class="lookup-h-title">One completed-order day<br>as of cutoff</span><span class="zh">截止日只有一個完成單日</span></th>
@@ -3297,7 +3299,7 @@
           tipRow('Already earned', '$' + money(p.earned) + ' · ' + earnedSide + ' vs ' + p.tier + ' P50 $' + money(p.earnedP50)) +
           tipRow('Purchase frequency', p.freq.toLocaleString('en-US')) +
           tipRow('Historical Platform Take / order day', '$' + p.v.toFixed(2)) +
-          tipRow('Days since last order', recencyDays(p.since)) +
+          tipRow('Days since last completed order', recencyDays(p.since)) +
           tipRow('Recency window', band.label);
       } else {
         var rpSide = p.prob180 >= p.rpP50 ? 'High' : 'Low';
@@ -3305,7 +3307,7 @@
           tipRow('Already earned', '$' + money(p.earned) + ' · ' + earnedSide + ' vs ' + p.tier + ' P50 $' + money(p.earnedP50)) +
           tipRow('Predicted Platform Take / order day', '$' + p.vPred.toFixed(2)) +
           tipRow('Future LTV · 180D', '$' + ltvStr(p.ltv)) +
-          (p.since != null ? tipRow('Recency', recencyDays(p.since)) : '');
+          (p.since != null ? tipRow('Days since last completed order', recencyDays(p.since)) : '');
       }
       return head + '<div class="tip-body">' + body + '</div>';
     }
@@ -3521,7 +3523,7 @@
           r: 'Historical · M · Dot detail<span class="zh">歷史平均 · M · 點上細節</span>'
         },
         {
-          t: 'Recency<span class="zh">距上次完成單</span>',
+          t: 'Days since last completed order<span class="zh">距上次完成單</span>',
           h: 'days_since_last_completed_order',
           r: '180D · days_since_last_completed_order ≤ 180<span class="zh">距上次完成單 ≤ 180 日</span>'
         }
@@ -3984,6 +3986,7 @@
         '<td><span class="u-tier">' + u.tier + '</span></td>' +
         '<td><span class="u-tier">' + u.pBand + '</span></td>' +
         '<td class="u-num">' + money(u.earned) + '</td>' +
+        '<td class="u-num">' + u.sinceLast.toLocaleString('en-US') + ' days</td>' +
         '<td class="u-num">' + u.histDays.toLocaleString('en-US') + 'd · ' + u.histOrders.toLocaleString('en-US') + ' ord</td>' +
         '<td><div class="u-alive-bar"><div class="u-alive-track"><div class="u-alive-fill" style="width:' + Math.round(u.alive * 100) + '%"></div></div><span class="u-num">' + pct(u.alive) + '</span></div></td>' +
         '<td>' + oneDayChip(u) + '</td>' +
@@ -4003,10 +4006,9 @@
       var dr = document.createElement('tr');
       dr.className = 'detail-row';
       dr.hidden = true;
-      dr.innerHTML = '<td colspan="18"><div class="detail-panel"><div class="detail-grid">' +
+      dr.innerHTML = '<td colspan="19"><div class="detail-panel"><div class="detail-grid">' +
         '<div class="detail-item"><div class="k">First completed order<span class="zh">第一張完成單</span></div><div class="v">' + u.first + '</div></div>' +
         '<div class="detail-item"><div class="k">Last completed order<span class="zh">最近完成單</span></div><div class="v">' + u.last + '</div></div>' +
-        '<div class="detail-item"><div class="k">Days since then<span class="zh">距今幾日</span></div><div class="v">' + u.sinceLast + ' days</div></div>' +
         (u.fallback ? '<div class="detail-item"><div class="k">Median $<span class="zh">金額用層內中位數回退</span></div><div class="v">monetary fallback</div></div>' : '') +
         '<div class="detail-item"><div class="k">Predicted / actual days (180d)<span class="zh">預測／實際完成訂單日</span></div><div class="v">' + qty(u.days180) + ' days / ' + qty(u.actDays180) + ' days</div></div>' +
         '<div class="detail-item"><div class="k">Predicted / actual orders (180d)<span class="zh">預測／實際完成訂單張數</span></div><div class="v">' + qty(u.orders180) + ' orders / ' + qty(u.actOrders180) + ' orders</div></div>' +
@@ -4076,6 +4078,14 @@
       type: 'Historical',
       windowKey: 'Window',
       windowVal: '2018 to cutoff'
+    },
+    sinceLast: {
+      title: 'Days since last completed order',
+      def: 'Days from the most recent completed order to the cutoff. Already happened. Not a future churn prediction. Not BG/NBD <code class="hdr">recency</code> (first completed-order date to last completed-order date).',
+      ssot: 'days_since_last_completed_order',
+      type: 'Current',
+      windowKey: 'Window',
+      windowVal: 'As of cutoff'
     },
     hist: {
       title: 'Historical Orders',
@@ -4334,8 +4344,8 @@
       windowVal: '2018 to cutoff'
     },
     mkt_recency: {
-      title: 'Recency',
-      def: 'Days from the most recent completed order to the cutoff. Already happened. Not a future churn prediction.',
+      title: 'Days since last completed order',
+      def: 'Days from the most recent completed order to the cutoff. Already happened. Not a future churn prediction. Not BG/NBD <code class="hdr">recency</code> (first completed-order date to last completed-order date).',
       ssot: 'days_since_last_completed_order',
       type: 'Current',
       windowKey: 'Window',
