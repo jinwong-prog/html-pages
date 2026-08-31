@@ -754,11 +754,11 @@
   }
   table.mkt {
     border-collapse: collapse; font-size: 12px;
-    width: max-content; min-width: 100%;
+    width: 100%; min-width: 0;
     table-layout: auto;
   }
   table.mkt th, table.mkt td {
-    padding: 7px 8px; border-bottom: 1px solid var(--line);
+    padding: 6px 6px; border-bottom: 1px solid var(--line);
     white-space: nowrap; overflow-wrap: normal; word-break: normal;
     vertical-align: top;
   }
@@ -800,6 +800,7 @@
     font-family: var(--font-body); font-weight: 500; font-size: 11px; color: var(--ink-700);
     text-align: left; background: var(--surface); border-bottom: 1px solid var(--line-strong);
     line-height: 1.28; letter-spacing: 0; text-transform: none;
+    white-space: normal;
   }
   table.mkt thead tr.h th.lookup-h { cursor: help; }
   table.mkt thead tr.h th.lookup-h .lookup-h-title {
@@ -810,12 +811,17 @@
     color: var(--ink-900);
     text-transform: none;
     letter-spacing: 0;
-    line-height: 1.3;
-    white-space: nowrap;
+    line-height: 1.25;
+    white-space: normal;
+    overflow-wrap: break-word;
+    word-break: normal;
   }
   table.mkt thead tr.h th .zh {
     display: block;
-    white-space: nowrap;
+    white-space: normal;
+    overflow-wrap: break-word;
+    word-break: normal;
+    line-height: 1.25;
   }
   table.mkt .mkt-code {
     display: block; font-family: var(--font-mono); font-weight: 500;
@@ -830,13 +836,13 @@
   table.mkt thead tr.h th[data-col="mkt_id"],
   table.mkt tbody td:first-child {
     white-space: nowrap; word-break: normal; overflow-wrap: normal;
-    font-size: 11px; line-height: 1.25; min-width: 18em;
+    font-size: 10.5px; line-height: 1.25; min-width: 13em;
   }
   table.mkt tbody tr:last-child td { border-bottom: none; }
   table.mkt tbody tr:hover td { background: var(--surface-2); }
   @media (max-width: 960px) {
     .mkt-scroll { overflow-x: auto; }
-    table.mkt { table-layout: auto; width: max-content; min-width: 100%; }
+    table.mkt { table-layout: auto; width: 100%; min-width: 0; }
   }
 
   .mkt-help { margin-top: 8px; width: 100%; max-width: none; box-sizing: border-box; }
@@ -2126,10 +2132,7 @@
     font-family: var(--font-mono); font-weight: 700; text-align: center;
     white-space: nowrap; min-width: 5.5em;
   }
-  table.mkt thead tr.h th[data-col="mkt_action"] { min-width: 8.5em; }
-  table.mkt thead tr.h th[data-col="mkt_ltv30"],
-  table.mkt thead tr.h th[data-col="mkt_ltv180"] { min-width: 12em; }
-  table.mkt thead tr.h th[data-col="mkt_recency"] { min-width: 11em; }
+  table.mkt thead tr.h th[data-col="mkt_action"] { min-width: 7.5em; }
   .vderived { font-family: var(--font-mono); font-size: 10px; color: var(--ink-400); }
 
   /* ---- RFM → Predicted LTV flow ---- */
@@ -2752,24 +2755,24 @@
             <th class="g-act" colspan="2" id="mktActGroup"><span class="g-act-inner"><span class="g-act-title" id="mktActTitle">CVE Decision<span class="zh">CVE 決策</span></span><span class="mkt-mode-switch" role="group" aria-label="CVE or PFM columns"><button type="button" id="mktBtnCve" aria-pressed="true">CVE</button><button type="button" id="mktBtnPfm" aria-pressed="false">PFM</button></span></span></th>
           </tr>
           <tr class="h">
-            <th class="lookup-h" data-col="mkt_id" tabindex="0"><span class="lookup-h-title">User Unique ID</span><span class="zh">用戶唯一編號</span></th>
+            <th class="lookup-h" data-col="mkt_id" tabindex="0"><span class="lookup-h-title">User Unique<br>ID</span><span class="zh">用戶唯一編號</span></th>
             <th class="lookup-h" data-col="mkt_cutoff" tabindex="0"><span class="lookup-h-title">Cutoff</span><span class="zh">截止日</span></th>
-            <th class="lookup-h" data-col="mkt_tier" tabindex="0"><span class="lookup-h-title">Official Tier T</span><span class="zh">官方層級</span></th>
-            <th class="lookup-h" data-col="mkt_pband" tabindex="0"><span class="lookup-h-title">Official Tier P</span><span class="zh">同一層內位置</span></th>
-            <th class="lookup-h" data-col="mkt_earned" tabindex="0"><span class="lookup-h-title">Already earned</span><span class="zh">已經賺到的錢</span></th>
+            <th class="lookup-h" data-col="mkt_tier" tabindex="0"><span class="lookup-h-title">Official<br>Tier T</span><span class="zh">官方層級</span></th>
+            <th class="lookup-h" data-col="mkt_pband" tabindex="0"><span class="lookup-h-title">Official<br>Tier P</span><span class="zh">同一層內位置</span></th>
+            <th class="lookup-h" data-col="mkt_earned" tabindex="0"><span class="lookup-h-title">Already<br>earned</span><span class="zh">已經賺到的錢</span></th>
             <th class="lookup-h" data-col="mkt_palive" tabindex="0"><span class="lookup-h-title">p_alive</span><span class="zh">截止日仍像活躍客</span></th>
-            <th class="lookup-h" data-col="mkt_oneday" tabindex="0"><span class="lookup-h-title">One completed-order day as of cutoff</span><span class="zh">截止日只有一個完成單日</span></th>
-            <th class="lookup-h" data-col="mkt_rp30" tabindex="0"><span class="lookup-h-title">Predicted Return Probability</span><span class="zh">回流機率</span></th>
+            <th class="lookup-h" data-col="mkt_oneday" tabindex="0"><span class="lookup-h-title">One completed-order day<br>as of cutoff</span><span class="zh">截止日只有一個<br>完成單日</span></th>
+            <th class="lookup-h" data-col="mkt_rp30" tabindex="0"><span class="lookup-h-title">Predicted Return<br>Probability</span><span class="zh">回流機率</span></th>
             <th class="lookup-h" data-col="mkt_days30" tabindex="0"><span class="lookup-h-title">Predicted<br>Order Days</span><span class="zh">預計完成訂單日</span></th>
             <th class="lookup-h" data-col="mkt_orders30" tabindex="0"><span class="lookup-h-title">Predicted<br>Orders</span><span class="zh">預計完成單張數</span></th>
-            <th class="lookup-h" data-col="mkt_ltv30" tabindex="0"><span class="lookup-h-title">Predicted Future LTV</span><span class="zh">預計平台從這個客人總共賺多少</span></th>
-            <th class="lookup-h" data-col="mkt_rp180" tabindex="0"><span class="lookup-h-title">Predicted Return Probability</span><span class="zh">回流機率</span></th>
+            <th class="lookup-h" data-col="mkt_ltv30" tabindex="0"><span class="lookup-h-title">Predicted<br>Future LTV</span><span class="zh">預計平台從這個客人<br>總共賺多少</span></th>
+            <th class="lookup-h" data-col="mkt_rp180" tabindex="0"><span class="lookup-h-title">Predicted Return<br>Probability</span><span class="zh">回流機率</span></th>
             <th class="lookup-h" data-col="mkt_days180" tabindex="0"><span class="lookup-h-title">Predicted<br>Order Days</span><span class="zh">預計完成訂單日</span></th>
             <th class="lookup-h" data-col="mkt_orders180" tabindex="0"><span class="lookup-h-title">Predicted<br>Orders</span><span class="zh">預計完成單張數</span></th>
-            <th class="lookup-h mkt-ltv-main" data-col="mkt_ltv180" tabindex="0"><span class="lookup-h-title">Predicted Future LTV</span><span class="zh">預計平台從這個客人總共賺多少</span></th>
-            <th class="lookup-h mkt-cve" data-col="mkt_monetary" tabindex="0"><span class="lookup-h-title">Predicted Platform Take / order day</span><span class="zh">有完成單那天，預計平台賺多少</span></th>
-            <th class="lookup-h mkt-pfm" data-col="mkt_freq" tabindex="0"><span class="lookup-h-title">Purchase Frequency</span><span class="zh">重複完成訂單日</span></th>
-            <th class="lookup-h mkt-pfm" data-col="mkt_custval" tabindex="0"><span class="lookup-h-title">Customer Value</span><span class="zh">過往每完成訂單日平均賺多少</span></th>
+            <th class="lookup-h mkt-ltv-main" data-col="mkt_ltv180" tabindex="0"><span class="lookup-h-title">Predicted<br>Future LTV</span><span class="zh">預計平台從這個客人<br>總共賺多少</span></th>
+            <th class="lookup-h mkt-cve" data-col="mkt_monetary" tabindex="0"><span class="lookup-h-title">Predicted Platform Take<br>/ order day</span><span class="zh">有完成單那天，<br>預計平台賺多少</span></th>
+            <th class="lookup-h mkt-pfm" data-col="mkt_freq" tabindex="0"><span class="lookup-h-title">Purchase<br>Frequency</span><span class="zh">重複完成訂單日</span></th>
+            <th class="lookup-h mkt-pfm" data-col="mkt_custval" tabindex="0"><span class="lookup-h-title">Customer<br>Value</span><span class="zh">過往每完成訂單日<br>平均賺多少</span></th>
             <th class="lookup-h mkt-pfm" data-col="mkt_recency" tabindex="0"><span class="lookup-h-title">Days since last<br>completed order</span><span class="zh">距上次完成單</span></th>
             <th class="lookup-h" data-col="mkt_action" tabindex="0"><span class="lookup-h-title">Action</span><span class="zh">行動</span></th>
           </tr>
