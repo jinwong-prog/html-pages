@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light only">
 <title>Predicted LTV — Marketing Alignment</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -63,114 +64,12 @@
     --font-display: 'Archivo Expanded', 'PingFang TC', 'Noto Sans TC', 'Microsoft JhengHei', sans-serif;
     --font-body: 'IBM Plex Sans', 'PingFang TC', 'Noto Sans TC', 'Microsoft JhengHei', sans-serif;
     --font-mono: 'IBM Plex Mono', 'SFMono-Regular', ui-monospace, monospace;
-  }
 
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      --paper: #10141C;
-      --surface: #171C27;
-      --surface-2: #1E2431;
-      --line: #2A3140;
-      --line-strong: #3A4356;
-      --ink-900: #ECEEF2;
-      --ink-700: #C7CCD6;
-      --ink-500: #9AA3B2;
-      --ink-400: #7C8493;
-
-      --accent: #FF7A33;
-      --accent-ink: #FFB27A;
-      --accent-soft: #3A2013;
-
-      --good: #4FBE85;
-      --good-soft: #16321F;
-
-      --data-1: #123049;
-      --data-2: #1B4468;
-      --data-3: #2E6DA4;
-      --data-4: #4C8CC8;
-      --data-5: #7FB2E0;
-      --data-6: #BFE0FF;
-      --data-stroke: #7FB2E0;
-      --data-area-a: rgba(127,178,224,0.18);
-      --data-area-b: rgba(127,178,224,0);
-
-      --metric-1: #7FB2E0;
-      --metric-2: #9AA3B2;
-      --metric-3: #4C8CC8;
-      --metric-4: #FF7A33;
-
-      --act-retain: #FF7A33;
-      --act-retain-soft: #3A2013;
-      --act-retain-ink: #FFB27A;
-      --act-winback: #E06A58;
-      --act-winback-soft: #3A1C18;
-      --act-winback-ink: #F0A090;
-      --act-nurture: #7FB2E0;
-      --act-nurture-soft: #123049;
-      --act-nurture-ink: #BFE0FF;
-      --act-deprioritise: #9AA3B2;
-      --act-deprioritise-soft: #1E2431;
-      --act-deprioritise-ink: #C7CCD6;
-
-      --mock-stroke: #6B7383;
-
-      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
-    }
-  }
-
-  :root[data-theme="dark"] {
-    --paper: #10141C;
-    --surface: #171C27;
-    --surface-2: #1E2431;
-    --line: #2A3140;
-    --line-strong: #3A4356;
-    --ink-900: #ECEEF2;
-    --ink-700: #C7CCD6;
-    --ink-500: #9AA3B2;
-    --ink-400: #7C8493;
-
-    --accent: #FF7A33;
-    --accent-ink: #FFB27A;
-    --accent-soft: #3A2013;
-
-    --good: #4FBE85;
-    --good-soft: #16321F;
-
-    --data-1: #123049;
-    --data-2: #1B4468;
-    --data-3: #2E6DA4;
-    --data-4: #4C8CC8;
-    --data-5: #7FB2E0;
-    --data-6: #BFE0FF;
-    --data-stroke: #7FB2E0;
-    --data-area-a: rgba(127,178,224,0.18);
-    --data-area-b: rgba(127,178,224,0);
-
-    --metric-1: #7FB2E0;
-    --metric-2: #9AA3B2;
-    --metric-3: #4C8CC8;
-    --metric-4: #FF7A33;
-
-    --act-retain: #FF7A33;
-    --act-retain-soft: #3A2013;
-    --act-retain-ink: #FFB27A;
-    --act-winback: #E06A58;
-    --act-winback-soft: #3A1C18;
-    --act-winback-ink: #F0A090;
-    --act-nurture: #7FB2E0;
-    --act-nurture-soft: #123049;
-    --act-nurture-ink: #BFE0FF;
-    --act-deprioritise: #9AA3B2;
-    --act-deprioritise-soft: #1E2431;
-    --act-deprioritise-ink: #C7CCD6;
-
-    --mock-stroke: #6B7383;
-
-    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
+    color-scheme: light only;
   }
 
   * { box-sizing: border-box; }
-  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+  html { color-scheme: light only; -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
   body {
     margin: 0;
     background: var(--paper);
@@ -2223,6 +2122,7 @@
   table.mkt thead tr.h th[data-col="mkt_tier"],
   table.mkt thead tr.h th[data-col="mkt_pband"],
   table.mkt thead tr.h th[data-col="mkt_palive"],
+  table.mkt thead tr.h th[data-col="mkt_oneday"],
   table.mkt thead tr.h th[data-col="mkt_rp30"],
   table.mkt thead tr.h th[data-col="mkt_rp180"],
   table.mkt thead tr.h th[data-col="mkt_days30"],
@@ -2554,7 +2454,7 @@
           <tr>
             <td><code class="hdr">p_alive</code></td>
             <td>p_alive<span class="zh">截止日仍像活躍客</span></td>
-            <td>Is this customer still active at the cut-off? No 30D / 180D window. This is not the chance they will order again.<span class="zh">截止日當天，這個客人是否仍像活躍客？沒有 30D / 180D 時間窗，也不是未來會否再下單的機率。</span></td>
+            <td>Is this customer still active at the cut-off? No 30D / 180D window. This is not the chance they will order again. If the one completed-order day flag is Yes, this score stays at 100% by model structure — read Predicted Return Probability instead.<span class="zh">截止日當天，這個客人是否仍像活躍客？沒有 30D / 180D 時間窗，也不是未來會否再下單的機率。若「截止日只有一個完成單日」為 Yes，這個分數會因模型結構維持 100%——改看 Predicted Return Probability。</span></td>
           </tr>
           <tr>
             <td><code class="hdr">predicted_completed_order_days_{h}</code></td>
@@ -2581,10 +2481,15 @@
             <td>Predicted Future LTV<span class="zh">預計平台從這個客人總共賺多少</span></td>
             <td>In the next n days, how much do we expect the platform to earn from this customer in total?<span class="zh">預測未來 n 日，預計平台從這個客人總共賺多少？</span></td>
           </tr>
+          <tr id="ref-logic">
+            <td><code class="hdr">as_of_one_completed_order_day_frequency_0</code></td>
+            <td>One completed-order day as of cutoff<span class="zh">截止日只有一個完成單日</span></td>
+            <td>Yes = only one completed-order day up to the cutoff (<code class="hdr">frequency = 0</code>, which is <code class="hdr">historical_completed_order_days = 1</code>). The header ends with <code class="hdr">frequency_0</code> because that is the BG/NBD input that makes this flag TRUE — then <code class="hdr">p_alive</code> stays at 100% and As-of Churn stays at 0%. Not the same as one completed order (<code class="hdr">historical_completed_orders = 1</code>).<span class="zh">Yes＝截止日只有一個完成單日（frequency = 0）。header 帶 frequency_0，是因為令 p_alive 失真的模型輸入就是 frequency = 0。不是「只完成一張單」。</span></td>
+          </tr>
           <tr>
             <td><code class="hdr">as_of_churn_probability</code></td>
             <td>As-of Churn Probability<span class="zh">截止日流失機率</span></td>
-            <td>Has this one customer probably already stopped ordering, as of the cutoff? This is this one customer's own number — not a churn rate for a group of customers. It does not work for a customer who has only ordered once.<span class="zh">這一位客人，截止日當天，是否已經流失？這是這一位客人自己的數字，不是一班客人的流失率。對只下過一次單的客人，這個數字會失真。</span></td>
+            <td>Has this one customer probably already stopped ordering, as of the cutoff? This is this one customer's own number — not a churn rate for a group of customers. It does not work when the one completed-order day flag is Yes.<span class="zh">這一位客人，截止日當天，是否已經流失？這是這一位客人自己的數字，不是一班客人的流失率。若「截止日只有一個完成單日」為 Yes，這個數字會失真。</span></td>
           </tr>
           <tr>
             <td><code class="hdr">predicted_churn_probability_{h}</code></td>
@@ -2843,7 +2748,7 @@
         <thead>
           <tr class="grp">
             <th class="g-id" colspan="5">Customer / context<span class="zh">客戶／背景</span></th>
-            <th class="g-status" colspan="1">Current status<span class="zh">現況</span></th>
+            <th class="g-status" colspan="2">Current status<span class="zh">現況</span></th>
             <th class="g-30" colspan="4">30D prediction<span class="zh">30 日預測 · Campaign</span></th>
             <th class="g-180" colspan="4"><span class="main-flag">180D prediction (MAIN)<span class="zh">180 日預測（主）</span></span></th>
             <th class="g-act" colspan="2" id="mktActGroup"><span class="g-act-inner"><span class="g-act-title" id="mktActTitle">CVE Decision<span class="zh">CVE 決策</span></span><span class="mkt-mode-switch" role="group" aria-label="CVE or PFM columns"><button type="button" id="mktBtnCve" aria-pressed="true">CVE</button><button type="button" id="mktBtnPfm" aria-pressed="false">PFM</button></span></span></th>
@@ -2855,6 +2760,7 @@
             <th class="lookup-h" data-col="mkt_pband" tabindex="0"><span class="lookup-h-title">Official Tier P</span><span class="zh">同一層內位置</span></th>
             <th class="lookup-h" data-col="mkt_earned" tabindex="0"><span class="lookup-h-title">Already earned</span><span class="zh">已經賺到的錢</span></th>
             <th class="lookup-h" data-col="mkt_palive" tabindex="0"><span class="lookup-h-title">p_alive</span><span class="zh">截止日仍像活躍客</span></th>
+            <th class="lookup-h" data-col="mkt_oneday" tabindex="0"><span class="lookup-h-title">One completed-order day as of cutoff</span><span class="zh">截止日只有一個完成單日</span></th>
             <th class="lookup-h" data-col="mkt_rp30" tabindex="0"><span class="lookup-h-title">Predicted Return Probability</span><span class="zh">回流機率</span></th>
             <th class="lookup-h" data-col="mkt_days30" tabindex="0"><span class="lookup-h-title">Predicted<br>Order Days</span><span class="zh">預計完成訂單日</span></th>
             <th class="lookup-h" data-col="mkt_orders30" tabindex="0"><span class="lookup-h-title">Predicted<br>Orders</span><span class="zh">預計完成單張數</span></th>
@@ -2878,6 +2784,7 @@
             <td>P100</td>
             <td>$22,224</td>
             <td>99.8%</td>
+            <td><span class="chip chip-dim chip-compact">No</span></td>
             <td>99.8%</td>
             <td>12.6 days</td>
             <td>23.5 orders</td>
@@ -2899,6 +2806,7 @@
             <td>P20</td>
             <td>$55.5</td>
             <td>83.3%</td>
+            <td><span class="chip chip-dim chip-compact">No</span></td>
             <td>70.6%</td>
             <td>2.09 days</td>
             <td>2.09 orders</td>
@@ -2920,6 +2828,7 @@
             <td>P100</td>
             <td>$22,396</td>
             <td>6.5%</td>
+            <td><span class="chip chip-dim chip-compact">No</span></td>
             <td>6.5%</td>
             <td>0.91 days</td>
             <td>1.53 orders</td>
@@ -2941,6 +2850,7 @@
             <td>P90</td>
             <td>$19.5</td>
             <td>100.0%</td>
+            <td><span class="chip chip-warn chip-compact">Yes</span></td>
             <td>5.55%</td>
             <td>0.06 days</td>
             <td>0.06 orders</td>
@@ -3080,6 +2990,7 @@
                 <h3>Data interpretation<span class="zh">如何讀欄</span></h3>
                 <ul>
                   <li>Historical <code class="hdr">historical_completed_order_days</code> / <code class="hdr">historical_completed_orders</code> = facts up to the cutoff<span class="zh">歷史完成訂單日／張是截止日前事實</span></li>
+                  <li>One completed-order day as of cutoff = Yes when <code class="hdr">frequency = 0</code> (<code class="hdr">historical_completed_order_days = 1</code>). Then <code class="hdr">p_alive</code> stays at 100%. Not the same as one completed order<span class="zh">截止日只有一個完成單日＝Yes 當 frequency = 0。此時 p_alive 維持 100%。不是只完成一張單</span></li>
                   <li>Predicted days / orders = 180D forecast. Cell unit <b>d</b> = completed-order days, not calendar days<span class="zh">預測日／張是未來 180 日預測。d＝完成訂單日，不是日曆日</span></li>
                   <li>180D No Completed Order Observed = Yes if <code class="hdr">actual_day_platform_take_180d</code> = 0 after cutoff. No = a completed order was seen; then read Bias. Holdout fact. Not Predicted Return Probability<span class="zh">Yes＝截止日後 180 日實際平台收入為 0。No＝有完成單，才看 Bias。是回測事實，不是回流機率</span></li>
                   <li>To Next T / To Next P = historical dollar gaps, not an upgrade probability<span class="zh">升到下一 T／P 還差多少錢是已賺金額缺口，不是升級機率</span></li>
@@ -3105,6 +3016,11 @@
       <select id="tierFilter" class="lookup-select" aria-label="Filter by Official Tier">
         <option value="">All Tiers</option>
       </select>
+      <select id="oneDayFilter" class="lookup-select" aria-label="Filter by one completed-order day as of cutoff">
+        <option value="">All completed-order-day flags</option>
+        <option value="yes">One completed-order day as of cutoff</option>
+        <option value="no">More than one completed-order day</option>
+      </select>
       <span class="lookup-count" id="lookupCount"></span>
     </div>
     <p class="swipe-hint">Swipe the table sideways to see more columns<span class="zh">表格可左右滑動</span></p>
@@ -3120,6 +3036,7 @@
               <th class="lookup-h" data-col="earned" tabindex="0"><span class="lookup-h-title">Already Earned</span><span class="zh">已經賺到</span></th>
               <th class="lookup-h" data-col="hist" tabindex="0"><span class="lookup-h-title">Historical<br>Orders</span><span class="u-unit">Order days · Orders</span><span class="zh">訂單日 · 張數</span></th>
               <th class="lookup-h" data-col="palive" tabindex="0"><span class="lookup-h-title">p_alive</span><span class="zh">截止日仍像活躍客</span></th>
+              <th class="lookup-h" data-col="oneday" tabindex="0"><span class="lookup-h-title">One completed-order day<br>as of cutoff</span><span class="zh">截止日只有一個完成單日</span></th>
               <th class="lookup-h" data-col="asofchurn" tabindex="0"><span class="lookup-h-title">As-of Churn<br>Probability</span><span class="zh">截止日流失機率</span></th>
               <th class="lookup-h" data-col="prob180" tabindex="0"><span class="lookup-h-title">180D Predicted Return<br>Probability</span><span class="zh">回流機率</span></th>
               <th class="lookup-h" data-col="predchurn180" tabindex="0"><span class="lookup-h-title">180D Churn<br>Probability</span><span class="zh">180 日流失機率</span></th>
@@ -3963,6 +3880,14 @@
     var p = bias * 100;
     return (p > 0 ? '+' : '') + p.toFixed(Math.abs(p) < 10 ? 1 : 0) + '%';
   }
+  function oneCompletedOrderDay(u) {
+    return u.histDays === 1;
+  }
+  function oneDayChip(u) {
+    return oneCompletedOrderDay(u)
+      ? '<span class="chip chip-warn chip-compact">Yes</span>'
+      : '<span class="chip chip-dim chip-compact">No</span>';
+  }
   function noPurchaseObservedHtml(u) {
     if (u.actTake180 == null) return '<span class="chip chip-dim chip-compact">—</span>';
     if (u.actTake180 === 0) return '<span class="chip chip-warn chip-compact">Yes</span>';
@@ -3991,6 +3916,7 @@
 
   var tbody = document.getElementById('userTableBody');
   var tierSel = document.getElementById('tierFilter');
+  var oneDaySel = document.getElementById('oneDayFilter');
   var searchInput = document.getElementById('userSearch');
   var countEl = document.getElementById('lookupCount');
   var scrollEl = document.getElementById('lookupTableScroll');
@@ -4014,6 +3940,8 @@
     var tf = tierSel.value;
     return users.filter(function (u) {
       if (tf && u.tier !== tf) return false;
+      if (oneDaySel && oneDaySel.value === 'yes' && !oneCompletedOrderDay(u)) return false;
+      if (oneDaySel && oneDaySel.value === 'no' && oneCompletedOrderDay(u)) return false;
       if (q && u.id.toLowerCase().indexOf(q) === -1) return false;
       return true;
     });
@@ -4058,6 +3986,7 @@
         '<td class="u-num">' + money(u.earned) + '</td>' +
         '<td class="u-num">' + u.histDays.toLocaleString('en-US') + 'd · ' + u.histOrders.toLocaleString('en-US') + ' ord</td>' +
         '<td><div class="u-alive-bar"><div class="u-alive-track"><div class="u-alive-fill" style="width:' + Math.round(u.alive * 100) + '%"></div></div><span class="u-num">' + pct(u.alive) + '</span></div></td>' +
+        '<td>' + oneDayChip(u) + '</td>' +
         '<td class="u-num">' + pct(1 - u.alive) + '</td>' +
         '<td><div class="u-alive-bar"><div class="u-alive-track"><div class="u-alive-fill" style="width:' + Math.round(Math.min(1, u.prob180) * 100) + '%"></div></div><span class="u-num">' + pct(u.prob180) + '</span></div></td>' +
         '<td class="u-num">' + pct(1 - Math.min(1, u.prob180)) + '</td>' +
@@ -4074,7 +4003,7 @@
       var dr = document.createElement('tr');
       dr.className = 'detail-row';
       dr.hidden = true;
-      dr.innerHTML = '<td colspan="17"><div class="detail-panel"><div class="detail-grid">' +
+      dr.innerHTML = '<td colspan="18"><div class="detail-panel"><div class="detail-grid">' +
         '<div class="detail-item"><div class="k">First completed order<span class="zh">第一張完成單</span></div><div class="v">' + u.first + '</div></div>' +
         '<div class="detail-item"><div class="k">Last completed order<span class="zh">最近完成單</span></div><div class="v">' + u.last + '</div></div>' +
         '<div class="detail-item"><div class="k">Days since then<span class="zh">距今幾日</span></div><div class="v">' + u.sinceLast + ' days</div></div>' +
@@ -4104,6 +4033,7 @@
 
   searchInput.addEventListener('input', function () { currentPage = 1; render(); });
   tierSel.addEventListener('change', function () { currentPage = 1; render(); });
+  if (oneDaySel) oneDaySel.addEventListener('change', function () { currentPage = 1; render(); });
   prevBtn.addEventListener('click', function () {
     if (currentPage > 1) { currentPage--; render(); }
   });
@@ -4157,15 +4087,23 @@
     },
     palive: {
       title: 'p_alive',
-      def: 'Is this customer still active at the cut-off? No 30D / 180D window. This is not the chance they will order again.<span class="zh">截止日當天，這個客人是否仍像活躍客？沒有 30D / 180D 時間窗，也不是未來會否再下單的機率。</span>',
+      def: 'Is this customer still active at the cut-off? No 30D / 180D window. This is not the chance they will order again. If One completed-order day as of cutoff is Yes, this score stays at 100% by model structure — read 180D Predicted Return Probability instead.<span class="zh">截止日當天，這個客人是否仍像活躍客？沒有 30D / 180D 時間窗，也不是未來會否再下單的機率。若「截止日只有一個完成單日」為 Yes，這個分數會因模型結構維持 100%——改看 180D Predicted Return Probability。</span>',
       ssot: 'p_alive',
       type: 'Current state',
       windowKey: 'Prediction horizon',
       windowVal: 'None'
     },
+    oneday: {
+      title: 'One completed-order day as of cutoff',
+      def: 'Yes = only one completed-order day up to the cutoff (<code class="hdr">frequency = 0</code>, which is <code class="hdr">historical_completed_order_days = 1</code>). The header ends with <code class="hdr">frequency_0</code> because that is the BG/NBD input that makes this flag TRUE — then <code class="hdr">p_alive</code> stays at 100% and As-of Churn stays at 0%. Not the same as one completed order (<code class="hdr">historical_completed_orders = 1</code>).<span class="zh">Yes＝截止日只有一個完成單日（frequency = 0）。header 帶 frequency_0，是因為令 p_alive 失真的模型輸入就是 frequency = 0。不是「只完成一張單」。</span>',
+      ssot: 'as_of_one_completed_order_day_frequency_0 = (frequency = 0)',
+      type: 'Historical',
+      windowKey: 'Window',
+      windowVal: 'Up to cutoff'
+    },
     asofchurn: {
       title: 'As-of Churn Probability',
-      def: 'Has this one customer probably already stopped ordering, as of the cutoff? This is this one customer\'s own number — not a churn rate for a group of customers. It does not work for a customer who has only ordered once (shows 0% even though they may be gone).<span class="zh">這一位客人，截止日當天，是否已經流失？這是這一位客人自己的數字，不是一班客人的流失率。對只下過一次單的客人，這個數字會失真（即使客人已經流失，也會顯示 0%）。</span>',
+      def: 'Has this one customer probably already stopped ordering, as of the cutoff? This is this one customer\'s own number — not a churn rate for a group of customers. It does not work when One completed-order day as of cutoff is Yes (shows 0% even though they may be gone).<span class="zh">這一位客人，截止日當天，是否已經流失？這是這一位客人自己的數字，不是一班客人的流失率。若「截止日只有一個完成單日」為 Yes，這個數字會失真（即使客人已經流失，也會顯示 0%）。</span>',
       ssot: 'as_of_churn_probability',
       type: 'Current state',
       windowKey: 'Prediction horizon',
@@ -4277,11 +4215,19 @@
     },
     mkt_palive: {
       title: 'p_alive',
-      def: 'Is this customer still active at the cut-off? No 30D / 180D window. This is not the chance they will order again.<span class="zh">截止日當天，這個客人是否仍像活躍客？沒有 30D / 180D 時間窗，也不是未來會否再下單的機率。</span>',
+      def: 'Is this customer still active at the cut-off? No 30D / 180D window. This is not the chance they will order again. If One completed-order day as of cutoff is Yes, this score stays at 100% by model structure — read Predicted Return Probability instead.<span class="zh">截止日當天，這個客人是否仍像活躍客？沒有 30D / 180D 時間窗，也不是未來會否再下單的機率。若「截止日只有一個完成單日」為 Yes，這個分數會因模型結構維持 100%——改看 Predicted Return Probability。</span>',
       ssot: 'p_alive',
       type: 'Current state',
       windowKey: 'Prediction horizon',
       windowVal: 'None'
+    },
+    mkt_oneday: {
+      title: 'One completed-order day as of cutoff',
+      def: 'Yes = only one completed-order day up to the cutoff (<code class="hdr">frequency = 0</code>, which is <code class="hdr">historical_completed_order_days = 1</code>). The header ends with <code class="hdr">frequency_0</code> because that is the BG/NBD input that makes this flag TRUE — then <code class="hdr">p_alive</code> stays at 100% and As-of Churn stays at 0%. Not the same as one completed order (<code class="hdr">historical_completed_orders = 1</code>). On this extract, only USER-2272617 is Yes.<span class="zh">Yes＝截止日只有一個完成單日（frequency = 0）。header 帶 frequency_0，是因為令 p_alive 失真的模型輸入就是 frequency = 0。不是只完成一張單。本表只有 USER-2272617 為 Yes。</span>',
+      ssot: 'as_of_one_completed_order_day_frequency_0 = (frequency = 0)',
+      type: 'Historical',
+      windowKey: 'Window',
+      windowVal: 'Up to cutoff'
     },
     mkt_rp30: {
       title: 'Predicted Return Probability',
@@ -4696,7 +4642,7 @@
           </tr>
           <tr>
             <td>Watch out for<span class="zh">要留意</span></td>
-            <td>Unreliable for a customer who ordered only once<span class="zh">對只下過一次單的客戶失真</span></td>
+            <td>Unreliable when One completed-order day as of cutoff is Yes<span class="zh">若「截止日只有一個完成單日」為 Yes，這個數字會失真</span></td>
             <td class="col-hl">This is the one to use — still one customer's own probability, not a group rate<span class="zh">應該使用這一個——仍然是這一位客戶自己的機率，不是客群流失率</span></td>
             <td>Never put a group rate on one customer's row. Do not treat this as a future prediction<span class="zh">不要把流失率寫進單一客戶列。這不是未來預測</span></td>
           </tr>
@@ -4751,7 +4697,7 @@
     </ul>
     <p style="margin:0 0 12px;padding:10px 12px;background:var(--surface-2);border-radius:8px;font-size:14px;line-height:1.6;color:var(--ink-700);"><b>Same silence, different verdict</b> — because every customer has a different buying pattern.<span class="zh"><b>同樣沉默兩個月，判斷可以不同</b>——因為每位客人的購買習慣都不一樣。</span></p>
     <p style="margin:0 0 12px;font-size:14px;line-height:1.6;color:var(--ink-700);">In short: the model compares each customer with their own ordering history, rather than simply counting the days since their last order.<span class="zh">簡單來說：模型是將客人跟「自己的過往習慣」比較，而不是單純看距離上次落單有多少天。</span></p>
-    <p style="margin:0;font-size:13px;line-height:1.6;color:var(--ink-500);">Special case: if a customer has only ordered once, there is not enough repeat-order history to tell whether their behaviour has changed. In this model output, <code class="hdr">p_alive</code> therefore stays at 100%.<span class="zh">特殊情況：如果客人只落過一次單，模型沒有足夠的重複購買紀錄去判斷他的行為是否已經改變，因此在這個模型輸出中，<code class="hdr">p_alive</code> 會維持在 100%。</span></p>
+    <p style="margin:0;font-size:13px;line-height:1.6;color:var(--ink-500);">Special case: if a customer has only one completed-order day as of the cutoff (<code class="hdr">frequency = 0</code>), there is not enough repeat-order history to tell whether their behaviour has changed. In this model output, <code class="hdr">p_alive</code> therefore stays at 100%. The table flag <code class="hdr">as_of_one_completed_order_day_frequency_0</code> is Yes for these customers — the header ends with <code class="hdr">frequency_0</code> because that is the model input that makes <code class="hdr">p_alive</code> stick at 100%. That is not the same as one completed order (<code class="hdr">historical_completed_orders = 1</code>).<span class="zh">特殊情況：如果截止日只有一個完成單日（frequency = 0），p_alive 會維持 100%。表上的 as_of_one_completed_order_day_frequency_0 對這些客人是 Yes；header 帶 frequency_0，是因為令 p_alive 失真的輸入就是這一條。這不等於只完成一張單。</span></p>
   </div>
 </dialog>
 <script>
