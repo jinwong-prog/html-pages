@@ -77,8 +77,6 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.86em;
 .dl{display:grid;grid-template-columns:230px 1fr;gap:6px 16px;font-size:14.5px;margin:8px 0}
 .dl dt{color:var(--ink2)} .dl dd{margin:0;font-weight:700;font-variant-numeric:tabular-nums}
 .heat{border-collapse:collapse;width:100%;font-size:12px;font-variant-numeric:tabular-nums}
-.heat.is-sliced{width:auto;max-width:100%}
-.heat.is-sliced th,.heat.is-sliced td{min-width:88px}
 .heat th,.heat td{border:1px solid var(--grid);padding:0;text-align:center;min-width:62px}
 .heat th{font-size:11px;color:var(--ink2);font-weight:700;background:var(--plane);padding:6px 4px}
 .heat th.stub{text-align:left;padding:6px 8px;width:136px;min-width:136px;white-space:nowrap}
@@ -88,7 +86,11 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.86em;
   font:700 12px system-ui,sans-serif;color:var(--ink);padding:7px 4px;min-height:38px}
 .heat button.cell.rng{font-size:10px;line-height:1.15;white-space:normal;min-height:38px}
 .heat button.cell small{display:block;font-size:10px;font-weight:600;color:var(--ink2);margin-top:2px}
-.heat td.on{outline:2px solid var(--blue);outline-offset:-2px}
+.heat td.on{outline:2px solid var(--blue);outline-offset:-2px;position:relative;z-index:1}
+.heat th.on{color:var(--blue);background:color-mix(in srgb,var(--blue) 10%,var(--plane))}
+/* Filter bar picked a T / P / last-order band: keep that strip bright, fade the rest. */
+.heat td.dim,.heat th.dim{opacity:.28;filter:grayscale(.45)}
+.heat td.dim button.cell{color:var(--ink2)}
 .heat td.na button.cell{color:var(--muted);font-weight:600}
 /* too few customers to read: colour is dropped, the count is flagged instead */
 .heat td.lown{background-image:repeating-linear-gradient(45deg,transparent,transparent 5px,
@@ -2428,23 +2430,11 @@ const DATA = {"meta":{"query_date":"2026-08-28","data_scope":"HK TRANSPORT Platf
     tpAll(st.h).forEach(r => addTo(acc, M, r, r.tier_label, r.within_tier_band));
     return wrapTotals(acc, M);
   }
-  function heatTiers(){ return st.tier ? [st.tier] : TIERS; }
-  function heatPs(){ return st.p ? [st.p] : PS; }
-  function heatRec(){ return REC.filter(recencyOk); }
-  function heatSliced(ts, ps){
-    return ts.length < TIERS.length || ps.length < PS.length;
-  }
-  function cellOn(t, p){
-    if (!st.tier && !st.p) return false;
-    if (st.tier && st.tier !== t) return false;
-    if (st.p && st.p !== p) return false;
-    return true;
-  }
   function filteredTotals(){
     const M = impactMeasure();
     const acc = {n:0, pred:0, act:0, measured:0, abs:0, absN:0};
-    const tiers = heatTiers();
-    const ps = heatPs();
+    const tiers = st.tier ? [st.tier] : TIERS;
+    const ps = st.p ? [st.p] : PS;
     tiers.forEach(t => ps.forEach(p => {
       const r = viewCell(t, p);
       if (r) addTo(acc, M, r, t, p);
@@ -2733,31 +2723,60 @@ const DATA = {"meta":{"query_date":"2026-08-28","data_scope":"HK TRANSPORT Platf
   }
 
   /* ---------- 2 · T × P bias heatmap ---------- */
+  /* Filter bar focus: keep the selected Official Tier / Within-tier Level bright,
+     fade everything else. No T and no P → no fade. Cell click still sets both. */
+  function heatTpCellClass(t, p){
+    if (!st.tier && !st.p) return "";
+    const tOk = !st.tier || st.tier === t;
+    const pOk = !st.p || st.p === p;
+    return (tOk && pOk) ? " on" : " dim";
+  }
+  function heatTierClass(t){
+    if (!st.tier) return "";
+    return st.tier === t ? " on" : " dim";
+  }
+  function heatPClass(p){
+    if (!st.p) return "";
+    return st.p === p ? " on" : " dim";
+  }
+  function heatRecCellClass(t, k){
+    const tierOn = !!st.tier;
+    const bandOn = !recencyAll();
+    if (!tierOn && !bandOn) return "";
+    const tOk = !tierOn || st.tier === t;
+    const kOk = !bandOn || st.recKeep.has(k);
+    return (tOk && kOk) ? " on" : " dim";
+  }
+  function heatRecBandClass(k){
+    if (recencyAll()) return "";
+    return st.recKeep.has(k) ? " on" : " dim";
+  }
   function renderHeatBias(){
     const spec = RANGE_METRICS[st.metric];
-    const visT = heatTiers(), visP = heatPs();
     /* One pass for the cells, so the margin counts do not re-roll every cell. */
     const cells = {}, rowN = {}, colN = {};
-    visP.forEach(p => colN[p] = 0);
-    visT.forEach(t => {
+    PS.forEach(p => colN[p] = 0);
+    TIERS.forEach(t => {
       rowN[t] = 0;
-      visP.forEach(p => {
+      PS.forEach(p => {
         const r = viewCell(t, p);
         cells[t + "|" + p] = r;
+        /* Header totals follow the filter bar: only count cells still in focus. */
+        if ((st.tier && st.tier !== t) || (st.p && st.p !== p)) return;
         const n = r ? r.customer_count : 0;
         rowN[t] += n;
         colN[p] += n;
       });
     });
-    const rows = visT.map(t => {
-      const tds = visP.map(p => {
+    const rows = TIERS.map(t => {
+      const tds = PS.map(p => {
         const r = cells[t + "|" + p];
         const M = pvaMeasure();
         /* Some measures live at a deeper grain than the T × P row. Read the cell they name,
            but keep the customer count from viewCell so the row and column totals still add up. */
         const srcCell = (r && M.cellGet) ? M.cellGet(t, p) : r;
         const b = srcCell ? M.bias(srcCell) : null;
-        const on = cellOn(t, p) ? " on" : "";
+        const on = heatTpCellClass(t, p);
         const absTot = srcCell ? M.abs(srcCell) : null;
         const mae = srcCell && srcCell.customer_count && absTot != null
           ? absTot / srcCell.customer_count : null;
@@ -2777,7 +2796,7 @@ const DATA = {"meta":{"query_date":"2026-08-28","data_scope":"HK TRANSPORT Platf
             : `${t} / ${p}\n${noRangeWhy(t, p)}`;
           const rn = rng ? rng.n : (r ? r.customer_count : null);
           const rlow = rn != null && rn < LOW_N;
-          return `<td class="${on}${rlow ? " lown" : ""}" style="background:var(--neutbg)"><button type="button" class="cell rng" data-t="${t}" data-p="${p}" data-tip="${tip}">${shown}<small class="${rlow ? "lown" : ""}">${rn == null ? "—" : fmtN(rn)}</small></button></td>`;
+          return `<td class="${on.trim()}${rlow ? " lown" : ""}" style="background:var(--neutbg)"><button type="button" class="cell rng" data-t="${t}" data-p="${p}" data-tip="${tip}">${shown}<small class="${rlow ? "lown" : ""}">${rn == null ? "—" : fmtN(rn)}</small></button></td>`;
         }
         const tip = srcCell
           ? cellTip(t, p, srcCell, b, mae, extra)
@@ -2789,21 +2808,20 @@ const DATA = {"meta":{"query_date":"2026-08-28","data_scope":"HK TRANSPORT Platf
         const n = r ? r.customer_count : 0;
         const low = n < LOW_N;
         const bg = low ? "var(--neutbg)" : biasBg(b);
-        return `<td class="${on}${low ? " lown" : ""}" style="background:${bg}"><button type="button" class="cell" data-t="${t}" data-p="${p}" data-tip="${tip}">${shown}<small class="${low ? "lown" : ""}">${r ? fmtN(n) : "—"}</small></button></td>`;
+        return `<td class="${on.trim()}${low ? " lown" : ""}" style="background:${bg}"><button type="button" class="cell" data-t="${t}" data-p="${p}" data-tip="${tip}">${shown}<small class="${low ? "lown" : ""}">${r ? fmtN(n) : "—"}</small></button></td>`;
       }).join("");
-      return `<tr><th class="stub">${tierStubN(t, rowN[t])}</th>${tds}</tr>`;
+      return `<tr><th class="stub${heatTierClass(t)}">${tierStubN(t, rowN[t])}</th>${tds}</tr>`;
     }).join("");
-    const colHead = visP.map(p=>`<th>${pStubN(p, colN[p])}</th>`).join("");
-    const gridN = visP.reduce((x,p)=>x+colN[p], 0);
-    const sliced = heatSliced(visT, visP) ? " is-sliced" : "";
+    const colHead = PS.map(p=>`<th class="${heatPClass(p).trim()}">${pStubN(p, colN[p])}</th>`).join("");
+    const gridN = PS.reduce((x,p)=>x+colN[p], 0);
     document.getElementById("heat-bias").innerHTML =
-      `<table class="heat${sliced}"><thead><tr><th class="stub">Customers<span class="share withn"><span class="n">${fmtNCompact(gridN)}</span></span></th>${colHead}</tr></thead><tbody>${rows}</tbody></table>`;
+      `<table class="heat"><thead><tr><th class="stub">Customers<span class="share withn"><span class="n">${fmtNCompact(gridN)}</span></span></th>${colHead}</tr></thead><tbody>${rows}</tbody></table>`;
     /* Average |Difference| needs a per-customer absolute error. Some cuts of this freeze do not
        carry one, and then every cell goes blank. Say why, instead of showing an empty table. */
     if (!spec && pvaSpec() && pvaSpec().show === "mae"){
       const M = pvaMeasure();
       let have = 0, want = 0;
-      visT.forEach(t => visP.forEach(p => {
+      TIERS.forEach(t => PS.forEach(p => {
         const r = cells[t + "|" + p];
         if (!r || !r.customer_count) return;
         want += r.customer_count;
@@ -3396,11 +3414,9 @@ Predicted can still be above 0.`;
   }
 
   function renderTierRecencyHeat(){
-    const visT = heatTiers(), visR = heatRec();
-    const inP = r => !st.p || r[R_P]===st.p;
-    const rows = visT.map(t => {
-      const tds = visR.map(k => {
-        const s = rollTpr(r => r[R_T]===t && r[R_REC]===k && inP(r));
+    const rows = TIERS.map(t => {
+      const tds = REC.map(k => {
+        const s = rollTpr(r => r[R_T]===t && r[R_REC]===k);
         const M = pvaMeasure();
         const isTake = !pvaSpec() || pvaSpec().unit === "take";
         /* Same unit as the main table, so switching Metric moves both together. */
@@ -3408,8 +3424,7 @@ Predicted can still be above 0.`;
         const act  = isTake ? s.act  : s.actOrd;
         const bias = isTake ? s.bias : s.biasOrd;
         const mae  = isTake ? s.mae  : s.maeOrd;
-        const on = (st.tier || st.recency) &&
-          (!st.tier || st.tier === t) && (!st.recency || st.recency === k) ? " on" : "";
+        const on = heatRecCellClass(t, k);
         const na = s.n ? "" : " na";
         const low = s.n > 0 && s.n < LOW_N;
         const tip = [
@@ -3422,20 +3437,26 @@ Predicted can still be above 0.`;
           "",
           tipRow(M.maeLab, M.per(mae))
         ].join("\n");
-        return `<td class="${on}${na}${low ? " lown" : ""}" style="background:${low ? "var(--neutbg)" : biasBg(bias)}"><button type="button" class="cell" data-t="${t}" data-rec="${k}" data-tip="${tip}">${fmtBias(bias)}<small class="${low ? "lown" : ""}">${fmtN(s.n)}</small></button></td>`;
+        return `<td class="${on.trim()}${na}${low ? " lown" : ""}" style="background:${low ? "var(--neutbg)" : biasBg(bias)}"><button type="button" class="cell" data-t="${t}" data-rec="${k}" data-tip="${tip}">${fmtBias(bias)}<small class="${low ? "lown" : ""}">${fmtN(s.n)}</small></button></td>`;
       }).join("");
-      return `<tr><th class="stub">${tierStubN(t, rollTpr(r => r[R_T]===t && inP(r) && recencyOk(r[R_REC])).n)}</th>${tds}</tr>`;
+      const rowTot = rollTpr(r => r[R_T]===t && (recencyAll() || st.recKeep.has(r[R_REC]))).n;
+      return `<tr><th class="stub${heatTierClass(t)}">${tierStubN(t, rowTot)}</th>${tds}</tr>`;
     }).join("");
     /* Column headers carry the customer count for that whole band, same as the T × P tables. */
     const colN = {};
-    visR.forEach(k => colN[k] = rollTpr(r => r[R_REC]===k && inP(r)).n);
-    const gridN = visR.reduce((x,k)=>x+colN[k], 0);
-    const colHead = visR.map(k =>
-      `<th>${REC_AGO[k]}<span class="share withn"><span class="n">${fmtNCompact(colN[k])}</span></span></th>`
+    REC.forEach(k => {
+      colN[k] = rollTpr(r =>
+        r[R_REC]===k
+        && (!st.tier || r[R_T]===st.tier)
+        && (recencyAll() || st.recKeep.has(k))
+      ).n;
+    });
+    const gridN = REC.reduce((x,k)=>x+(recencyAll() || st.recKeep.has(k) ? colN[k] : 0), 0);
+    const colHead = REC.map(k =>
+      `<th class="${heatRecBandClass(k).trim()}">${REC_AGO[k]}<span class="share withn"><span class="n">${fmtNCompact(colN[k])}</span></span></th>`
     ).join("");
-    const sliced = (visT.length < TIERS.length || visR.length < REC.length) ? " is-sliced" : "";
     document.getElementById("heat-recency").innerHTML =
-      `<table class="heat${sliced}"><thead><tr><th class="stub">Customers<span class="share withn"><span class="n">${fmtNCompact(gridN)}</span></span></th>${colHead}</tr></thead><tbody>${rows}</tbody></table>`;
+      `<table class="heat"><thead><tr><th class="stub">Customers<span class="share withn"><span class="n">${fmtNCompact(gridN)}</span></span></th>${colHead}</tr></thead><tbody>${rows}</tbody></table>`;
     const M0 = pvaMeasure();
     const showMae0 = pvaSpec() && pvaSpec().show === "mae";
     document.getElementById("heat-recency-title").textContent =
@@ -3648,37 +3669,38 @@ Predicted can still be above 0.`;
       b.setAttribute("aria-pressed", on ? "true" : "false");
     });
     const extra = recencyAll() ? "" : "\n(after last-completed-order filter)";
-    const visT = heatTiers(), visP = heatPs();
     const cells = {}, rowN = {}, colN = {};
     let nNa = 0, nBias = 0;
-    visP.forEach(p => colN[p] = 0);
-    visT.forEach(t => {
+    PS.forEach(p => colN[p] = 0);
+    TIERS.forEach(t => {
       rowN[t] = 0;
-      visP.forEach(p => {
+      PS.forEach(p => {
         const d = U.get(t, p);
         cells[t + "|" + p] = d;
         const n = d ? d.n : 0;
-        rowN[t] += n;
-        colN[p] += n;
+        if (!((st.tier && st.tier !== t) || (st.p && st.p !== p))){
+          rowN[t] += n;
+          colN[p] += n;
+        }
         if (d && d.measureNa) nNa += n; else if (d && d.bias != null) nBias += n;
       });
     });
-    const rows = visT.map(t => {
-      const tds = visP.map(p => {
+    const rows = TIERS.map(t => {
+      const tds = PS.map(p => {
         const d = cells[t + "|" + p];
-        const on = cellOn(t, p) ? " on" : "";
+        const on = heatTpCellClass(t, p);
         if (!d){
           const why = extraFiltersOn()
             ? `${U.title} Bias % is not in this freeze with: ${extraFilterWhy()}. Customer count still follows the filters.`
             : "No row";
-          return `<td class="${on} na" style="background:var(--neutbg)"><button type="button" class="cell" data-t="${t}" data-p="${p}" data-tip="${t} / ${p} · Next ${hDays(st.h)}\n${why}">—<small>—</small></button></td>`;
+          return `<td class="${on.trim()} na" style="background:var(--neutbg)"><button type="button" class="cell" data-t="${t}" data-p="${p}" data-tip="${t} / ${p} · Next ${hDays(st.h)}\n${why}">—<small>—</small></button></td>`;
         }
         if (d.measureNa){
           const why = `${U.title} Bias % cannot be worked out with: ${extraFilterWhy() || "this extra filter"}.
 This freeze has no ${U.title.toLowerCase()} split on that cut.
 Customer count still follows the filters. Read Bias % on the Platform Take table above.`;
           const low = d.n < LOW_N;
-          return `<td class="${on} na${low ? " lown" : ""}" style="background:var(--neutbg)"><button type="button" class="cell" data-t="${t}" data-p="${p}" data-tip="${t} / ${p} · Next ${hDays(st.h)}${extra}\n${fmtN(d.n)} customers\n\n${why}">—<small class="${low ? "lown" : ""}">${fmtN(d.n)}</small></button></td>`;
+          return `<td class="${on.trim()} na${low ? " lown" : ""}" style="background:var(--neutbg)"><button type="button" class="cell" data-t="${t}" data-p="${p}" data-tip="${t} / ${p} · Next ${hDays(st.h)}${extra}\n${fmtN(d.n)} customers\n\n${why}">—<small class="${low ? "lown" : ""}">${fmtN(d.n)}</small></button></td>`;
         }
         const low = d.n < LOW_N;
         const mae = null;   /* per-customer absolute error on order days is not in the freeze */
@@ -3694,15 +3716,14 @@ Customer count still follows the filters. Read Bias % on the Platform Take table
           tipRow(U.perActLab, (d.act/d.n).toFixed(2))
         ].join("\n");
         const bg = low ? "var(--neutbg)" : biasBg(d.bias);
-        return `<td class="${on}${low ? " lown" : ""}" style="background:${bg}"><button type="button" class="cell" data-t="${t}" data-p="${p}" data-tip="${tip}">${fmtBias(d.bias)}<small class="${low ? "lown" : ""}">${fmtN(d.n)}</small></button></td>`;
+        return `<td class="${on.trim()}${low ? " lown" : ""}" style="background:${bg}"><button type="button" class="cell" data-t="${t}" data-p="${p}" data-tip="${tip}">${fmtBias(d.bias)}<small class="${low ? "lown" : ""}">${fmtN(d.n)}</small></button></td>`;
       }).join("");
-      return `<tr><th class="stub">${tierStubN(t, rowN[t])}</th>${tds}</tr>`;
+      return `<tr><th class="stub${heatTierClass(t)}">${tierStubN(t, rowN[t])}</th>${tds}</tr>`;
     }).join("");
-    const colHead = visP.map(p=>`<th>${pStubN(p, colN[p])}</th>`).join("");
-    const gridN = visP.reduce((x,p)=>x+colN[p], 0);
-    const sliced = heatSliced(visT, visP) ? " is-sliced" : "";
+    const colHead = PS.map(p=>`<th class="${heatPClass(p).trim()}">${pStubN(p, colN[p])}</th>`).join("");
+    const gridN = PS.reduce((x,p)=>x+colN[p], 0);
     host.innerHTML =
-      `<table class="heat${sliced}"><thead><tr><th class="stub">Customers<span class="share withn"><span class="n">${fmtNCompact(gridN)}</span></span></th>${colHead}</tr></thead><tbody>${rows}</tbody></table>`;
+      `<table class="heat"><thead><tr><th class="stub">Customers<span class="share withn"><span class="n">${fmtNCompact(gridN)}</span></span></th>${colHead}</tr></thead><tbody>${rows}</tbody></table>`;
     document.getElementById("heat-orderdays-title").textContent =
       st.h + "-Day Predicted vs Actual — " + U.title;
     document.getElementById("heat-orderdays-legend").innerHTML = BIAS_LEGEND_HTML;
