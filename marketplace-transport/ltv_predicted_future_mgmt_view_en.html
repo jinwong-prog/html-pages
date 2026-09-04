@@ -164,6 +164,13 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.86em;
   background:#ffe566;border:1px solid rgba(180,117,0,.35);box-shadow:0 1px 0 rgba(180,117,0,.12)}
 #heat-rule.is-range{font-size:13px;font-weight:600;letter-spacing:0;color:var(--muted);
   background:transparent;border:0;box-shadow:none;padding:0}
+.heat-rule-row{display:flex;align-items:center;justify-content:space-between;gap:12px;
+  flex-wrap:wrap;margin:12px 0 0}
+.heat-rule-row #heat-rule{margin:0}
+.cta-marketing{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:8px;
+  font-size:14px;font-weight:800;letter-spacing:-.01em;color:#fff;background:var(--blue);
+  border:1px solid var(--blue);text-decoration:none;white-space:nowrap;cursor:pointer;flex:0 0 auto}
+.cta-marketing:hover{filter:brightness(1.08)}
 @media(max-width:700px){.heat-cols{grid-template-columns:1fr}}
 .heat-frame{display:grid;grid-template-columns:64px 136px minmax(0,1fr);
   column-gap:8px;row-gap:4px;align-items:stretch}
@@ -1091,7 +1098,11 @@ body.show-v2 a[data-s="s4"]{display:none !important}
       </div>
     </div>
     <p class="rule" id="heat-period-def">—</p>
-    <p class="rule" id="heat-rule">0% = on target · closer to 0% = more accurate</p>
+    <div class="heat-rule-row">
+      <p class="rule" id="heat-rule">0% = on target · closer to 0% = more accurate</p>
+      <a class="cta-marketing" id="cta-marketing" href="#" target="_blank" rel="noopener noreferrer"
+         title="Pending: Web App URL for the Marketing Decision page not set yet">Marketing Decision →</a>
+    </div>
     <p class="heat-warn" id="heat-note" hidden></p>
   </div>
   <div class="heat-frame">
