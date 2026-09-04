@@ -88,7 +88,7 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.86em;
 .heat button.cell small{display:block;font-size:10px;font-weight:600;color:var(--ink2);margin-top:2px}
 .heat td.on{outline:2px solid var(--blue);outline-offset:-2px;position:relative;z-index:1}
 .heat th.on{color:var(--blue);background:color-mix(in srgb,var(--blue) 10%,var(--plane))}
-/* Filter bar picked a T / P / last-order band: keep that strip bright, fade the rest. */
+/* Filter bar picked a T / P / last-order band: fade the rest. Selected stays normal (no glow). */
 .heat td.dim,.heat th.dim{opacity:.28;filter:grayscale(.45)}
 .heat td.dim button.cell{color:var(--ink2)}
 .heat td.na button.cell{color:var(--muted);font-weight:600}
@@ -2184,6 +2184,10 @@ const DATA = {"meta":{"query_date":"2026-08-28","data_scope":"HK TRANSPORT Platf
      (min / median / max of history) are identical across all nine horizons — verified
      2026-08-18 on every T × P and T × P × band cell. So the range really is horizon-free. */
   function distStatsForCell(t, p){
+    /* History min–max freeze grains: whole T × P, or one last-order band.
+       Historical days / orders / p_alive / monetary source are not in that freeze —
+       do not return an unfiltered range while those cuts are on. */
+    if (extraFiltersOn()) return null;
     if (recencyAll()){
       const r = DATA.dist_tp.find(x => x[D_T]===t && x[D_P]===p && x[D_H]===st.hi);
       return r ? {stats: r[D_STATS], n: r[D_N]} : null;
@@ -2198,6 +2202,11 @@ const DATA = {"meta":{"query_date":"2026-08-28","data_scope":"HK TRANSPORT Platf
   /* Why a range cell is blank. Three different reasons, and the old single message told the
      reader to pick a band even when one was already picked. */
   function noRangeWhy(t, p){
+    if (extraFiltersOn()){
+      return `${extraFilterWhy()} is on. This freeze has no History min–max after that cut, `
+        + `so the range is blank. Customer count under the cell still follows the filter. `
+        + `Switch Metric to Bias % · Platform Take to see accuracy after this cut.`;
+    }
     if (st.recKeep.size === 1){
       const band = [...st.recKeep][0];
       return `No customers here whose last completed order was ${REC_AGO[band] || band}, `
@@ -2289,9 +2298,9 @@ const DATA = {"meta":{"query_date":"2026-08-28","data_scope":"HK TRANSPORT Platf
          the caption is not enough — the customer count under each cell visibly stops matching
          the Bias tables, so warn on the page. */
       if (extraFiltersOn()) heatNote.push(
-        `<b>${extraFilterWhy()}</b> does not change this table. The min–max, and the customer `
-        + `count under it, cover the whole Official Tier × Within-tier Level — so that count `
-        + `will not match the customer count on the Predicted vs actual tables.`);
+        `<b>${extraFilterWhy()}</b> is on — <b>History min–max is blank</b> (this freeze has no
+         min–max after that cut). <b>Customer counts follow the filter</b> and match the bar
+         above. Switch Metric to <b>Bias % · Platform Take</b> to see accuracy after this cut.`);
       if (!recencyAll() && st.recKeep.size !== 1) heatNote.push(
         `Pick one <b>Last completed order was X days ago</b> band to see a range — min–max `
         + `cannot be added up across bands.`);
@@ -2723,21 +2732,21 @@ const DATA = {"meta":{"query_date":"2026-08-28","data_scope":"HK TRANSPORT Platf
   }
 
   /* ---------- 2 · T × P bias heatmap ---------- */
-  /* Filter bar focus: keep the selected Official Tier / Within-tier Level bright,
-     fade everything else. No T and no P → no fade. Cell click still sets both. */
+  /* Filter bar focus: shadow (dim) unselected Official Tier / Within-tier Level.
+     Selected stays normal — no bright outline. No T and no P → no fade. */
   function heatTpCellClass(t, p){
     if (!st.tier && !st.p) return "";
     const tOk = !st.tier || st.tier === t;
     const pOk = !st.p || st.p === p;
-    return (tOk && pOk) ? " on" : " dim";
+    return (tOk && pOk) ? "" : " dim";
   }
   function heatTierClass(t){
     if (!st.tier) return "";
-    return st.tier === t ? " on" : " dim";
+    return st.tier === t ? "" : " dim";
   }
   function heatPClass(p){
     if (!st.p) return "";
-    return st.p === p ? " on" : " dim";
+    return st.p === p ? "" : " dim";
   }
   function heatRecCellClass(t, k){
     const tierOn = !!st.tier;
@@ -2745,11 +2754,11 @@ const DATA = {"meta":{"query_date":"2026-08-28","data_scope":"HK TRANSPORT Platf
     if (!tierOn && !bandOn) return "";
     const tOk = !tierOn || st.tier === t;
     const kOk = !bandOn || st.recKeep.has(k);
-    return (tOk && kOk) ? " on" : " dim";
+    return (tOk && kOk) ? "" : " dim";
   }
   function heatRecBandClass(k){
     if (recencyAll()) return "";
-    return st.recKeep.has(k) ? " on" : " dim";
+    return st.recKeep.has(k) ? "" : " dim";
   }
   function renderHeatBias(){
     const spec = RANGE_METRICS[st.metric];
@@ -2783,18 +2792,17 @@ const DATA = {"meta":{"query_date":"2026-08-28","data_scope":"HK TRANSPORT Platf
         const extra = recencyAll() ? "" : "\n(after last-completed-order filter)";
         if (spec){
           const rng = cellRange(t, p);
+          /* Customer count always follows viewCell (same filter as the bar). Never show the
+             unfiltered History distribution n while an extra cut is on. */
+          const rn = r ? r.customer_count : null;
           const shown = rng && rng.min != null && rng.max != null
             ? fmtRangeVal(rng.min, spec.fmt) + "–" + fmtRangeVal(rng.max, spec.fmt)
               + (spec.unit ? " " + spec.unit : "")
             : "—";
           const u = spec.unit ? " " + spec.unit : "";
-          const unfiltered = extraFiltersOn()
-            ? `\n(count is the whole T × P — ${extraFilterWhy()} does not cut this range)`
-            : "";
           const tip = rng
-            ? `${t} / ${p}${extra}\n${spec.lab} — history only, not $\nMin ${fmtRangeVal(rng.min, spec.fmt)}${u}\nMedian ${fmtRangeVal(rng.p50, spec.fmt)}${u}\nMax ${fmtRangeVal(rng.max, spec.fmt)}${u}\nCustomers in this T × P ${fmtN(rng.n)}${unfiltered}\nRows/columns still rank on Historical Platform Take ($)\nPrediction period does not change this\nCode ${spec.code}`
-            : `${t} / ${p}\n${noRangeWhy(t, p)}`;
-          const rn = rng ? rng.n : (r ? r.customer_count : null);
+            ? `${t} / ${p}${extra}\n${spec.lab} — history only, not $\nMin ${fmtRangeVal(rng.min, spec.fmt)}${u}\nMedian ${fmtRangeVal(rng.p50, spec.fmt)}${u}\nMax ${fmtRangeVal(rng.max, spec.fmt)}${u}\nCustomers in this T × P ${fmtN(rn)}\nRows/columns still rank on Historical Platform Take ($)\nPrediction period does not change this\nCode ${spec.code}`
+            : `${t} / ${p}\n${fmtN(rn)} customers\n${noRangeWhy(t, p)}`;
           const rlow = rn != null && rn < LOW_N;
           return `<td class="${on.trim()}${rlow ? " lown" : ""}" style="background:var(--neutbg)"><button type="button" class="cell rng" data-t="${t}" data-p="${p}" data-tip="${tip}">${shown}<small class="${rlow ? "lown" : ""}">${rn == null ? "—" : fmtN(rn)}</small></button></td>`;
         }
