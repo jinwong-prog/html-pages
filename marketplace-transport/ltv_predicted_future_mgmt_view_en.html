@@ -86,9 +86,9 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.86em;
   font:700 12px system-ui,sans-serif;color:var(--ink);padding:7px 4px;min-height:38px}
 .heat button.cell.rng{font-size:10px;line-height:1.15;white-space:normal;min-height:38px}
 .heat button.cell small{display:block;font-size:10px;font-weight:600;color:var(--ink2);margin-top:2px}
-/* Filter bar picked a T / P / last-order band: fade the rest. Selected stays normal — no outline. */
-.heat td.dim,.heat th.dim{opacity:.28;filter:grayscale(.45)}
-.heat td.dim button.cell{color:var(--ink2)}
+/* Selected T × P (or row / column): outline only — never dim the rest of the grid. */
+.heat td.on{outline:2px solid var(--blue);outline-offset:-2px;position:relative;z-index:1}
+.heat th.on{color:var(--blue);background:color-mix(in srgb,var(--blue) 10%,var(--plane))}
 .heat td.na button.cell{color:var(--muted);font-weight:600}
 /* too few customers to read: colour is dropped, the count is flagged instead */
 .heat td.lown{background-image:repeating-linear-gradient(45deg,transparent,transparent 5px,
@@ -2829,33 +2829,38 @@ const DATA = {"meta":{"query_date":"2026-09-04","data_scope":"HK TRANSPORT Platf
   }
 
   /* ---------- 2 · T × P bias heatmap ---------- */
-  /* Filter bar focus: shadow (dim) unselected Official Tier / Within-tier Level.
-     Selected stays normal — no bright outline. No T and no P → no fade. */
+  /* Click / filter bar: highlight the selected segment only. Never dim other cells —
+     the rest of the grid stays fully readable. */
   function heatTpCellClass(t, p){
-    if (!st.tier && !st.p) return "";
-    const tOk = !st.tier || st.tier === t;
-    const pOk = !st.p || st.p === p;
-    return (tOk && pOk) ? "" : " dim";
+    if (st.tier && st.p) return (st.tier === t && st.p === p) ? " on" : "";
+    if (st.tier && !st.p) return st.tier === t ? " on" : "";
+    if (!st.tier && st.p) return st.p === p ? " on" : "";
+    return "";
   }
   function heatTierClass(t){
-    if (!st.tier) return "";
-    return st.tier === t ? "" : " dim";
+    return (st.tier && st.tier === t) ? " on" : "";
   }
   function heatPClass(p){
-    if (!st.p) return "";
-    return st.p === p ? "" : " dim";
+    return (st.p && st.p === p) ? " on" : "";
   }
   function heatRecCellClass(t, k){
     const tierOn = !!st.tier;
-    const bandOn = !recencyAll();
+    const bandOn = !recencyAll() && st.recKeep.size === 1;
     if (!tierOn && !bandOn) return "";
     const tOk = !tierOn || st.tier === t;
     const kOk = !bandOn || st.recKeep.has(k);
-    return (tOk && kOk) ? "" : " dim";
+    return (tOk && kOk) ? " on" : "";
   }
   function heatRecBandClass(k){
-    if (recencyAll()) return "";
-    return st.recKeep.has(k) ? "" : " dim";
+    if (recencyAll() || st.recKeep.size !== 1) return "";
+    return st.recKeep.has(k) ? " on" : "";
+  }
+  function clearTpSelection(){
+    if (!st.tier && !st.p) return false;
+    st.tier = null;
+    st.p = null;
+    st.page = 0;
+    return true;
   }
   function renderHeatBias(){
     const spec = RANGE_METRICS[st.metric];
@@ -4532,15 +4537,31 @@ Customer count still follows the filters. Read Bias % on the Platform Take table
     const ordersHost = document.getElementById("heat-orderdays");
     if (ordersHost) ordersHost.addEventListener("click", e => {
       const btn = e.target.closest("button.cell");
-      if (!btn) return;
-      st.tier = btn.dataset.t; st.p = btn.dataset.p; st.page = 0; render();
+      if (btn){
+        st.tier = btn.dataset.t; st.p = btn.dataset.p; st.page = 0; render();
+        return;
+      }
+      if (clearTpSelection()){ closeDeep(); render(); }
     });
     document.getElementById("heat-bias").addEventListener("click", e => {
       const btn = e.target.closest("button.cell");
-      if (!btn) return;
-      st.tier = btn.dataset.t; st.p = btn.dataset.p; st.page = 0;
-      openDeep(btn.dataset.t, btn.dataset.p);
-      render();
+      if (btn){
+        st.tier = btn.dataset.t; st.p = btn.dataset.p; st.page = 0;
+        openDeep(btn.dataset.t, btn.dataset.p);
+        render();
+        return;
+      }
+      /* Empty space on the grid: clear T × P highlight and close the deep dive. */
+      if (clearTpSelection()){ closeDeep(); render(); }
+    });
+    /* Click empty page chrome (not filters, deep panel, nav, or a heat cell) → same clear. */
+    document.addEventListener("click", e => {
+      if (!st.tier && !st.p) return;
+      if (e.target.closest("button.cell[data-t]")) return;
+      if (e.target.closest("#stick, .fdd, #f-exclude-panel, #deep-back, #deep-panel")) return;
+      if (e.target.closest("a, button, select, input, label, .nav, .work-table, #tbl")) return;
+      if (e.target.closest("#heat-bias, #heat-orderdays, #heat-recency")) return;
+      if (clearTpSelection()){ closeDeep(); render(); }
     });
     document.getElementById("deep-table").addEventListener("click", e => {
       const btn = e.target.closest("[data-actual0-pop]");
