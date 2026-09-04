@@ -86,9 +86,7 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.86em;
   font:700 12px system-ui,sans-serif;color:var(--ink);padding:7px 4px;min-height:38px}
 .heat button.cell.rng{font-size:10px;line-height:1.15;white-space:normal;min-height:38px}
 .heat button.cell small{display:block;font-size:10px;font-weight:600;color:var(--ink2);margin-top:2px}
-.heat td.on{outline:2px solid var(--blue);outline-offset:-2px;position:relative;z-index:1}
-.heat th.on{color:var(--blue);background:color-mix(in srgb,var(--blue) 10%,var(--plane))}
-/* Filter bar picked a T / P / last-order band: fade the rest. Selected stays normal (no glow). */
+/* Filter bar picked a T / P / last-order band: fade the rest. Selected stays normal — no outline. */
 .heat td.dim,.heat th.dim{opacity:.28;filter:grayscale(.45)}
 .heat td.dim button.cell{color:var(--ink2)}
 .heat td.na button.cell{color:var(--muted);font-weight:600}
