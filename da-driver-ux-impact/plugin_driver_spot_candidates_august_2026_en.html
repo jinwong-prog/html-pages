@@ -671,7 +671,7 @@ body.show-v2 a[data-s="s4"]{display:none !important}
     <span class="showbar showlabel" data-target="page-scope-body" role="button" tabindex="0">Expand ▾</span>
   </div>
   <div id="page-scope-body" style="display:none">
-    <p class="meta" style="margin-bottom:14px">This page is about <b>210 cheat-app (bot) drivers</b> (3-second rule). We looked at all public-pool truck drivers (van / mudou / mudou9; company orders left out), then kept drivers who drop 2+ different orders in the same 3 seconds. OA orders are left out. OA drivers stay. Drivers who picked an order took one (assigned, or they took it themselves). There is <b>no</b> 30-assigned or 30-completed minimum. Source: <code>mart_cheat_app_driver_review_priority_august_2026</code>. Score = Assigned + Release + Cancel in August 2026. Cards ①–④ = mart totals; Booking / Vehicle / Membership are unique-driver splits of those same cards (Booking = primary booking = most assigned in August; tie → On Demand). (queried 2026-09-23, HK TRANSPORT public-pool van/mudou/mudou9, 2026-08-01 to 2026-08-31)</p>
+    <p class="meta" style="margin-bottom:14px">This page is about <b>210 cheat-app (bot) drivers</b> (3-second rule). We looked at all public-pool truck drivers (van / mudou / mudou9; company orders left out), then kept drivers who drop 2+ different orders in the same 3 seconds. OA orders are left out. OA drivers stay. Drivers who picked an order did one of these: the system assigned it, the driver pressed to pick it, or driving mode picked it. There is <b>no</b> 30-assigned or 30-completed minimum. Source: <code>mart_cheat_app_driver_review_priority_august_2026</code>. Score = Assigned + Release + Cancel in August 2026. Cards ①–④ = mart totals; Booking / Vehicle / Membership are unique-driver splits of those same cards (Booking = primary booking = most assigned in August; tie → On Demand). (queried 2026-09-23, HK TRANSPORT public-pool van/mudou/mudou9, 2026-08-01 to 2026-08-31)</p>
   </div>
 
   <div class="sect-head">
@@ -683,7 +683,7 @@ body.show-v2 a[data-s="s4"]{display:none !important}
     <h3>Who picked an order</h3>
     <ul>
       <li><b>What this means:</b> They picked an order. OA orders are left out. OA drivers stay. We do not require 30 assigned orders or 30 finished orders.</li>
-      <li><b>Rule:</b> at least one <code>event_type_cd</code> 2 (assigned), 20 (they took it), or 22 (driving mode). Orders with <code>event_type_cd = 26</code> are left out. <code>oa_driver</code> is not used. Assigned ≥30 and completed ≥30 are not used.</li>
+      <li><b>Rule:</b> at least one <code>event_type_cd</code> 2 (assigned), 20 (the driver pressed to pick it), or 22 (driving mode). Orders with <code>event_type_cd = 26</code> are left out. <code>oa_driver</code> is not used. Assigned ≥30 and completed ≥30 are not used.</li>
       <li><b>Period:</b> 1 Aug – 31 Aug 2026</li>
     </ul>
 
@@ -743,10 +743,11 @@ body.show-v2 a[data-s="s4"]{display:none !important}
   </div>
   <div id="defs-body" class="relbox" style="margin-top:6px;margin-bottom:0;display:none">
     <b>OA orders left out</b> — An order with <code>event_type_cd = 26</code> is left out. The whole order is out. OA drivers stay.<br>
-    <b>Picked is not assigned</b> — <b>Picked</b> = any of <code>event_type_cd</code> 2 (assigned), 20 (the driver took it), or 22 (driving mode). The 6,275 are drivers who picked. <b>Assigned</b> = only <code>event_type_cd</code> 2 (<code>orders_assigned_30d</code>). One driver and one order count once. Release rate uses assigned, not picked.<br>
+    <b>Picked</b> — any of <code>event_type_cd</code> 2, 20 (the driver pressed to pick it), or 22 (driving mode). The 6,275 are drivers who picked.<br>
+    <b>Assigned</b> — only <code>event_type_cd</code> 2 (<code>orders_assigned_30d</code>). Not the same as picked. One driver and one order count once. Release rate uses this number, not the picked count.<br>
     <b>Release rate</b> (scoring) — releases ÷ <b>assigned</b> (<code>releases_by_driver_30d ÷ orders_assigned_30d</code>). <b>Not</b> completed + cancelled.<br>
     <b>Cancel rate</b> (scoring) — <b>driver cancel</b> ÷ (completed + driver cancel) = <code>driver_cancel_30d ÷ (orders_completed_30d + driver_cancel_30d)</code>. Driver cancel = <code>event_type_cd = 3</code> + <code>actor_type = 'Driver'</code>. Different base from Release — do not mix them.<br>
-    <b>Released vs driver cancel</b> — <b>Released</b> = driver took the order then <b>released</b> it back to the pool (<code>event_type_cd = 4</code>, <code>actor_type = 'Driver'</code>). <b>Driver cancel</b> (used in Cancel rate) = driver cancelled the order (<code>event_type_cd = 3</code>, <code>actor_type = 'Driver'</code>). Release returns the order to the pool; cancel ends the order. Pool entry does <b>not</b> require a release.<br>
+    <b>Released vs driver cancel</b> — <b>Released</b> = the driver had the order, then <b>released</b> it back to the pool (<code>event_type_cd = 4</code>, <code>actor_type = 'Driver'</code>). <b>Driver cancel</b> (used in Cancel rate) = driver cancelled the order (<code>event_type_cd = 3</code>, <code>actor_type = 'Driver'</code>). Release returns the order to the pool; cancel ends the order. Pool entry does <b>not</b> require a release.<br>
     <b>Who gets a score</b> — they picked an order (<code>event_type_cd</code> 2, 20, or 22). OA orders (<code>event_type_cd = 26</code>) are left out. OA drivers stay. Assigned ≥30 and completed ≥30 are <b>not</b> required.<br>
     <b>Bot pool</b> — 2+ different grace-drops (grabbed then let go fast, <code>event_type_cd = 21</code>) in the same <b>3 seconds</b> (<code>is_bot_pool_v2</code>). Review bands = Extreme case (not scored) + Assigned (0–2) + Release (0–4) + Cancel (0–2) → max 8.<br>
     <b>How to read filters</b> — <b>Figure 1 (①–④)</b> = mart totals, broken down by <b>Booking × Vehicle × Membership</b>. All three filters are unique-driver splits of the same cards (6,282 / 6,275 / 210 / 20). <b>Booking</b> = each driver’s <b>primary</b> booking type (most assigned in August; tie → On Demand). OD + SD + ND must add up to All — same idea as Vehicle / Membership.
