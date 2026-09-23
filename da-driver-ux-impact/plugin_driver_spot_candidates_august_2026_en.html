@@ -290,6 +290,19 @@
   .kpis .tile.is-open .tile-more .tri, .score-fold.is-open .tile-more .tri{transform:rotate(90deg)}
   .kpis .tile .sub{display:none}
   .kpis .tile.is-open .sub{display:block}
+  #checked-seven{border:0;padding:0;width:min(760px,calc(100vw - 32px));max-height:min(86vh,820px);border-radius:14px;background:var(--surface);color:var(--ink);box-shadow:0 18px 50px rgba(20,24,33,.28)}
+  #checked-seven::backdrop{background:rgba(20,24,33,.45)}
+  .checked-seven-body{padding:18px 20px 16px;overflow:auto;max-height:min(86vh,820px)}
+  .checked-seven-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+  .checked-seven-body h3{margin:0;font-size:16px;line-height:1.35}
+  .checked-seven-x{flex:0 0 auto;border:1px solid var(--border);background:var(--surface);border-radius:8px;padding:4px 10px;cursor:pointer;font-size:13px}
+  .checked-seven-body p{margin:10px 0;font-size:14px;line-height:1.5}
+  .checked-seven-body table{width:100%;border-collapse:collapse;font-size:13.5px;margin:8px 0 12px;table-layout:fixed}
+  .checked-seven-body th,.checked-seven-body td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--border);vertical-align:top;overflow-wrap:anywhere}
+  .checked-seven-body th:nth-child(1),.checked-seven-body td:nth-child(1){width:18%}
+  .checked-seven-body th:nth-child(2),.checked-seven-body td:nth-child(2){width:32%}
+  .checked-seven-body th{font-size:12px;color:var(--ink2)}
+  .checked-seven-body .note{color:var(--muted);font-size:12.5px}
   .score-fold .tile-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
   .score-fold .tile-head h3{margin:0;flex:1 1 auto}
   .score-fold > .score-note{display:none}
@@ -692,11 +705,37 @@ body.show-v2 a[data-s="s4"]{display:none !important}
 
   <p class="kpi-funnel-hint"><b>Read left → right:</b> everyone we checked → drivers who picked an order (OA orders left out; OA drivers stay; no 30-order minimum) → cheat-app bot speed → highest harm scores for a person to review.</p>
   <div class="kpis">
-    <div class="tile"><div class="tile-head"><div class="lbl">① Drivers we checked</div><button type="button" class="tile-more" aria-expanded="false" aria-label="Show how this number is counted"><span class="tri" aria-hidden="true"></span></button></div><div class="val" id="k-total">6,282</div><div class="sub" id="k-total-sub">Any action on a non-OA order in August counts, if the driver is in the driver table. 7 drivers did not pick an order in August. Six of those orders were picked before August and only closed in August, so they are in the 6,282 and not in the 6,275.<br>31307 picked 31 Jul, finished 18 Aug. 33955 picked 15 Jul, finished 15 Aug. 40679 picked 8 Jul; an admin edited the order on 4 Aug. 75274 picked 28 Apr; an admin cancelled on 28 Aug. 85289 picked 15 Jun, cancelled 30 Aug. 90879 picked 24 Apr, released 11 Aug; the next driver picked 2 seconds later.<br>42753 is the exception. The order was picked on 7 Aug, but that pick has no driver id, so it is not counted as his pick. He then cancelled. These 7 are not a cheat-app list. None dropped 2 different orders in the same 3 seconds in August. (queried 2026-09-23, HK TRANSPORT van/mudou/mudou9, 2026-08-01 to 2026-08-31)</div></div>
+    <div class="tile"><div class="tile-head"><div class="lbl">① Drivers we checked</div><button type="button" class="tile-more" data-popup="checked-seven" aria-expanded="false" aria-label="Open why 7 drivers are in this number"><span class="tri" aria-hidden="true"></span></button></div><div class="val" id="k-total">6,282</div><div class="sub" id="k-total-sub">Any action on a non-OA order in August counts, if the driver is in the driver table.</div></div>
     <div class="tile pool"><div class="tile-head"><div class="lbl">② Drivers who picked an order</div><button type="button" class="tile-more" aria-expanded="false" aria-label="Show how this number is counted"><span class="tri" aria-hidden="true"></span></button></div><div class="val" id="k-pool">6,275</div><div class="sub" id="k-pool-sub">6,275 of 6,282 checked drivers (99.9%) — at least one pick (<code>event_type_cd</code> 2, 20, or 22). OA orders left out. OA drivers stay. No 30-order minimum.</div></div>
     <div class="tile bot"><div class="tile-head"><div class="lbl" id="k-bot-lbl">③ Suspected cheat-app drivers (bot pool · 3 sec)</div><button type="button" class="tile-more" aria-expanded="false" aria-label="Show how this number is counted"><span class="tri" aria-hidden="true"></span></button></div><div class="val" id="k-botpool">210</div><div class="sub" id="k-botsub">grabbed &amp; let go of 2+ different orders in the same <b>3 seconds</b> · 210 of 6,275 drivers who picked an order (3.3%) · (queried 2026-09-23, HK TRANSPORT public-pool van/mudou/mudou9, 2026-08-01 to 2026-08-31)</div></div>
     <div class="tile flag"><div class="tile-head"><div class="lbl" id="k-flag-lbl">④ Extreme case (not scored)</div><button type="button" class="tile-more" aria-expanded="false" aria-label="Show how this number is counted"><span class="tri" aria-hidden="true"></span></button></div><div class="val" id="k-flag">20</div><div class="sub" id="k-flagpct">Extreme case · 20 of 210 bot drivers (9.5%) · (queried 2026-09-23, HK TRANSPORT public-pool van/mudou/mudou9, 2026-08-01 to 2026-08-31)</div></div>
   </div>
+
+  <dialog id="checked-seven" aria-labelledby="checked-seven-title">
+    <div class="checked-seven-body">
+      <div class="checked-seven-top">
+        <h3 id="checked-seven-title">Why 7 drivers are in 6,282 but not 6,275</h3>
+        <button type="button" class="checked-seven-x" data-close-dialog>Close</button>
+      </div>
+      <p>These 7 drivers had an action on an order in August, but no recognised August pick. Six had picked the order before August and only closed it in August. 42753 is the exception: the August pick has no driver id.</p>
+      <table>
+        <thead><tr><th>Driver</th><th>Order picked</th><th>What happened in August</th></tr></thead>
+        <tbody>
+          <tr><td>31307</td><td>31 Jul</td><td>Finished 18 Aug</td></tr>
+          <tr><td>33955</td><td>15 Jul</td><td>Finished 15 Aug</td></tr>
+          <tr><td>40679</td><td>8 Jul (finished the same day)</td><td>Admin edited the old order on 4 Aug</td></tr>
+          <tr><td>42753</td><td>7 Aug*</td><td>Driver cancelled on 7 Aug</td></tr>
+          <tr><td>75274</td><td>28 Apr</td><td>Admin cancelled on 28 Aug</td></tr>
+          <tr><td>85289</td><td>15 Jun</td><td>Driver cancelled on 30 Aug</td></tr>
+          <tr><td>90879</td><td>24 Apr</td><td>Driver released on 11 Aug. The next driver picked 2 seconds later.</td></tr>
+        </tbody>
+      </table>
+      <p class="note">* The pick has no driver id, so it is not counted as this driver's pick.</p>
+      <p>These 7 were not scored by the cheat-app rule, because they are not in the 6,275. Their August records do not show 2 different orders dropped in the same 3 seconds. That does not prove they never use a cheat app.</p>
+      <p>Separate from cheat-app: 42753's August pick is missing a driver id. Orders for 75274 and 90879 stayed open about four months. The order for 85289 stayed open about two and a half months.</p>
+      <p class="note">queried 2026-09-23, HK TRANSPORT van/mudou/mudou9, 2026-08-01 to 2026-08-31</p>
+    </div>
+  </dialog>
 
   <div class="sect-head">
     <h2 id="defs" class="sectoggle" data-target="defs-body" role="button" tabindex="0">How we count (read this once)</h2>
@@ -1314,7 +1353,7 @@ body.show-v2 a[data-s="s4"]{display:none !important}
     if(kTotalSub){
       if(booking !== 'all') kTotalSub.textContent = `${BT_LABEL[booking]} primary booking (most assigned in August; unique drivers — OD+SD+ND = All)`;
       else if(vmBits.length) kTotalSub.innerHTML = `public-pool truck drivers in this slice${vmNote}`;
-      else kTotalSub.innerHTML = `Any action on a non-OA order in August counts, if the driver is in the driver table. 7 drivers did not pick an order in August. Six of those orders were picked before August and only closed in August, so they are in the 6,282 and not in the 6,275.<br>31307 picked 31 Jul, finished 18 Aug. 33955 picked 15 Jul, finished 15 Aug. 40679 picked 8 Jul; an admin edited the order on 4 Aug. 75274 picked 28 Apr; an admin cancelled on 28 Aug. 85289 picked 15 Jun, cancelled 30 Aug. 90879 picked 24 Apr, released 11 Aug; the next driver picked 2 seconds later.<br>42753 is the exception. The order was picked on 7 Aug, but that pick has no driver id, so it is not counted as his pick. He then cancelled. These 7 are not a cheat-app list. None dropped 2 different orders in the same 3 seconds in August. (queried 2026-09-23, HK TRANSPORT van/mudou/mudou9, 2026-08-01 to 2026-08-31)`;
+      else kTotalSub.textContent = `Any action on a non-OA order in August counts, if the driver is in the driver table.`;
     }
     if(el('k-botpool')) el('k-botpool').textContent = s.bot > 0 ? fmt(s.bot) : 'None';
     if(el('k-botsub')) el('k-botsub').innerHTML = s.bot > 0
@@ -1785,8 +1824,20 @@ body.show-v2 a[data-s="s4"]{display:none !important}
       window.addEventListener('scroll', spy, {passive:true});
       spy();
     })();
+    const checkedSeven = document.getElementById('checked-seven');
+    if(checkedSeven){
+      checkedSeven.querySelectorAll('[data-close-dialog]').forEach(btn=>{
+        btn.addEventListener('click', ()=> checkedSeven.close());
+      });
+      checkedSeven.addEventListener('click', e=>{ if(e.target === checkedSeven) checkedSeven.close(); });
+    }
     document.querySelectorAll('.kpis .tile-more, .score-fold .tile-more').forEach(btn=>{
       btn.addEventListener('click', ()=>{
+        if(btn.dataset.popup){
+          const dlg = document.getElementById(btn.dataset.popup);
+          if(dlg && typeof dlg.showModal === 'function') dlg.showModal();
+          return;
+        }
         const box = btn.closest('.tile, .score-fold');
         const open = box.classList.toggle('is-open');
         const hide = btn.dataset.hide || (box.classList.contains('score-fold') ? 'Hide how this score is counted' : 'Hide how this number is counted');
