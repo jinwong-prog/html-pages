@@ -742,7 +742,8 @@ body.show-v2 a[data-s="s4"]{display:none !important}
     <span class="showbar showlabel" data-target="defs-body" role="button" tabindex="0">Expand ▾</span>
   </div>
   <div id="defs-body" class="relbox" style="margin-top:6px;margin-bottom:0;display:none">
-    <b>OA excluded</b> — Auto-accept (OA) orders and OA drivers are out of this page — via <code>event_type_cd = 26</code>.<br>
+    <b>OA orders left out</b> — An order with <code>event_type_cd = 26</code> is left out. The whole order is out. OA drivers stay.<br>
+    <b>Picked is not assigned</b> — <b>Picked</b> = any of <code>event_type_cd</code> 2 (assigned), 20 (the driver took it), or 22 (driving mode). The 6,275 are drivers who picked. <b>Assigned</b> = only <code>event_type_cd</code> 2 (<code>orders_assigned_30d</code>). One driver and one order count once. Release rate uses assigned, not picked.<br>
     <b>Release rate</b> (scoring) — releases ÷ <b>assigned</b> (<code>releases_by_driver_30d ÷ orders_assigned_30d</code>). <b>Not</b> completed + cancelled.<br>
     <b>Cancel rate</b> (scoring) — <b>driver cancel</b> ÷ (completed + driver cancel) = <code>driver_cancel_30d ÷ (orders_completed_30d + driver_cancel_30d)</code>. Driver cancel = <code>event_type_cd = 3</code> + <code>actor_type = 'Driver'</code>. Different base from Release — do not mix them.<br>
     <b>Released vs driver cancel</b> — <b>Released</b> = driver took the order then <b>released</b> it back to the pool (<code>event_type_cd = 4</code>, <code>actor_type = 'Driver'</code>). <b>Driver cancel</b> (used in Cancel rate) = driver cancelled the order (<code>event_type_cd = 3</code>, <code>actor_type = 'Driver'</code>). Release returns the order to the pool; cancel ends the order. Pool entry does <b>not</b> require a release.<br>
