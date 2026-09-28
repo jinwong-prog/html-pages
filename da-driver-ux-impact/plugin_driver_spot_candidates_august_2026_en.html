@@ -1050,7 +1050,7 @@ body.show-v2 a[data-s="s4"]{display:none !important}
 
     <div class="panel score-fold" style="margin-top:12px">
       <div class="tile-head"><h3 style="margin-top:0">Release Order Rate score (Drop Impact: 0–4)</h3><button type="button" class="tile-more" aria-expanded="false" aria-label="Show how this score is counted"><span class="tri" aria-hidden="true"></span></button></div>
-      <p class="pd score-note" style="margin:0 0 10px">Drop Impact = how often they drop orders after the order is counted in Pick-up Order Volume. <b>Release Order Rate = releases ÷ Pick-up Order Volume</b> (<code>released_order_rate_30d</code> = <code>releases_by_driver_30d ÷ orders_assigned_30d</code>). <b>Not</b> completed + cancelled. Baseline = 20%. <b>Release Order Rate &gt; P90</b> means above <b>36.11%</b>. That line sits in the 30–&lt;40% row. 40% and above is also &gt; P90. These rows are score steps, not P10–P90. (queried 2026-09-23, HK TRANSPORT public-pool van/mudou/mudou9, 2026-08-01 to 2026-08-31)</p>
+      <p class="pd score-note" style="margin:0 0 10px">Drop Impact = how often they drop orders after the order is counted in Pick-up Order Volume. <b>Release Order Rate = releases ÷ Pick-up Order Volume</b> (<code>released_order_rate_30d</code> = <code>releases_by_driver_30d ÷ orders_assigned_30d</code>). <b>Not</b> completed + cancelled. Baseline = 20%. <b>Release Order Rate &gt; P90</b> means above <b>36.11%</b>: 6 drivers under 40%, 9 in 40–&lt;50%, and 5 at 50% or above. 6 + 9 + 5 = 20. The 30%–36.11% row is not above P90. (queried 2026-09-23, HK TRANSPORT public-pool van/mudou/mudou9, 2026-08-01 to 2026-08-31)</p>
       <table>
         <thead>
           <tr>
@@ -1062,14 +1062,15 @@ body.show-v2 a[data-s="s4"]{display:none !important}
         <tbody>
           <tr><td>&lt;20% (Baseline)</td><td>103</td><td>0</td></tr>
           <tr><td>20–&lt;30%</td><td>63</td><td>1</td></tr>
-          <tr><td>30–&lt;40% (P90 = 36.11%)</td><td>25</td><td>2</td></tr>
+          <tr><td>30%–36.11% (not above P90)</td><td>19</td><td>2</td></tr>
+          <tr style="background:var(--criticalbg)"><td><b>&gt; 36.11% and &lt;40% (&gt; P90)</b></td><td>6</td><td><b>2</b></td></tr>
           <tr style="background:var(--warnbg)"><td><b>40–&lt;50% (&gt; P90)</b></td><td>9</td><td><b>3</b></td></tr>
           <tr style="background:var(--criticalbg)"><td><b>≥50% (&gt; P90)</b></td><td>5</td><td><b>4</b></td></tr>
         </tbody>
       </table>
       <div class="score-fold note-fold">
         <div class="tile-head"><button type="button" class="tile-more" aria-expanded="false" aria-label="Show how to read this" data-show="Show how to read this" data-hide="Hide how to read this"><span class="tri" aria-hidden="true"></span></button></div>
-        <p class="pd score-note" style="margin-top:8px">n = 205 bot drivers with a Release Order Rate (null rate excluded). <b>Release Order Rate &gt; P90</b> means above 36.11% (20 drivers). That line sits in the 30–&lt;40% row. 40% and above is also &gt; P90. Score rows are 20% steps, not P10–P90. Cancel score uses a <b>different</b> base (completed + cancel) — do not mix. (queried 2026-09-23, HK TRANSPORT public-pool van/mudou/mudou9, 2026-08-01 to 2026-08-31)</p>
+        <p class="pd score-note" style="margin-top:8px">n = 205 bot drivers with a Release Order Rate (null rate excluded). <b>Release Order Rate &gt; P90</b> is above 36.11%: 6 under 40%, 9 in 40–&lt;50%, 5 at 50% or above. 6 + 9 + 5 = 20. 19 drivers are 30%–36.11% and are not above P90. Both 30% rows are still score 2. (queried 2026-09-23, HK TRANSPORT public-pool van/mudou/mudou9, 2026-08-01 to 2026-08-31)</p>
       </div>
     </div>
 
@@ -1170,9 +1171,9 @@ body.show-v2 a[data-s="s4"]{display:none !important}
         </thead>
         <tbody>
           <tr><td>&lt;5% (Baseline)</td><td>96</td><td>0</td></tr>
-          <tr style="background:var(--warnbg)"><td><b>≥5% and ≤ P75</b></td><td>73</td><td><b>1</b></td></tr>
-          <tr style="background:var(--warnbg)"><td><b>High (P75–P90)</b></td><td>25</td><td><b>2</b></td></tr>
-          <tr style="background:var(--criticalbg)"><td><b>Extreme (&gt; P90)</b></td><td>16</td><td><b>2</b></td></tr>
+          <tr style="background:var(--warnbg)"><td><b>≥5% and ≤ 12.5% (≤ P75)</b></td><td>73</td><td><b>1</b></td></tr>
+          <tr style="background:var(--warnbg)"><td><b>High (&gt; 12.5% and ≤ 23.1%, P75–P90)</b></td><td>25</td><td><b>2</b></td></tr>
+          <tr style="background:var(--criticalbg)"><td><b>Extreme (&gt; 23.1%, &gt; P90)</b></td><td>16</td><td><b>2</b></td></tr>
         </tbody>
       </table>
       <div class="score-fold note-fold">
@@ -1732,24 +1733,32 @@ body.show-v2 a[data-s="s4"]{display:none !important}
     if(releasePanel){
       const known = bots.filter(r => r[11] != null);
       const bands = [0, 0, 0, 0, 0];
-      known.forEach(r => { bands[releaseScore(r[11])] += 1; });
+      let atOrBelowP90 = 0, aboveP90Under40 = 0;
+      known.forEach(r => {
+        const score = releaseScore(r[11]);
+        bands[score] += 1;
+        if(score === 2 && r[11] > RELEASE_P90) aboveP90Under40 += 1;
+        else if(score === 2) atOrBelowP90 += 1;
+      });
+      const aboveP90 = known.filter(r => r[11] > RELEASE_P90).length;
       const specs = [
-        [0, '&lt;20% (Baseline)', ''],
-        [1, '20–&lt;30%', ''],
-        [2, '30–&lt;40% (P90 = 36.11%)', ''],
-        [3, '40–&lt;50% (&gt; P90)', 'warn'],
-        [4, '≥50% (&gt; P90)', 'critical'],
+        [bands[0], 0, '&lt;20% (Baseline)', ''],
+        [bands[1], 1, '20–&lt;30%', ''],
+        [atOrBelowP90, 2, '30%–36.11% (not above P90)', ''],
+        [aboveP90Under40, 2, '&gt; 36.11% and &lt;40% (&gt; P90)', 'critical'],
+        [bands[3], 3, '40–&lt;50% (&gt; P90)', 'warn'],
+        [bands[4], 4, '≥50% (&gt; P90)', 'critical'],
       ];
       const body = releasePanel.querySelector('tbody');
       if(body) body.innerHTML = specs.map(spec => {
-        const score = spec[0];
-        const name = score >= 3 ? `<b>${spec[1]}</b>` : spec[1];
-        const scoreHtml = score >= 3 ? `<b>${score}</b>` : String(score);
-        return `<tr${rowStyle(spec[2])}><td>${name}</td><td>${bands[score]}</td><td>${scoreHtml}</td></tr>`;
+        const score = spec[1];
+        const name = spec[2].indexOf('&gt; P90') >= 0 ? `<b>${spec[2]}</b>` : spec[2];
+        const scoreHtml = spec[2].indexOf('&gt; P90') >= 0 ? `<b>${score}</b>` : String(score);
+        return `<tr${rowStyle(spec[3])}><td>${name}</td><td>${spec[0]}</td><td>${scoreHtml}</td></tr>`;
       }).join('');
       const pd = [...releasePanel.querySelectorAll('p.pd')].pop();
       if(pd) pd.innerHTML =
-        `n = ${fmt(known.length)} bot drivers in this filter with a Release Order Rate (${fmt(botN - known.length)} with no Pick-up Order Volume, so no rate). <b>Release Order Rate &gt; P90</b> means above 36.11% (${fmt(known.filter(r => r[11] > RELEASE_P90).length)} in this filter). That line sits in the 30–&lt;40% row. 40% and above is also &gt; P90. Score rows are 20% steps, not P10–P90. Cancel score uses a <b>different</b> base (completed + cancel) — do not mix. (queried ${V2.queried}, HK TRANSPORT, ${V2.cohortCode})`;
+        `n = ${fmt(known.length)} bot drivers in this filter with a Release Order Rate (${fmt(botN - known.length)} with no Pick-up Order Volume, so no rate). <b>Release Order Rate &gt; P90</b> is above 36.11%: ${fmt(aboveP90Under40)} under 40%, ${fmt(bands[3])} in 40–&lt;50%, ${fmt(bands[4])} at 50% or above. ${fmt(aboveP90Under40)} + ${fmt(bands[3])} + ${fmt(bands[4])} = ${fmt(aboveP90)}. ${fmt(atOrBelowP90)} drivers are 30%–36.11% and are not above P90. Both of those rows are still score 2. (queried ${V2.queried}, HK TRANSPORT, ${V2.cohortCode})`;
     }
     const cancelPanel = panelByHeading('Driver Cancel Rate levels');
     if(cancelPanel){
@@ -1776,9 +1785,9 @@ body.show-v2 a[data-s="s4"]{display:none !important}
       const body = cancelScorePanel.querySelector('tbody');
       if(body) body.innerHTML =
         `<tr><td>&lt;5% (Baseline)</td><td>${scores[0]}</td><td>0</td></tr>` +
-        `<tr style="background:var(--warnbg)"><td><b>≥5% and ≤ P75</b></td><td>${scores[1]}</td><td><b>1</b></td></tr>` +
-        `<tr style="background:var(--warnbg)"><td><b>High (P75–P90)</b></td><td>${high2}</td><td><b>2</b></td></tr>` +
-        `<tr style="background:var(--criticalbg)"><td><b>Extreme (&gt; P90)</b></td><td>${extreme2}</td><td><b>2</b></td></tr>`;
+        `<tr style="background:var(--warnbg)"><td><b>≥5% and ≤ 12.5% (≤ P75)</b></td><td>${scores[1]}</td><td><b>1</b></td></tr>` +
+        `<tr style="background:var(--warnbg)"><td><b>High (&gt; 12.5% and ≤ 23.1%, P75–P90)</b></td><td>${high2}</td><td><b>2</b></td></tr>` +
+        `<tr style="background:var(--criticalbg)"><td><b>Extreme (&gt; 23.1%, &gt; P90)</b></td><td>${extreme2}</td><td><b>2</b></td></tr>`;
       const notes = [...cancelScorePanel.querySelectorAll('p.pd')];
       if(notes[0]) notes[0].innerHTML =
         `Cancel Impact = how often they cancel. Baseline = 5%. Score 2 is split into High (P75–P90) and Extreme (&gt; P90). Both rows are 2 points. This filter: High ${fmt(high2)}, Extreme (&gt; P90) ${fmt(extreme2)}. P90 stays 23.1% from the full bot pool. (queried ${V2.queried}, HK TRANSPORT, ${V2.cohortCode})`;
