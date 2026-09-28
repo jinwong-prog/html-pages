@@ -1159,7 +1159,7 @@ body.show-v2 a[data-s="s4"]{display:none !important}
 
     <div class="panel score-fold" style="margin-top:12px">
       <div class="tile-head"><h3 style="margin-top:0">Driver Cancel Rate score (Cancel Impact: 0–2)</h3><button type="button" class="tile-more" aria-expanded="false" aria-label="Show how to read this" data-show="Show how to read this" data-hide="Hide how to read this"><span class="tri" aria-hidden="true"></span></button></div>
-      <p class="pd score-note" style="margin:0 0 10px">Cancel Impact = how often they cancel. Baseline = 5%. Score 2 uses the same cut as the High + Extreme rows above (&gt; bot-pool P75 = 12.5%) so the driver counts match (41 = 25 High + 16 Extreme).</p>
+      <p class="pd score-note" style="margin:0 0 10px">Cancel Impact = how often they cancel. Baseline = 5%. Score 2 is split into High (P75–P90) and Extreme (&gt; P90). Both rows are 2 points. Extreme (&gt; P90) is 16 drivers. P90 is 23.1%. (queried 2026-09-23, HK TRANSPORT public-pool van/mudou/mudou9, 2026-08-01 to 2026-08-31)</p>
       <table>
         <thead>
           <tr>
@@ -1171,12 +1171,13 @@ body.show-v2 a[data-s="s4"]{display:none !important}
         <tbody>
           <tr><td>&lt;5% (Baseline)</td><td>96</td><td>0</td></tr>
           <tr style="background:var(--warnbg)"><td><b>≥5% and ≤ P75</b></td><td>73</td><td><b>1</b></td></tr>
-          <tr style="background:var(--criticalbg)"><td><b>&gt; P75 (High + Extreme)</b></td><td>41</td><td><b>2</b></td></tr>
+          <tr style="background:var(--warnbg)"><td><b>High (P75–P90)</b></td><td>25</td><td><b>2</b></td></tr>
+          <tr style="background:var(--criticalbg)"><td><b>Extreme (&gt; P90)</b></td><td>16</td><td><b>2</b></td></tr>
         </tbody>
       </table>
       <div class="score-fold note-fold">
         <div class="tile-head"><button type="button" class="tile-more" aria-expanded="false" aria-label="Show how to read this" data-show="Show how to read this" data-hide="Hide how to read this"><span class="tri" aria-hidden="true"></span></button></div>
-        <p class="pd score-note" style="margin-top:8px">n = 210 bot drivers. Score 2 = High + Extreme = 41 (same &gt; P75 cut as the cancel level chart). Review priority = Release (0–4) + Cancel (0–2) + Pick-up Volume (0–2) → max 8. (queried 2026-09-23, HK TRANSPORT public-pool van/mudou/mudou9, 2026-08-01 to 2026-08-31)</p>
+        <p class="pd score-note" style="margin-top:8px">n = 210 bot drivers. Score 2 is two rows: High (P75–P90) 25 and Extreme (&gt; P90) 16. Both are 2 points. 25 + 16 = 41, the same drivers as &gt; P75 on the level chart. (queried 2026-09-23, HK TRANSPORT public-pool van/mudou/mudou9, 2026-08-01 to 2026-08-31)</p>
       </div>
     </div>
   </div>
@@ -1765,17 +1766,24 @@ body.show-v2 a[data-s="s4"]{display:none !important}
     const cancelScorePanel = panelByHeading('Driver Cancel Rate score');
     if(cancelScorePanel){
       const scores = [0, 0, 0];
-      bots.forEach(r => { scores[cancelScore(r[13], r[14])] += 1; });
+      let high2 = 0, extreme2 = 0;
+      bots.forEach(r => {
+        const sc = cancelScore(r[13], r[14]);
+        scores[sc] += 1;
+        if(sc === 2 && r[14] === 'h') high2 += 1;
+        if(sc === 2 && r[14] === 'x') extreme2 += 1;
+      });
       const body = cancelScorePanel.querySelector('tbody');
       if(body) body.innerHTML =
         `<tr><td>&lt;5% (Baseline)</td><td>${scores[0]}</td><td>0</td></tr>` +
         `<tr style="background:var(--warnbg)"><td><b>≥5% and ≤ P75</b></td><td>${scores[1]}</td><td><b>1</b></td></tr>` +
-        `<tr style="background:var(--criticalbg)"><td><b>&gt; P75 (High + Extreme)</b></td><td>${scores[2]}</td><td><b>2</b></td></tr>`;
+        `<tr style="background:var(--warnbg)"><td><b>High (P75–P90)</b></td><td>${high2}</td><td><b>2</b></td></tr>` +
+        `<tr style="background:var(--criticalbg)"><td><b>Extreme (&gt; P90)</b></td><td>${extreme2}</td><td><b>2</b></td></tr>`;
       const notes = [...cancelScorePanel.querySelectorAll('p.pd')];
       if(notes[0]) notes[0].innerHTML =
-        `Cancel Impact = how often they cancel. Baseline = 5%. Score 2 uses the same cut as the High + Extreme rows above (&gt; full bot-pool P75). This filter: score 2 = ${fmt(scores[2])} (${fmt(byCancel.h.length)} High + ${fmt(byCancel.x.length)} Extreme). Cut lines stay the full bot pool. (queried ${V2.queried}, HK TRANSPORT, ${V2.cohortCode})`;
+        `Cancel Impact = how often they cancel. Baseline = 5%. Score 2 is split into High (P75–P90) and Extreme (&gt; P90). Both rows are 2 points. This filter: High ${fmt(high2)}, Extreme (&gt; P90) ${fmt(extreme2)}. P90 stays 23.1% from the full bot pool. (queried ${V2.queried}, HK TRANSPORT, ${V2.cohortCode})`;
       if(notes[1]) notes[1].innerHTML =
-        `n = ${fmt(botN)} bot drivers in this filter. Score 2 = High + Extreme = ${fmt(scores[2])} (${fmt(byCancel.h.length)} High + ${fmt(byCancel.x.length)} Extreme; same &gt; P75 cut as the cancel level chart). Review priority = Release (0–4) + Cancel (0–2) + Pick-up Volume (0–2) → max 8. (queried ${V2.queried}, HK TRANSPORT, ${V2.cohortCode})`;
+        `n = ${fmt(botN)} bot drivers in this filter. Score 2 is two rows: High (P75–P90) ${fmt(high2)} and Extreme (&gt; P90) ${fmt(extreme2)}. Both are 2 points. ${fmt(high2)} + ${fmt(extreme2)} = ${fmt(scores[2])}. (queried ${V2.queried}, HK TRANSPORT, ${V2.cohortCode})`;
     }
 
     const hist = document.getElementById('hist');
