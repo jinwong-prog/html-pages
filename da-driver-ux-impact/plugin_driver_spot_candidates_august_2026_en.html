@@ -14,6 +14,7 @@
     --blue:#2a78d6;--blue-soft:#cde2fb;
     --critical:#d03b3b;--serious:#ec835a;--good:#006300;
     --criticalbg:rgba(208,59,59,.10);--warnbg:rgba(237,161,0,.12);--neutbg:rgba(137,135,129,.10);
+    --score0:transparent;--score1:rgba(137,135,129,.06);--score2:rgba(237,161,0,.12);--score3:rgba(236,131,90,.16);--score4:rgba(208,59,59,.10);
   }
 
   *{box-sizing:border-box}
@@ -349,6 +350,11 @@
     display:flex;flex-direction:column;align-items:flex-end;gap:1px;line-height:1.35;white-space:normal;text-align:right}
   .bar-row .val-orders{font-size:11px;font-weight:600;color:var(--muted)}
   .track{height:16px;background:var(--neutbg);border-radius:5px;overflow:hidden}
+  tr.rel-score-0{background:var(--score0)}
+  tr.rel-score-1{background:var(--score1)}
+  tr.rel-score-2{background:var(--score2)}
+  tr.rel-score-3{background:var(--score3)}
+  tr.rel-score-4{background:var(--score4)}
   .fill{height:100%;border-radius:5px;transition:width .35s ease}
 
   /* Version 2 level charts — Level | Range | Bar+n | meta below (L→R, then down) */
@@ -1050,27 +1056,28 @@ body.show-v2 a[data-s="s4"]{display:none !important}
 
     <div class="panel score-fold" style="margin-top:12px">
       <div class="tile-head"><h3 style="margin-top:0">Release Order Rate score (Drop Impact: 0–4)</h3><button type="button" class="tile-more" aria-expanded="false" aria-label="Show how this score is counted"><span class="tri" aria-hidden="true"></span></button></div>
-      <p class="pd score-note" style="margin:0 0 10px">Drop Impact = how often they drop orders after the order is counted in Pick-up Order Volume. <b>Release Order Rate = releases ÷ Pick-up Order Volume</b> (<code>released_order_rate_30d</code> = <code>releases_by_driver_30d ÷ orders_assigned_30d</code>). <b>Not</b> completed + cancelled. Baseline = 20%. <b>Release Order Rate &gt; P90</b> means above <b>36.11%</b>: 6 drivers under 40%, 9 in 40–&lt;50%, and 5 at 50% or above. 6 + 9 + 5 = 20. The 30%–36.11% row is not above P90. (queried 2026-09-23, HK TRANSPORT public-pool van/mudou/mudou9, 2026-08-01 to 2026-08-31)</p>
+      <p class="pd score-note" style="margin:0 0 10px">Drop Impact = how often they drop orders after the order is counted in Pick-up Order Volume. <b>Release Order Rate = releases ÷ Pick-up Order Volume</b> (<code>released_order_rate_30d</code> = <code>releases_by_driver_30d ÷ orders_assigned_30d</code>). <b>Not</b> completed + cancelled. Baseline = 20%. Threshold is the P90 line (36.11%). Row color follows the score. Both score 2 rows are the same color. (queried 2026-09-23, HK TRANSPORT public-pool van/mudou/mudou9, 2026-08-01 to 2026-08-31)</p>
       <table>
         <thead>
           <tr>
             <th>Release Order Rate</th>
+            <th>Threshold</th>
             <th>Drivers</th>
             <th>Score</th>
           </tr>
         </thead>
         <tbody>
-          <tr><td>&lt;20% (Baseline)</td><td>103</td><td>0</td></tr>
-          <tr><td>20–&lt;30%</td><td>63</td><td>1</td></tr>
-          <tr><td>30%–36.11% (not above P90)</td><td>19</td><td>2</td></tr>
-          <tr style="background:var(--criticalbg)"><td><b>&gt; 36.11% and &lt;40% (&gt; P90)</b></td><td>6</td><td><b>2</b></td></tr>
-          <tr style="background:var(--warnbg)"><td><b>40–&lt;50% (&gt; P90)</b></td><td>9</td><td><b>3</b></td></tr>
-          <tr style="background:var(--criticalbg)"><td><b>≥50% (&gt; P90)</b></td><td>5</td><td><b>4</b></td></tr>
+          <tr class="rel-score-0"><td>&lt;20%</td><td>Baseline</td><td>103</td><td>0</td></tr>
+          <tr class="rel-score-1"><td>20–&lt;30%</td><td>—</td><td>63</td><td>1</td></tr>
+          <tr class="rel-score-2"><td>30–≤36.11%</td><td>≤ P90</td><td>19</td><td>2</td></tr>
+          <tr class="rel-score-2"><td>36.11–&lt;40%</td><td>&gt; P90</td><td>6</td><td>2</td></tr>
+          <tr class="rel-score-3"><td>40–&lt;50%</td><td>&gt; P90</td><td>9</td><td>3</td></tr>
+          <tr class="rel-score-4"><td>≥50%</td><td>&gt; P90</td><td>5</td><td>4</td></tr>
         </tbody>
       </table>
       <div class="score-fold note-fold">
         <div class="tile-head"><button type="button" class="tile-more" aria-expanded="false" aria-label="Show how to read this" data-show="Show how to read this" data-hide="Hide how to read this"><span class="tri" aria-hidden="true"></span></button></div>
-        <p class="pd score-note" style="margin-top:8px">n = 205 bot drivers with a Release Order Rate (null rate excluded). <b>Release Order Rate &gt; P90</b> is above 36.11%: 6 under 40%, 9 in 40–&lt;50%, 5 at 50% or above. 6 + 9 + 5 = 20. 19 drivers are 30%–36.11% and are not above P90. Both 30% rows are still score 2. (queried 2026-09-23, HK TRANSPORT public-pool van/mudou/mudou9, 2026-08-01 to 2026-08-31)</p>
+        <p class="pd score-note" style="margin-top:8px">n = 205 bot drivers with a Release Order Rate. Threshold &gt; P90 is above 36.11%: 6 + 9 + 5 = 20. The ≤ P90 row in score 2 is 19 drivers. (queried 2026-09-23, HK TRANSPORT public-pool van/mudou/mudou9, 2026-08-01 to 2026-08-31)</p>
       </div>
     </div>
 
@@ -1742,23 +1749,20 @@ body.show-v2 a[data-s="s4"]{display:none !important}
       });
       const aboveP90 = known.filter(r => r[11] > RELEASE_P90).length;
       const specs = [
-        [bands[0], 0, '&lt;20% (Baseline)', ''],
-        [bands[1], 1, '20–&lt;30%', ''],
-        [atOrBelowP90, 2, '30%–36.11% (not above P90)', ''],
-        [aboveP90Under40, 2, '&gt; 36.11% and &lt;40% (&gt; P90)', 'critical'],
-        [bands[3], 3, '40–&lt;50% (&gt; P90)', 'warn'],
-        [bands[4], 4, '≥50% (&gt; P90)', 'critical'],
+        [bands[0], 0, '&lt;20%', 'Baseline'],
+        [bands[1], 1, '20–&lt;30%', '—'],
+        [atOrBelowP90, 2, '30–≤36.11%', '≤ P90'],
+        [aboveP90Under40, 2, '36.11–&lt;40%', '&gt; P90'],
+        [bands[3], 3, '40–&lt;50%', '&gt; P90'],
+        [bands[4], 4, '≥50%', '&gt; P90'],
       ];
       const body = releasePanel.querySelector('tbody');
-      if(body) body.innerHTML = specs.map(spec => {
-        const score = spec[1];
-        const name = spec[2].indexOf('&gt; P90') >= 0 ? `<b>${spec[2]}</b>` : spec[2];
-        const scoreHtml = spec[2].indexOf('&gt; P90') >= 0 ? `<b>${score}</b>` : String(score);
-        return `<tr${rowStyle(spec[3])}><td>${name}</td><td>${spec[0]}</td><td>${scoreHtml}</td></tr>`;
-      }).join('');
+      if(body) body.innerHTML = specs.map(spec =>
+        `<tr class="rel-score-${spec[1]}"><td>${spec[2]}</td><td>${spec[3]}</td><td>${spec[0]}</td><td>${spec[1]}</td></tr>`
+      ).join('');
       const pd = [...releasePanel.querySelectorAll('p.pd')].pop();
       if(pd) pd.innerHTML =
-        `n = ${fmt(known.length)} bot drivers in this filter with a Release Order Rate (${fmt(botN - known.length)} with no Pick-up Order Volume, so no rate). <b>Release Order Rate &gt; P90</b> is above 36.11%: ${fmt(aboveP90Under40)} under 40%, ${fmt(bands[3])} in 40–&lt;50%, ${fmt(bands[4])} at 50% or above. ${fmt(aboveP90Under40)} + ${fmt(bands[3])} + ${fmt(bands[4])} = ${fmt(aboveP90)}. ${fmt(atOrBelowP90)} drivers are 30%–36.11% and are not above P90. Both of those rows are still score 2. (queried ${V2.queried}, HK TRANSPORT, ${V2.cohortCode})`;
+        `n = ${fmt(known.length)} bot drivers in this filter with a Release Order Rate (${fmt(botN - known.length)} with no Pick-up Order Volume, so no rate). Threshold &gt; P90 is above 36.11%: ${fmt(aboveP90Under40)} + ${fmt(bands[3])} + ${fmt(bands[4])} = ${fmt(aboveP90)}. The ≤ P90 row in score 2 is ${fmt(atOrBelowP90)}. Row color follows the score. (queried ${V2.queried}, HK TRANSPORT, ${V2.cohortCode})`;
     }
     const cancelPanel = panelByHeading('Driver Cancel Rate levels');
     if(cancelPanel){
