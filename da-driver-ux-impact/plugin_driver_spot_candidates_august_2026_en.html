@@ -1198,7 +1198,7 @@ body.show-v2 a[data-s="s4"]{display:none !important}
   <p class="sub">One real driver grabbed and let go of orders too fast for a human hand. Left = the fastest 3-second burst we found. Right = zoom on the first pair (page rule = <b>3 seconds</b>).</p>
   <div class="split">
     <div class="panel">
-      <h3>Bot speed — 2 orders in 0.1s · driver 6072 · score 1</h3>
+      <h3>Bot speed — 2 orders in 0.1s · driver 6072 · score 2</h3>
       <p class="route">Driver <b>6072</b> · date <b>2026-08-28</b> · 06:35 <b>UTC</b> (HKT 14:35) · grace-drop (<code>event_type_cd = 21</code>)</p>
       <div style="overflow-x:auto">
       <table>
@@ -1615,7 +1615,7 @@ body.show-v2 a[data-s="s4"]{display:none !important}
     ].filter(row => row[1] > 0);
     const overlap = nA + nR + nC - priN.e;
     const overlapBit = overlap > 0 ? `${fmt(overlap)} drivers are in two of these. ` : '';
-    const splitBody = `<b>How these ${fmt(priN.e)} drivers got here</b><ul>${splitRows.map(([name, n]) => `<li>${name}: <b>${fmt(n)}</b></li>`).join('')}</ul><p style="margin:6px 0 0">Pick-up Order Volume > P90: ${fmt(nA)}. Release Order Rate > P90: ${fmt(nR)}. Driver Cancel Rate > P90: ${fmt(nC)}. ${overlapBit}Pick-up Order Volume > P90 is included: 2 points on that level, plus Release and Cancel. (queried ${V2.queried}, HK TRANSPORT public-pool van/mudou/mudou9, ${V2.cohortCode})</p>`;
+    const splitBody = `<b>How these ${fmt(priN.e)} drivers got here</b><ul>${splitRows.map(([name, n]) => `<li>${name}: <b>${fmt(n)}</b></li>`).join('')}</ul><p style="margin:6px 0 0">Pick-up Order Volume > P90: ${fmt(nA)}. Release Order Rate > P90: ${fmt(nR)}. Driver Cancel Rate > P90: ${fmt(nC)}. ${overlapBit}Pick-up Order Volume > P90 is included: 4 points on that level, plus Release and Cancel. (queried ${V2.queried}, HK TRANSPORT public-pool van/mudou/mudou9, ${V2.cohortCode})</p>`;
     const extremeName = `<button type="button" class="extreme-more" aria-expanded="false" aria-label="Show how these drivers are split">Extreme<span class="tri" aria-hidden="true"></span></button>`;
     const tierBars = document.getElementById('tier-bars');
     if(tierBars){
