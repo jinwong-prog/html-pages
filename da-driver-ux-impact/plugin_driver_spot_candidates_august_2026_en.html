@@ -696,15 +696,15 @@ body.show-v2 a[data-s="s4"]{display:none !important}
     <h3>Top-tier review</h3>
     <ul>
       <li><b id="hl-flag">56</b> Extreme drivers (Pick-up Order Volume &gt; P90, Release Rate &gt; P90, or Driver Cancel Rate &gt; P90). Any one is enough.</li>
-      <li><b>Criteria (Version 2):</b> Pick-up Volume (0–2) + Release (0–4) + Cancel (0–2) → max 8. Extreme = any one metric above its own P90 (56). Pick-up Order Volume &gt; P90 is 2 points on that level, plus Release and Cancel.</li>
+      <li><b>Criteria (Version 3, from 2026-10-09):</b> Pick-up Volume (0–4) + Release (0–2) + Cancel (0–2) → max 8. Extreme = any one metric above its own P90 (56). Pick-up Order Volume &gt; P90 is 4 points on that level, plus Release and Cancel.</li>
     </ul>
 
     <div class="review-note">
       <h3>Important note</h3>
       <ul>
         <li>Bot speed (Step 1) finds the pool (3-second rule).</li>
-        <li>Extreme = any one metric above its own P90 (56). Pick-up Order Volume &gt; P90 is 2 points on that level, plus Release and Cancel. All 210 bot drivers have a score.</li>
-        <li>The action item is the Review Score. Score = Pick-up Volume (0–2) + Release (0–4) + Cancel (0–2) in August 2026. A higher score means review this driver first. Source: <code>mart_cheat_app_driver_review_priority_august_2026</code>.</li>
+        <li>Extreme = any one metric above its own P90 (56). Pick-up Order Volume &gt; P90 is 4 points on that level, plus Release and Cancel. All 210 bot drivers have a score.</li>
+        <li>The action item is the Review Score. Score = Pick-up Volume (0–4) + Release (0–2) + Cancel (0–2) in August 2026. A higher score means review this driver first. Source: <code>mart_cheat_app_driver_review_priority_august_2026</code>.</li>
       </ul>
     </div>
   </div>
@@ -714,7 +714,7 @@ body.show-v2 a[data-s="s4"]{display:none !important}
     <div class="tile"><div class="tile-head"><div class="lbl">① Drivers we checked</div><button type="button" class="tile-more" data-popup="checked-seven" aria-expanded="false" aria-label="Open why 7 drivers are in this number"><span class="tri" aria-hidden="true"></span></button></div><div class="val" id="k-total">6,282</div><div class="sub" id="k-total-sub">Any action on a non-OA order in August counts, if the driver is in the driver table.</div></div>
     <div class="tile pool"><div class="tile-head"><div class="lbl">② Drivers with Pick-up Order Volume</div><button type="button" class="tile-more" aria-expanded="false" aria-label="Show how this number is counted"><span class="tri" aria-hidden="true"></span></button></div><div class="val" id="k-pool">6,275</div><div class="sub" id="k-pool-sub">6,275 of 6,282 checked drivers (99.9%) — at least one Pick-up Order Volume order (<code>event_type_cd</code> 2 assigned, 20 driver picked, or 22 app auto-picked). OA orders left out. OA drivers stay. No 30-order minimum.</div></div>
     <div class="tile bot"><div class="tile-head"><div class="lbl" id="k-bot-lbl">③ Suspected cheat-app drivers (bot pool · 3 sec)</div><button type="button" class="tile-more" aria-expanded="false" aria-label="Show how this number is counted"><span class="tri" aria-hidden="true"></span></button></div><div class="val" id="k-botpool">210</div><div class="sub" id="k-botsub">grabbed &amp; let go of 2+ different orders in the same <b>3 seconds</b> · 210 of 6,275 drivers with Pick-up Order Volume (3.3%) · (queried 2026-10-02, HK TRANSPORT public-pool van/mudou/mudou9, 2026-08-01 to 2026-08-31)</div></div>
-    <div class="tile flag"><div class="tile-head"><div class="lbl" id="k-flag-lbl">④ Extreme</div><button type="button" class="tile-more" aria-expanded="false" aria-label="Show how this number is counted"><span class="tri" aria-hidden="true"></span></button></div><div class="val" id="k-flag">56</div><div class="sub" id="k-flagpct">Extreme · 56 of 210 bot drivers (26.7%). Any one metric above its own P90. Pick-up Order Volume &gt; P90: 20. Release Rate &gt; P90: 20. Driver Cancel Rate &gt; P90: 20. 4 drivers are in two of these. Pick-up Order Volume &gt; P90 is 2 points on that level, plus Release and Cancel. (queried 2026-10-02, HK TRANSPORT public-pool van/mudou/mudou9, 2026-08-01 to 2026-08-31)</div></div>
+    <div class="tile flag"><div class="tile-head"><div class="lbl" id="k-flag-lbl">④ Extreme</div><button type="button" class="tile-more" aria-expanded="false" aria-label="Show how this number is counted"><span class="tri" aria-hidden="true"></span></button></div><div class="val" id="k-flag">56</div><div class="sub" id="k-flagpct">Extreme · 56 of 210 bot drivers (26.7%). Any one metric above its own P90. Pick-up Order Volume &gt; P90: 20. Release Rate &gt; P90: 20. Driver Cancel Rate &gt; P90: 20. 4 drivers are in two of these. Pick-up Order Volume &gt; P90 is 4 points on that level, plus Release and Cancel. (queried 2026-10-02, HK TRANSPORT public-pool van/mudou/mudou9, 2026-08-01 to 2026-08-31)</div></div>
   </div>
 
   <dialog id="checked-seven" aria-labelledby="checked-seven-title">
@@ -755,7 +755,7 @@ body.show-v2 a[data-s="s4"]{display:none !important}
     <b>Driver Cancel Rate</b> (scoring) — <b>driver cancel</b> ÷ <b>Pick-up Order Volume</b> = <code>driver_cancel_30d ÷ orders_assigned_30d</code>. Driver cancel = <code>event_type_cd = 3</code> + <code>actor_type = 'Driver'</code>. Same base as Release Order Rate. Blank when Pick-up Order Volume is 0.<br>
     <b>Released vs driver cancel</b> — <b>Released</b> = driver took the order then <b>released</b> it back to the pool (<code>event_type_cd = 4</code>, <code>actor_type = 'Driver'</code>). <b>Driver cancel</b> (used in Driver Cancel Rate) = driver cancelled the order (<code>event_type_cd = 3</code>, <code>actor_type = 'Driver'</code>). Release returns the order to the pool; cancel ends the order. Pool entry does <b>not</b> require a release.<br>
     <b>Who gets a score</b> — they had Pick-up Order Volume (<code>event_type_cd</code> 2, 20, or 22). OA orders (<code>event_type_cd = 26</code>) are left out. OA drivers stay. Pick-up Order Volume ≥30 and completed ≥30 are <b>not</b> required.<br>
-    <b>Bot pool</b> — 2+ different grace-drops (grabbed then let go fast, <code>event_type_cd = 21</code>) in the same <b>3 seconds</b> (<code>is_bot_pool_v2</code>). Extreme = any one of Pick-up Order Volume, Release Rate, or Driver Cancel Rate &gt; P90 (56). Pick-up Order Volume &gt; P90 is 2 points on that level, plus Release and Cancel. Other drivers: Pick-up Volume (0–2) + Release (0–4) + Cancel (0–2) → max 8.<br>
+    <b>Bot pool</b> — 2+ different grace-drops (grabbed then let go fast, <code>event_type_cd = 21</code>) in the same <b>3 seconds</b> (<code>is_bot_pool_v2</code>). Extreme = any one of Pick-up Order Volume, Release Rate, or Driver Cancel Rate &gt; P90 (56). Pick-up Order Volume &gt; P90 is 4 points on that level, plus Release and Cancel. Other drivers: Pick-up Volume (0–4) + Release (0–2) + Cancel (0–2) → max 8.<br>
     <b>How to read filters</b> — <b>Figure 1 (①–④)</b> = mart totals, broken down by <b>Booking × Vehicle × Membership</b>. All three filters are unique-driver splits of the same cards (6,282 / 6,275 / 210 / 56). <b>Booking</b> = each driver’s <b>primary</b> booking type (most Pick-up Order Volume in August; tie → On Demand). OD + SD + ND must add up to All — same idea as Vehicle / Membership.
   </div>
 
@@ -888,7 +888,7 @@ body.show-v2 a[data-s="s4"]{display:none !important}
       <span class="showbar showlabel" data-target="funnel-hnote-body" role="button" tabindex="0">Expand ▾</span>
     </div>
     <div id="funnel-hnote-body" style="display:none">
-    <p class="hnote" id="funnel-hnote"><b>Bot spotting ends at the bot pool (bar 3).</b> The 3-second rule — <span id="funnel-botpool">210</span> / 6,275 drivers with Pick-up Order Volume (3.3%). <a href="#s3">③ Review priority</a> ranks Extreme first (any metric &gt; P90). Everyone else is ranked by Pick-up Volume + Release + Cancel → max 8. Pick-up Order Volume &gt; P90 is 2 points on that level. (queried 2026-10-02, HK TRANSPORT public-pool van/mudou/mudou9, 2026-08-01 to 2026-08-31)</p>
+    <p class="hnote" id="funnel-hnote"><b>Bot spotting ends at the bot pool (bar 3).</b> The 3-second rule — <span id="funnel-botpool">210</span> / 6,275 drivers with Pick-up Order Volume (3.3%). <a href="#s3">③ Review priority</a> ranks Extreme first (any metric &gt; P90). Everyone else is ranked by Pick-up Volume + Release + Cancel → max 8. Pick-up Order Volume &gt; P90 is 4 points on that level. (queried 2026-10-02, HK TRANSPORT public-pool van/mudou/mudou9, 2026-08-01 to 2026-08-31)</p>
     </div>
   </div>
 
@@ -921,7 +921,7 @@ body.show-v2 a[data-s="s4"]{display:none !important}
       </div>
       <div class="hist" id="hist"></div>
       <div class="haxis" id="haxis"></div>
-      <p class="hnote" id="hist-hnote">Most drivers score low (peak at 1–2). Only a small tail reaches 6+.</p>
+      <p class="hnote" id="hist-hnote">Most drivers score in the middle (peak at 3). Only a small tail reaches 6+.</p>
     </div>
     <div class="panel score-fold" id="s4-rulebook-panel">
       <div class="tile-head"><h3 id="rulebook-title">The rulebook</h3><button type="button" class="tile-more" aria-expanded="false" aria-label="Show how to read this" data-show="Show how to read this" data-hide="Hide how to read this"><span class="tri" aria-hidden="true"></span></button></div>
@@ -1020,7 +1020,7 @@ body.show-v2 a[data-s="s4"]{display:none !important}
     <tr style="background:var(--neutbg)"><td><b>Total</b></td><td>—</td><td class="lvl-share"><b>210 (100%)</b></td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
         </tbody>
   </table>
-  <p class="pd">Cut lines for <b>Pick-up Order Volume</b> among bot pool: P10 28 · P25 67 · P50 112 · P75 187 · P90 254 orders. <b>Median Release Order Rate</b> / <b>Max Release Order Rate</b> = median / max of <code>released_order_rate_30d</code> (= releases ÷ Pick-up Order Volume) inside each Pick-up Order Volume range. Dot colors follow Release Score bands (baseline 20%): 🔵 &lt;20% (0) · 🟡 20–&lt;30% (1) · 🟠 30–&lt;40% (2) · 🟥 40–&lt;50% (3) · 🔴 ≥50% (4). <b>Highest Pick-up Order Volume (max)</b> = max <code>orders_assigned_30d</code> in that range. (queried 2026-10-02, HK TRANSPORT public-pool van/mudou/mudou9, 2026-08-01 to 2026-08-31)</p>
+  <p class="pd">Cut lines for <b>Pick-up Order Volume</b> among bot pool: P10 28 · P25 67 · P50 112 · P75 187 · P90 254 orders. <b>Median Release Order Rate</b> / <b>Max Release Order Rate</b> = median / max of <code>released_order_rate_30d</code> (= releases ÷ Pick-up Order Volume) inside each Pick-up Order Volume range. Dot colors show Release Order Rate ranges (baseline 20%), with the Release score in brackets: 🔵 &lt;20% (0) · 🟡 20–&lt;30% (1) · 🟠 30–&lt;40% (1) · 🟥 40–&lt;50% (2) · 🔴 ≥50% (2). <b>Highest Pick-up Order Volume (max)</b> = max <code>orders_assigned_30d</code> in that range. (queried 2026-10-02, HK TRANSPORT public-pool van/mudou/mudou9, 2026-08-01 to 2026-08-31)</p>
   </div>
 </div>
 
@@ -1028,8 +1028,8 @@ body.show-v2 a[data-s="s4"]{display:none !important}
     <!-- ⑧b standalone chart removed: median release now embedded in ⑧a meta + table -->
 
     <div class="panel score-fold" style="margin-top:12px">
-      <div class="tile-head"><h3 style="margin-top:0">Pick-up Volume score (Business Impact: 0–2)</h3><button type="button" class="tile-more" aria-expanded="false" aria-label="Show how this score is counted"><span class="tri" aria-hidden="true"></span></button></div>
-      <p class="pd score-note" style="margin:0 0 10px">Business Impact = unfair order volume. Cheat-app drivers taking more Pick-up Order Volume hurt fair drivers and break platform rules → higher review priority. Row color follows the score. Both score 2 rows are the same color. (queried 2026-10-02, HK TRANSPORT public-pool van/mudou/mudou9, 2026-08-01 to 2026-08-31)</p>
+      <div class="tile-head"><h3 style="margin-top:0">Pick-up Volume score (Business Impact: 0–4)</h3><button type="button" class="tile-more" aria-expanded="false" aria-label="Show how this score is counted"><span class="tri" aria-hidden="true"></span></button></div>
+      <p class="pd score-note" style="margin:0 0 10px">Business Impact = unfair order volume. Cheat-app drivers taking more Pick-up Order Volume hurt fair drivers and break platform rules → higher review priority. Row color follows the score. Rows with the same score share a color. (queried 2026-10-02, HK TRANSPORT public-pool van/mudou/mudou9, 2026-08-01 to 2026-08-31)</p>
       <table>
         <thead>
           <tr>
@@ -1042,21 +1042,21 @@ body.show-v2 a[data-s="s4"]{display:none !important}
         <tbody>
           <tr class="score-tone-0"><td>≤28</td><td>≤ P10</td><td>21</td><td>0</td></tr>
           <tr class="score-tone-0"><td>28–≤67</td><td>P10–P25</td><td>32</td><td>0</td></tr>
-          <tr class="score-tone-1"><td>67–≤112</td><td>P25–P50</td><td>52</td><td>1</td></tr>
-          <tr class="score-tone-1"><td>112–≤187</td><td>P50–P75</td><td>54</td><td>1</td></tr>
-          <tr class="score-tone-2"><td>187–≤254</td><td>P75–P90</td><td>31</td><td>2</td></tr>
-          <tr class="score-tone-2"><td>&gt;254</td><td>&gt; P90</td><td>20</td><td>2</td></tr>
+          <tr class="score-tone-2"><td>67–≤112</td><td>P25–P50</td><td>52</td><td>2</td></tr>
+          <tr class="score-tone-2"><td>112–≤187</td><td>P50–P75</td><td>54</td><td>2</td></tr>
+          <tr class="score-tone-4"><td>187–≤254</td><td>P75–P90</td><td>31</td><td>4</td></tr>
+          <tr class="score-tone-4"><td>&gt;254</td><td>&gt; P90</td><td>20</td><td>4</td></tr>
         </tbody>
       </table>
       <div class="score-fold note-fold">
         <div class="tile-head"><button type="button" class="tile-more" aria-expanded="false" aria-label="Show how to read this" data-show="Show how to read this" data-hide="Hide how to read this"><span class="tri" aria-hidden="true"></span></button></div>
-        <p class="pd score-note" style="margin-top:8px">Cuts among bot pool: P10 28 · P25 67 · P50 112 · P75 187 · P90 254. Review priority = Release (0–4) + Cancel (0–2) + Pick-up Volume (0–2) → max 8. (queried 2026-10-02, HK TRANSPORT public-pool van/mudou/mudou9, 2026-08-01 to 2026-08-31)</p>
+        <p class="pd score-note" style="margin-top:8px">Cuts among bot pool: P10 28 · P25 67 · P50 112 · P75 187 · P90 254. Review priority = Pick-up Volume (0–4) + Release (0–2) + Cancel (0–2) → max 8. (queried 2026-10-02, HK TRANSPORT public-pool van/mudou/mudou9, 2026-08-01 to 2026-08-31)</p>
       </div>
     </div>
 
     <div class="panel score-fold" style="margin-top:12px">
-      <div class="tile-head"><h3 style="margin-top:0">Release Order Rate score (Drop Impact: 0–4)</h3><button type="button" class="tile-more" aria-expanded="false" aria-label="Show how this score is counted"><span class="tri" aria-hidden="true"></span></button></div>
-      <p class="pd score-note" style="margin:0 0 10px">Drop Impact = how often they drop orders after the order is counted in Pick-up Order Volume. <b>Release Order Rate = releases ÷ Pick-up Order Volume</b> (<code>released_order_rate_30d</code> = <code>releases_by_driver_30d ÷ orders_assigned_30d</code>). <b>Not</b> completed + cancelled. Baseline = 20%. Threshold is the P90 line (36.11%). Row color follows the score. Both score 2 rows are the same color. (queried 2026-10-02, HK TRANSPORT public-pool van/mudou/mudou9, 2026-08-01 to 2026-08-31)</p>
+      <div class="tile-head"><h3 style="margin-top:0">Release Order Rate score (Drop Impact: 0–2)</h3><button type="button" class="tile-more" aria-expanded="false" aria-label="Show how this score is counted"><span class="tri" aria-hidden="true"></span></button></div>
+      <p class="pd score-note" style="margin:0 0 10px">Drop Impact = how often they drop orders after the order is counted in Pick-up Order Volume. <b>Release Order Rate = releases ÷ Pick-up Order Volume</b> (<code>released_order_rate_30d</code> = <code>releases_by_driver_30d ÷ orders_assigned_30d</code>). <b>Not</b> completed + cancelled. Baseline = 20%. Threshold is the P90 line (36.11%). Row color follows the score. Rows with the same score share a color. (queried 2026-10-02, HK TRANSPORT public-pool van/mudou/mudou9, 2026-08-01 to 2026-08-31)</p>
       <table>
         <thead>
           <tr>
@@ -1069,15 +1069,15 @@ body.show-v2 a[data-s="s4"]{display:none !important}
         <tbody>
           <tr class="score-tone-0"><td>&lt;20%</td><td>Baseline</td><td>103</td><td>0</td></tr>
           <tr class="score-tone-1"><td>20–&lt;30%</td><td>—</td><td>63</td><td>1</td></tr>
-          <tr class="score-tone-2"><td>30–≤36.11%</td><td>≤ P90</td><td>19</td><td>2</td></tr>
-          <tr class="score-tone-2"><td>36.11–&lt;40%</td><td>&gt; P90</td><td>6</td><td>2</td></tr>
-          <tr class="score-tone-3"><td>40–&lt;50%</td><td>&gt; P90</td><td>9</td><td>3</td></tr>
-          <tr class="score-tone-4"><td>≥50%</td><td>&gt; P90</td><td>5</td><td>4</td></tr>
+          <tr class="score-tone-1"><td>30–≤36.11%</td><td>≤ P90</td><td>19</td><td>1</td></tr>
+          <tr class="score-tone-1"><td>36.11–&lt;40%</td><td>&gt; P90</td><td>6</td><td>1</td></tr>
+          <tr class="score-tone-2"><td>40–&lt;50%</td><td>&gt; P90</td><td>9</td><td>2</td></tr>
+          <tr class="score-tone-2"><td>≥50%</td><td>&gt; P90</td><td>5</td><td>2</td></tr>
         </tbody>
       </table>
       <div class="score-fold note-fold">
         <div class="tile-head"><button type="button" class="tile-more" aria-expanded="false" aria-label="Show how to read this" data-show="Show how to read this" data-hide="Hide how to read this"><span class="tri" aria-hidden="true"></span></button></div>
-        <p class="pd score-note" style="margin-top:8px">n = 205 bot drivers with a Release Order Rate. Threshold &gt; P90 is above 36.11%: 6 + 9 + 5 = 20. The ≤ P90 row in score 2 is 19 drivers. (queried 2026-10-02, HK TRANSPORT public-pool van/mudou/mudou9, 2026-08-01 to 2026-08-31)</p>
+        <p class="pd score-note" style="margin-top:8px">n = 205 bot drivers with a Release Order Rate. Threshold &gt; P90 is above 36.11%: 6 + 9 + 5 = 20. Score 1 = 20% to under 40%: 63 + 19 + 6 = 88. Score 2 = 40% or more: 9 + 5 = 14. (queried 2026-10-02, HK TRANSPORT public-pool van/mudou/mudou9, 2026-08-01 to 2026-08-31)</p>
       </div>
     </div>
 
@@ -1238,7 +1238,7 @@ body.show-v2 a[data-s="s4"]{display:none !important}
   </div>
 
   <p class="foot">
-    Source: <code>gogox-ba-sandbox.analytics.mart_cheat_app_driver_review_priority_august_2026</code> (BigQuery, us-east4). Period 2026-08-01 to 2026-08-31 (queried 2026-10-02). Pool = had Pick-up Order Volume (<code>event_type_cd</code> 2, 20, or 22). OA orders excluded (<code>event_type_cd = 26</code>). <code>oa_driver</code> is not a gate. Pick-up Order Volume ≥30 and completed ≥30 are not gates. Bot pool = 3-second grace-drop burst ≥2 (<code>is_bot_pool_v2</code>). Score = Pick-up Volume (0–2) + Release (0–4) + Cancel (0–2) for every bot driver. Pick-up Order Volume &gt; P90 is 2 points on that level. HK TRANSPORT public-pool; OA excluded via <code>event_type_cd = 26</code>.
+    Source: <code>gogox-ba-sandbox.analytics.mart_cheat_app_driver_review_priority_august_2026</code> (BigQuery, us-east4). Period 2026-08-01 to 2026-08-31 (queried 2026-10-02). Pool = had Pick-up Order Volume (<code>event_type_cd</code> 2, 20, or 22). OA orders excluded (<code>event_type_cd = 26</code>). <code>oa_driver</code> is not a gate. Pick-up Order Volume ≥30 and completed ≥30 are not gates. Bot pool = 3-second grace-drop burst ≥2 (<code>is_bot_pool_v2</code>). Score = Pick-up Volume (0–4) + Release (0–2) + Cancel (0–2) for every bot driver. Pick-up Order Volume &gt; P90 is 4 points on that level. HK TRANSPORT public-pool; OA excluded via <code>event_type_cd = 26</code>.
   </p>
   <div class="panel" style="margin-top:12px;border:1px solid color-mix(in srgb,var(--blue) 45%,var(--border));border-left:4px solid var(--blue);background:color-mix(in srgb,var(--blue-soft) 55%,var(--surface))">
     <h3 style="color:var(--blue)">Bot pool driver IDs by harm tier</h3>
@@ -1371,7 +1371,7 @@ body.show-v2 a[data-s="s4"]{display:none !important}
     const extremeOverlap = (s.assigned_extreme || 0) + (s.release_extreme || 0) + (s.cancel_extreme || 0) - s.review_alone;
     const extremeOverlapBit = extremeOverlap > 0 ? `${fmt(extremeOverlap)} drivers are in two of these. ` : '';
     if(el('k-flagpct')) el('k-flagpct').innerHTML = s.bot > 0
-      ? `Extreme · ${fmt(s.review_alone)} of ${fmt(s.bot)} bot drivers (${raPct}%). Any one metric above its own P90. Pick-up Order Volume > P90: ${fmt(s.assigned_extreme || 0)}. Release Rate > P90: ${fmt(s.release_extreme || 0)}. Driver Cancel Rate > P90: ${fmt(s.cancel_extreme || 0)}. ${extremeOverlapBit}Pick-up Order Volume > P90 is 2 points on that level, plus Release and Cancel.${sliceNote} (queried ${V2.queried}, HK TRANSPORT public-pool van/mudou/mudou9, ${V2.cohortCode})`
+      ? `Extreme · ${fmt(s.review_alone)} of ${fmt(s.bot)} bot drivers (${raPct}%). Any one metric above its own P90. Pick-up Order Volume > P90: ${fmt(s.assigned_extreme || 0)}. Release Rate > P90: ${fmt(s.release_extreme || 0)}. Driver Cancel Rate > P90: ${fmt(s.cancel_extreme || 0)}. ${extremeOverlapBit}Pick-up Order Volume > P90 is 4 points on that level, plus Release and Cancel.${sliceNote} (queried ${V2.queried}, HK TRANSPORT public-pool van/mudou/mudou9, ${V2.cohortCode})`
       : `no bot pool in this slice${sliceNote}`;
     if(el('k-bot-lbl')) el('k-bot-lbl').textContent = '③ Suspected cheat-app drivers (bot pool · 3 sec)';
     setTxt('summary-teaser', s.review_alone > 0
@@ -1389,7 +1389,7 @@ body.show-v2 a[data-s="s4"]{display:none !important}
     const fh = el('funnel-hnote');
     if(fh) fh.innerHTML =
       `<b>Bot spotting ends at the bot pool (bar 3).</b> The 3-second rule — <span id="funnel-botpool">${s.bot > 0 ? fmt(s.bot) : 'None'}</span> / ${fmt(s.working)} drivers with Pick-up Order Volume (${botPct}%)${vmNote}. ` +
-      `<a href="#s3">③ Review priority</a> ranks Extreme first (any metric &gt; P90). Everyone else is ranked by Pick-up Volume + Release + Cancel → max 8. Pick-up Order Volume &gt; P90 is 2 points on that level. ` +
+      `<a href="#s3">③ Review priority</a> ranks Extreme first (any metric &gt; P90). Everyone else is ranked by Pick-up Volume + Release + Cancel → max 8. Pick-up Order Volume &gt; P90 is 4 points on that level. ` +
       `(queried ${V2.queried}, HK TRANSPORT, ${V2.cohortCode})`;
     const fullBotPct = pct1(full.bot, full.working);
     const fullNonBot = Math.max(0, full.working - full.bot);
@@ -1422,19 +1422,19 @@ body.show-v2 a[data-s="s4"]{display:none !important}
     const ruleHead = document.querySelector('#s4-rulebook-panel thead tr');
     if(ruleHead) ruleHead.innerHTML = '<th>Score / note</th><th>Tier</th><th>Drivers</th>';
     setTxt('rulebook-title', 'Score → band');
-    setTxt('rulebook-pd', 'Extreme = any metric > P90 · Pick-up Order Volume > P90 is 2 points, plus Release and Cancel');
+    setTxt('rulebook-pd', 'Extreme = any metric > P90 · Pick-up Order Volume > P90 is 4 points, plus Release and Cancel');
 
     const cheat = document.getElementById('cheat-signs');
     if(cheat){
       const cheatSignals = [
-        {pts:'0–2', label:'Pick-up Volume score — Business Impact (unfair order volume)', href:'#v2-rule-8', see:'Pick-up Volume'},
-        {pts:'0–4', label:'Release Order Rate — Drop Impact; baseline 20%', href:'#v2-rule-8', see:'Release'},
+        {pts:'0–4', label:'Pick-up Volume score — Business Impact (unfair order volume)', href:'#v2-rule-8', see:'Pick-up Volume'},
+        {pts:'0–2', label:'Release Order Rate — Drop Impact; baseline 20%', href:'#v2-rule-8', see:'Release'},
         {pts:'0–2', label:'Driver Cancel Rate — Cancel Impact; score 2 = High+Extreme (>P75)', href:'#v2-rule-7', see:'Cancel'},
       ];
       cheat.innerHTML = cheatSignals.map(s =>
         `<div class="srow"><span class="pts">${s.pts}</span><a class="seelink" href="${s.href}">${s.label}<span class="seehint">▸ see ${s.see}</span></a></div>`
       ).join('') +
-        `<p class="strong">Extreme = any one metric above its own P90. Every bot driver has a score. Pick-up Order Volume &gt; P90 is 2 points on that level, plus Release and Cancel.</p>`;
+        `<p class="strong">Extreme = any one metric above its own P90. Every bot driver has a score. Pick-up Order Volume &gt; P90 is 4 points on that level, plus Release and Cancel.</p>`;
     }
     renderSliceDetail();
   };
@@ -1484,19 +1484,18 @@ body.show-v2 a[data-s="s4"]{display:none !important}
       ['h','High','P75–P90','var(--serious)','warn'],
       ['x','Extreme','&gt; P90','var(--critical)','critical'],
     ];
-    const assignedScore = {l:0, lm:0, m:1, um:1, h:2, x:2};
+    const assignedScore = {l:0, lm:0, m:2, um:2, h:4, x:4};
     function releaseScore(rate){
       if(rate == null || rate < 0.20) return 0;
-      if(rate < 0.30) return 1;
-      if(rate < 0.40) return 2;
-      if(rate < 0.50) return 3;
-      return 4;
+      if(rate < 0.40) return 1;
+      return 2;
     }
     function cancelScore(rate, level){
       if(rate == null || rate < 0.05) return 0;
       if(level === 'h' || level === 'x') return 2;
       return 1;
     }
+    const reviewScore = r => (assignedScore[r[12]] || 0) + releaseScore(r[11]) + cancelScore(r[13], r[14]);
     function panelByHeading(prefix){
       const h = [...document.querySelectorAll('h3')].find(el => el.textContent.trim().startsWith(prefix));
       return h ? h.closest('.panel') : null;
@@ -1576,7 +1575,8 @@ body.show-v2 a[data-s="s4"]{display:none !important}
     const priN = {};
     priSpec.forEach(p => { priN[p[0]] = 0; });
     bots.forEach(r => {
-      const key = anyExtreme(r) ? 'e' : r[9];
+      const sc = reviewScore(r);
+      const key = anyExtreme(r) ? 'e' : (sc >= 6 ? 'h' : (sc >= 4 ? 'w' : 'k'));
       if(priN[key] != null) priN[key] += 1;
     });
     const tmax = Math.max(1, ...priSpec.map(p => priN[p[0]]));
@@ -1638,7 +1638,7 @@ body.show-v2 a[data-s="s4"]{display:none !important}
     setTxt('tier-bars-pd', `One band per driver · among ${fmt(botN)} bot drivers in this filter (3-sec pool)`);
     const tpd = document.getElementById('tier-table-pd');
     if(tpd) tpd.innerHTML =
-      `share % = among the <b>${fmt(botN)}</b> bot drivers in this filter${vmNote}. Extreme = any one of Pick-up Order Volume, Release Rate, or Driver Cancel Rate > P90. Pick-up Order Volume > P90 is 2 points on that level, plus Release and Cancel. (queried ${V2.queried}, HK TRANSPORT, ${V2.cohortCode})`;
+      `share % = among the <b>${fmt(botN)}</b> bot drivers in this filter${vmNote}. Extreme = any one of Pick-up Order Volume, Release Rate, or Driver Cancel Rate > P90. Pick-up Order Volume > P90 is 4 points on that level, plus Release and Cancel. (queried ${V2.queried}, HK TRANSPORT, ${V2.cohortCode})`;
     const ruleBody = document.getElementById('rule-tbody');
     if(ruleBody){
       ruleBody.innerHTML = priSpec.map(p => {
@@ -1666,7 +1666,7 @@ body.show-v2 a[data-s="s4"]{display:none !important}
     }
     const strong = document.querySelector('#cheat-signs .strong');
     if(strong) strong.textContent =
-      `The action item is the Review Score: Pick-up Volume + Release + Cancel → max 8. A higher score means review this driver first. Pick-up Order Volume > P90 is 2 points on that level, plus Release and Cancel. Extreme (any metric > P90) is ranked first.`;
+      `The action item is the Review Score: Pick-up Volume + Release + Cancel → max 8. A higher score means review this driver first. Pick-up Order Volume > P90 is 4 points on that level, plus Release and Cancel. Extreme (any metric > P90) is ranked first.`;
 
     let follow = document.getElementById('filter-follow-note');
     const anchor = document.getElementById('v2-rule-8');
@@ -1730,10 +1730,10 @@ body.show-v2 a[data-s="s4"]{display:none !important}
       const pickupSpecs = [
         ['l', 0, '≤28', '≤ P10'],
         ['lm', 0, '28–≤67', 'P10–P25'],
-        ['m', 1, '67–≤112', 'P25–P50'],
-        ['um', 1, '112–≤187', 'P50–P75'],
-        ['h', 2, '187–≤254', 'P75–P90'],
-        ['x', 2, '&gt;254', '&gt; P90'],
+        ['m', 2, '67–≤112', 'P25–P50'],
+        ['um', 2, '112–≤187', 'P50–P75'],
+        ['h', 4, '187–≤254', 'P75–P90'],
+        ['x', 4, '&gt;254', '&gt; P90'],
       ];
       const body = assignedScorePanel.querySelector('tbody');
       if(body) body.innerHTML = pickupSpecs.map(spec =>
@@ -1743,22 +1743,23 @@ body.show-v2 a[data-s="s4"]{display:none !important}
     const releasePanel = panelByHeading('Release Order Rate score');
     if(releasePanel){
       const known = bots.filter(r => r[11] != null);
-      const bands = [0, 0, 0, 0, 0];
-      let atOrBelowP90 = 0, aboveP90Under40 = 0;
-      known.forEach(r => {
-        const score = releaseScore(r[11]);
-        bands[score] += 1;
-        if(score === 2 && r[11] > RELEASE_P90) aboveP90Under40 += 1;
-        else if(score === 2) atOrBelowP90 += 1;
-      });
-      const aboveP90 = known.filter(r => r[11] > RELEASE_P90).length;
+      const count = test => known.filter(r => test(r[11])).length;
+      const under20 = count(v => v < 0.20);
+      const from20to30 = count(v => v >= 0.20 && v < 0.30);
+      const atOrBelowP90 = count(v => v >= 0.30 && v <= RELEASE_P90);
+      const aboveP90Under40 = count(v => v > RELEASE_P90 && v < 0.40);
+      const from40to50 = count(v => v >= 0.40 && v < 0.50);
+      const from50 = count(v => v >= 0.50);
+      const aboveP90 = count(v => v > RELEASE_P90);
+      const score1 = from20to30 + atOrBelowP90 + aboveP90Under40;
+      const score2 = from40to50 + from50;
       const specs = [
-        [bands[0], 0, '&lt;20%', 'Baseline'],
-        [bands[1], 1, '20–&lt;30%', '—'],
-        [atOrBelowP90, 2, '30–≤36.11%', '≤ P90'],
-        [aboveP90Under40, 2, '36.11–&lt;40%', '&gt; P90'],
-        [bands[3], 3, '40–&lt;50%', '&gt; P90'],
-        [bands[4], 4, '≥50%', '&gt; P90'],
+        [under20, 0, '&lt;20%', 'Baseline'],
+        [from20to30, 1, '20–&lt;30%', '—'],
+        [atOrBelowP90, 1, '30–≤36.11%', '≤ P90'],
+        [aboveP90Under40, 1, '36.11–&lt;40%', '&gt; P90'],
+        [from40to50, 2, '40–&lt;50%', '&gt; P90'],
+        [from50, 2, '≥50%', '&gt; P90'],
       ];
       const body = releasePanel.querySelector('tbody');
       if(body) body.innerHTML = specs.map(spec =>
@@ -1766,7 +1767,7 @@ body.show-v2 a[data-s="s4"]{display:none !important}
       ).join('');
       const pd = [...releasePanel.querySelectorAll('p.pd')].pop();
       if(pd) pd.innerHTML =
-        `n = ${fmt(known.length)} bot drivers in this filter with a Release Order Rate (${fmt(botN - known.length)} with no Pick-up Order Volume, so no rate). Threshold &gt; P90 is above 36.11%: ${fmt(aboveP90Under40)} + ${fmt(bands[3])} + ${fmt(bands[4])} = ${fmt(aboveP90)}. The ≤ P90 row in score 2 is ${fmt(atOrBelowP90)}. Row color follows the score. (queried ${V2.queried}, HK TRANSPORT, ${V2.cohortCode})`;
+        `n = ${fmt(known.length)} bot drivers in this filter with a Release Order Rate (${fmt(botN - known.length)} with no Pick-up Order Volume, so no rate). Threshold &gt; P90 is above 36.11%: ${fmt(aboveP90Under40)} + ${fmt(from40to50)} + ${fmt(from50)} = ${fmt(aboveP90)}. Score 1 = 20% to under 40%: ${fmt(from20to30)} + ${fmt(atOrBelowP90)} + ${fmt(aboveP90Under40)} = ${fmt(score1)}. Score 2 = 40% or more: ${fmt(from40to50)} + ${fmt(from50)} = ${fmt(score2)}. Row color follows the score. (queried ${V2.queried}, HK TRANSPORT, ${V2.cohortCode})`;
     }
     const cancelPanel = panelByHeading('Driver Cancel Rate levels');
     if(cancelPanel){
@@ -1813,7 +1814,7 @@ body.show-v2 a[data-s="s4"]{display:none !important}
     if(hist && axis){
       const counts = [0, 0, 0, 0, 0, 0, 0, 0, 0];
       bots.forEach(r => {
-        const sc = (assignedScore[r[12]] || 0) + releaseScore(r[11]) + cancelScore(r[13], r[14]);
+        const sc = reviewScore(r);
         if(sc >= 0 && sc <= 8) counts[sc] += 1;
       });
       const maxC = Math.max(1, ...counts);
