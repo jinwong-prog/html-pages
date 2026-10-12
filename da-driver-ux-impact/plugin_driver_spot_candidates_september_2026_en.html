@@ -640,37 +640,10 @@ body.show-v2 a[data-s="s4"]{display:none !important}
 .v2-barrow .v2-nums .n2{color:var(--ink2)}
 .v2-barrow .v2-nums .n3{color:var(--ink2);margin-top:2px}
 
-body.ggx-locked{overflow:hidden}
-body.ggx-locked .viz-root{display:none !important}
-#ggx-gate{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px 16px;background:#f9f9f7}
-#ggx-gate[hidden]{display:none !important}
-.ggx-gate-card{width:min(460px,100%);background:#fcfcfb;border:1px solid rgba(11,11,11,.10);border-radius:16px;padding:28px 24px 24px;box-shadow:0 8px 28px rgba(0,0,0,.06)}
-.ggx-gate-kicker{margin:0 0 8px;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#898781}
-#ggx-gate-title{font-size:22px;line-height:1.3;margin:0 0 10px;letter-spacing:-.01em}
-.ggx-gate-card p{margin:0 0 12px;color:#52514e;font-size:15px}
-.ggx-gate-note{font-size:13px !important;color:#898781 !important}
-#ggx-google-btn:not(:empty){min-height:44px;margin:6px 0 4px}
-#ggx-gate-error{color:#d03b3b;font-size:14px}
-#ggx-gate-setup{font-size:14px;color:#52514e}
-.ggx-signed-in{margin-left:auto;display:inline-flex;align-items:center;gap:8px;font-size:12px;color:var(--ink2);white-space:nowrap}
-.ggx-signed-in button{font:inherit;font-size:12px;font-weight:700;color:#2a78d6;background:transparent;border:0;padding:4px 0;cursor:pointer}
-.ggx-signed-in button:hover{text-decoration:underline}
-
 </style>
 </head>
-<body class="show-v2 ggx-locked">
-<div id="ggx-gate" role="dialog" aria-modal="true" aria-labelledby="ggx-gate-title">
-  <div class="ggx-gate-card">
-    <p class="ggx-gate-kicker">Internal report</p>
-    <h1 id="ggx-gate-title">Sign in with your GoGoX Google account</h1>
-    <p>This page is for GoGoX staff. Use the Google account that ends with <b>@gogox.com</b>.</p>
-    <div id="ggx-google-btn"></div>
-    <p id="ggx-gate-error" hidden></p>
-    <p id="ggx-gate-setup" hidden>Google sign-in is not switched on for this page yet, so the report stays closed.</p>
-    <p class="ggx-gate-note">The tables after sign-in are the August 2026 report (queried 2026-10-02, HK TRANSPORT public-pool van/mudou/mudou9, 2026-08-01 to 2026-08-31).</p>
-  </div>
-</div>
-<div class="viz-root" inert aria-hidden="true">
+<body class="show-v2">
+<div class="viz-root">
 <nav class="nav">
   <div class="nav-in">
     <span class="brand">🤖 Suspected cheat-app spot</span>
@@ -1959,8 +1932,6 @@ body.ggx-locked .viz-root{display:none !important}
   }
 })();
 </script>
-<script src="https://accounts.google.com/gsi/client" async></script>
-<script src="plugin_driver_spot_candidates_september_2026_sign_in.js"></script>
 
 </body>
 </html>
